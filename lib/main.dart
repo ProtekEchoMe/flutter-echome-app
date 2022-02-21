@@ -57,11 +57,6 @@ class MyApp extends StatelessWidget {
   final ThemeStore _themeStore = ThemeStore(getIt<Repository>());
   final LanguageStore _languageStore = LanguageStore(getIt<Repository>());
 
-  // void check()async{
-  //   var i = await SharedPreferences.getInstance();
-  //   print("KJNKLJKLJLKJKL");
-  //   print(i.getString('locale'));
-  // }
 
   @override
   Widget build(BuildContext context) {
