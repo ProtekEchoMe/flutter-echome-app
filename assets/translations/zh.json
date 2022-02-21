@@ -1,0 +1,17 @@
+{ 
+    "@@lang":"zh_TW",
+    "login": {
+      "title": "登錄",
+      "submit": "登錄",
+      "description":"請輸入您的郵箱和密碼登錄",
+      "email_placeholder": "輸入您的電子郵件",
+      "password_placeholder": "輸入您的電子郵件",
+      "email_invalid_error": "無效的電子郵件",
+      "email_empty_error": "請輸入您的電子郵件",
+      "password_empty_error": "請輸入密碼",
+      "incorrect_account_info": "電子郵件或密碼不正確",
+      "forget_password":"忘記密碼",
+      "forget_password_description":"請輸入您的電子郵箱，我們將向您發送一封電子郵件以設置新密碼",
+      "forget_password_submit":"發送電子郵件"
+    }
+  }

@@ -1,0 +1,19 @@
+{
+    "@@lang":"en",
+    "login":{
+        "title": "Login",
+        "description":"Please enter your email and password to login",
+        "submit": "Login",
+        "email": "Email",
+        "password": "Password",
+        "email_placeholder":"Enter your email",
+        "password_placeholder":"Enter your email",
+        "email_invalid_error":"Invalid email",
+        "email_empty_error":"Please enter your email",
+        "password_empty_error":"Please enter password",
+        "incorrect_account_info":"Incorrect email or password",
+        "forget_password":"Forget password",
+        "forget_password_description":"Please enter your email, a email will be sent to you for setting up a new password",
+        "forget_password_submit":"Send email"
+    }
+}
