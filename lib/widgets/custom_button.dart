@@ -20,6 +20,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedButton(
+        enabled: !isLoading,
         color: Theme.of(context).colorScheme.primary,
         width: width,
         height: height,

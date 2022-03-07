@@ -70,7 +70,7 @@ class LoginForm extends StatelessWidget {
                       hintText: "login".tr(gender: "password_placeholder"),
                       errorText: loginFormStore.error.password,
                       prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: const Icon(Icons.visibility),
+                      // suffixIcon: const Icon(Icons.visibility),
                     ),
                   ));
                 }),

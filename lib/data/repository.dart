@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
+import 'package:echo_me_mobile/models/login/auth_response.dart';
 
 import 'network/apis/login/login_api.dart';
 
@@ -11,19 +13,30 @@ class Repository {
   // api objects
   final LoginApi _loginApi;
 
+  final LogoutApi _logoutApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._sharedPrefsHelper, this._loginApi);
+  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi);
 
 
   // Login:---------------------------------------------------------------------
-  Future<String> login({String email="", String password=""}) async {
-    return await _loginApi.login(email: email, password: password).then((String jwt){
-      _sharedPrefsHelper.saveAuthToken(jwt);
-      return jwt;
-    }).catchError((error)=> throw error);
+  Future<AuthResponse> login({String email="", String password=""}) async {
+     return await _loginApi.login(email: email, password: password);
+    // return await _loginApi.login(email: email, password: password).then((String jwt){
+    //   _sharedPrefsHelper.saveAuthToken(jwt);
+    //   return jwt;
+    // }).catchError((error)=> throw error);
+  }
+
+  Future<void> logout({String refreshToken = ""}) async {
+     return await _logoutApi.logout(refreshToken);
+    // return await _loginApi.login(email: email, password: password).then((String jwt){
+    //   _sharedPrefsHelper.saveAuthToken(jwt);
+    //   return jwt;
+    // }).catchError((error)=> throw error);
   }
 
   void cancelLogin(){

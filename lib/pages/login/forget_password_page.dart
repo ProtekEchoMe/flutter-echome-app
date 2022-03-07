@@ -6,6 +6,7 @@ import 'package:echo_me_mobile/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
   ForgetPasswordPage({Key? key}) : super(key: key);
@@ -59,23 +60,23 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                       width: double.infinity,
                       height: 12,
                     ),
-                    Observer(
-                      builder:(_) => TextField(
-                        onChanged: (value)=> forgetPasswordStore.setEmail(value),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.email),
-                          border: const OutlineInputBorder(),
-                          isDense: true,
-                          labelText: "login".tr(gender: "email"),
-                          hintText: "login".tr(gender: "email_placeholder"),
-                          errorText: forgetPasswordStore.error
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: double.infinity,
-                      height: 12,
-                    ),
+                    // Observer(
+                    //   builder:(_) => TextField(
+                    //     onChanged: (value)=> forgetPasswordStore.setEmail(value),
+                    //     decoration: InputDecoration(
+                    //       prefixIcon: const Icon(Icons.email),
+                    //       border: const OutlineInputBorder(),
+                    //       isDense: true,
+                    //       labelText: "login".tr(gender: "email"),
+                    //       hintText: "login".tr(gender: "email_placeholder"),
+                    //       errorText: forgetPasswordStore.error
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   width: double.infinity,
+                    //   height: 12,
+                    // ),
                     Observer(
                       builder: (_) => SizedBox(
                         width: double.maxFinite,
@@ -85,7 +86,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                             text: "login".tr(gender: "forget_password_submit"),
                             onPressed: !forgetPasswordStore.hasError
                                 ? () {
-                                    Loader.show(context);
+                                    launch("https://keycloak-test-app-01.herokuapp.com/realms/Protek/account");
                                   }
                                 : null,
                             ),

@@ -24,6 +24,51 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
               name: '_LoginFormStore.isDataFilled'))
           .value;
 
+  final _$accessTokenAtom = Atom(name: '_LoginFormStore.accessToken');
+
+  @override
+  String? get accessToken {
+    _$accessTokenAtom.reportRead();
+    return super.accessToken;
+  }
+
+  @override
+  set accessToken(String? value) {
+    _$accessTokenAtom.reportWrite(value, super.accessToken, () {
+      super.accessToken = value;
+    });
+  }
+
+  final _$refreshTokenAtom = Atom(name: '_LoginFormStore.refreshToken');
+
+  @override
+  String? get refreshToken {
+    _$refreshTokenAtom.reportRead();
+    return super.refreshToken;
+  }
+
+  @override
+  set refreshToken(String? value) {
+    _$refreshTokenAtom.reportWrite(value, super.refreshToken, () {
+      super.refreshToken = value;
+    });
+  }
+
+  final _$idTokenAtom = Atom(name: '_LoginFormStore.idToken');
+
+  @override
+  String? get idToken {
+    _$idTokenAtom.reportRead();
+    return super.idToken;
+  }
+
+  @override
+  set idToken(String? value) {
+    _$idTokenAtom.reportWrite(value, super.idToken, () {
+      super.idToken = value;
+    });
+  }
+
   final _$emailAtom = Atom(name: '_LoginFormStore.email');
 
   @override
@@ -66,6 +111,21 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
   set isLogining(bool value) {
     _$isLoginingAtom.reportWrite(value, super.isLogining, () {
       super.isLogining = value;
+    });
+  }
+
+  final _$isLoggedInAtom = Atom(name: '_LoginFormStore.isLoggedIn');
+
+  @override
+  bool get isLoggedIn {
+    _$isLoggedInAtom.reportRead();
+    return super.isLoggedIn;
+  }
+
+  @override
+  set isLoggedIn(bool value) {
+    _$isLoggedInAtom.reportWrite(value, super.isLoggedIn, () {
+      super.isLoggedIn = value;
     });
   }
 
@@ -126,9 +186,13 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
   @override
   String toString() {
     return '''
+accessToken: ${accessToken},
+refreshToken: ${refreshToken},
+idToken: ${idToken},
 email: ${email},
 password: ${password},
 isLogining: ${isLogining},
+isLoggedIn: ${isLoggedIn},
 isUserLogining: ${isUserLogining},
 isDataFilled: ${isDataFilled}
     ''';

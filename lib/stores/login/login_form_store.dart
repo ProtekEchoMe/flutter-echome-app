@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/repository.dart';
+import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validators2/validators.dart';
@@ -27,6 +30,15 @@ abstract class _LoginFormStore with Store {
   _LoginFormStore(this.repository);
 
   @observable
+  String? accessToken;
+
+  @observable
+  String? refreshToken;
+
+  @observable
+  String? idToken;
+
+  @observable
   String email = "";
 
   @observable
@@ -35,9 +47,11 @@ abstract class _LoginFormStore with Store {
   @observable
   bool isLogining = false;
 
+  @observable
+  bool isLoggedIn = false;
+
   @computed
   bool get isUserLogining => isLogining == true;
-
 
   @computed
   bool get isDataFilled => email.isEmpty || password.isEmpty ? false : true;
@@ -63,20 +77,40 @@ abstract class _LoginFormStore with Store {
   }
 
   @action
-  Future<void> login () async{
+  Future<void> logout() async {
     try{
-      isLogining = true;
-      var result = await repository.login(email: email, password: password);
-      print("login success with result ${result}");
-    }catch(e){
-      if(e is DioError){
-        var message = (e as DioError).response?.data?["message"];
-        errorStore.setErrorMessage(message);
-      }
-    }finally {
-      isLogining = false;
+      repository.logout(refreshToken: refreshToken ?? "");
+    } catch(e){
+      print("Some error occur when logout $e");
+    } finally{
+      isLoggedIn = false;
+      accessToken = "";
+      refreshToken = "";
+      idToken = "";
     }
   }
+
+  @action
+  Future<void> login() async {
+    isLogining = true;
+    try {
+      var auth = await repository.login(email: email, password: password);
+      print("login success");
+      accessToken = auth.accessToken;
+      refreshToken = auth.refreshToken;
+      idToken = auth.idToken;
+      isLoggedIn = true;
+    } catch (e) {
+      print(e);
+      if (e is DioError) {
+        var message = (e as DioError).response?.data?["error_description"];
+        errorStore.setErrorMessage(message);
+      }
+    } finally {
+        isLogining = false;
+    }
+  }
+
   @action
   void validatePassword(String value) {
     error.password = isNull(value) || value.isEmpty ? 'Cannot be blank' : null;
@@ -88,7 +122,6 @@ abstract class _LoginFormStore with Store {
     error.email = isEmail(value) ? null : 'Not a valid email';
   }
 
-
   @action
   void setEmail(String value) {
     email = value;
@@ -99,8 +132,7 @@ abstract class _LoginFormStore with Store {
     password = value;
   }
 
-
-  void cancelLogin (){
+  void cancelLogin() {
     repository.cancelLogin();
   }
 }

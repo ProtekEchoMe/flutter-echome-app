@@ -14,6 +14,6 @@
         "incorrect_account_info":"Incorrect email or password",
         "forget_password":"Forget password",
         "forget_password_description":"Please enter your email, a email will be sent to you for setting up a new password",
-        "forget_password_submit":"Send email"
+        "forget_password_submit":"Forget password"
     }
 }
