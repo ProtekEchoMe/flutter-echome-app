@@ -37,7 +37,7 @@ class LoginApi {
         cancelToken: token,
         data: {
           "client_id":Endpoints.client_id,
-          "client_secret":Endpoints.clientSecret,
+          // "client_secret":Endpoints.clientSecret,
           "grant_type":"password",
           "username": email,
           "password" : password,

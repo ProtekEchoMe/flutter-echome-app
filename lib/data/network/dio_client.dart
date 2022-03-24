@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
 
 class DioClient {
   // base dio instance
@@ -26,6 +27,30 @@ class DioClient {
       return response.data;
     } catch (e) {
     
+      throw e;
+    }
+  }
+  
+  Future<InventoryResponse> getInventory(
+      String uri, {
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+    try {
+      final Response response = await _dio.get(
+        uri,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress,
+      );
+      var countHeader = response.headers.map["X-Total-Count"];
+      var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
+      var data = (response.data as List<dynamic>).map((e)=> InventoryItem.fromJson(e)).toList();
+      return InventoryResponse(totalRow, data);
+    } catch (e) {
       throw e;
     }
   }

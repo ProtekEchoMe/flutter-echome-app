@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // var safeareaTop = MediaQuery.of(context).padding.top;
+    print('/build');    // var safeareaTop = MediaQuery.of(context).padding.top;
     const safeareaTop = 0.0;
     return WillPopScope(
       onWillPop: () {

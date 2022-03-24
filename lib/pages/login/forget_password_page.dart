@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/widgets/custom_button.dart';
@@ -86,7 +87,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                             text: "login".tr(gender: "forget_password_submit"),
                             onPressed: !forgetPasswordStore.hasError
                                 ? () {
-                                    launch("https://keycloak-test-app-01.herokuapp.com/realms/Protek/account");
+                                    launch(Endpoints.forgetPasswordPageUrl);
                                   }
                                 : null,
                             ),

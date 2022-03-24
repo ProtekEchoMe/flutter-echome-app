@@ -129,6 +129,13 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     });
   }
 
+  final _$logoutAsyncAction = AsyncAction('_LoginFormStore.logout');
+
+  @override
+  Future<void> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
+  }
+
   final _$loginAsyncAction = AsyncAction('_LoginFormStore.login');
 
   @override

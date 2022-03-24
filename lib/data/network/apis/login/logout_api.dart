@@ -35,7 +35,7 @@ class LogoutApi {
         cancelToken: token,
         data: {
           "client_id":Endpoints.client_id,
-          "client_secret":Endpoints.clientSecret,
+          // "client_secret":Endpoints.clientSecret,
           "refresh_token": refreshToken
         },
       );

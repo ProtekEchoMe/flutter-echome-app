@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
+import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
+import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
+import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 
 import 'network/apis/login/login_api.dart';
@@ -15,11 +19,15 @@ class Repository {
 
   final LogoutApi _logoutApi;
 
+  final AssetInventoryApi _assetInventoryApi;
+
+  final AssetRegistrationApi _assetRegistrationApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi);
+  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi, this._assetInventoryApi, this._assetRegistrationApi);
 
 
   // Login:---------------------------------------------------------------------
@@ -41,6 +49,14 @@ class Repository {
 
   void cancelLogin(){
     _loginApi.cancelLogin();
+  }
+
+  Future<InventoryResponse> getAssetInventory({int page =0 , int limit = 10}) async {
+    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit );
+  }
+
+  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10}) async {
+    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit );
   }
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {

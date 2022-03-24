@@ -1,4 +1,6 @@
+
 import 'dart:async';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/constants/strings.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
   await setPreferredOrientations();
   await setupLocator();
   await EasyLocalization.ensureInitialized();
@@ -24,7 +27,7 @@ void main() async {
     // ignore: prefer_const_constructors
 
     runApp(EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('zh')],
+        supportedLocales: const [Locale('en'), Locale('zh', 'TW')],
         path: 'assets/translations',
         fallbackLocale: const Locale('en'),
         child: MyApp()));
@@ -69,7 +72,7 @@ class MyApp extends HookWidget {
           supportedLocales: context.supportedLocales,
           locale: context.locale,
           routes: AppRoutes.getMap(),
-          initialRoute: "/login",
+          initialRoute: "/home"
           // initialRoute: "/login",
         ),
         builder: (_) {
@@ -79,5 +82,13 @@ class MyApp extends HookWidget {
                 (Route<dynamic> route) => false);
           });
         });
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
