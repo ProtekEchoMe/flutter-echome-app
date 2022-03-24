@@ -42,30 +42,16 @@ mixin _$AssetRegistrationItem on _AssetRegistrationItem, Store {
   final _$statusAtom = Atom(name: '_AssetRegistrationItem.status');
 
   @override
-  RegistrationItemStatus get status {
+  String get status {
     _$statusAtom.reportRead();
     return super.status;
   }
 
   @override
-  set status(RegistrationItemStatus value) {
+  set status(String value) {
     _$statusAtom.reportWrite(value, super.status, () {
       super.status = value;
     });
-  }
-
-  final _$_AssetRegistrationItemActionController =
-      ActionController(name: '_AssetRegistrationItem');
-
-  @override
-  void updateStatus(RegistrationItemStatus status) {
-    final _$actionInfo = _$_AssetRegistrationItemActionController.startAction(
-        name: '_AssetRegistrationItem.updateStatus');
-    try {
-      return super.updateStatus(status);
-    } finally {
-      _$_AssetRegistrationItemActionController.endAction(_$actionInfo);
-    }
   }
 
   @override

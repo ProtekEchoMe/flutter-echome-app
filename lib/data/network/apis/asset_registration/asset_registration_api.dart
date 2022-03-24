@@ -22,14 +22,16 @@ class AssetRegistrationApi {
     try {
       print(page*limit);
       print(limit);
-      final res = await _dioClient.get(
+      final res = await _dioClient.getRegistration(
         Endpoints.assetRegistration,
         queryParameters: {
           "skip": page*limit,
           "limit": limit,
         }
       );
-      return AssetRegistrationResponse(res);
+      print("ok");
+      print(res);
+      return AssetRegistrationResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
       throw e;
     }
@@ -38,12 +40,15 @@ class AssetRegistrationApi {
 
 class AssetRegistrationResponse {
   List<RegistrationItem> itemList = [];
+  int rowNumber = 0;
 
-  AssetRegistrationResponse(dynamic data){
+  AssetRegistrationResponse(dynamic data, int? rowNum){
     try{
         itemList = (data as List<dynamic>).map((e)=> RegistrationItem.fromJson(e)).toList();
     }catch(e){
       print(e);
+    }finally{
+      rowNumber = rowNum ?? 0;
     }
   }
 }

@@ -18,5 +18,5 @@ class Endpoints {
   static const String forgetPassword = baseUrl + "/auth/forgetPassword";
 
   static const String assetInventory = "http://qa-echome.ddns.net/echoMe/listInvStock";
-   static const String assetRegistration = "https://echo-me-express-mock.vercel.app/assetRegister";
+   static const String assetRegistration = "http://qa-echome.ddns.net/echoMe/doc/listDocument";
 }

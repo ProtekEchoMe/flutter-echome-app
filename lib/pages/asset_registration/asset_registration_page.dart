@@ -8,6 +8,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
+import 'asset_scan_page_arguments.dart';
+
 class AssetRegistrationPage extends StatefulWidget {
   AssetRegistrationPage({Key? key}) : super(key: key);
 
@@ -141,13 +143,13 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       child: Container(
                                         padding: EdgeInsets.all(4),
                                         decoration: BoxDecoration(
-                                            color: _getColor(item.status),
+                                            color: Colors.blue,
                                             borderRadius:
                                                 BorderRadius.circular(5)),
                                         height: 30,
                                         child: FittedBox(
                                             child: Text(
-                                          item.status.name,
+                                          item.status,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -160,7 +162,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       height: 40,
                                       child: IconButton(
                                           padding: EdgeInsets.all(0),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, "/asset_scan",arguments: AssetScanPageArguments(item.orderId, item: item.item));
+                                          },
                                           icon: Icon(Icons.arrow_forward)),
                                     )
                                   ]),

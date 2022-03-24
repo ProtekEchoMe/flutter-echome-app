@@ -34,9 +34,9 @@ abstract class _AssetRegistrationItem with Store {
   final RegistrationItem item;
 
   _AssetRegistrationItem(this.item){
-    orderId = item.orderId.toString();
-    supplierName = item.supplierName.toString();
-    status = AssetRegistrationHelper.statusConvertor(item.orderStatus);
+    orderId = item.docNum.toString();
+    supplierName ="DocType :" + item.docType.toString();
+    status = item.status ?? "";
   }
 
   @observable
@@ -45,13 +45,17 @@ abstract class _AssetRegistrationItem with Store {
   @observable
   String supplierName = "";
 
-  @observable
-  RegistrationItemStatus status = RegistrationItemStatus.draft;
+  // @observable
+  // RegistrationItemStatus status = RegistrationItemStatus.draft;
 
-  @action
-  void updateStatus(RegistrationItemStatus status){
-    if(this.status != status){
-      this.status = status;
-    }
-  }
+  
+  @observable
+  String status = "";
+
+  // @action
+  // void updateStatus(RegistrationItemStatus status){
+  //   if(this.status != status){
+  //     this.status = status;
+  //   }
+  // }
 }

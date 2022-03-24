@@ -30,6 +30,34 @@ class DioClient {
       throw e;
     }
   }
+
+  Future<dynamic> getRegistration (
+      String uri, {
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+          try {
+      final Response response = await _dio.get(
+        uri,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress,
+      );
+      print("getReg");
+      var countHeader = response.headers.map["X-Total-Count"];
+      var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
+      var data = (response.data as List<dynamic>);
+      return {
+        "totalRow":totalRow,
+        "itemRow":data
+      };
+    } catch (e) {
+      throw e;
+    }
+      }
   
   Future<InventoryResponse> getInventory(
       String uri, {
@@ -46,9 +74,11 @@ class DioClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
+      print("???");
       var countHeader = response.headers.map["X-Total-Count"];
       var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
       var data = (response.data as List<dynamic>).map((e)=> InventoryItem.fromJson(e)).toList();
+      print(totalRow);
       return InventoryResponse(totalRow, data);
     } catch (e) {
       throw e;
