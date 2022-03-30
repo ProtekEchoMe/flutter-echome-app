@@ -75,6 +75,75 @@ class AssetRegistrationApi {
     }
   }
 
+  Future<dynamic> registerItem(
+      {String docNum = "",
+      String containerCode = "",
+      List<String> itemRfid = const []}) async {
+    try {
+      var str = "";
+      if (itemRfid != null) {
+        for (var element in itemRfid) {
+          str = str + element + ",";
+        }
+      }
+      str = str.substring(0, str.length - 1);
+      Map<String, dynamic> query = {
+        "docNum":docNum,
+        "containerCode":containerCode,
+        "rfids": str
+        };
+      final res = await _dioClient.getRegistration(Endpoints.registerContainer,
+          queryParameters: query);
+      return {"itemList": res["itemRow"]};
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if((e.response!.data is String).toString().isEmpty){
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      throw e;
+    }
+  }
+
+  Future<dynamic> registerContainer({List<String> rfid = const []}) async {
+    try {
+      var str = "";
+      if (rfid != null) {
+        for (var element in rfid) {
+          str = str + element + ",";
+        }
+      }
+      str = str.substring(0, str.length - 1);
+      Map<String, dynamic> query = {"rfids": str};
+      final res = await _dioClient.getRegistration(Endpoints.registerContainer,
+          queryParameters: query);
+      return {"itemList": res["itemRow"]};
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          throw Exception(e.response!.data);
+        }
+      }
+      throw e;
+    }
+  }
+
+  Future<dynamic> bundleContainerProduct(
+      {String docNum = "",
+      String containerCode = "",
+      List<String> rfid = const []}) async {
+    return "a";
+  }
+
   Future<dynamic> getContainerRfidDetails(
       {String rfid = "", String containerCode = ""}) async {
     try {

@@ -6,16 +6,14 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_details.dart';
-import 'package:echo_me_mobile/utils/hex_to_text.dart';
+import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:json_table/json_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
-import "package:hex/hex.dart";
 
-import '../../widgets/echo_me_app_bar.dart';
 import 'asset_scan_page_arguments.dart';
 
 class RfidContainer {
@@ -61,6 +59,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
   final Set checkedItem = {};
   final Set<String> equipmentRfidDataSet = {};
   String equipmentId = "";
+  EquItem? equipmentChosen;
   List<RfidContainer> containerDetails = [];
   final bool isFetchingEquId = false;
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
@@ -80,7 +79,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     JsonTableColumn("id", label: "id"),
     JsonTableColumn("rfid", label: "Container RFID", valueBuilder: (value) {
       try {
-        return HexToText.getString(value.toString());
+        return AscToText.getString(value.toString());
       } catch (e) {
         return value.toString();
       }
@@ -108,9 +107,33 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  void _changeEquipment() {
-    _rescan();
-    setState(() {});
+  void _changeEquipment(AssetScanPageArguments? args) async {
+    print("change equ");
+    try{
+      if(args?.docNum == null){
+        showMessage("Document Number not found");
+        return;
+      }
+      if(equipmentChosen?.containerCode == null){
+        showMessage("Container Code not found");
+        return;
+      }
+      if(equipmentChosen!.status != "REGISTERED"){
+        showMessage("Container Code not registered");
+        return;
+      }
+      if(itemRfidDataSet.isEmpty){
+        showMessage("Assets List is empy");
+        return;
+      }
+      List<String> itemRfid = itemRfidDataSet.map((e) =>    AscToText.getString(e)).toList();
+      await api.registerItem(docNum: args!.docNum, containerCode: equipmentChosen!.containerCode!, itemRfid: itemRfid );
+      _rescan();
+    }catch(e){
+      showMessage(e.toString());
+    }finally{
+      setState(() {});
+    }
   }
 
   void _rescan() {
@@ -122,6 +145,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     isDebouncing = false;
     isCheckingContainer = false;
     equipmentId = "";
+    equipmentChosen = null;
     equTable.clear();
     EasyDebounce.cancel('validateContainerRfid');
     setState(() {});
@@ -129,9 +153,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   void _complete() {}
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(AssetScanPageArguments? args, int index) {
     if (index == 0) {
-      _changeEquipment();
+      _changeEquipment(args);
     } else if (index == 1) {
       _rescan();
     } else {
@@ -144,7 +168,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     if (newList.length < equipmentRfidDataSet.length) {
       var newListRfidSet = newList.map((e) => e.rfid).toSet();
       for (var i = 0; i < equipmentRfidDataSet.length; i++) {
-        String equRfid = equipmentRfidDataSet.elementAt(i);
+        String equRfid = AscToText.getString(equipmentRfidDataSet.elementAt(i));
         var newRow = EquItem(rfid: equRfid, status: "CANT FIND");
         if (!newListRfidSet.contains(equRfid)) newList.add(newRow);
       }
@@ -167,9 +191,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var containerErrorMsg1 = "";
     try {
       if (containerDetails.isEmpty) {
-        List<String> list = equipmentRfidDataSet.toList();
-        print("list");
-        print(list);
+        List<String> list =
+            equipmentRfidDataSet.map((e) => AscToText.getString(e)).toList();
         var result = await api.getContainerDetails(rfid: list);
         _handleEquTable(result["itemList"] as List);
         // if ((result["itemList"] as List).isEmpty) {
@@ -200,7 +223,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
       //   }
       // });
     } catch (e) {
-      print(e);
+      showMessage(e.toString());
     } finally {
       setState(() {
         isCheckingContainer = false;
@@ -322,13 +345,15 @@ class _AssetScanPageState extends State<AssetScanPage> {
           onPressed: () {
             var init = equipmentRfidDataSet.length;
             if (init == 0) {
-              equipmentRfidDataSet.add(testRfid);
+              equipmentRfidDataSet.add(AscToText.getAscIIString(testRfid));
             } else if (init == 1) {
-              equipmentRfidDataSet.add("CRFID0002");
+              equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000437"));
             } else if (init == 2) {
-              equipmentRfidDataSet.add("CATL010000000303");
+              equipmentRfidDataSet
+                  .add(AscToText.getAscIIString("CATL010000000303"));
             } else {
-              equipmentRfidDataSet.add(new Random().nextInt(50).toString());
+              equipmentRfidDataSet.add(AscToText.getAscIIString(
+                  new Random().nextInt(50).toString()));
             }
 
             var after = equipmentRfidDataSet.length;
@@ -384,7 +409,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
             label: 'Complete',
           ),
         ],
-        onTap: _onItemTapped,
+        onTap:(int index) => _onItemTapped(args, index),
       ),
       body: SizedBox.expand(
         child: Column(
@@ -405,7 +430,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   padding: const EdgeInsets.all(Dimens.horizontal_padding),
                   child: ConstrainedBox(
                     constraints:
-                        const BoxConstraints(minHeight: 0, maxHeight: 300),
+                        const BoxConstraints(minHeight: 0, maxHeight: 350),
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -428,23 +453,66 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "Equipment",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Equipment",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      ElevatedButton(
+                                          onPressed: equipmentChosen == null ||
+                                                  equipmentChosen?.status ==
+                                                      "REGISTERED"
+                                              ? null
+                                              : () async {
+                                                  try {
+                                                    var targetContainerCode =
+                                                        equipmentChosen!
+                                                            .containerCode;
+                                                    List<String> rfidList = [];
+                                                    for (var element
+                                                        in equTable) {
+                                                      if (element
+                                                              .containerCode ==
+                                                          targetContainerCode) {
+                                                        if (element.rfid !=
+                                                            null) {
+                                                          rfidList.add(
+                                                              element.rfid!);
+                                                        }
+                                                      }
+                                                    }
+                                                    await api.registerContainer(
+                                                        rfid: rfidList);
+                                                    EasyDebounce.debounce(
+                                                        'validateContainerRfid',
+                                                        const Duration(
+                                                            milliseconds: 500),
+                                                        () {
+                                                      _validateContainerRfid();
+                                                    });
+                                                    setState(() {
+                                                      isDebouncing = true;
+                                                    });
+                                                  } catch (e) {
+                                                    showMessage(e.toString());
+                                                  }
+                                                },
+                                          child: isDebouncing ||
+                                                  isCheckingContainer
+                                              ? const SpinKitDualRing(
+                                                  color: Colors.blue,
+                                                  size: 15,
+                                                  lineWidth: 2,
+                                                )
+                                              : const Text("Reg"))
+                                    ],
                                   ),
-                                  isDebouncing
-                                      ? const SpinKitDualRing(
-                                          color: Colors.blue,
-                                          size: 30,
-                                          lineWidth: 2,
-                                        )
-                                      : const SizedBox(),
-                                  !isDebouncing
-                                      ? Text(isCheckingContainer
-                                          ? "Checking"
-                                          : (containerErrorMsg))
-                                      : SizedBox(),
                                   Container(
                                     width: 40,
                                     height: 30,
@@ -471,37 +539,27 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                         Theme.of(context).textTheme.titleMedium,
                                   ),
                                   SizedBox(
-                                    height: 40,
-                                    width: 40,
-                                    child: isFetchingEquId
-                                        ? Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: SpinKitRing(
-                                              color: Colors.blue,
-                                              size: 30.0,
-                                              lineWidth: 3,
-                                            ),
-                                          )
-                                        : null,
-                                  ),
+                                      height: 40,
+                                      width: 40,
+                                      child: IconButton(
+                                        icon: Icon(Icons.close),
+                                        onPressed: () {
+                                          setState(() {
+                                            equipmentId = "";
+                                            equipmentChosen = null;
+                                          });
+                                        },
+                                      )),
                                   Expanded(
                                     child: Container(
                                       width: 40,
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
-                                            spreadRadius: 2,
-                                            blurRadius: 4,
-                                            offset: Offset(0,
-                                                2), // changes position of shadow
-                                          ),
-                                        ],
-                                      ),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: Colors.blueAccent)),
                                       child: Center(
                                           child: Text(equipmentId.toString())),
                                     ),
@@ -510,7 +568,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                           ),
                           Flexible(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(15.0),
                               child: SingleChildScrollView(
                                 child: equTable.isEmpty
                                     ? SizedBox()
@@ -520,20 +578,18 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                             .toList(),
                                         columns: columns,
                                         onRowSelect: (index, map) {
-                                          if (map["containerCode"] ==
-                                              equipmentId) {
-                                            equipmentId = "";
-                                          } else if ((map["status"] ==
-                                                  "PRINTED" ||
+                                          if ((map["status"] == "PRINTED" ||
                                               map["status"] == "REGISTERED")) {
                                             equipmentId = map["containerCode"];
+                                            equipmentChosen =
+                                                EquItem.fromJson(map);
                                           } else {
                                             equipmentId = "";
+                                            equipmentChosen = null;
                                           }
                                           setState(() {});
                                         },
                                         tableCellBuilder: (value) {
-                                          print(value);
                                           return Container(
                                             height: 50,
                                             padding: EdgeInsets.symmetric(
@@ -658,7 +714,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                               }),
                           Expanded(
                               child: Text(
-                            HexToText.getString(rfid),
+                            AscToText.getString(rfid),
                             style: Theme.of(context).textTheme.bodyMedium,
                           )),
                           Material(

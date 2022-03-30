@@ -27,4 +27,8 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/rfid/listRfidContainer";
   static const String getContainerCode =
       "https://qa-echome.ddns.net/echoMe/rfid/getContainerCode";
+  static const String registerItems =
+      "http://qa-echome.ddns.net/echoMe/reg/registerItems";
+  static const String registerContainer =
+      "http://qa-echome.ddns.net/echoMe/reg/registerContainers";
 }
