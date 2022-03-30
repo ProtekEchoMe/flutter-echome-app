@@ -369,152 +369,167 @@ class _AssetScanPageState extends State<AssetScanPage> {
               if (index == 0) {
                 return Padding(
                   padding: const EdgeInsets.all(Dimens.horizontal_padding),
-                  child: Container(
-                    width: double.maxFinite,
-                    height: 350,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(0, 2), // changes position of shadow
-                          ),
-                        ]),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Equipment",
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                isDebouncing
-                                    ? const SpinKitDualRing(
-                                        color: Colors.blue,
-                                        size: 30,
-                                        lineWidth: 2,
-                                      )
-                                    : const SizedBox(),
-                                !isDebouncing
-                                    ? Text(isCheckingContainer
-                                        ? "Checking"
-                                        : (containerErrorMsg))
-                                    : SizedBox(),
-                                Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                      child: Text(equipmentRfidDataSet.length
-                                          .toString())),
-                                )
-                              ]),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Container Code :",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  child: isFetchingEquId
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: SpinKitRing(
-                                            color: Colors.blue,
-                                            size: 30.0,
-                                            lineWidth: 3,
-                                          ),
+                  child: ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(minHeight: 0, maxHeight: 300),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset:
+                                  Offset(0, 2), // changes position of shadow
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Equipment",
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  isDebouncing
+                                      ? const SpinKitDualRing(
+                                          color: Colors.blue,
+                                          size: 30,
+                                          lineWidth: 2,
                                         )
-                                      : null,
-                                ),
-                                Expanded(
-                                  child: Container(
+                                      : const SizedBox(),
+                                  !isDebouncing
+                                      ? Text(isCheckingContainer
+                                          ? "Checking"
+                                          : (containerErrorMsg))
+                                      : SizedBox(),
+                                  Container(
                                     width: 40,
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 2,
-                                          blurRadius: 4,
-                                          offset: Offset(0,
-                                              2), // changes position of shadow
-                                        ),
-                                      ],
-                                    ),
+                                        color: Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
                                     child: Center(
-                                        child: Text(equipmentId.toString())),
+                                        child: Text(equipmentRfidDataSet.length
+                                            .toString())),
+                                  )
+                                ]),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Container Code :",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
-                                )
-                              ]),
-                        ),
-                        Expanded(
-                            child: SingleChildScrollView(
-                                child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: equTable.isEmpty
-                              ? SizedBox()
-                              : JsonTable(
-                                  equTable.map((e) => e.toJson()).toList(),
-                                  onRowSelect: (index, map) {
-                                    print(highlightedIndex);
-                                    print(index);
-                                    if (highlightedIndex != null &&
-                                        highlightedIndex == index.toString()) {
-                                      highlightedIndex = null;
-                                      equipmentId = "";
-                                    } else {
-                                      highlightedIndex = index.toString();
-                                    }
-                                    if (highlightedIndex != null &&
-                                        (map["status"] == "PRINTED" || map["status"] == "REGISTERED"))  {
-                                      equipmentId = map["containerCode"];
-                                    }else{
-                                      equipmentId = "";
-                                    }
-                                    setState(() {});
-                                  },
-                                  allowRowHighlight: true,
-                                  tableCellBuilder: (value) {
-                                    return Container(
-                                      height: 50,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 4.0, vertical: 2.0),
+                                  SizedBox(
+                                    height: 40,
+                                    width: 40,
+                                    child: isFetchingEquId
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: SpinKitRing(
+                                              color: Colors.blue,
+                                              size: 30.0,
+                                              lineWidth: 3,
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      width: 40,
+                                      height: 30,
                                       decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 0.5,
-                                              color: Colors.grey
-                                                  .withOpacity(0.5))),
-                                      child: Center(
-                                        child: Text(
-                                          value,
-                                          textAlign: TextAlign.center,
-                                        ),
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 4,
+                                            offset: Offset(0,
+                                                2), // changes position of shadow
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  },
-                                ),
-                        )))
-                      ],
+                                      child: Center(
+                                          child: Text(equipmentId.toString())),
+                                    ),
+                                  )
+                                ]),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                child: equTable.isEmpty
+                                    ? SizedBox()
+                                    : JsonTable(
+                                        equTable
+                                            .map((e) => e.toJson())
+                                            .toList(),
+                                        onRowSelect: (index, map) {
+                                          print(highlightedIndex);
+                                          print(index);
+                                          if (highlightedIndex != null &&
+                                              highlightedIndex ==
+                                                  index.toString()) {
+                                            highlightedIndex = null;
+                                            equipmentId = "";
+                                          } else {
+                                            highlightedIndex = index.toString();
+                                          }
+                                          if (highlightedIndex != null &&
+                                              (map["status"] == "PRINTED" ||
+                                                  map["status"] ==
+                                                      "REGISTERED")) {
+                                            equipmentId = map["containerCode"];
+                                          } else {
+                                            equipmentId = "";
+                                          }
+                                          setState(() {});
+                                        },
+                                        allowRowHighlight: true,
+                                        tableCellBuilder: (value) {
+                                          return Container(
+                                            height: 50,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 4.0, vertical: 2.0),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 0.5,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.5))),
+                                            child: Center(
+                                              child: Text(
+                                                value,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 );
