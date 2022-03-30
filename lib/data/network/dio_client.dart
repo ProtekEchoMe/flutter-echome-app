@@ -46,7 +46,6 @@ class DioClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
-      print("getReg");
       var countHeader = response.headers.map["X-Total-Count"];
       var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
       var data = (response.data as List<dynamic>);

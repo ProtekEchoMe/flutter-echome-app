@@ -55,8 +55,8 @@ class Repository {
     return await _assetInventoryApi.getAssetInventory(page: page, limit: limit );
   }
 
-  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10}) async {
-    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit );
+  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String docNumber = "" }) async {
+    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit, docNumber: docNumber );
   }
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {

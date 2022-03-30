@@ -3,6 +3,7 @@ class RegistrationItem {
   String? docNum;
   String? docType;
   String? docDate;
+  String? shipperCode;
   String? status;
   String? creator;
   int? createdDate;
@@ -13,6 +14,7 @@ class RegistrationItem {
       this.docNum,
       this.docType,
       this.docDate,
+      this.shipperCode,
       this.status,
       this.creator,
       this.createdDate,
@@ -23,6 +25,7 @@ class RegistrationItem {
     docNum = json['docNum'];
     docType = json['docType'];
     docDate = json['docDate'];
+    shipperCode = json['shipperCode'];
     status = json['status'];
     creator = json['creator'];
     createdDate = json['createdDate'];
@@ -35,6 +38,7 @@ class RegistrationItem {
     data['docNum'] = this.docNum;
     data['docType'] = this.docType;
     data['docDate'] = this.docDate;
+    data['shipperCode'] = this.shipperCode;
     data['status'] = this.status;
     data['creator'] = this.creator;
     data['createdDate'] = this.createdDate;

@@ -1,44 +1,70 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
+import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:outline_search_bar/outline_search_bar.dart';
 
-import 'asset_scan_page_arguments.dart';
-
-class AssetRegistrationPage extends StatefulWidget {
-  AssetRegistrationPage({Key? key}) : super(key: key);
+class AssetRegistrationSearchPage extends StatefulWidget {
+  final String searchDocNum;
+  AssetRegistrationSearchPage({Key? key, required this.searchDocNum})
+      : super(key: key);
 
   @override
-  State<AssetRegistrationPage> createState() => _AssetRegistrationPageState();
+  State<AssetRegistrationSearchPage> createState() =>
+      _AssetRegistrationSearchPageState();
 }
 
-class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
-  AssetRegistrationStore _store = getIt<AssetRegistrationStore>();
+class _AssetRegistrationSearchPageState
+    extends State<AssetRegistrationSearchPage> {
+
+  bool isFetching = false;
+  Repository repository = getIt<Repository>();
+  List<AssetRegistrationItem>  dataList = [];
+  
+  Future<void> fetchData() async {
+    isFetching = true;
+    try{
+      var data = await repository.getAssetRegistration(docNumber: widget.searchDocNum);
+      List<RegistrationItem> itemList = data.itemList;
+      List<AssetRegistrationItem> list = itemList.map((RegistrationItem e) =>AssetRegistrationItem(e)).toList();
+      dataList.addAll(list);
+    }catch(e){
+      print(e);
+    }finally{
+      print("finally");
+      isFetching = false;
+      print(dataList);
+      print(isFetching);
+      setState(() {
+        
+      });
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData();
+    fetchData();
   }
-
+      
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: EchoMeAppBar(),
-        body: SizedBox.expand(
-          child: Column(children: [
-            _getTitle(context),
-            _getSearchBar(context),
-            _getListBox(context),
-          ]),
-        ));
+      appBar: EchoMeAppBar(titleText: "Search Result"),
+      body: SizedBox.expand(
+        child: Column(children: [
+          _getTitle(context),
+          _getSubTitle(context),
+          _getListBox(context)
+        ]),
+      ),
+    );
   }
 
   Widget _getTitle(BuildContext ctx) {
@@ -51,7 +77,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
               alignment: Alignment.centerLeft,
               child: FittedBox(
                 child: Text(
-                  "Asset Register",
+                  "Searching",
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!
@@ -81,10 +107,34 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
     );
   }
 
-  Widget _getListBox(BuildContext ctx) {
+  Widget _getSubTitle(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.horizontal_padding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    "Seraching for Document Number = " + widget.searchDocNum,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+  }
+
+    Widget _getListBox(BuildContext ctx) {
+      print(isFetching);
     return Expanded(
-      child: Observer(builder: (context) {
-        return _store.isFetching
+      child: Builder(builder: (context) {
+        return isFetching
             ? Center(
                 child: SpinKitChasingDots(
                 color: Colors.grey,
@@ -115,9 +165,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
           padding: const EdgeInsets.all(10.0),
           child: Observer(
               builder: (context) => ListView.builder(
-                  itemCount: _store.itemList.length,
+                  itemCount: dataList.length,
                   itemBuilder: ((context, index) {
-                    final item = _store.itemList[index];
+                    final item = dataList[index];
                     return Observer(builder: (context) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -131,7 +181,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                               ],
                             )),
                             title: Text(item.orderId),
-                            subtitle: Text(item.item.shipperCode.toString(), style: TextStyle(fontSize: 10),),
+                            subtitle: Text(item.supplierName),
                             trailing: SizedBox(
                               width: 130,
                               height: double.maxFinite,
@@ -176,36 +226,6 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                       );
                     });
                   }))),
-        ),
-      ),
-    );
-  }
-
-  Color _getColor(RegistrationItemStatus status) {
-    if (status.name == "draft") {
-      return Colors.grey;
-    }
-    if (status.name == "pending") {
-      return Colors.green;
-    }
-    if (status.name == "processing") {
-      return Colors.red;
-    }
-    return Colors.blue;
-  }
-
-  Widget _getSearchBar(BuildContext ctx) {
-    return Padding(
-      padding: EdgeInsets.all(Dimens.horizontal_padding),
-      child: SizedBox(
-        width: double.maxFinite,
-        child: OutlineSearchBar(
-          hintText: "Search by Document Number",
-          onSearchButtonPressed: (str){
-            if(str !=null && str.isNotEmpty){
-              Navigator.push(context, MaterialPageRoute(builder: (_) => AssetRegistrationSearchPage(searchDocNum: str)));
-            }
-          },
         ),
       ),
     );

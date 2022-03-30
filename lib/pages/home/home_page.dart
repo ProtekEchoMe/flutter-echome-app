@@ -82,27 +82,27 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-           SizedBox(
-            width: double.maxFinite,
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:10.0),
-              child: Card(
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                     Text("Asset Scan", style: Theme.of(context).textTheme.titleLarge,),
-                     IconButton(onPressed: (){
-                       Navigator.pushNamed(context, "/asset_scan",arguments: AssetScanPageArguments("551358"));
-                     }, icon: Icon(Icons.arrow_forward))
-                  ]),
-                ),
-              ),
-            ),
-          ),
+          //  SizedBox(
+          //   width: double.maxFinite,
+          //   height: 100,
+          //   child: Padding(
+          //     padding: const EdgeInsets.symmetric(horizontal:10.0),
+          //     child: Card(
+          //       elevation: 8,
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(15.0),
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: [
+          //            Text("Asset Scan", style: Theme.of(context).textTheme.titleLarge,),
+          //            IconButton(onPressed: (){
+          //              Navigator.pushNamed(context, "/asset_scan",arguments: AssetScanPageArguments("551358"));
+          //            }, icon: Icon(Icons.arrow_forward))
+          //         ]),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Center(
             child: RaisedButton(
               onPressed: () {
