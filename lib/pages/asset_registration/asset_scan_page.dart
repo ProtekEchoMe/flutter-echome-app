@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/pages/asset_registration/assset_scan_details.dart
 import 'package:echo_me_mobile/utils/hex_to_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:json_table/json_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
@@ -54,6 +55,7 @@ class AssetScanPage extends StatefulWidget {
 }
 
 class _AssetScanPageState extends State<AssetScanPage> {
+  static final inputFormat = DateFormat('dd/MM/yyyy');
   List<StreamSubscription> disposer = [];
   final Set itemRfidDataSet = {};
   final Set checkedItem = {};
@@ -73,6 +75,38 @@ class _AssetScanPageState extends State<AssetScanPage> {
   List<EquItem> equTable = [];
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  final List<JsonTableColumn> columns = [
+    JsonTableColumn("id", label: "id"),
+    JsonTableColumn("rfid", label: "Container RFID", valueBuilder: (value) {
+      try {
+        return HexToText.getString(value.toString());
+      } catch (e) {
+        return value.toString();
+      }
+    }),
+    JsonTableColumn("containerCode", label: "Container Code"),
+    JsonTableColumn("status", label: "Status"),
+    JsonTableColumn("createdDate", label: "Created At", valueBuilder: (value) {
+      try {
+        if (value is String) {
+          return inputFormat
+              .format(DateTime.fromMillisecondsSinceEpoch(int.parse(value)));
+        }
+        return inputFormat.format(DateTime.fromMillisecondsSinceEpoch(value));
+      } catch (e) {
+        return value.toString();
+      }
+    })
+  ];
+
+  void showMessage(String? str) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(str ?? ""),
+      ),
+    );
+  }
 
   void _changeEquipment() {
     _rescan();
@@ -474,7 +508,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                   )
                                 ]),
                           ),
-                          Expanded(
+                          Flexible(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SingleChildScrollView(
@@ -484,29 +518,22 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                         equTable
                                             .map((e) => e.toJson())
                                             .toList(),
+                                        columns: columns,
                                         onRowSelect: (index, map) {
-                                          print(highlightedIndex);
-                                          print(index);
-                                          if (highlightedIndex != null &&
-                                              highlightedIndex ==
-                                                  index.toString()) {
-                                            highlightedIndex = null;
+                                          if (map["containerCode"] ==
+                                              equipmentId) {
                                             equipmentId = "";
-                                          } else {
-                                            highlightedIndex = index.toString();
-                                          }
-                                          if (highlightedIndex != null &&
-                                              (map["status"] == "PRINTED" ||
-                                                  map["status"] ==
-                                                      "REGISTERED")) {
+                                          } else if ((map["status"] ==
+                                                  "PRINTED" ||
+                                              map["status"] == "REGISTERED")) {
                                             equipmentId = map["containerCode"];
                                           } else {
                                             equipmentId = "";
                                           }
                                           setState(() {});
                                         },
-                                        allowRowHighlight: true,
                                         tableCellBuilder: (value) {
+                                          print(value);
                                           return Container(
                                             height: 50,
                                             padding: EdgeInsets.symmetric(
