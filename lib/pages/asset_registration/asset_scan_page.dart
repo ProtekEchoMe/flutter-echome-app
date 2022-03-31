@@ -345,12 +345,12 @@ class _AssetScanPageState extends State<AssetScanPage> {
           onPressed: () {
             var init = equipmentRfidDataSet.length;
             if (init == 0) {
-              equipmentRfidDataSet.add(AscToText.getAscIIString(testRfid));
+              equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0001"));
             } else if (init == 1) {
-              equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000437"));
+              equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0002"));
             } else if (init == 2) {
               equipmentRfidDataSet
-                  .add(AscToText.getAscIIString("CATL010000000303"));
+                  .add(AscToText.getAscIIString("CRFID0003"));
             } else {
               equipmentRfidDataSet.add(AscToText.getAscIIString(
                   new Random().nextInt(50).toString()));
