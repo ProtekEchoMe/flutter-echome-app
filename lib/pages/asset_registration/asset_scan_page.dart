@@ -164,7 +164,14 @@ class _AssetScanPageState extends State<AssetScanPage> {
   }
 
   void _handleEquTable(List list) {
-    List<EquItem> newList = list.map((e) => EquItem.fromJson(e)).toList();
+    List<EquItem> newList = list.map((e){
+      var equItem = EquItem.fromJson(e);
+      if(equipmentChosen!=null && equipmentChosen!.containerCode == equItem.containerCode){
+        //update EquipmentChosen
+        equipmentChosen = equItem;
+      }
+      return equItem;
+    }).toList();
     if (newList.length < equipmentRfidDataSet.length) {
       var newListRfidSet = newList.map((e) => e.rfid).toSet();
       for (var i = 0; i < equipmentRfidDataSet.length; i++) {
