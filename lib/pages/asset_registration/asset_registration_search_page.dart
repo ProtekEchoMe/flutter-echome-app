@@ -4,6 +4,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
+import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AssetRegistrationSearchPage extends StatefulWidget {
   final String searchDocNum;
-  AssetRegistrationSearchPage({Key? key, required this.searchDocNum})
+  const AssetRegistrationSearchPage({Key? key, required this.searchDocNum})
       : super(key: key);
 
   @override
@@ -22,6 +23,8 @@ class AssetRegistrationSearchPage extends StatefulWidget {
 class _AssetRegistrationSearchPageState
     extends State<AssetRegistrationSearchPage> {
 
+
+  String? serachText;
   bool isFetching = false;
   Repository repository = getIt<Repository>();
   List<AssetRegistrationItem>  dataList = [];
@@ -38,8 +41,6 @@ class _AssetRegistrationSearchPageState
     }finally{
       print("finally");
       isFetching = false;
-      print(dataList);
-      print(isFetching);
       setState(() {
         
       });
@@ -48,8 +49,8 @@ class _AssetRegistrationSearchPageState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    serachText = widget.searchDocNum;
     fetchData();
   }
       
@@ -68,42 +69,9 @@ class _AssetRegistrationSearchPageState
   }
 
   Widget _getTitle(BuildContext ctx) {
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.horizontal_padding),
-      child: Row(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: FittedBox(
-                child: Text(
-                  "Searching",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(fontSize: 35),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Container(
-              width: 130,
-              height: 30,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Center(
-                  child: Text(
-                "Hong Kong-DC",
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-              )),
-            ),
-          )
-        ],
-      ),
+    return BodyTitle(
+      title: "Asset Register",
+      clipTitle: "Hong Kong-DC",
     );
   }
 

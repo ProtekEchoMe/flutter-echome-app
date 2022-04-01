@@ -30,7 +30,7 @@ class AssetRegistrationHelper {
 class AssetRegistrationItem = _AssetRegistrationItem with _$AssetRegistrationItem;
 
 abstract class _AssetRegistrationItem with Store {
-  final String TAG = "_AssetRegistrationItem ";
+  final String TAG = "_AssetRegistrationItem";
   final RegistrationItem item;
 
   _AssetRegistrationItem(this.item){
@@ -45,17 +45,7 @@ abstract class _AssetRegistrationItem with Store {
   @observable
   String supplierName = "";
 
-  // @observable
-  // RegistrationItemStatus status = RegistrationItemStatus.draft;
-
-  
   @observable
   String status = "";
 
-  // @action
-  // void updateStatus(RegistrationItemStatus status){
-  //   if(this.status != status){
-  //     this.status = status;
-  //   }
-  // }
 }

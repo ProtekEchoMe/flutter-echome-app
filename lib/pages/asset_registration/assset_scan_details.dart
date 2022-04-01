@@ -106,7 +106,7 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
               builder: (context) => ListView.builder(
                   itemCount: dataList.length,
                   itemBuilder: ((context, index) {
-                    final item = dataList[index];
+                    final listItem = dataList[index];
                     return Builder(builder: (context) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -116,19 +116,19 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                              Text("Product Code : ${item.itemCode}"),
+                              Text("Product Code : ${listItem.itemCode}"),
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text("Description : ${item.description}"),
+                              Text("Description : ${listItem.description}"),
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text("Quantity : ${item.quantity}"),
+                              Text("Quantity : ${listItem.quantity}"),
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text("Registered Quantity : ${item.regQty}")
+                              Text("Registered Quantity : ${listItem.regQty}")
                           ],
                         ),
                             )),

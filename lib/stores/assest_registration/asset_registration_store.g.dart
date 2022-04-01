@@ -9,6 +9,59 @@ part of 'asset_registration_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
+  Computed<int>? _$totalPageComputed;
+
+  @override
+  int get totalPage =>
+      (_$totalPageComputed ??= Computed<int>(() => super.totalPage,
+              name: '_AssetRegistrationStore.totalPage'))
+          .value;
+
+  final _$pageAtom = Atom(name: '_AssetRegistrationStore.page');
+
+  @override
+  int get page {
+    _$pageAtom.reportRead();
+    return super.page;
+  }
+
+  @override
+  set page(int value) {
+    _$pageAtom.reportWrite(value, super.page, () {
+      super.page = value;
+    });
+  }
+
+  final _$limitAtom = Atom(name: '_AssetRegistrationStore.limit');
+
+  @override
+  int get limit {
+    _$limitAtom.reportRead();
+    return super.limit;
+  }
+
+  @override
+  set limit(int value) {
+    _$limitAtom.reportWrite(value, super.limit, () {
+      super.limit = value;
+    });
+  }
+
+  final _$totalCountAtom = Atom(name: '_AssetRegistrationStore.totalCount');
+
+  @override
+  int get totalCount {
+    _$totalCountAtom.reportRead();
+    return super.totalCount;
+  }
+
+  @override
+  set totalCount(int value) {
+    _$totalCountAtom.reportWrite(value, super.totalCount, () {
+      super.totalCount = value;
+    });
+  }
+
   final _$itemListAtom = Atom(name: '_AssetRegistrationStore.itemList');
 
   @override
@@ -43,8 +96,8 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
       AsyncAction('_AssetRegistrationStore.fetchData');
 
   @override
-  Future<void> fetchData() {
-    return _$fetchDataAsyncAction.run(() => super.fetchData());
+  Future<void> fetchData({String docNum = ""}) {
+    return _$fetchDataAsyncAction.run(() => super.fetchData(docNum: docNum));
   }
 
   final _$_AssetRegistrationStoreActionController =
@@ -97,8 +150,12 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
   @override
   String toString() {
     return '''
+page: ${page},
+limit: ${limit},
+totalCount: ${totalCount},
 itemList: ${itemList},
-isFetching: ${isFetching}
+isFetching: ${isFetching},
+totalPage: ${totalPage}
     ''';
   }
 }

@@ -10,13 +10,25 @@ part 'asset_registration_store.g.dart';
 class AssetRegistrationStore = _AssetRegistrationStore with _$AssetRegistrationStore;
 
 abstract class _AssetRegistrationStore with Store {
-  final String TAG = "_AssetRegistrationStore ";
+  final String TAG = "_AssetRegistrationStore";
 
   final ErrorStore errorStore = ErrorStore();
 
   final Repository repository;
 
   _AssetRegistrationStore(this.repository);
+
+  @observable
+  int page = 0;
+
+  @observable
+  int limit = 10;
+
+  @observable
+  int totalCount = 0;
+
+  @computed
+  int get totalPage => (totalCount/limit).ceil();
 
   @observable 
   ObservableList<AssetRegistrationItem> itemList = ObservableList<AssetRegistrationItem>();
@@ -45,10 +57,10 @@ abstract class _AssetRegistrationStore with Store {
   }
 
   @action
-  Future<void> fetchData() async {
+  Future<void> fetchData({String docNum = ""}) async {
     isFetching = true;
     try{
-      var data = await repository.getAssetRegistration();
+      var data = await repository.getAssetRegistration(page: page, limit: limit, docNumber: docNum);
       List<RegistrationItem> itemList = data.itemList;
       List<AssetRegistrationItem> list = itemList.map((RegistrationItem e) =>AssetRegistrationItem(e)).toList();
       addAllItem(list);

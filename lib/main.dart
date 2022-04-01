@@ -1,8 +1,8 @@
-
 import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:echo_me_mobile/constants/app_theme.dart';
 import 'package:echo_me_mobile/constants/strings.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -61,20 +61,27 @@ class MyApp extends HookWidget {
   Widget build(BuildContext context) {
     return ReactionBuilder(
         child: MaterialApp(
-          navigatorKey: navigatorKey,
-          title: Strings.appName,
-          theme: FlexThemeData.light(scheme: FlexScheme.blue),
-          darkTheme: FlexThemeData.dark(scheme: FlexScheme.blue),
-          themeMode: _themeStore.useSystemMode
-              ? ThemeMode.system
-              : (_themeStore.isDarkMode ? ThemeMode.dark : ThemeMode.light),
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          routes: AppRoutes.getMap(),
-          initialRoute: "/home"
-          // initialRoute: "/login",
-        ),
+            navigatorKey: navigatorKey,
+            title: Strings.appName,
+            themeMode: ThemeMode.light,
+            theme: ThemeData(primarySwatch: Colors.orange).copyWith(
+                scaffoldBackgroundColor: Colors.grey.shade200,
+                appBarTheme: const AppBarTheme(
+                    foregroundColor:
+                        Colors.white //here you can give the text color
+                    )),
+            // theme: FlexThemeData.light(scheme: FlexScheme.blue),
+            // darkTheme: FlexThemeData.dark(scheme: FlexScheme.blue),
+            // themeMode: _themeStore.useSystemMode
+            //     ? ThemeMode.system
+            //     : (_themeStore.isDarkMode ? ThemeMode.dark : ThemeMode.light),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            routes: AppRoutes.getMap(),
+            initialRoute: "/home"
+            // initialRoute: "/login",
+            ),
         builder: (_) {
           return reaction((_) => _loginFormStore.isLoggedIn, (_) {
             navigatorKey.currentState?.pushNamedAndRemoveUntil(
@@ -85,10 +92,11 @@ class MyApp extends HookWidget {
   }
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

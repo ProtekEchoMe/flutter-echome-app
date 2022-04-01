@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:data_table_2/data_table_2.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +31,13 @@ class InventoryDataSource extends AsyncDataTableSource {
         var r = AsyncRowsResponse(
         response.totalRow!,
         response.itemRow.map((e){
+          print("RRR");
+          print(e);
           return DataRow(
-            key: ValueKey<int>(e.invId ?? 0),
+            key: ValueKey<int>(e.id ?? Random().nextInt(100)),
             selected: false,
             cells: [
-              DataCell(Text(e.invId.toString())),
+              DataCell(Text(e.id.toString())),
               DataCell(Text(e.itemCode.toString())),
               DataCell(Text(e.skuCode.toString())),
               DataCell(Text(e.assetCode.toString())),

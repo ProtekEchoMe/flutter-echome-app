@@ -3,7 +3,11 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/widgets/app_content_box.dart';
+import 'package:echo_me_mobile/widgets/app_loader.dart';
+import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
+import 'package:echo_me_mobile/widgets/status_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -42,141 +46,95 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   }
 
   Widget _getTitle(BuildContext ctx) {
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.horizontal_padding),
-      child: Row(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: FittedBox(
-                child: Text(
-                  "Asset Register",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(fontSize: 35),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Container(
-              width: 130,
-              height: 30,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Center(
-                  child: Text(
-                "Hong Kong-DC",
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-              )),
-            ),
-          )
-        ],
-      ),
+    return BodyTitle(
+      title: "Asset Register",
+      clipTitle: "Hong Kong-DC",
     );
   }
 
   Widget _getListBox(BuildContext ctx) {
     return Expanded(
-      child: Observer(builder: (context) {
-        return _store.isFetching
-            ? Center(
-                child: SpinKitChasingDots(
-                color: Colors.grey,
-                size: 50.0,
-              ))
-            : _getListBoxList(context);
-      }),
-    );
-  }
-
-  Widget _getListBoxList(BuildContext ctx) {
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.horizontal_padding),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Observer(
-              builder: (context) => ListView.builder(
-                  itemCount: _store.itemList.length,
-                  itemBuilder: ((context, index) {
-                    final item = _store.itemList[index];
-                    return Observer(builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Card(
-                          child: ListTile(
-                            leading: SizedBox(
-                                child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.description),
-                              ],
-                            )),
-                            title: Text(item.orderId),
-                            subtitle: Text(item.item.shipperCode.toString(), style: TextStyle(fontSize: 10),),
-                            trailing: SizedBox(
-                              width: 130,
-                              height: double.maxFinite,
-                              child: Row(
+      child: Observer(
+        builder: (context) {
+          var isFetching = _store.isFetching;
+          return AppContentBox(
+            child: isFetching
+                ? const AppLoader()
+                : _store.itemList.isEmpty
+                    ? const Center(child: Text("No Data"))
+                    : Stack(
+                        children: [
+                          Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              height: kTextTabBarHeight,
+                              child: Container(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        height: 30,
-                                        child: FittedBox(
-                                            child: Text(
-                                          item.status,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: SizedBox(
+                                        width: 40,
+                                        child: Center(
+                                          child: Icon(Icons.arrow_back),
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 40,
-                                      height: 40,
-                                      child: IconButton(
-                                          padding: EdgeInsets.all(0),
-                                          onPressed: () {
-                                            Navigator.pushNamed(context, "/asset_scan",arguments: AssetScanPageArguments(item.orderId, item: item.item));
-                                          },
-                                          icon: Icon(Icons.arrow_forward)),
+                                    Text("1/1"),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: SizedBox(
+                                        width: 40,
+                                        child: Center(
+                                          child: Icon(Icons.arrow_forward),
+                                        ),
+                                      ),
                                     )
-                                  ]),
+                                  ],
+                                ),
+                              )),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: kTextTabBarHeight,
+                            child: Observer(
+                              builder: (context) => ListView.builder(
+                                itemCount: _store.itemList.length + 20,
+                                itemBuilder: ((context, index) {
+                                  final listItem = _store.itemList[0];
+                                  return Observer(
+                                    builder: (context) {
+                                      var title = listItem.orderId;
+                                      var subtitle =
+                                          listItem.item.shipperCode.toString();
+                                      var status = listItem.status;
+                                      // ignore: prefer_function_declarations_over_variables
+                                      var fx = () => Navigator.pushNamed(
+                                          context, "/asset_scan",
+                                          arguments: AssetScanPageArguments(
+                                              listItem.orderId,
+                                              item: listItem.item));
+                                      return StatusListItem(
+                                        title: title,
+                                        subtitle: subtitle,
+                                        status: status,
+                                        callback: fx,
+                                      );
+                                    },
+                                  );
+                                }),
+                              ),
                             ),
-                            isThreeLine: true,
                           ),
-                        ),
-                      );
-                    });
-                  }))),
-        ),
+                        ],
+                      ),
+          );
+        },
       ),
     );
   }
@@ -196,17 +154,20 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
 
   Widget _getSearchBar(BuildContext ctx) {
     return Padding(
-      padding: EdgeInsets.all(Dimens.horizontal_padding),
-      child: SizedBox(
-        width: double.maxFinite,
-        child: OutlineSearchBar(
-          hintText: "Search by Document Number",
-          onSearchButtonPressed: (str){
-            if(str !=null && str.isNotEmpty){
-              Navigator.push(context, MaterialPageRoute(builder: (_) => AssetRegistrationSearchPage(searchDocNum: str)));
-            }
-          },
-        ),
+      padding: const EdgeInsets.all(Dimens.horizontal_padding),
+      child: OutlineSearchBar(
+        // initText: "INIT TEXT",
+        backgroundColor: Theme.of(context).cardColor,
+        hintText: "Search by Document Number",
+        onSearchButtonPressed: (str) {
+          if (str != null && str.isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) =>
+                        AssetRegistrationSearchPage(searchDocNum: str)));
+          }
+        },
       ),
     );
   }

@@ -6,7 +6,7 @@ class InventoryResponse {
 
 
 class InventoryItem {
-  int? invId;
+  int? id;
   String? skuCode;
   String? assetCode;
   String? itemCode;
@@ -31,7 +31,7 @@ class InventoryItem {
   String? reason;
 
   InventoryItem(
-      {this.invId,
+      {this.id,
       this.skuCode,
       this.assetCode,
       this.itemCode,
@@ -56,7 +56,7 @@ class InventoryItem {
       this.reason});
 
   InventoryItem.fromJson(Map<String, dynamic> json) {
-    invId = json['invId'];
+    id = json['id'];
     skuCode = json['skuCode'];
     assetCode = json['assetCode'];
     itemCode = json['itemCode'];
@@ -83,7 +83,7 @@ class InventoryItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['invId'] = this.invId;
+    data['id'] = this.id;
     data['skuCode'] = this.skuCode;
     data['assetCode'] = this.assetCode;
     data['itemCode'] = this.itemCode;
