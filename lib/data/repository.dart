@@ -51,8 +51,8 @@ class Repository {
     _loginApi.cancelLogin();
   }
 
-  Future<InventoryResponse> getAssetInventory({int page =0 , int limit = 10}) async {
-    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit );
+  Future<AssetInventoryResponse> getAssetInventory({int page =0 , int limit = 10, String assetId = "", String itemCode = "" }) async {
+    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit, assetId:assetId, itemCode:itemCode);
   }
 
   Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String docNumber = "" }) async {

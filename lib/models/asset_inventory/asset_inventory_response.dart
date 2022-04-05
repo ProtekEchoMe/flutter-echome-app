@@ -1,28 +1,28 @@
-class AssetInventoryResponse {
-  int? totalRow;
-  List<RowData>? rowData;
+// class AssetInventoryResponse {
+//   int? totalRow;
+//   List<RowData>? rowData;
 
-  AssetInventoryResponse({this.totalRow, this.rowData});
+//   AssetInventoryResponse({this.totalRow, this.rowData});
 
-  AssetInventoryResponse.fromJson(Map<String, dynamic> json) {
-    totalRow = json['totalRow'];
-    if (json['rowData'] != null) {
-      rowData = <RowData>[];
-      json['rowData'].forEach((v) {
-        rowData!.add(new RowData.fromJson(v));
-      });
-    }
-  }
+//   AssetInventoryResponse.fromJson(Map<String, dynamic> json) {
+//     totalRow = json['totalRow'];
+//     if (json['rowData'] != null) {
+//       rowData = <RowData>[];
+//       json['rowData'].forEach((v) {
+//         rowData!.add(new RowData.fromJson(v));
+//       });
+//     }
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['totalRow'] = this.totalRow;
-    if (this.rowData != null) {
-      data['rowData'] = this.rowData!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['totalRow'] = this.totalRow;
+//     if (this.rowData != null) {
+//       data['rowData'] = this.rowData!.map((v) => v.toJson()).toList();
+//     }
+//     return data;
+//   }
+// }
 
 class RowData {
   int? itemCode;

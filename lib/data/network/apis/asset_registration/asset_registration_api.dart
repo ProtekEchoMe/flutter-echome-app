@@ -24,7 +24,7 @@ class AssetRegistrationApi {
       print(limit);
       print(docNumber);
       List<dynamic> filter = [];
-      if (docNumber != null) {
+      if (docNumber.isNotEmpty) {
         filter = [
           {
             "value": docNumber,

@@ -88,7 +88,9 @@ class _AssetRegistrationSearchPageState
                     "Seraching for Document Number = " + widget.searchDocNum,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyLarge!,
+                        .bodyLarge!.copyWith(
+                          fontSize: 20
+                        ),
                   ),
                 ),
               ),

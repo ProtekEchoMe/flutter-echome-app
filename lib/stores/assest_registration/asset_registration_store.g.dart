@@ -9,6 +9,13 @@ part of 'asset_registration_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
+  Computed<int>? _$currentPageComputed;
+
+  @override
+  int get currentPage =>
+      (_$currentPageComputed ??= Computed<int>(() => super.currentPage,
+              name: '_AssetRegistrationStore.currentPage'))
+          .value;
   Computed<int>? _$totalPageComputed;
 
   @override
@@ -92,12 +99,27 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
     });
   }
 
+  final _$nextPageAsyncAction = AsyncAction('_AssetRegistrationStore.nextPage');
+
+  @override
+  Future<void> nextPage({String docNum = ""}) {
+    return _$nextPageAsyncAction.run(() => super.nextPage(docNum: docNum));
+  }
+
+  final _$prevPageAsyncAction = AsyncAction('_AssetRegistrationStore.prevPage');
+
+  @override
+  Future<void> prevPage({String docNum = ""}) {
+    return _$prevPageAsyncAction.run(() => super.prevPage(docNum: docNum));
+  }
+
   final _$fetchDataAsyncAction =
       AsyncAction('_AssetRegistrationStore.fetchData');
 
   @override
-  Future<void> fetchData({String docNum = ""}) {
-    return _$fetchDataAsyncAction.run(() => super.fetchData(docNum: docNum));
+  Future<void> fetchData({String docNum = "", int? requestedPage}) {
+    return _$fetchDataAsyncAction.run(
+        () => super.fetchData(docNum: docNum, requestedPage: requestedPage));
   }
 
   final _$_AssetRegistrationStoreActionController =
@@ -155,6 +177,7 @@ limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
 isFetching: ${isFetching},
+currentPage: ${currentPage},
 totalPage: ${totalPage}
     ''';
   }

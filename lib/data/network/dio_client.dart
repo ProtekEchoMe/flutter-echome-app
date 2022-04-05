@@ -58,7 +58,7 @@ class DioClient {
     }
       }
   
-  Future<InventoryResponse> getInventory(
+  Future<dynamic> getInventory(
       String uri, {
         Map<String, dynamic>? queryParameters,
         Options? options,
@@ -73,12 +73,13 @@ class DioClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
-      print("???");
       var countHeader = response.headers.map["X-Total-Count"];
       var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
-      var data = (response.data as List<dynamic>).map((e)=> InventoryItem.fromJson(e)).toList();
-      print(totalRow);
-      return InventoryResponse(totalRow, data);
+      var data = (response.data as List<dynamic>);
+      return {
+        "totalRow":totalRow,
+        "itemRow":data
+      };
     } catch (e) {
       throw e;
     }

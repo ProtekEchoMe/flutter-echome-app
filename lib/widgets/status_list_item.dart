@@ -5,8 +5,10 @@ class StatusListItem extends StatelessWidget {
   final String? subtitle;
   final String? status;
   final Function? callback;
+  final double? titleTextSize;
+  final double? subtitleTextSize;
   const StatusListItem(
-      {Key? key, this.title, this.subtitle, this.status, this.callback})
+      {Key? key, this.title, this.subtitle, this.status, this.callback, this.titleTextSize, this.subtitleTextSize})
       : super(key: key);
 
   @override
@@ -26,18 +28,18 @@ class StatusListItem extends StatelessWidget {
             Icon(Icons.description),
           ],
         )),
-        title: Text(title ?? "", style: TextStyle(fontSize: 20),),
+        title: Text(title ?? "", style: TextStyle(fontSize: titleTextSize ?? 20),),
         subtitle: Text(
           subtitle ?? "",
-          style: const TextStyle(fontSize: 10),
+          style: TextStyle(fontSize: subtitleTextSize ?? 10),
         ),
         trailing: SizedBox(
-          width: 130, 
+          width: status != null ? 130 : 40, 
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
+                status != null ? Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -46,14 +48,14 @@ class StatusListItem extends StatelessWidget {
                     height: 30,
                     child: FittedBox(
                         child: Text(
-                      status ?? "",
+                      status!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     )),
                   ),
-                ),
+                ): SizedBox(),
                 SizedBox(
                   width: 40,
                   height: 40,

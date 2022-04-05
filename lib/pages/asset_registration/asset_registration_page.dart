@@ -16,7 +16,8 @@ import 'package:outline_search_bar/outline_search_bar.dart';
 import 'asset_scan_page_arguments.dart';
 
 class AssetRegistrationPage extends StatefulWidget {
-  AssetRegistrationPage({Key? key}) : super(key: key);
+  final String? searchDocNum;
+  AssetRegistrationPage({Key? key, this.searchDocNum}) : super(key: key);
 
   @override
   State<AssetRegistrationPage> createState() => _AssetRegistrationPageState();
@@ -29,7 +30,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData();
+    _store.fetchData(docNum: widget.searchDocNum ?? "");
   }
 
   @override
@@ -76,7 +77,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        _store.prevPage();
+                                      },
                                       child: SizedBox(
                                         width: 40,
                                         child: Center(
@@ -84,9 +87,24 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                         ),
                                       ),
                                     ),
-                                    Text("1/1"),
+                                    Expanded(
+                                      child: Observer(builder: (context) {
+                                        var total = _store.totalCount;
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text("Total: ${total}"),
+                                            Text(
+                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                          ],
+                                        );
+                                      }),
+                                    ),
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        _store.nextPage();
+                                      },
                                       child: SizedBox(
                                         width: 40,
                                         child: Center(
@@ -104,9 +122,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemList.length + 20,
+                                itemCount: _store.itemList.length,
                                 itemBuilder: ((context, index) {
-                                  final listItem = _store.itemList[0];
+                                  final listItem = _store.itemList[index];
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.orderId;
@@ -153,6 +171,29 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   }
 
   Widget _getSearchBar(BuildContext ctx) {
+    if (widget.searchDocNum != null) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.horizontal_padding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    "Seraching for Document Number = " + widget.searchDocNum!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(Dimens.horizontal_padding),
       child: OutlineSearchBar(
@@ -165,10 +206,11 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) =>
-                        AssetRegistrationSearchPage(searchDocNum: str)));
+                        AssetRegistrationPage(searchDocNum: str.trim())));
           }
         },
       ),
     );
   }
+
 }

@@ -28,6 +28,9 @@ abstract class _AssetRegistrationStore with Store {
   int totalCount = 0;
 
   @computed
+  int get currentPage => page + 1;
+
+  @computed
   int get totalPage => (totalCount/limit).ceil();
 
   @observable 
@@ -57,12 +60,31 @@ abstract class _AssetRegistrationStore with Store {
   }
 
   @action
-  Future<void> fetchData({String docNum = ""}) async {
+  Future<void> nextPage({String docNum = ""}) async{
+    if(totalCount >= limit* (page+1)){
+      fetchData(docNum: docNum, requestedPage: page+1);
+    }
+  }
+
+  @action
+  Future<void> prevPage({String docNum = ""}) async{
+    if(page>=1){
+      fetchData(docNum: docNum, requestedPage: page-1);
+    }
+  }
+
+  @action
+  Future<void> fetchData({String docNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
-      var data = await repository.getAssetRegistration(page: page, limit: limit, docNumber: docNum);
+      var targetPage = requestedPage ?? page;
+      var data = await repository.getAssetRegistration(page: targetPage, limit: limit, docNumber: docNum);
+      int totalRow = data.rowNumber;
       List<RegistrationItem> itemList = data.itemList;
       List<AssetRegistrationItem> list = itemList.map((RegistrationItem e) =>AssetRegistrationItem(e)).toList();
+      totalCount = totalRow;
+      page = targetPage;
+      itemList.clear();
       addAllItem(list);
     }catch(e){
       print(e);
@@ -72,4 +94,5 @@ abstract class _AssetRegistrationStore with Store {
       print("finally");
     }
   }
+
 }

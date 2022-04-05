@@ -10,6 +10,7 @@ import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/di/local_module.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:get_it/get_it.dart';
@@ -48,4 +49,6 @@ Future<void> setupLocator() async {
   // getIt.registerFactory<ForgetPasswordStore>(
   //     () => ForgetPasswordStore(getIt<Repository>()));
   getIt.registerFactory<AssetRegistrationStore>(() => AssetRegistrationStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetInventoryStore>(() => AssetInventoryStore(getIt<Repository>()));
 }
