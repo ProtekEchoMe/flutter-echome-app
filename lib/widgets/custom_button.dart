@@ -29,7 +29,7 @@ class CustomButton extends StatelessWidget {
                 text,
                 style: TextStyle(
                   fontSize: 22,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: Theme.of(context).colorScheme.onInverseSurface,
                   fontWeight: FontWeight.w500,
                 ),
               )

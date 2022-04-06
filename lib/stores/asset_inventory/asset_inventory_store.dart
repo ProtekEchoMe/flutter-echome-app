@@ -83,6 +83,8 @@ abstract class _AssetInventoryStore with Store {
       List<AssetInventoryItem> list = data.itemList;
       totalCount = totalRow;
       page = targetPage;
+      print("total");
+      print(totalRow);
       itemList.clear();
       addAllItem(list);
     }catch(e){

@@ -56,8 +56,6 @@ class AssetRegistrationApi {
     }
   }
 
-  static final List<String> placeholderList = [];
-
   Future<dynamic> getContainerDetails({List<String>? rfid}) async {
     try {
       var str = "";
@@ -74,6 +72,29 @@ class AssetRegistrationApi {
       throw e;
     }
   }
+
+  Future<void> completeRegister({String docNum = ""}) async{
+    try {
+      final res = await _dioClient.get(Endpoints.registerComplete,
+          queryParameters: {
+            "docNum":docNum
+          });
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if((e.response!.data is String).toString().isEmpty){
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      throw e;
+    }
+  }
+
 
   Future<dynamic> registerItem(
       {String docNum = "",
@@ -92,9 +113,11 @@ class AssetRegistrationApi {
         "containerCode":containerCode,
         "rfids": str
         };
-      final res = await _dioClient.getRegistration(Endpoints.registerContainer,
+      final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
           queryParameters: query);
-      return {"itemList": res["itemRow"]};
+      print(res);
+      final res1 = await _dioClient.getRegistration(Endpoints.registerItems, queryParameters: query);
+        
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {

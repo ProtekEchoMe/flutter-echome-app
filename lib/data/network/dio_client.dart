@@ -48,7 +48,12 @@ class DioClient {
       );
       var countHeader = response.headers.map["X-Total-Count"];
       var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
-      var data = (response.data as List<dynamic>);
+      var data = [];
+      try{
+        data = (response.data as List<dynamic>);
+      }catch(e){
+        print("data returned is not List");
+      }
       return {
         "totalRow":totalRow,
         "itemRow":data

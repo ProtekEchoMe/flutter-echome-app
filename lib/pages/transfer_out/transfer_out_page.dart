@@ -1,8 +1,11 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -13,24 +16,23 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
-import 'asset_scan_page_arguments.dart';
 
-class AssetRegistrationPage extends StatefulWidget {
-  final String? searchDocNum;
-  AssetRegistrationPage({Key? key, this.searchDocNum}) : super(key: key);
+class TransferOutPage extends StatefulWidget {
+  final String? shipmentCode;
+  TransferOutPage({Key? key, this.shipmentCode}) : super(key: key);
 
   @override
-  State<AssetRegistrationPage> createState() => _AssetRegistrationPageState();
+  State<TransferOutPage> createState() => _TransferOutPageState();
 }
 
-class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
-  AssetRegistrationStore _store = getIt<AssetRegistrationStore>();
+class _TransferOutPageState extends State<TransferOutPage> {
+  TransferOutStore _store = getIt<TransferOutStore>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData(docNum: widget.searchDocNum ?? "");
+    _store.fetchData(shipmentCode: widget.shipmentCode ?? "");
   }
 
   @override
@@ -48,7 +50,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Asset Register",
+      title: "Transfer Out",
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -127,18 +129,19 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                   final listItem = _store.itemList[index];
                                   return Observer(
                                     builder: (context) {
-                                      var title = listItem.orderId;
+                                      var title = listItem.shipmentCode;
                                       var subtitle =
-                                          listItem.item.shipperCode.toString();
+                                          "${listItem.shipType} : ${listItem.shipToLocation}";
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
-                                      var fx = () => Navigator.pushNamed(
-                                          context, "/asset_scan",
-                                          arguments: AssetScanPageArguments(
-                                              listItem.orderId,
-                                              item: listItem.item)).then((value) => {
-                                                 _store.fetchData(docNum: widget.searchDocNum ?? "")
-                                              });
+                                      // var fx = () => Navigator.pushNamed(
+                                      //     context, "/asset_scan",
+                                      //     arguments: AssetScanPageArguments(
+                                      //         listItem.shipmentCode.toString(),
+                                      //         item: listItem)).then((value) => {
+                                      //            _store.fetchData(docNum: widget.shipmentCode ?? "")
+                                      //         });
+                                      var fx = (){};
                                       return StatusListItem(
                                         title: title,
                                         subtitle: subtitle,
@@ -173,7 +176,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   }
 
   Widget _getSearchBar(BuildContext ctx) {
-    if (widget.searchDocNum != null) {
+    if (widget.shipmentCode != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
         child: Row(
@@ -183,7 +186,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Document Number = " + widget.searchDocNum!,
+                    "Seraching for Shipment Code = " + widget.shipmentCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -201,14 +204,14 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Document Number",
+        hintText: "Search by Shipment Code",
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (_) =>
-                        AssetRegistrationPage(searchDocNum: str.trim())));
+                        TransferOutPage(shipmentCode: str.trim())));
           }
         },
       ),
