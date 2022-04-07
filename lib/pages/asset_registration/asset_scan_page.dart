@@ -183,6 +183,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     equTable = newList;
     setState(() {});
   }
+  
 
   // ^^^^ copy paste code, please rearrange
   Future<void> _validateContainerRfid() async {
