@@ -85,11 +85,12 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.language))
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).cardColor,
         body: SizedBox.expand(
             child: Stack(
           children: [
@@ -123,8 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ?.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary),
+                                          .cardColor),
                             ),
                             Text(
                               "login".tr(gender: "description"),
@@ -136,8 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                                       fontSize: 20,
                                       fontWeight: FontWeight.normal,
                                       color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary),
+                                          .cardColor),
                             )
                           ],
                         ),

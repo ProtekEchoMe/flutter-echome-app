@@ -31,4 +31,13 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/reg/registerItems";
   static const String registerContainer =
       "http://qa-echome.ddns.net/echoMe/reg/registerContainers";
+  static const String registerComplete = 
+      "http://qa-echome.ddns.net/echoMe/reg/registerComplete";
+  static const String registerItemsValidation = 
+      "http://qa-echome.ddns.net/echoMe/reg/registerItemsValidation";
+  static const String registerItem = 
+      "http://qa-echome.ddns.net/echoMe/reg/registerItems";
+  static const String listTransferOutHeader = 
+      "http://qa-echome.ddns.net/echoMe/to/listTransferOutHeader";
+  
 }

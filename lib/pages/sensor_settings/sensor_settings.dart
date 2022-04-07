@@ -131,72 +131,68 @@ class _SensorSettingsState extends State<SensorSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Sensor Settings")),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(children: [
-          const SizedBox(
-            width: double.maxFinite,
-            height: 15,
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            width: double.maxFinite,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Available Readers List:",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                ..._getAvailableReaderList()
-              ],
-            ),
-          ),
-          RaisedButton(
-            onPressed: () {
-              ZebraRfd8500.platformVersion;
-              ZebraRfd8500.getAvailableRFIDReaderList().then((value) {
-                setState(() {
-                  readerList = value;
-                });
-              });
-            },
-            child: Text("Get Available Readers List"),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            width: double.maxFinite,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Connected Readers List:",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                ..._getConnectedReaderList()
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            width: double.maxFinite,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Message from test listener",
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.start,
-                ),
-                SizedBox(
-                  child: Text(testData != null ? testData : "No data"),
-                )
-              ],
-            ),
-          ),
-        ]),
+      const SizedBox(
+        width: double.maxFinite,
+        height: 15,
       ),
-    );
+      Container(
+        padding: EdgeInsets.all(10),
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Available Readers List:",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            ..._getAvailableReaderList()
+          ],
+        ),
+      ),
+      RaisedButton(
+        onPressed: () {
+          ZebraRfd8500.platformVersion;
+          ZebraRfd8500.getAvailableRFIDReaderList().then((value) {
+            setState(() {
+              readerList = value;
+            });
+          });
+        },
+        child: Text("Get Available Readers List"),
+      ),
+      Container(
+        padding: EdgeInsets.all(10),
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Connected Readers List:",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            ..._getConnectedReaderList()
+          ],
+        ),
+      ),
+      Container(
+        padding: EdgeInsets.all(10),
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Message from test listener",
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(
+              child: Text(testData != null ? testData : "No data"),
+            )
+          ],
+        ),
+      ),
+    ]));
   }
 }

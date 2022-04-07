@@ -1,200 +1,222 @@
-import 'package:data_table_2/data_table_2.dart';
-import 'package:echo_me_mobile/data/repository.dart';
+import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_inventory/backup/datasource.dart';
-import 'package:echo_me_mobile/pages/asset_inventory/inventory_datasource.dart';
+import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
+import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/widgets/app_content_box.dart';
+import 'package:echo_me_mobile/widgets/app_loader.dart';
+import 'package:echo_me_mobile/widgets/body_title.dart';
+import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
+import 'package:echo_me_mobile/widgets/status_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:outline_search_bar/outline_search_bar.dart';
+import '../../stores/asset_inventory/asset_inventory_store.dart';
 
 class AssetInventoryPage extends StatefulWidget {
-  AssetInventoryPage({Key? key}) : super(key: key);
+  final String? assetId;
+  final String? itemCode;
+  AssetInventoryPage({Key? key, this.assetId, this.itemCode}) : super(key: key);
 
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
 }
 
 class _AssetInventoryPageState extends State<AssetInventoryPage> {
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  bool _sortAscending = true;
-  int? _sortColumnIndex;
-  InventoryDataSource _inventoryDataSource = InventoryDataSource(getIt<Repository>());
-  PaginatorController _controller = PaginatorController();
-
-  bool _dataSourceLoading = false;
-  int _initialRow = 0;
-
-  void sort(
-    int columnIndex,
-    bool ascending,
-  ) {
-    // var columnName = "name";
-    // switch (columnIndex) {
-    //   case 1:
-    //     columnName = "calories";
-    //     break;
-    //   case 2:
-    //     columnName = "fat";
-    //     break;
-    //   case 3:
-    //     columnName = "carbs";
-    //     break;
-    //   case 4:
-    //     columnName = "protein";
-    //     break;
-    //   case 5:
-    //     columnName = "sodium";
-    //     break;
-    //   case 6:
-    //     columnName = "calcium";
-    //     break;
-    //   case 7:
-    //     columnName = "iron";
-    //     break;
-    // }
-    // _inventoryDataSource.sort(columnName, ascending);
-    // setState(() {
-    //   _sortColumnIndex = columnIndex;
-    //   _sortAscending = ascending;
-    // });
-  }
+  AssetInventoryStore _store = getIt<AssetInventoryStore>();
 
   @override
-  void dispose() {
-    _inventoryDataSource.dispose();
-    super.dispose();
-  }
-
-  List<DataColumn> get _columns {
-    return [
-      DataColumn(
-        label: Text('Inventory Id'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Item Code'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('SKU code'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Asset Code'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Description'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Style number'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Color'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-      DataColumn(
-        label: Text('Size'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Serial Number'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('EAN/UPC'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Quantity'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Location Code'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Last Location'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Checkpoint'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Last Checkpoint'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Item Status'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('DocPo Id'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ), DataColumn(
-        label: Text('DocPo Number'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ), DataColumn(
-        label: Text('Created Date'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Expiry Date'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('ModifiedDate'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-       DataColumn(
-        label: Text('Reason'),
-        onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-      ),
-    ];
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _store.fetchData(
+        assetId: widget.assetId ?? "", itemCode: widget.itemCode ?? "");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Asset Inventory")),
-      body: Stack(alignment: Alignment.bottomCenter, children: [
-        AsyncPaginatedDataTable2(
-            availableRowsPerPage: const [10,20],
-            dataRowHeight: 100,
-            showCheckboxColumn: false,
-            horizontalMargin: 20,
-            minWidth: 3400,
-            columnSpacing: 0,
-            wrapInCard: false,
-            rowsPerPage: _rowsPerPage,
-            autoRowsToHeight: false,
-            pageSyncApproach: PageSyncApproach.goToFirst,
-            fit: FlexFit.tight,
-            onRowsPerPageChanged: (value) {
-              print('Row per page changed to $value');
-              _rowsPerPage = value!;
-            },
-            initialFirstRowIndex: _initialRow,
-            onPageChanged: (rowIndex) {
-              //print(rowIndex / _rowsPerPage);
-            },
-            sortColumnIndex: _sortColumnIndex,
-            sortAscending: _sortAscending,
-            // onSelectAll: (select) => select == true
-            //     ? _inventoryDataSource.selectAllOnThePage()
-            //     : _inventoryDataSource.deselectAllOnThePage(),
-            controller: _controller,
-            columns: _columns,
-            empty: Center(
-                child: Container(
-                    padding: EdgeInsets.all(20),
-                    color: Colors.grey[200],
-                    child: Text('No data'))),
-            // errorBuilder: (e) => _ErrorAndRetry(
-            //     e.toString(), () => _inventoryDataSource!.refreshDatasource()),
-            source: _inventoryDataSource),
-      ]),
+        appBar: EchoMeAppBar(),
+        body: SizedBox.expand(
+          child: Column(children: [
+            _getTitle(context),
+            _getSearchBar(context),
+            _getListBox(context),
+          ]),
+        ));
+  }
+
+  Widget _getTitle(BuildContext ctx) {
+    return BodyTitle(
+      title: "Asset Inventory",
+      clipTitle: "Hong Kong-DC",
+    );
+  }
+
+  Widget _getListBox(BuildContext ctx) {
+    return Expanded(
+      child: Observer(
+        builder: (context) {
+          var isFetching = _store.isFetching;
+          return AppContentBox(
+            child: isFetching
+                ? const AppLoader()
+                : _store.itemList.isEmpty
+                    ? const Center(child: Text("No Data"))
+                    : Stack(
+                        children: [
+                          Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              height: kTextTabBarHeight,
+                              child: Container(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        _store.prevPage();
+                                      },
+                                      child: SizedBox(
+                                        width: 40,
+                                        child: Center(
+                                          child: Icon(Icons.arrow_back),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Observer(builder: (context) {
+                                        var total = _store.totalCount;
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text("Total: ${total}"),
+                                            Text(
+                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                          ],
+                                        );
+                                      }),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _store.nextPage();
+                                      },
+                                      child: SizedBox(
+                                        width: 40,
+                                        child: Center(
+                                          child: Icon(Icons.arrow_forward),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: kTextTabBarHeight,
+                            child: Observer(
+                              builder: (context) => ListView.builder(
+                                itemCount: _store.itemList.length,
+                                itemBuilder: ((context, index) {
+                                  return Observer(
+                                    builder: (context) {
+                                      final listItem = _store.itemList[index];
+                                      var assetCode = listItem.assetCode;
+                                      var itemCode = listItem.itemCode;
+                                      var title = "$itemCode/$assetCode";
+                                      var subtitle =
+                                          listItem.description.toString();
+                                      var status = listItem.status;
+                                      // ignore: prefer_function_declarations_over_variables
+                                      var fx = () {
+                                        print(listItem);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  AssetInventoryDetailPage(item:listItem)));};
+                                      return StatusListItem(
+                                        title: title,
+                                        subtitle: subtitle,
+                                        titleTextSize: 15,
+                                        subtitleTextSize: 15,
+                                        callback: fx,
+                                      );
+                                    },
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+          );
+        },
+      ),
+    );
+  }
+
+  Color _getColor(RegistrationItemStatus status) {
+    if (status.name == "draft") {
+      return Colors.grey;
+    }
+    if (status.name == "pending") {
+      return Colors.green;
+    }
+    if (status.name == "processing") {
+      return Colors.red;
+    }
+    return Colors.blue;
+  }
+
+  Widget _getSearchBar(BuildContext ctx) {
+    if (widget.assetId != null) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.horizontal_padding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    "Seraching for Asset ID = " + widget.assetId!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.horizontal_padding),
+      child: OutlineSearchBar(
+        // initText: "INIT TEXT",
+        backgroundColor: Theme.of(context).cardColor,
+        hintText: "Search by Asset ID",
+        onSearchButtonPressed: (str) {
+          if (str != null && str.isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => AssetInventoryPage(assetId: str.trim())));
+          }
+        },
+      ),
     );
   }
 }

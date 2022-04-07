@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'asset_registration_store.dart';
+part of 'transfer_out_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,23 +8,23 @@ part of 'asset_registration_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
+mixin _$TransferOutStore on _TransferOutStore, Store {
   Computed<int>? _$currentPageComputed;
 
   @override
   int get currentPage =>
       (_$currentPageComputed ??= Computed<int>(() => super.currentPage,
-              name: '_AssetRegistrationStore.currentPage'))
+              name: '_TransferOutStore.currentPage'))
           .value;
   Computed<int>? _$totalPageComputed;
 
   @override
   int get totalPage =>
       (_$totalPageComputed ??= Computed<int>(() => super.totalPage,
-              name: '_AssetRegistrationStore.totalPage'))
+              name: '_TransferOutStore.totalPage'))
           .value;
 
-  final _$pageAtom = Atom(name: '_AssetRegistrationStore.page');
+  final _$pageAtom = Atom(name: '_TransferOutStore.page');
 
   @override
   int get page {
@@ -39,7 +39,7 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
     });
   }
 
-  final _$limitAtom = Atom(name: '_AssetRegistrationStore.limit');
+  final _$limitAtom = Atom(name: '_TransferOutStore.limit');
 
   @override
   int get limit {
@@ -54,7 +54,7 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
     });
   }
 
-  final _$totalCountAtom = Atom(name: '_AssetRegistrationStore.totalCount');
+  final _$totalCountAtom = Atom(name: '_TransferOutStore.totalCount');
 
   @override
   int get totalCount {
@@ -69,22 +69,22 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
     });
   }
 
-  final _$itemListAtom = Atom(name: '_AssetRegistrationStore.itemList');
+  final _$itemListAtom = Atom(name: '_TransferOutStore.itemList');
 
   @override
-  ObservableList<AssetRegistrationItem> get itemList {
+  ObservableList<TransferOutHeaderItem> get itemList {
     _$itemListAtom.reportRead();
     return super.itemList;
   }
 
   @override
-  set itemList(ObservableList<AssetRegistrationItem> value) {
+  set itemList(ObservableList<TransferOutHeaderItem> value) {
     _$itemListAtom.reportWrite(value, super.itemList, () {
       super.itemList = value;
     });
   }
 
-  final _$isFetchingAtom = Atom(name: '_AssetRegistrationStore.isFetching');
+  final _$isFetchingAtom = Atom(name: '_TransferOutStore.isFetching');
 
   @override
   bool get isFetching {
@@ -99,73 +99,72 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
     });
   }
 
-  final _$nextPageAsyncAction = AsyncAction('_AssetRegistrationStore.nextPage');
+  final _$nextPageAsyncAction = AsyncAction('_TransferOutStore.nextPage');
 
   @override
   Future<void> nextPage({String docNum = ""}) {
     return _$nextPageAsyncAction.run(() => super.nextPage(docNum: docNum));
   }
 
-  final _$prevPageAsyncAction = AsyncAction('_AssetRegistrationStore.prevPage');
+  final _$prevPageAsyncAction = AsyncAction('_TransferOutStore.prevPage');
 
   @override
   Future<void> prevPage({String docNum = ""}) {
     return _$prevPageAsyncAction.run(() => super.prevPage(docNum: docNum));
   }
 
-  final _$fetchDataAsyncAction =
-      AsyncAction('_AssetRegistrationStore.fetchData');
+  final _$fetchDataAsyncAction = AsyncAction('_TransferOutStore.fetchData');
 
   @override
-  Future<void> fetchData({String docNum = "", int? requestedPage}) {
-    return _$fetchDataAsyncAction.run(
-        () => super.fetchData(docNum: docNum, requestedPage: requestedPage));
+  Future<void> fetchData({String shipmentCode = "", int? requestedPage}) {
+    return _$fetchDataAsyncAction.run(() => super
+        .fetchData(shipmentCode: shipmentCode, requestedPage: requestedPage));
   }
 
-  final _$_AssetRegistrationStoreActionController =
-      ActionController(name: '_AssetRegistrationStore');
+  final _$_TransferOutStoreActionController =
+      ActionController(name: '_TransferOutStore');
 
   @override
-  void addItem(AssetRegistrationItem item) {
-    final _$actionInfo = _$_AssetRegistrationStoreActionController.startAction(
-        name: '_AssetRegistrationStore.addItem');
+  void addItem(TransferOutHeaderItem item) {
+    final _$actionInfo = _$_TransferOutStoreActionController.startAction(
+        name: '_TransferOutStore.addItem');
     try {
       return super.addItem(item);
     } finally {
-      _$_AssetRegistrationStoreActionController.endAction(_$actionInfo);
+      _$_TransferOutStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void addAllItem(List<AssetRegistrationItem> list) {
-    final _$actionInfo = _$_AssetRegistrationStoreActionController.startAction(
-        name: '_AssetRegistrationStore.addAllItem');
+  void addAllItem(List<TransferOutHeaderItem> list) {
+    final _$actionInfo = _$_TransferOutStoreActionController.startAction(
+        name: '_TransferOutStore.addAllItem');
     try {
       return super.addAllItem(list);
     } finally {
-      _$_AssetRegistrationStoreActionController.endAction(_$actionInfo);
+      _$_TransferOutStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void removeItem(String orderId) {
-    final _$actionInfo = _$_AssetRegistrationStoreActionController.startAction(
-        name: '_AssetRegistrationStore.removeItem');
+  void removeItem(int id) {
+    final _$actionInfo = _$_TransferOutStoreActionController.startAction(
+        name: '_TransferOutStore.removeItem');
     try {
-      return super.removeItem(orderId);
+      return super.removeItem(id);
     } finally {
-      _$_AssetRegistrationStoreActionController.endAction(_$actionInfo);
+      _$_TransferOutStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void updateList(List<AssetRegistrationItem> newList) {
-    final _$actionInfo = _$_AssetRegistrationStoreActionController.startAction(
-        name: '_AssetRegistrationStore.updateList');
+  void updateList(List<TransferOutHeaderItem> newList) {
+    final _$actionInfo = _$_TransferOutStoreActionController.startAction(
+        name: '_TransferOutStore.updateList');
     try {
       return super.updateList(newList);
     } finally {
-      _$_AssetRegistrationStoreActionController.endAction(_$actionInfo);
+      _$_TransferOutStoreActionController.endAction(_$actionInfo);
     }
   }
 

@@ -1,11 +1,4 @@
-class InventoryResponse {
-  int? totalRow;
-  List<InventoryItem> itemRow;
-  InventoryResponse(this.totalRow, this.itemRow);
-}
-
-
-class InventoryItem {
+class AssetInventoryItem {
   int? id;
   String? skuCode;
   String? assetCode;
@@ -22,15 +15,15 @@ class InventoryItem {
   String? checkpointCode;
   String? lastCheckpointCode;
   int? status;
-  String? docPoId;
-  String? docPoNum;
+  int? docId;
+  String? docNum;
   int? inboundDate;
   int? expiryDate;
   int? createdDate;
   int? modifiedDate;
   String? reason;
 
-  InventoryItem(
+  AssetInventoryItem(
       {this.id,
       this.skuCode,
       this.assetCode,
@@ -47,15 +40,15 @@ class InventoryItem {
       this.checkpointCode,
       this.lastCheckpointCode,
       this.status,
-      this.docPoId,
-      this.docPoNum,
+      this.docId,
+      this.docNum,
       this.inboundDate,
       this.expiryDate,
       this.createdDate,
       this.modifiedDate,
       this.reason});
 
-  InventoryItem.fromJson(Map<String, dynamic> json) {
+  AssetInventoryItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     skuCode = json['skuCode'];
     assetCode = json['assetCode'];
@@ -72,8 +65,8 @@ class InventoryItem {
     checkpointCode = json['checkpointCode'];
     lastCheckpointCode = json['lastCheckpointCode'];
     status = json['status'];
-    docPoId = json['docPoId'];
-    docPoNum = json['docPoNum'];
+    docId = json['docId'];
+    docNum = json['docNum'];
     inboundDate = json['inboundDate'];
     expiryDate = json['expiryDate'];
     createdDate = json['createdDate'];
@@ -99,8 +92,8 @@ class InventoryItem {
     data['checkpointCode'] = this.checkpointCode;
     data['lastCheckpointCode'] = this.lastCheckpointCode;
     data['status'] = this.status;
-    data['docPoId'] = this.docPoId;
-    data['docPoNum'] = this.docPoNum;
+    data['docId'] = this.docId;
+    data['docNum'] = this.docNum;
     data['inboundDate'] = this.inboundDate;
     data['expiryDate'] = this.expiryDate;
     data['createdDate'] = this.createdDate;

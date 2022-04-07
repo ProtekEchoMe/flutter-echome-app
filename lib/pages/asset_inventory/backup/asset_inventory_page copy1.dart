@@ -6,7 +6,7 @@
 // import 'package:flutter/material.dart';
 
 // class AssetInventoryPage extends StatefulWidget {
-//   const AssetInventoryPage({Key? key}) : super(key: key);
+//   AssetInventoryPage({Key? key}) : super(key: key);
 
 //   @override
 //   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
@@ -16,7 +16,7 @@
 //   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
 //   bool _sortAscending = true;
 //   int? _sortColumnIndex;
-//   InventoryDataSource _dessertsDataSource = InventoryDataSource(getIt<Repository>());
+//   InventoryDataSource _inventoryDataSource = InventoryDataSource(getIt<Repository>());
 //   PaginatorController _controller = PaginatorController();
 
 //   bool _dataSourceLoading = false;
@@ -26,55 +26,67 @@
 //     int columnIndex,
 //     bool ascending,
 //   ) {
-//     var columnName = "name";
-//     switch (columnIndex) {
-//       case 1:
-//         columnName = "calories";
-//         break;
-//       case 2:
-//         columnName = "fat";
-//         break;
-//       case 3:
-//         columnName = "carbs";
-//         break;
-//       case 4:
-//         columnName = "protein";
-//         break;
-//       case 5:
-//         columnName = "sodium";
-//         break;
-//       case 6:
-//         columnName = "calcium";
-//         break;
-//       case 7:
-//         columnName = "iron";
-//         break;
-//     }
-//     _dessertsDataSource.sort(columnName, ascending);
-//     setState(() {
-//       _sortColumnIndex = columnIndex;
-//       _sortAscending = ascending;
-//     });
+//     // var columnName = "name";
+//     // switch (columnIndex) {
+//     //   case 1:
+//     //     columnName = "calories";
+//     //     break;
+//     //   case 2:
+//     //     columnName = "fat";
+//     //     break;
+//     //   case 3:
+//     //     columnName = "carbs";
+//     //     break;
+//     //   case 4:
+//     //     columnName = "protein";
+//     //     break;
+//     //   case 5:
+//     //     columnName = "sodium";
+//     //     break;
+//     //   case 6:
+//     //     columnName = "calcium";
+//     //     break;
+//     //   case 7:
+//     //     columnName = "iron";
+//     //     break;
+//     // }
+//     // _inventoryDataSource.sort(columnName, ascending);
+//     // setState(() {
+//     //   _sortColumnIndex = columnIndex;
+//     //   _sortAscending = ascending;
+//     // });
 //   }
 
 //   @override
 //   void dispose() {
-//     _dessertsDataSource.dispose();
+//     _inventoryDataSource.dispose();
 //     super.dispose();
 //   }
 
 //   List<DataColumn> get _columns {
 //     return [
 //       DataColumn(
-//         label: FittedBox(child: Text('Item Code'),),
+//         label: Text('Inventory Id'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //       DataColumn(
-//         label: Text('Item Description'),
+//         label: Text('Item Code'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //       DataColumn(
-//         label: Text('Style Number'),
+//         label: Text('SKU code'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//       DataColumn(
+//         label: Text('Asset Code'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//       DataColumn(
+//         label: Text('Description'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//       DataColumn(
+//         label: Text('Style number'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //       DataColumn(
@@ -85,58 +97,28 @@
 //         label: Text('Size'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
-//       DataColumn(
+//        DataColumn(
 //         label: Text('Serial Number'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
-//       DataColumn(
-//         label: Text('UPC/EAN'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//       DataColumn(
-//         label: Text('Brand'),
+//        DataColumn(
+//         label: Text('EAN/UPC'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
-//         label: Text('Country of Origin'),
+//         label: Text('Quantity'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
-//         label: Text('Expiry Date'),
+//         label: Text('Location Code'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
-//         label: Text('Asset ID'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Equipment Code'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Equipment ID'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Inbound Date'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Order Number'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Item Status'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ),
-//        DataColumn(
-//         label: Text('Location'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ), DataColumn(
-//         label: Text('Checkpoint'),
-//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
-//       ), DataColumn(
 //         label: Text('Last Location'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//        DataColumn(
+//         label: Text('Checkpoint'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
@@ -144,7 +126,29 @@
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
-//         label: Text('Reserved Operation'),
+//         label: Text('Item Status'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//        DataColumn(
+//         label: Text('DocPo Id'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ), DataColumn(
+//         label: Text('DocPo Number'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ), DataColumn(
+//         label: Text('Created Date'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//        DataColumn(
+//         label: Text('Expiry Date'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//        DataColumn(
+//         label: Text('ModifiedDate'),
+//         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
+//       ),
+//        DataColumn(
+//         label: Text('Reason'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //     ];
@@ -156,21 +160,13 @@
 //       appBar: AppBar(title: Text("Asset Inventory")),
 //       body: Stack(alignment: Alignment.bottomCenter, children: [
 //         AsyncPaginatedDataTable2(
-//             availableRowsPerPage: [10,20],
+//             availableRowsPerPage: const [10,20],
 //             dataRowHeight: 100,
 //             showCheckboxColumn: false,
 //             horizontalMargin: 20,
-//             checkboxHorizontalMargin: 12,
-//             minWidth: 3000,
+//             minWidth: 3400,
 //             columnSpacing: 0,
 //             wrapInCard: false,
-//             header: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               mainAxisSize: MainAxisSize.max,
-//               children: [
-//                 Text("Assets Inventory")
-//               ],
-//             ),
 //             rowsPerPage: _rowsPerPage,
 //             autoRowsToHeight: false,
 //             pageSyncApproach: PageSyncApproach.goToFirst,
@@ -186,8 +182,8 @@
 //             sortColumnIndex: _sortColumnIndex,
 //             sortAscending: _sortAscending,
 //             // onSelectAll: (select) => select == true
-//             //     ? _dessertsDataSource.selectAllOnThePage()
-//             //     : _dessertsDataSource.deselectAllOnThePage(),
+//             //     ? _inventoryDataSource.selectAllOnThePage()
+//             //     : _inventoryDataSource.deselectAllOnThePage(),
 //             controller: _controller,
 //             columns: _columns,
 //             empty: Center(
@@ -196,8 +192,8 @@
 //                     color: Colors.grey[200],
 //                     child: Text('No data'))),
 //             // errorBuilder: (e) => _ErrorAndRetry(
-//             //     e.toString(), () => _dessertsDataSource!.refreshDatasource()),
-//             source: _dessertsDataSource),
+//             //     e.toString(), () => _inventoryDataSource!.refreshDatasource()),
+//             source: _inventoryDataSource),
 //       ]),
 //     );
 //   }

@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -85,57 +86,42 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
   }
 
   Widget _getListBoxList(BuildContext ctx) {
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.horizontal_padding),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Builder(
-              builder: (context) => ListView.builder(
-                  itemCount: dataList.length,
-                  itemBuilder: ((context, index) {
-                    final item = dataList[index];
-                    return Builder(builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                              Text("Product Code : ${item.itemCode}"),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text("Description : ${item.description}"),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text("Quantity : ${item.quantity}"),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text("Registered Quantity : ${item.regQty}")
-                          ],
-                        ),
-                            )),
-                      );
-                    });
-                  }))),
-        ),
+    return AppContentBox(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Builder(
+            builder: (context) => ListView.builder(
+                itemCount: dataList.length,
+                itemBuilder: ((context, index) {
+                  final listItem = dataList[index];
+                  return Builder(builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                            Text("Product Code : ${listItem.itemCode}"),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text("Description : ${listItem.description}"),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text("Quantity : ${listItem.quantity}"),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text("Registered Quantity : ${listItem.regQty}")
+                        ],
+                      ),
+                          )),
+                    );
+                  });
+                }))),
       ),
     );
   }
@@ -162,39 +148,34 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
     String dataString = widget.arg.item?.createdDate != null
         ? widget.arg.item!.createdDate!.toString()
         : "";
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.horizontal_padding),
-      child: Card(
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text("Document number : " + widget.arg.docNum),
-              SizedBox(height: 5),
-              // ignore: unnecessary_null_comparison
-              Text(
-                  "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
-              const SizedBox(height: 5),
-              Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
-              const SizedBox(height: 5),
-              Text("Total Product : $totalProduct"),
-              const SizedBox(height: 5),
-              Text("Total Quantity : $totalQuantity"),
-              const SizedBox(height: 5),
-              Text("Total Tracker : $totalTracker")
-            ],
-          ),
+    return AppContentBox(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text("Document number : " + widget.arg.docNum),
+            SizedBox(height: 5),
+            // ignore: unnecessary_null_comparison
+            Text(
+                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+            const SizedBox(height: 5),
+            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
+            const SizedBox(height: 5),
+            Text("Total Product : $totalProduct"),
+            const SizedBox(height: 5),
+            Text("Total Quantity : $totalQuantity"),
+            const SizedBox(height: 5),
+            Text("Total Tracker : $totalTracker")
+          ],
         ),
       ),
     );
   }
 }
 class ListDocumentLineItem {
-  int? lineId;
+  int? id;
   String? docNum;
-  String? docType;
   String? docDate;
   String? vendorCode;
   String? skuCode;
@@ -208,12 +189,16 @@ class ListDocumentLineItem {
   String? eanupc;
   int? quantity;
   int? regQty;
-  int? status;
+  int? skuQty;
+  int? containerQty;
+  String? status;
+  String? maker;
+  int? createdDate;
+  int? modifiedDate;
 
   ListDocumentLineItem(
-      {this.lineId,
+      {this.id,
       this.docNum,
-      this.docType,
       this.docDate,
       this.vendorCode,
       this.skuCode,
@@ -227,12 +212,16 @@ class ListDocumentLineItem {
       this.eanupc,
       this.quantity,
       this.regQty,
-      this.status});
+      this.skuQty,
+      this.containerQty,
+      this.status,
+      this.maker,
+      this.createdDate,
+      this.modifiedDate});
 
   ListDocumentLineItem.fromJson(Map<String, dynamic> json) {
-    lineId = json['lineId'];
+    id = json['id'];
     docNum = json['docNum'];
-    docType = json['docType'];
     docDate = json['docDate'];
     vendorCode = json['vendorCode'];
     skuCode = json['skuCode'];
@@ -246,14 +235,18 @@ class ListDocumentLineItem {
     eanupc = json['eanupc'];
     quantity = json['quantity'];
     regQty = json['regQty'];
+    skuQty = json['skuQty'];
+    containerQty = json['containerQty'];
     status = json['status'];
+    maker = json['maker'];
+    createdDate = json['createdDate'];
+    modifiedDate = json['modifiedDate'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lineId'] = this.lineId;
+    data['id'] = this.id;
     data['docNum'] = this.docNum;
-    data['docType'] = this.docType;
     data['docDate'] = this.docDate;
     data['vendorCode'] = this.vendorCode;
     data['skuCode'] = this.skuCode;
@@ -267,7 +260,12 @@ class ListDocumentLineItem {
     data['eanupc'] = this.eanupc;
     data['quantity'] = this.quantity;
     data['regQty'] = this.regQty;
+    data['skuQty'] = this.skuQty;
+    data['containerQty'] = this.containerQty;
     data['status'] = this.status;
+    data['maker'] = this.maker;
+    data['createdDate'] = this.createdDate;
+    data['modifiedDate'] = this.modifiedDate;
     return data;
   }
 }

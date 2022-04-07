@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
 import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
@@ -23,11 +24,13 @@ class Repository {
 
   final AssetRegistrationApi _assetRegistrationApi;
 
+  final TransferOutApi _transferOutApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi, this._assetInventoryApi, this._assetRegistrationApi);
+  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi, this._assetInventoryApi, this._assetRegistrationApi, this._transferOutApi);
 
 
   // Login:---------------------------------------------------------------------
@@ -51,13 +54,19 @@ class Repository {
     _loginApi.cancelLogin();
   }
 
-  Future<InventoryResponse> getAssetInventory({int page =0 , int limit = 10}) async {
-    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit );
+  Future<AssetInventoryResponse> getAssetInventory({int page =0 , int limit = 10, String assetId = "", String itemCode = "" }) async {
+    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit, assetId:assetId, itemCode:itemCode);
   }
 
   Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String docNumber = "" }) async {
     return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit, docNumber: docNumber );
   }
+
+  Future<TransferOutHeaderResponse> getTransferOutHeader({int page =0 , int limit = 10,String shipmentCode = "" }) async {
+    return await _transferOutApi.getTransferOutHeaderItem(page: page, limit: limit, shipmentCode: shipmentCode);
+  }
+
+
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {
   //   // check to see if posts are present in database, then fetch from database
