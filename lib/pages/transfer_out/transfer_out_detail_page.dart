@@ -1,7 +1,9 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
@@ -9,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
-class AssetScanDetails extends StatefulWidget {
-  AssetScanPageArguments arg;
-  AssetScanDetails({Key? key, required this.arg}) : super(key: key);
+class TransferOutDetailPage extends StatefulWidget {
+  final TransferOutHeaderItem arg;
+  const TransferOutDetailPage({Key? key, required this.arg}) : super(key: key);
 
   @override
-  State<AssetScanDetails> createState() => _AssetScanDetailsState();
+  State<TransferOutDetailPage> createState() => _TransferOutDetailPageState();
 }
 
-class _AssetScanDetailsState extends State<AssetScanDetails> {
+class _TransferOutDetailPageState extends State<TransferOutDetailPage> {
   final inputFormat = DateFormat('dd/MM/yyyy');
   String totalProduct = "";
   String totalQuantity = "";
@@ -25,22 +27,22 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
 
   bool isFetching = false;
   DioClient repository = getIt<DioClient>();
-  List<ListDocumentLineItem> dataList = [];
+  List<ListTransferOutLineItem> dataList = [];
 
   Future<void> fetchData() async {
     var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/doc/listDocumentLine?docNum=${widget.arg.docNum}');
+        '${Endpoints.listTransferOutLine}?shipCode=${widget.arg.shipmentCode}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
     var newDataList = (result as List).map((e) {
-      try{
-        newTotalQuantity += e["quantity"] as int ;
+      try {
+        newTotalQuantity += e["quantity"] as int;
         totalRegQuantity += e["regQty"] as int;
-      }catch(e){
+      } catch (e) {
         print(e);
       }
-      return ListDocumentLineItem.fromJson(e);
+      return ListTransferOutLineItem.fromJson(e);
     }).toList();
 
     setState(() {
@@ -60,9 +62,9 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.arg.item!.createdDate);
+    print(widget.arg.createdDate);
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Document Details"),
+      appBar: EchoMeAppBar(titleText: "Transfer Out Details"),
       body: SizedBox.expand(
         child:
             Column(children: [_getDocumentInfo(context), _getListBox(context)]),
@@ -95,30 +97,27 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
                 itemBuilder: ((context, index) {
                   final listItem = dataList[index];
                   return Builder(builder: (context) {
+                    var listItemJson = listItem.toJson();
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                            Text("Product Code : ${listItem.itemCode}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Description : ${listItem.description}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Quantity : ${listItem.quantity}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Registered Quantity : ${listItem.regQty}")
-                        ],
-                      ),
-                          )),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: listItemJson.keys.map((e) {
+                            var key = e;
+                            var data = listItemJson[e];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${e}: ${data}"),
+                                SizedBox(width: double.maxFinite, height: 5,)
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      )),
                     );
                   });
                 }))),
@@ -145,8 +144,8 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
   }
 
   Widget _getDocumentInfo(BuildContext ctx) {
-    String dataString = widget.arg.item?.createdDate != null
-        ? widget.arg.item!.createdDate!.toString()
+    String dataString = widget.arg.createdDate != null
+        ? widget.arg.createdDate!.toString()
         : "";
     return AppContentBox(
       child: Padding(
@@ -154,13 +153,13 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Document number : " + widget.arg.docNum),
+            Text("Shipment Code: " + widget.arg.shipmentCode.toString()),
             SizedBox(height: 5),
             // ignore: unnecessary_null_comparison
             Text(
-                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "Transfer Out Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
+            Text("Ship Type: ${widget.arg.shipType.toString()}"),
             const SizedBox(height: 5),
             Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),
@@ -173,69 +172,73 @@ class _AssetScanDetailsState extends State<AssetScanDetails> {
     );
   }
 }
-class ListDocumentLineItem {
+
+class ListTransferOutLineItem {
   int? id;
-  String? docNum;
-  String? docDate;
-  String? vendorCode;
+  String? shipmentCode;
+  String? containerCode;
+  String? shipToDivision;
+  String? shipToLocation;
+  String? shipType;
+  String? deliveryOrderNum;
+  String? department;
   String? skuCode;
   String? itemCode;
-  String? assetCode;
   String? description;
   String? style;
   String? color;
-  String? size;
-  String? serial;
-  String? eanupc;
+  String? coo;
+  String? rsku;
   int? quantity;
   int? regQty;
-  int? skuQty;
   int? containerQty;
   String? status;
   String? maker;
   int? createdDate;
   int? modifiedDate;
 
-  ListDocumentLineItem(
+  ListTransferOutLineItem(
       {this.id,
-      this.docNum,
-      this.docDate,
-      this.vendorCode,
+      this.shipmentCode,
+      this.containerCode,
+      this.shipToDivision,
+      this.shipToLocation,
+      this.shipType,
+      this.deliveryOrderNum,
+      this.department,
       this.skuCode,
       this.itemCode,
-      this.assetCode,
       this.description,
       this.style,
       this.color,
-      this.size,
-      this.serial,
-      this.eanupc,
+      this.coo,
+      this.rsku,
       this.quantity,
       this.regQty,
-      this.skuQty,
       this.containerQty,
       this.status,
       this.maker,
       this.createdDate,
       this.modifiedDate});
 
-  ListDocumentLineItem.fromJson(Map<String, dynamic> json) {
+  ListTransferOutLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    docNum = json['docNum'];
-    docDate = json['docDate'];
-    vendorCode = json['vendorCode'];
+    shipmentCode = json['shipmentCode'];
+    containerCode = json['containerCode'];
+    shipToDivision = json['shipToDivision'];
+    shipToLocation = json['shipToLocation'];
+    shipType = json['shipType'];
+    deliveryOrderNum = json['deliveryOrderNum'];
+    department = json['department'];
     skuCode = json['skuCode'];
     itemCode = json['itemCode'];
-    assetCode = json['assetCode'];
     description = json['description'];
     style = json['style'];
     color = json['color'];
-    size = json['size'];
-    serial = json['serial'];
-    eanupc = json['eanupc'];
+    coo = json['coo'];
+    rsku = json['rsku'];
     quantity = json['quantity'];
     regQty = json['regQty'];
-    skuQty = json['skuQty'];
     containerQty = json['containerQty'];
     status = json['status'];
     maker = json['maker'];
@@ -246,21 +249,22 @@ class ListDocumentLineItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['docNum'] = this.docNum;
-    data['docDate'] = this.docDate;
-    data['vendorCode'] = this.vendorCode;
+    data['shipmentCode'] = this.shipmentCode;
+    data['containerCode'] = this.containerCode;
+    data['shipToDivision'] = this.shipToDivision;
+    data['shipToLocation'] = this.shipToLocation;
+    data['shipType'] = this.shipType;
+    data['deliveryOrderNum'] = this.deliveryOrderNum;
+    data['department'] = this.department;
     data['skuCode'] = this.skuCode;
     data['itemCode'] = this.itemCode;
-    data['assetCode'] = this.assetCode;
     data['description'] = this.description;
     data['style'] = this.style;
     data['color'] = this.color;
-    data['size'] = this.size;
-    data['serial'] = this.serial;
-    data['eanupc'] = this.eanupc;
+    data['coo'] = this.coo;
+    data['rsku'] = this.rsku;
     data['quantity'] = this.quantity;
     data['regQty'] = this.regQty;
-    data['skuQty'] = this.skuQty;
     data['containerQty'] = this.containerQty;
     data['status'] = this.status;
     data['maker'] = this.maker;

@@ -6,6 +6,7 @@ import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
 import 'package:echo_me_mobile/pages/login/login_page.dart';
 import 'package:echo_me_mobile/pages/sensor_settings/sensor_settings.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -19,7 +20,8 @@ class AppRoutes {
       "/asset_registration":(_) => AssetRegistrationPage(),
       "/asset_scan":(_) => AssetScanPage(),
       "/asset_inventory_detail":(_) => AssetInventoryPage(),
-      "/transfer_out":(_) => TransferOutPage()
+      "/transfer_out":(_) => TransferOutPage(),
+      "/transfer_out_scan": (_) => TransferOutScanPage()
     };
   }
 }

@@ -1,8 +1,10 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
+import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
@@ -15,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
-
 
 class TransferOutPage extends StatefulWidget {
   final String? shipmentCode;
@@ -141,7 +142,21 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                       //         item: listItem)).then((value) => {
                                       //            _store.fetchData(docNum: widget.shipmentCode ?? "")
                                       //         });
-                                      var fx = (){};
+                                      // ignore: prefer_function_declarations_over_variables
+                                      var fx = () => Navigator.pushNamed(
+                                              context, "/transfer_out_scan",
+                                              arguments:
+                                                  TransferOutScanPageArguments(
+                                                      shipmentCode: listItem
+                                                              .shipmentCode ??
+                                                          "",
+                                                      item: listItem))
+                                          .then((value) => {
+                                                _store.fetchData(
+                                                    shipmentCode:
+                                                        widget.shipmentCode ??
+                                                            "")
+                                              });
                                       return StatusListItem(
                                         title: title,
                                         subtitle: subtitle,
@@ -210,12 +225,10 @@ class _TransferOutPageState extends State<TransferOutPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) =>
-                        TransferOutPage(shipmentCode: str.trim())));
+                    builder: (_) => TransferOutPage(shipmentCode: str.trim())));
           }
         },
       ),
     );
   }
-
 }

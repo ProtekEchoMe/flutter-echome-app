@@ -6,6 +6,8 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -16,7 +18,6 @@ import 'package:json_table/json_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
-import 'asset_scan_page_arguments.dart';
 
 class RfidContainer {
   int? id;
@@ -47,14 +48,14 @@ class RfidContainer {
   }
 }
 
-class AssetScanPage extends StatefulWidget {
-  AssetScanPage({Key? key}) : super(key: key);
+class TransferOutScanPage extends StatefulWidget {
+  TransferOutScanPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanPage> createState() => _AssetScanPageState();
+  State<TransferOutScanPage> createState() => _TransferOutScanPageState();
 }
 
-class _AssetScanPageState extends State<AssetScanPage> {
+class _TransferOutScanPageState extends State<TransferOutScanPage> {
   static final inputFormat = DateFormat('dd/MM/yyyy');
   List<StreamSubscription> disposer = [];
   final Set itemRfidDataSet = {};
@@ -109,11 +110,11 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  Future<void> _changeEquipment(AssetScanPageArguments? args) async {
+  Future<void> _changeEquipment(TransferOutScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.docNum == null) {
-        showMessage("Document Number not found");
+      if (args?.shipmentCode == null) {
+        showMessage("Shipment Code not found");
         return;
       }
       if (equipmentChosen?.containerCode == null) {
@@ -129,13 +130,13 @@ class _AssetScanPageState extends State<AssetScanPage> {
         return;
       }
       if (itemRfidDataSet.isEmpty) {
-        showMessage("Assets List is empy");
+        showMessage("Assets List is empty");
         return;
       }
       List<String> itemRfid =
           itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
-      await api.registerItem(
-          docNum: args!.docNum,
+      await api.registerToItem(
+          shipmentCode: args!.shipmentCode,
           containerCode: equipmentChosen!.containerCode!,
           itemRfid: itemRfid);
       _rescan();
@@ -161,9 +162,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
     setState(() {});
   }
 
-  Future<void> _complete(AssetScanPageArguments? args) async {
+  Future<void> _complete(TransferOutScanPageArguments? args) async {
     try {
-      await api.completeRegister(docNum: args!.docNum);
+      await api.completeToRegister(shipmentCode: args!.shipmentCode);
     } catch (e) {
       showMessage(e.toString());
     } finally {
@@ -171,7 +172,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     }
   }
 
-  void _onItemTapped(AssetScanPageArguments? args, int index) {
+  void _onItemTapped(TransferOutScanPageArguments? args, int index) {
     if (index == 0) {
       _changeEquipment(args);
     } else if (index == 1) {
@@ -374,43 +375,43 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AssetScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
+    final TransferOutScanPageArguments? args =
+        ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+                heroTag: null,
+                child: const Icon(Icons.add_box),
+                onPressed: _addMockEquipmentId),
+            const SizedBox(
+              width: 20,
+            ),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: _addMockAssetId,
+              child: const Icon(MdiIcons.cart),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.docNum : "EchoMe")],
+          children: [Text(args != null ? args.shipmentCode : "EchoMe")],
         ),
         actions: [
           IconButton(
               onPressed: () {
-                if (args != null) {
+                if (args != null && args.item != null) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AssetScanDetailPage(
-                                arg: args,
+                          builder: (_) => TransferOutDetailPage(
+                                arg: args.item!,
                               )));
                 }
               },
@@ -479,7 +480,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     }
   }
 
-  Widget _getBody(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getBody(BuildContext ctx, TransferOutScanPageArguments? args) {
     return Expanded(
       child: Container(
         child: ListView.builder(
@@ -731,7 +732,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
           }
         }
       }
-      await api.registerContainer(rfid: rfidList);
+      await api.registerToContainer(rfid: rfidList);
       EasyDebounce.debounce(
           'validateContainerRfid', const Duration(milliseconds: 500), () {
         _validateContainerRfid();
@@ -895,9 +896,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: args?.docNum ?? "No DocNum",
+      title: args?.shipmentCode ?? "No DocNum",
       clipTitle: "Hong Kong-DC",
     );
   }

@@ -56,5 +56,7 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<AssetInventoryStore>(() => AssetInventoryStore(getIt<Repository>()));
 
-    getIt.registerFactory<TransferOutStore>(() => TransferOutStore(getIt<Repository>()));
+  getIt.registerFactory<TransferOutStore>(() => TransferOutStore(getIt<Repository>()));
+
+  getIt.registerFactory<ForgetPasswordStore>(() => ForgetPasswordStore(getIt<Repository>()));
 }

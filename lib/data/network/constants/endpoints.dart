@@ -29,15 +29,23 @@ class Endpoints {
       "https://qa-echome.ddns.net/echoMe/rfid/getContainerCode";
   static const String registerItems =
       "http://qa-echome.ddns.net/echoMe/reg/registerItems";
+  static const String registerToItems =
+      "http://qa-echome.ddns.net/echoMe/to/registerItems";
   static const String registerContainer =
       "http://qa-echome.ddns.net/echoMe/reg/registerContainers";
-  static const String registerComplete = 
+  static const String registerToContainer =
+      "http://qa-echome.ddns.net/echoMe/to/registerContainers";
+  static const String registerComplete =
       "http://qa-echome.ddns.net/echoMe/reg/registerComplete";
-  static const String registerItemsValidation = 
+
+  static const String registerToComplete =
+      "http://qa-echome.ddns.net/echoMe/to/transferOutComplete";
+  static const String registerItemsValidation =
       "http://qa-echome.ddns.net/echoMe/reg/registerItemsValidation";
-  static const String registerItem = 
+  static const String registerItem =
       "http://qa-echome.ddns.net/echoMe/reg/registerItems";
-  static const String listTransferOutHeader = 
+  static const String listTransferOutHeader =
       "http://qa-echome.ddns.net/echoMe/to/listTransferOutHeader";
-  
+  static const String listTransferOutLine =
+      "http://qa-echome.ddns.net/echoMe/to/listTransferOutLine";
 }
