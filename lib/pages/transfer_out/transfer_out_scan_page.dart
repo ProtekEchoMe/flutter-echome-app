@@ -338,7 +338,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         List<String> item = [];
         List<String> equ = [];
         (event.data as List<String>).forEach((element) {
-          if (element.substring(0, 2) == "63") {
+          if (element.substring(0, 2) == "63" || element.substring(0, 2) == "43") {
             equ.add(element);
           } else {
             item.add(element);
@@ -378,27 +378,27 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     final TransferOutScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-                heroTag: null,
-                child: const Icon(Icons.add_box),
-                onPressed: _addMockEquipmentId),
-            const SizedBox(
-              width: 20,
-            ),
-            FloatingActionButton(
-              heroTag: null,
-              onPressed: _addMockAssetId,
-              child: const Icon(MdiIcons.cart),
-            )
-          ],
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: <Widget>[
+      //       FloatingActionButton(
+      //           heroTag: null,
+      //           child: const Icon(Icons.add_box),
+      //           onPressed: _addMockEquipmentId),
+      //       const SizedBox(
+      //         width: 20,
+      //       ),
+      //       FloatingActionButton(
+      //         heroTag: null,
+      //         onPressed: _addMockAssetId,
+      //         child: const Icon(MdiIcons.cart),
+      //       )
+      //     ],
+      //   ),
+      // ),
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.shipmentCode : "EchoMe")],

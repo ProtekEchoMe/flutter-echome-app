@@ -1,7 +1,6 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
