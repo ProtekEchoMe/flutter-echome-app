@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
-import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
-import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 
 class AssetRegistrationApi {
   // dio instance
@@ -18,17 +14,17 @@ class AssetRegistrationApi {
 
   /// Returns list of post in response
   Future<AssetRegistrationResponse> getAssetRegistration(
-      {int page = 0, int limit = 10, String docNumber = ""}) async {
+      {int page = 0, int limit = 10, String regNumber = ""}) async {
     try {
       print(page * limit);
       print(limit);
-      print(docNumber);
+      print(regNumber);
       List<dynamic> filter = [];
-      if (docNumber.isNotEmpty) {
+      if (regNumber.isNotEmpty) {
         filter = [
           {
-            "value": docNumber,
-            "name": "docNum",
+            "value": regNumber,
+            "name": "regNum",
             "operator": "eq",
             "type": "string"
           }
@@ -64,7 +60,7 @@ class AssetRegistrationApi {
           str = str + element + ",";
         }
       }
-      Map<String, dynamic> query = {"rfids": str};
+      Map<String, dynamic> query = {"rfids": str.substring(0,str.length-1)};
       final res = await _dioClient.getRegistration(Endpoints.getContainerCode,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
@@ -73,10 +69,10 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<void> completeRegister({String docNum = ""}) async {
+  Future<void> completeRegister({String regNum = ""}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.registerComplete, queryParameters: {"docNum": docNum});
+          .get(Endpoints.registerComplete, queryParameters: {"regNum": regNum});
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
@@ -94,10 +90,10 @@ class AssetRegistrationApi {
   }
 
   
-  Future<void> completeToRegister({String shipmentCode = ""}) async {
+  Future<void> completeToRegister({String toNum = ""}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.registerToComplete, queryParameters: {"shipmentCode": shipmentCode});
+          .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
@@ -115,7 +111,7 @@ class AssetRegistrationApi {
   }
 
   Future<dynamic> registerItem(
-      {String docNum = "",
+      {String regNum = "",
       String containerCode = "",
       List<String> itemRfid = const []}) async {
     try {
@@ -127,7 +123,7 @@ class AssetRegistrationApi {
       }
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
-        "docNum": docNum,
+        "regNum": regNum,
         "containerCode": containerCode,
         "rfids": str
       };
@@ -153,7 +149,7 @@ class AssetRegistrationApi {
   }
 
   Future<dynamic> registerToItem(
-      {String shipmentCode = "",
+      {String toNum = "",
       String containerCode = "",
       List<String> itemRfid = const []}) async {
     try {
@@ -165,7 +161,7 @@ class AssetRegistrationApi {
       }
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
-        "shipmentCode":shipmentCode,
+        "toNum":toNum,
         "containerCode": containerCode,
         "rfids": str
       };
@@ -190,7 +186,7 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> registerContainer({List<String> rfid = const []}) async {
+  Future<dynamic> registerContainer({List<String> rfid = const [], String regNum = ""}) async {
     try {
       var str = "";
       if (rfid != null) {
@@ -199,7 +195,7 @@ class AssetRegistrationApi {
         }
       }
       str = str.substring(0, str.length - 1);
-      Map<String, dynamic> query = {"rfids": str};
+      Map<String, dynamic> query = {"rfids": str, "regNum":regNum};
       final res = await _dioClient.getRegistration(Endpoints.registerContainer,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
@@ -216,7 +212,7 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> registerToContainer({List<String> rfid = const []}) async {
+  Future<dynamic> registerToContainer({List<String> rfid = const [], String toNum=""}) async {
     try {
       var str = "";
       if (rfid != null) {
@@ -225,7 +221,7 @@ class AssetRegistrationApi {
         }
       }
       str = str.substring(0, str.length - 1);
-      Map<String, dynamic> query = {"rfids": str};
+      Map<String, dynamic> query = {"rfids": str, "toNum":toNum};
       final res = await _dioClient.getRegistration(
           Endpoints.registerToContainer,
           queryParameters: query);

@@ -9,17 +9,17 @@ class TransferOutApi {
 
   TransferOutApi(this._dioClient);
 
-  Future<TransferOutHeaderResponse> getTransferOutHeaderItem({int page = 0, int limit = 10, String shipmentCode=""})async{
+  Future<TransferOutHeaderResponse> getTransferOutHeaderItem({int page = 0, int limit = 10, String toNum=""})async{
       try {
       print(page * limit);
       print(limit);
-      print(shipmentCode);
+      print(toNum);
       List<dynamic> filter = [];
-      if (shipmentCode.isNotEmpty) {
+      if (toNum.isNotEmpty) {
         filter = [
           {
-            "value": shipmentCode,
-            "name": "shipmentCode",
+            "value": toNum,
+            "name": "toNum",
             "operator": "eq",
             "type": "string"
           }

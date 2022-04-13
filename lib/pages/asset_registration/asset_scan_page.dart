@@ -112,30 +112,33 @@ class _AssetScanPageState extends State<AssetScanPage> {
   Future<void> _changeEquipment(AssetScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.docNum == null) {
-        showMessage("Document Number not found");
+      if (args?.regNum == null) {
+        showMessage("Reg Number not found");
         return;
       }
       if (equipmentChosen?.containerCode == null) {
         showMessage("Container Code not found");
         return;
       }
-      // if (equipmentChosen!.status != "REGISTERED") {
-      //   showMessage("Container Code not registered");
-      //   return;
-      // }
-      var result = await _registerContainer(ignoreRegisteredError: true);
-      if (result == false) {
-        return;
-      }
+
       if (itemRfidDataSet.isEmpty) {
         showMessage("Assets List is empy");
         return;
       }
+      // if (equipmentChosen!.status != "REGISTERED") {
+      //   showMessage("Container Code not registered");
+      //   return;
+      // }
+      var result = await _registerContainer(
+          ignoreRegisteredError: true, regNum: args?.regNum ?? "");
+      if (result == false) {
+        return;
+      }
+
       List<String> itemRfid =
           itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
       await api.registerItem(
-          docNum: args!.docNum,
+          regNum: args!.regNum,
           containerCode: equipmentChosen!.containerCode!,
           itemRfid: itemRfid);
       _rescan();
@@ -163,7 +166,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Future<void> _complete(AssetScanPageArguments? args) async {
     try {
-      await api.completeRegister(docNum: args!.docNum);
+      await api.completeRegister(regNum: args!.regNum);
     } catch (e) {
       showMessage(e.toString());
     } finally {
@@ -204,14 +207,14 @@ class _AssetScanPageState extends State<AssetScanPage> {
     setState(() {});
   }
 
-  void _setEquipmentAuto (){
+  void _setEquipmentAuto() {
     for (var element in equTable) {
-      if(element.containerCode != null ){
+      if (element.containerCode != null) {
         equipmentId = element.containerCode!;
         equipmentChosen = element;
         return;
       }
-     }
+    }
   }
 
   // ^^^^ copy paste code, please rearrange
@@ -337,7 +340,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
         List<String> item = [];
         List<String> equ = [];
         (event.data as List<String>).forEach((element) {
-          if (element.substring(0, 2) == "63" || element.substring(0, 2) == "43") {
+          if (element.substring(0, 2) == "63" ||
+              element.substring(0, 2) == "43") {
             equ.add(element);
           } else {
             item.add(element);
@@ -377,30 +381,30 @@ class _AssetScanPageState extends State<AssetScanPage> {
     final AssetScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+                heroTag: null,
+                child: const Icon(Icons.add_box),
+                onPressed: _addMockEquipmentId),
+            SizedBox(
+              width: 20,
+            ),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: _addMockAssetId,
+              child: Icon(MdiIcons.cart),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.docNum : "EchoMe")],
+          children: [Text(args != null ? args.regNum : "EchoMe")],
         ),
         actions: [
           IconButton(
@@ -450,16 +454,16 @@ class _AssetScanPageState extends State<AssetScanPage> {
   }
 
   void _addMockAssetId() {
-    itemRfidDataSet.add(AscToText.getAscIIString("SATL010000000011"));
+    itemRfidDataSet.add(AscToText.getAscIIString("SATL010000001562"));
     setState(() {});
   }
 
   void _addMockEquipmentId() {
     var init = equipmentRfidDataSet.length;
     if (init == 0) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0003"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000001708"));
     } else if (init == 1) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0002"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000001719"));
     } else if (init == 2) {
       equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0001"));
     } else {
@@ -716,7 +720,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  Future<bool> _registerContainer({bool ignoreRegisteredError = false}) async {
+  Future<bool> _registerContainer(
+      {bool ignoreRegisteredError = false, String regNum = ""}) async {
     try {
       print(equipmentChosen);
       if (equipmentChosen == null) {
@@ -731,7 +736,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
           }
         }
       }
-      await api.registerContainer(rfid: rfidList);
+      await api.registerContainer(rfid: rfidList, regNum: regNum);
       EasyDebounce.debounce(
           'validateContainerRfid', const Duration(milliseconds: 500), () {
         _validateContainerRfid();
@@ -897,7 +902,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
     return BodyTitle(
-      title: args?.docNum ?? "No DocNum",
+      title: args?.regNum ?? "No RegNum",
       clipTitle: "Hong Kong-DC",
     );
   }

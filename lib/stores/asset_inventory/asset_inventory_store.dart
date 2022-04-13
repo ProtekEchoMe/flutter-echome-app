@@ -60,25 +60,25 @@ abstract class _AssetInventoryStore with Store {
   }
 
   @action
-  Future<void> nextPage({String assetId = "", String itemCode = ""}) async{
+  Future<void> nextPage({String assetCode = "", String itemCode = "", String siteCode = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(requestedPage: page+1, assetId: assetId, itemCode: itemCode);
+      fetchData(requestedPage: page+1, assetCode: assetCode, itemCode: itemCode, siteCode: siteCode);
     }
   }
 
   @action
-  Future<void> prevPage({String assetId = "", String itemCode = ""}) async{
+  Future<void> prevPage({String assetCode = "", String itemCode = "", String siteCode = ""}) async{
     if(page>=1){
-      fetchData( requestedPage: page-1, assetId: assetId, itemCode: itemCode);
+      fetchData( requestedPage: page-1, assetCode: assetCode, itemCode: itemCode, siteCode: siteCode);
     }
   }
 
   @action
-  Future<void> fetchData({int? requestedPage,String assetId = "", String itemCode = "" }) async {
+  Future<void> fetchData({int? requestedPage,String assetCode = "", String itemCode = "", String siteCode = ""}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getAssetInventory(page: targetPage, limit: limit, assetId: assetId, itemCode: itemCode);
+      var data = await repository.getAssetInventory(page: targetPage, limit: limit, assetCode: assetCode, itemCode: itemCode, siteCode: siteCode );
       int totalRow = data.rowNumber;
       List<AssetInventoryItem> list = data.itemList;
       totalCount = totalRow;

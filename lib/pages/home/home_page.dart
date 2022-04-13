@@ -1,3 +1,5 @@
+import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
+import 'package:echo_me_mobile/data/siteCode/siteCodeList.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/sensor_settings/sensor_settings.dart';
@@ -17,8 +19,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final loginApi = getIt<LoginApi>();
+
   int _selectedIndex = 0;
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
+
+  @override
+  void initState() {
+    super.initState();
+    loginFormStore.setupValidations();
+    loginFormStore.changeSite(siteCode: SiteCodeList.getList()[0]);
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    loginFormStore.dispose();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,6 +69,7 @@ class _HomePageState extends State<HomePage> {
           BodyTitle(
             title: "EchoMe Main Page",
             clipTitle: "Hong Kong-DC",
+            allowSwitchSite: true,
           ),
           Expanded(
             child: AppContentBox(
@@ -64,150 +84,154 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getPageContent(BuildContext context) {
-    return _selectedIndex == 0 ? Column(
-      children: [
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.accessPointPlus,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Assets Registration",
-            description: "Add new asset",
-            trailing: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/asset_registration");
-              },
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+    return _selectedIndex == 0
+        ? Column(
+            children: [
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.accessPointPlus,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Assets Registration",
+                  description: "Add new asset",
+                  trailing: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/asset_registration");
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.warehouse,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Assets Inventory",
-            description: "Check your inventory",
-            trailing: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/asset_inventory");
-              },
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.warehouse,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Assets Inventory",
+                  description: "Check your inventory",
+                  trailing: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/asset_inventory");
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.inboxArrowDown,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Transfer In",
-            description: "Receive from other site",
-            trailing: GestureDetector(
-              onTap: () {},
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.inboxArrowDown,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Transfer In",
+                  description: "Receive from other site",
+                  trailing: GestureDetector(
+                    onTap: () {
+                       Navigator.pushNamed(context, "/transfer_in");
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.inboxArrowUp,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Transfer Out",
-            description: "Send to other site",
-            trailing: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/transfer_out");
-              },
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.inboxArrowUp,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Transfer Out",
+                  description: "Send to other site",
+                  trailing: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/transfer_out");
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.trashCan,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Assets Disposal",
-            description: "Disposal and write-off",
-            trailing: GestureDetector(
-              onTap: () {},
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.trashCan,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Assets Disposal",
+                  description: "Disposal and write-off",
+                  trailing: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.fileDocumentMultipleOutline,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Stock Take",
-            description: "Count your asset",
-            trailing: GestureDetector(
-              onTap: () {},
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.fileDocumentMultipleOutline,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Stock Take",
+                  description: "Count your asset",
+                  trailing: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 75,
-          child: ListItem(
-            leading: const Icon(
-              MdiIcons.logout,
-              color: Colors.black,
-              size: 50,
-            ),
-            title: "Logout",
-            description: "Logout your account",
-            trailing: GestureDetector(
-              onTap: () {
-                loginFormStore.logout();
-              },
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        )
-      ],
-    ): SensorSettings();
+              SizedBox(
+                height: 75,
+                child: ListItem(
+                  leading: const Icon(
+                    MdiIcons.logout,
+                    color: Colors.black,
+                    size: 50,
+                  ),
+                  title: "Logout",
+                  description: "Logout your account",
+                  trailing: GestureDetector(
+                    onTap: () {
+                      loginFormStore.logout();
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )
+        : SensorSettings();
   }
 }

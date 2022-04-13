@@ -18,7 +18,6 @@ import 'package:json_table/json_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
-
 class RfidContainer {
   int? id;
   String? containerCode;
@@ -113,30 +112,30 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   Future<void> _changeEquipment(TransferOutScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.shipmentCode == null) {
-        showMessage("Shipment Code not found");
+      if (args?.toNum == null) {
+        showMessage("Transfer Out Code not found");
         return;
       }
       if (equipmentChosen?.containerCode == null) {
         showMessage("Container Code not found");
         return;
       }
+      if (itemRfidDataSet.isEmpty) {
+        showMessage("Assets List is empty");
+        return;
+      }
       // if (equipmentChosen!.status != "REGISTERED") {
       //   showMessage("Container Code not registered");
       //   return;
       // }
-      var result = await _registerContainer(ignoreRegisteredError: true);
+      var result = await _registerContainer(ignoreRegisteredError: true, toNum:args?.toNum ??"");
       if (result == false) {
-        return;
-      }
-      if (itemRfidDataSet.isEmpty) {
-        showMessage("Assets List is empty");
         return;
       }
       List<String> itemRfid =
           itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
       await api.registerToItem(
-          shipmentCode: args!.shipmentCode,
+          toNum: args!.toNum,
           containerCode: equipmentChosen!.containerCode!,
           itemRfid: itemRfid);
       _rescan();
@@ -164,7 +163,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
   Future<void> _complete(TransferOutScanPageArguments? args) async {
     try {
-      await api.completeToRegister(shipmentCode: args!.shipmentCode);
+      await api.completeToRegister(toNum: args!.toNum);
     } catch (e) {
       showMessage(e.toString());
     } finally {
@@ -205,14 +204,14 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     setState(() {});
   }
 
-  void _setEquipmentAuto (){
+  void _setEquipmentAuto() {
     for (var element in equTable) {
-      if(element.containerCode != null ){
+      if (element.containerCode != null) {
         equipmentId = element.containerCode!;
         equipmentChosen = element;
         return;
       }
-     }
+    }
   }
 
   // ^^^^ copy paste code, please rearrange
@@ -338,7 +337,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         List<String> item = [];
         List<String> equ = [];
         (event.data as List<String>).forEach((element) {
-          if (element.substring(0, 2) == "63" || element.substring(0, 2) == "43") {
+          if (element.substring(0, 2) == "63" ||
+              element.substring(0, 2) == "43") {
             equ.add(element);
           } else {
             item.add(element);
@@ -375,33 +375,34 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TransferOutScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
+    final TransferOutScanPageArguments? args = ModalRoute.of(context)!
+        .settings
+        .arguments as TransferOutScanPageArguments?;
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: const Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+                heroTag: null,
+                child: const Icon(Icons.add_box),
+                onPressed: _addMockEquipmentId),
+            const SizedBox(
+              width: 20,
+            ),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: _addMockAssetId,
+              child: const Icon(MdiIcons.cart),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.shipmentCode : "EchoMe")],
+          children: [Text(args != null ? args.toNum : "EchoMe")],
         ),
         actions: [
           IconButton(
@@ -412,6 +413,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                       MaterialPageRoute(
                           builder: (_) => TransferOutDetailPage(
                                 arg: args.item!,
+                                // arg: args.item!,
                               )));
                 }
               },
@@ -458,11 +460,11 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   void _addMockEquipmentId() {
     var init = equipmentRfidDataSet.length;
     if (init == 0) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0003"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000370"));
     } else if (init == 1) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0002"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000381"));
     } else if (init == 2) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0001"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000392"));
     } else {
       equipmentRfidDataSet
           .add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
@@ -717,7 +719,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     );
   }
 
-  Future<bool> _registerContainer({bool ignoreRegisteredError = false}) async {
+  Future<bool> _registerContainer({bool ignoreRegisteredError = false, String toNum=""}) async {
     try {
       print(equipmentChosen);
       if (equipmentChosen == null) {
@@ -732,7 +734,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
           }
         }
       }
-      await api.registerToContainer(rfid: rfidList);
+      await api.registerToContainer(rfid: rfidList, toNum: toNum);
       EasyDebounce.debounce(
           'validateContainerRfid', const Duration(milliseconds: 500), () {
         _validateContainerRfid();
@@ -898,7 +900,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
   Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: args?.shipmentCode ?? "No DocNum",
+      title: args?.toNum ?? "No DocNum",
       clipTitle: "Hong Kong-DC",
     );
   }

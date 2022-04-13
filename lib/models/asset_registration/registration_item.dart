@@ -1,46 +1,48 @@
+// ignore_for_file: unnecessary_new, unnecessary_this, prefer_collection_literals
+
 class RegistrationItem {
-  int? docId;
-  String? docNum;
-  String? docType;
-  String? docDate;
+  int? id;
+  int? site;
+  String? regNum;
+  String? regDate;
   String? shipperCode;
   String? status;
-  String? creator;
+  String? maker;
   int? createdDate;
   int? modifiedDate;
 
   RegistrationItem(
-      {this.docId,
-      this.docNum,
-      this.docType,
-      this.docDate,
+      {this.id,
+      this.site,
+      this.regNum,
+      this.regDate,
       this.shipperCode,
       this.status,
-      this.creator,
+      this.maker,
       this.createdDate,
       this.modifiedDate});
 
   RegistrationItem.fromJson(Map<String, dynamic> json) {
-    docId = json['docId'];
-    docNum = json['docNum'];
-    docType = json['docType'];
-    docDate = json['docDate'];
+    id = json['id'];
+    site = json['site'];
+    regNum = json['regNum'];
+    regDate = json['regDate'];
     shipperCode = json['shipperCode'];
     status = json['status'];
-    creator = json['creator'];
+    maker = json['maker'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['docId'] = this.docId;
-    data['docNum'] = this.docNum;
-    data['docType'] = this.docType;
-    data['docDate'] = this.docDate;
+    data['id'] = this.id;
+    data['site'] = this.site;
+    data['regNum'] = this.regNum;
+    data['regDate'] = this.regDate;
     data['shipperCode'] = this.shipperCode;
     data['status'] = this.status;
-    data['creator'] = this.creator;
+    data['maker'] = this.maker;
     data['createdDate'] = this.createdDate;
     data['modifiedDate'] = this.modifiedDate;
     return data;

@@ -102,23 +102,23 @@ mixin _$TransferOutStore on _TransferOutStore, Store {
   final _$nextPageAsyncAction = AsyncAction('_TransferOutStore.nextPage');
 
   @override
-  Future<void> nextPage({String docNum = ""}) {
-    return _$nextPageAsyncAction.run(() => super.nextPage(docNum: docNum));
+  Future<void> nextPage({String toNum = ""}) {
+    return _$nextPageAsyncAction.run(() => super.nextPage(toNum: toNum));
   }
 
   final _$prevPageAsyncAction = AsyncAction('_TransferOutStore.prevPage');
 
   @override
-  Future<void> prevPage({String docNum = ""}) {
-    return _$prevPageAsyncAction.run(() => super.prevPage(docNum: docNum));
+  Future<void> prevPage({String toNum = ""}) {
+    return _$prevPageAsyncAction.run(() => super.prevPage(toNum: toNum));
   }
 
   final _$fetchDataAsyncAction = AsyncAction('_TransferOutStore.fetchData');
 
   @override
-  Future<void> fetchData({String shipmentCode = "", int? requestedPage}) {
-    return _$fetchDataAsyncAction.run(() => super
-        .fetchData(shipmentCode: shipmentCode, requestedPage: requestedPage));
+  Future<void> fetchData({String toNum = "", int? requestedPage}) {
+    return _$fetchDataAsyncAction
+        .run(() => super.fetchData(toNum: toNum, requestedPage: requestedPage));
   }
 
   final _$_TransferOutStoreActionController =

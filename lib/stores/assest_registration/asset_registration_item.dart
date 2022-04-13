@@ -34,16 +34,12 @@ abstract class _AssetRegistrationItem with Store {
   final RegistrationItem item;
 
   _AssetRegistrationItem(this.item){
-    orderId = item.docNum.toString();
-    supplierName ="DocType :" + item.docType.toString();
+    orderId = item.regNum.toString();
     status = item.status ?? "";
   }
 
   @observable
   String orderId = "";
-
-  @observable
-  String supplierName = "";
 
   @observable
   String status = "";

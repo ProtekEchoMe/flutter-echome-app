@@ -13,35 +13,42 @@ class LoginApi {
   // injecting dio instance
   LoginApi(this._dioClient);
 
-  final Map<String, List<CancelToken>> _cancelTokenMap = {
-    "login":[]
-  };
-  
-  void cancelLogin(){
-    _cancelTokenMap["login"]?.forEach((element) { 
+  final Map<String, List<CancelToken>> _cancelTokenMap = {"login": []};
+
+  void cancelLogin() {
+    _cancelTokenMap["login"]?.forEach((element) {
       element.cancel();
     });
     _cancelTokenMap["login"]!.clear();
   }
 
+  Future<void> setSiteCode({String siteCode = ""}) async {
+    final res = await _dioClient.get(Endpoints.setSiteCode,
+        queryParameters: {"siteCode": siteCode},
+        options: Options(
+            followRedirects: false, validateStatus: (status) => status! < 400));
+  }
+
   /// Returns list of post in response
-  Future<AuthResponse> login({String email = "", String password=""}) async {
+  Future<AuthResponse> login({String email = "", String password = ""}) async {
     CancelToken token = CancelToken();
     _cancelTokenMap["login"]!.add(token);
     try {
       final res = await _dioClient.post(
         Endpoints.login,
         options: Options(
-          headers: {HttpHeaders.contentTypeHeader: Headers.formUrlEncodedContentType},
+          headers: {
+            HttpHeaders.contentTypeHeader: Headers.formUrlEncodedContentType
+          },
         ),
         cancelToken: token,
         data: {
-          "client_id":Endpoints.client_id,
+          "client_id": Endpoints.client_id,
           // "client_secret":Endpoints.clientSecret,
-          "grant_type":"password",
+          "grant_type": "password",
           "username": email,
-          "password" : password,
-          "scope":"openid"
+          "password": password,
+          "scope": "openid"
         },
       );
       return AuthResponse.fromJson(res);

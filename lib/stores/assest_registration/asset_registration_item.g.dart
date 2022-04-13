@@ -24,21 +24,6 @@ mixin _$AssetRegistrationItem on _AssetRegistrationItem, Store {
     });
   }
 
-  final _$supplierNameAtom = Atom(name: '_AssetRegistrationItem.supplierName');
-
-  @override
-  String get supplierName {
-    _$supplierNameAtom.reportRead();
-    return super.supplierName;
-  }
-
-  @override
-  set supplierName(String value) {
-    _$supplierNameAtom.reportWrite(value, super.supplierName, () {
-      super.supplierName = value;
-    });
-  }
-
   final _$statusAtom = Atom(name: '_AssetRegistrationItem.status');
 
   @override
@@ -58,7 +43,6 @@ mixin _$AssetRegistrationItem on _AssetRegistrationItem, Store {
   String toString() {
     return '''
 orderId: ${orderId},
-supplierName: ${supplierName},
 status: ${status}
     ''';
   }

@@ -1,5 +1,6 @@
 class AssetInventoryItem {
   int? id;
+  int? site;
   String? skuCode;
   String? assetCode;
   String? itemCode;
@@ -14,17 +15,19 @@ class AssetInventoryItem {
   String? lastLocCode;
   String? checkpointCode;
   String? lastCheckpointCode;
-  int? status;
-  int? docId;
-  String? docNum;
+  String? status;
+  String? regNum;
+  String? toNum;
+  String? tiNum;
   int? inboundDate;
-  int? expiryDate;
+  String? expiryDate;
   int? createdDate;
   int? modifiedDate;
   String? reason;
 
   AssetInventoryItem(
       {this.id,
+      this.site,
       this.skuCode,
       this.assetCode,
       this.itemCode,
@@ -40,8 +43,9 @@ class AssetInventoryItem {
       this.checkpointCode,
       this.lastCheckpointCode,
       this.status,
-      this.docId,
-      this.docNum,
+      this.regNum,
+      this.toNum,
+      this.tiNum,
       this.inboundDate,
       this.expiryDate,
       this.createdDate,
@@ -50,6 +54,7 @@ class AssetInventoryItem {
 
   AssetInventoryItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    site = json['site'];
     skuCode = json['skuCode'];
     assetCode = json['assetCode'];
     itemCode = json['itemCode'];
@@ -65,8 +70,9 @@ class AssetInventoryItem {
     checkpointCode = json['checkpointCode'];
     lastCheckpointCode = json['lastCheckpointCode'];
     status = json['status'];
-    docId = json['docId'];
-    docNum = json['docNum'];
+    regNum = json['regNum'];
+    toNum = json['toNum'];
+    tiNum = json['tiNum'];
     inboundDate = json['inboundDate'];
     expiryDate = json['expiryDate'];
     createdDate = json['createdDate'];
@@ -77,6 +83,7 @@ class AssetInventoryItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['site'] = this.site;
     data['skuCode'] = this.skuCode;
     data['assetCode'] = this.assetCode;
     data['itemCode'] = this.itemCode;
@@ -92,8 +99,9 @@ class AssetInventoryItem {
     data['checkpointCode'] = this.checkpointCode;
     data['lastCheckpointCode'] = this.lastCheckpointCode;
     data['status'] = this.status;
-    data['docId'] = this.docId;
-    data['docNum'] = this.docNum;
+    data['regNum'] = this.regNum;
+    data['toNum'] = this.toNum;
+    data['tiNum'] = this.tiNum;
     data['inboundDate'] = this.inboundDate;
     data['expiryDate'] = this.expiryDate;
     data['createdDate'] = this.createdDate;

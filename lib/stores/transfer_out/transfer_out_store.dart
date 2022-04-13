@@ -66,25 +66,25 @@ abstract class _TransferOutStore with Store {
   }
 
   @action
-  Future<void> nextPage({String docNum = ""}) async{
+  Future<void> nextPage({String toNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(shipmentCode: docNum, requestedPage: page+1);
+      fetchData(toNum: toNum, requestedPage: page+1);
     }
   }
 
   @action
-  Future<void> prevPage({String docNum = ""}) async{
+  Future<void> prevPage({String toNum = ""}) async{
     if(page>=1){
-      fetchData(shipmentCode: docNum, requestedPage: page-1);
+      fetchData(toNum: toNum, requestedPage: page-1);
     }
   }
 
   @action
-  Future<void> fetchData({String shipmentCode = "", int? requestedPage}) async {
+  Future<void> fetchData({String toNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getTransferOutHeader(page: targetPage, limit: limit, shipmentCode: shipmentCode);
+      var data = await repository.getTransferOutHeader(page: targetPage, limit: limit, toNum: toNum);
       int totalRow = data.rowNumber;
       List<TransferOutHeaderItem> list = data.itemList;
       totalCount = totalRow;

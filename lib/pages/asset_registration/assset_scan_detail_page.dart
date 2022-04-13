@@ -29,7 +29,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
 
   Future<void> fetchData() async {
     var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/doc/listDocumentLine?docNum=${widget.arg.docNum}');
+        'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -154,7 +154,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Document number : " + widget.arg.docNum),
+            Text("Reg number : " + widget.arg.regNum),
             SizedBox(height: 5),
             // ignore: unnecessary_null_comparison
             Text(
@@ -175,35 +175,35 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
 }
 class ListDocumentLineItem {
   int? id;
-  String? docNum;
-  String? docDate;
+  int? site;
+  String? regNum;
+  String? regDate;
   String? vendorCode;
   String? skuCode;
   String? itemCode;
-  String? assetCode;
   String? description;
   String? style;
   String? color;
   String? size;
-  String? serial;
+  Null? serial;
   String? eanupc;
   int? quantity;
   int? regQty;
   int? skuQty;
   int? containerQty;
   String? status;
-  String? maker;
-  int? createdDate;
-  int? modifiedDate;
+  Null? maker;
+  Null? createdDate;
+  Null? modifiedDate;
 
   ListDocumentLineItem(
       {this.id,
-      this.docNum,
-      this.docDate,
+      this.site,
+      this.regNum,
+      this.regDate,
       this.vendorCode,
       this.skuCode,
       this.itemCode,
-      this.assetCode,
       this.description,
       this.style,
       this.color,
@@ -221,12 +221,12 @@ class ListDocumentLineItem {
 
   ListDocumentLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    docNum = json['docNum'];
-    docDate = json['docDate'];
+    site = json['site'];
+    regNum = json['regNum'];
+    regDate = json['regDate'];
     vendorCode = json['vendorCode'];
     skuCode = json['skuCode'];
     itemCode = json['itemCode'];
-    assetCode = json['assetCode'];
     description = json['description'];
     style = json['style'];
     color = json['color'];
@@ -246,12 +246,12 @@ class ListDocumentLineItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['docNum'] = this.docNum;
-    data['docDate'] = this.docDate;
+    data['site'] = this.site;
+    data['regNum'] = this.regNum;
+    data['regDate'] = this.regDate;
     data['vendorCode'] = this.vendorCode;
     data['skuCode'] = this.skuCode;
     data['itemCode'] = this.itemCode;
-    data['assetCode'] = this.assetCode;
     data['description'] = this.description;
     data['style'] = this.style;
     data['color'] = this.color;

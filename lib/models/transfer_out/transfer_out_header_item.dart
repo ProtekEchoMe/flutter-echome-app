@@ -1,6 +1,7 @@
 class TransferOutHeaderItem {
   int? id;
-  String? shipmentCode;
+  int? site;
+  String? toNum;
   String? shipToDivision;
   String? shipFromLocation;
   String? shipToLocation;
@@ -13,7 +14,8 @@ class TransferOutHeaderItem {
 
   TransferOutHeaderItem(
       {this.id,
-      this.shipmentCode,
+      this.site,
+      this.toNum,
       this.shipToDivision,
       this.shipFromLocation,
       this.shipToLocation,
@@ -26,7 +28,8 @@ class TransferOutHeaderItem {
 
   TransferOutHeaderItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    shipmentCode = json['shipmentCode'];
+    site = json['site'];
+    toNum = json['toNum'];
     shipToDivision = json['shipToDivision'];
     shipFromLocation = json['shipFromLocation'];
     shipToLocation = json['shipToLocation'];
@@ -41,7 +44,8 @@ class TransferOutHeaderItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['shipmentCode'] = this.shipmentCode;
+    data['site'] = this.site;
+    data['toNum'] = this.toNum;
     data['shipToDivision'] = this.shipToDivision;
     data['shipFromLocation'] = this.shipFromLocation;
     data['shipToLocation'] = this.shipToLocation;
