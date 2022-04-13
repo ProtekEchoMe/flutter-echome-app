@@ -337,7 +337,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
         List<String> item = [];
         List<String> equ = [];
         (event.data as List<String>).forEach((element) {
-          if (element.substring(0, 2) == "63") {
+          if (element.substring(0, 2) == "63" ||  element.substring(0, 2) =="43") {
             equ.add(element);
           } else {
             item.add(element);

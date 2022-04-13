@@ -31,7 +31,7 @@ class _TransferOutDetailPageState extends State<TransferOutDetailPage> {
 
   Future<void> fetchData() async {
     var result = await repository.get(
-        '${Endpoints.listTransferOutLine}?shipCode=${widget.arg.shipmentCode}');
+        '${Endpoints.listTransferOutLine}?shipmentCode=${widget.arg.shipmentCode}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
