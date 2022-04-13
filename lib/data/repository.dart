@@ -50,20 +50,24 @@ class Repository {
     // }).catchError((error)=> throw error);
   }
 
+  Future<void> changeSite({String siteCode=""}) async {
+    return await _loginApi.setSiteCode(siteCode: siteCode);
+  }
+
   void cancelLogin(){
     _loginApi.cancelLogin();
   }
 
-  Future<AssetInventoryResponse> getAssetInventory({int page =0 , int limit = 10, String assetId = "", String itemCode = "" }) async {
-    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit, assetId:assetId, itemCode:itemCode);
+  Future<AssetInventoryResponse> getAssetInventory({int page =0 , int limit = 10, String assetCode = "", String itemCode = "", String siteCode = "" }) async {
+    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit, assetCode:assetCode, itemCode:itemCode, siteCode:siteCode );
   }
 
-  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String docNumber = "" }) async {
-    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit, docNumber: docNumber );
+  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String regNumber = "" }) async {
+    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit, regNumber: regNumber );
   }
 
-  Future<TransferOutHeaderResponse> getTransferOutHeader({int page =0 , int limit = 10,String shipmentCode = "" }) async {
-    return await _transferOutApi.getTransferOutHeaderItem(page: page, limit: limit, shipmentCode: shipmentCode);
+  Future<TransferOutHeaderResponse> getTransferOutHeader({int page =0 , int limit = 10,String toNum = "" }) async {
+    return await _transferOutApi.getTransferOutHeaderItem(page: page, limit: limit, toNum: toNum);
   }
 
 

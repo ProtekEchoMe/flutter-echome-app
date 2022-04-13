@@ -1,10 +1,7 @@
-import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
-import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +28,7 @@ class _TransferOutDetailPageState extends State<TransferOutDetailPage> {
 
   Future<void> fetchData() async {
     var result = await repository.get(
-        '${Endpoints.listTransferOutLine}?shipmentCode=${widget.arg.shipmentCode}');
+        '${Endpoints.listTransferOutLine}?toNum=${widget.arg.toNum}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -153,7 +150,7 @@ class _TransferOutDetailPageState extends State<TransferOutDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Shipment Code: " + widget.arg.shipmentCode.toString()),
+            Text("Shipment Code: " + widget.arg.toNum.toString()),
             SizedBox(height: 5),
             // ignore: unnecessary_null_comparison
             Text(
@@ -175,7 +172,8 @@ class _TransferOutDetailPageState extends State<TransferOutDetailPage> {
 
 class ListTransferOutLineItem {
   int? id;
-  String? shipmentCode;
+  int? site;
+  String? toNum;
   String? containerCode;
   String? shipToDivision;
   String? shipToLocation;
@@ -199,7 +197,8 @@ class ListTransferOutLineItem {
 
   ListTransferOutLineItem(
       {this.id,
-      this.shipmentCode,
+      this.site,
+      this.toNum,
       this.containerCode,
       this.shipToDivision,
       this.shipToLocation,
@@ -223,7 +222,8 @@ class ListTransferOutLineItem {
 
   ListTransferOutLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    shipmentCode = json['shipmentCode'];
+    site = json['site'];
+    toNum = json['toNum'];
     containerCode = json['containerCode'];
     shipToDivision = json['shipToDivision'];
     shipToLocation = json['shipToLocation'];
@@ -249,7 +249,8 @@ class ListTransferOutLineItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['shipmentCode'] = this.shipmentCode;
+    data['site'] = this.site;
+    data['toNum'] = this.toNum;
     data['containerCode'] = this.containerCode;
     data['shipToDivision'] = this.shipToDivision;
     data['shipToLocation'] = this.shipToLocation;

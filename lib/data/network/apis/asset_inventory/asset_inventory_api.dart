@@ -17,15 +17,15 @@ class AssetInventoryApi {
   
 
   /// Returns list of post in response
-  Future<AssetInventoryResponse> getAssetInventory({int page = 0, int limit = 10, String assetId = "", String itemCode = ""}) async {
+  Future<AssetInventoryResponse> getAssetInventory({int page = 0, int limit = 10, String assetCode = "", String itemCode = "", String siteCode = ""}) async {
     try {
       print(page*limit);
       print(limit);
       List<dynamic> filter = [];
-      if (assetId.isNotEmpty) {
+      if (assetCode.isNotEmpty) {
         filter = [
           {
-            "value": assetId,
+            "value": assetCode,
             "name": "assetCode",
             "operator": "eq",
             "type": "string"
@@ -55,7 +55,7 @@ class AssetInventoryApi {
           "filterBy": jsonEncode(filter)
         };
       }
-
+      query["siteCode"]=siteCode;
       final res = await _dioClient.getInventory(
         Endpoints.assetInventory,
         queryParameters: query

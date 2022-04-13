@@ -4,6 +4,7 @@ import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -16,9 +17,9 @@ import 'package:outline_search_bar/outline_search_bar.dart';
 import '../../stores/asset_inventory/asset_inventory_store.dart';
 
 class AssetInventoryPage extends StatefulWidget {
-  final String? assetId;
+  final String? assetCode;
   final String? itemCode;
-  AssetInventoryPage({Key? key, this.assetId, this.itemCode}) : super(key: key);
+  AssetInventoryPage({Key? key, this.assetCode, this.itemCode}) : super(key: key);
 
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
@@ -26,13 +27,14 @@ class AssetInventoryPage extends StatefulWidget {
 
 class _AssetInventoryPageState extends State<AssetInventoryPage> {
   AssetInventoryStore _store = getIt<AssetInventoryStore>();
+  LoginFormStore _loginFormStore = getIt<LoginFormStore>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _store.fetchData(
-        assetId: widget.assetId ?? "", itemCode: widget.itemCode ?? "");
+        assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
   }
 
   @override
@@ -80,7 +82,9 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage();
+                                        _store.prevPage(
+                                          assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                        );
                                       },
                                       child: SizedBox(
                                         width: 40,
@@ -105,7 +109,9 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage();
+                                        _store.nextPage(
+                                          assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                        );
                                       },
                                       child: SizedBox(
                                         width: 40,
@@ -178,7 +184,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
   }
 
   Widget _getSearchBar(BuildContext ctx) {
-    if (widget.assetId != null) {
+    if (widget.assetCode != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
         child: Row(
@@ -188,7 +194,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Asset ID = " + widget.assetId!,
+                    "Seraching for Asset ID = " + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -212,7 +218,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => AssetInventoryPage(assetId: str.trim())));
+                    builder: (_) => AssetInventoryPage(assetCode: str.trim())));
           }
         },
       ),

@@ -30,6 +30,12 @@ abstract class _LoginFormStore with Store {
   _LoginFormStore(this.repository);
 
   @observable
+  bool isChangingSite = false;
+
+  @observable
+  String? siteCode;
+
+  @observable
   String? accessToken;
 
   @observable
@@ -130,6 +136,24 @@ abstract class _LoginFormStore with Store {
   @action
   void setPassword(String value) {
     password = value;
+  }
+
+  @action 
+  Future<void> changeSite({String siteCode=""})async{
+     isChangingSite = true;
+    try {
+      await repository.changeSite(siteCode:siteCode);
+      print("change site success");
+      this.siteCode = siteCode;
+    } catch (e) {
+      print(e);
+      if (e is DioError) {
+        var message = (e as DioError).response?.data?["error_description"];
+        errorStore.setErrorMessage(message);
+      }
+    } finally {
+        isChangingSite = false;
+    }
   }
 
   void cancelLogin() {

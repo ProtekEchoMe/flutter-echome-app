@@ -16,8 +16,8 @@ import 'package:outline_search_bar/outline_search_bar.dart';
 import 'asset_scan_page_arguments.dart';
 
 class AssetRegistrationPage extends StatefulWidget {
-  final String? searchDocNum;
-  AssetRegistrationPage({Key? key, this.searchDocNum}) : super(key: key);
+  final String? searchRegNum;
+  AssetRegistrationPage({Key? key, this.searchRegNum}) : super(key: key);
 
   @override
   State<AssetRegistrationPage> createState() => _AssetRegistrationPageState();
@@ -30,7 +30,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData(docNum: widget.searchDocNum ?? "");
+    _store.fetchData(regNum: widget.searchRegNum ?? "");
   }
 
   @override
@@ -137,7 +137,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                           arguments: AssetScanPageArguments(
                                               listItem.orderId,
                                               item: listItem.item)).then((value) => {
-                                                 _store.fetchData(docNum: widget.searchDocNum ?? "")
+                                                 _store.fetchData(regNum: widget.searchRegNum ?? "")
                                               });
                                       return StatusListItem(
                                         title: title,
@@ -173,7 +173,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   }
 
   Widget _getSearchBar(BuildContext ctx) {
-    if (widget.searchDocNum != null) {
+    if (widget.searchRegNum != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
         child: Row(
@@ -183,7 +183,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Document Number = " + widget.searchDocNum!,
+                    "Seraching for Reg Number = " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -208,7 +208,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) =>
-                        AssetRegistrationPage(searchDocNum: str.trim())));
+                        AssetRegistrationPage(searchRegNum: str.trim())));
           }
         },
       ),

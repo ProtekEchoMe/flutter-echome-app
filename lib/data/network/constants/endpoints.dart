@@ -22,19 +22,19 @@ class Endpoints {
   static const String assetInventory =
       "http://qa-echome.ddns.net/echoMe/inv/listInventory";
   static const String assetRegistration =
-      "http://qa-echome.ddns.net/echoMe/doc/listDocument";
+      "http://qa-echome.ddns.net/echoMe/reg/listRegisterHeader";
   static const String listRfidContainer =
       "http://qa-echome.ddns.net/echoMe/rfid/listRfidContainer";
   static const String getContainerCode =
       "https://qa-echome.ddns.net/echoMe/rfid/getContainerCode";
   static const String registerItems =
-      "http://qa-echome.ddns.net/echoMe/reg/registerItems";
+      "http://qa-echome.ddns.net/echoMe/reg/checkInItems";
   static const String registerToItems =
-      "http://qa-echome.ddns.net/echoMe/to/registerItems";
+      "http://qa-echome.ddns.net/echoMe/to/checkInItems";
   static const String registerContainer =
-      "http://qa-echome.ddns.net/echoMe/reg/registerContainers";
+      "http://qa-echome.ddns.net/echoMe/reg/checkInContainer";
   static const String registerToContainer =
-      "http://qa-echome.ddns.net/echoMe/to/registerContainers";
+      "http://qa-echome.ddns.net/echoMe/to/checkInContainer";
   static const String registerComplete =
       "http://qa-echome.ddns.net/echoMe/reg/registerComplete";
 
@@ -48,4 +48,6 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/to/listTransferOutHeader";
   static const String listTransferOutLine =
       "http://qa-echome.ddns.net/echoMe/to/listTransferOutLine";
+  static const String setSiteCode =
+      "http://qa-echome.ddns.net/echoMe/site";
 }

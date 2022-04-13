@@ -19,8 +19,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
 class TransferOutPage extends StatefulWidget {
-  final String? shipmentCode;
-  TransferOutPage({Key? key, this.shipmentCode}) : super(key: key);
+  final String? toNum;
+  TransferOutPage({Key? key, this.toNum}) : super(key: key);
 
   @override
   State<TransferOutPage> createState() => _TransferOutPageState();
@@ -33,7 +33,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData(shipmentCode: widget.shipmentCode ?? "");
+    _store.fetchData(toNum: widget.toNum ?? "");
   }
 
   @override
@@ -130,7 +130,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                   final listItem = _store.itemList[index];
                                   return Observer(
                                     builder: (context) {
-                                      var title = listItem.shipmentCode;
+                                      var title = listItem.toNum;
                                       var subtitle =
                                           "${listItem.shipType} : ${listItem.shipToLocation}";
                                       var status = listItem.status;
@@ -138,23 +138,23 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                       // var fx = () => Navigator.pushNamed(
                                       //     context, "/asset_scan",
                                       //     arguments: AssetScanPageArguments(
-                                      //         listItem.shipmentCode.toString(),
+                                      //         listItem.toNum.toString(),
                                       //         item: listItem)).then((value) => {
-                                      //            _store.fetchData(docNum: widget.shipmentCode ?? "")
+                                      //            _store.fetchData(docNum: widget.toNum ?? "")
                                       //         });
                                       // ignore: prefer_function_declarations_over_variables
                                       var fx = () => Navigator.pushNamed(
                                               context, "/transfer_out_scan",
                                               arguments:
                                                   TransferOutScanPageArguments(
-                                                      shipmentCode: listItem
-                                                              .shipmentCode ??
+                                                      toNum: listItem
+                                                              .toNum ??
                                                           "",
                                                       item: listItem))
                                           .then((value) => {
                                                 _store.fetchData(
-                                                    shipmentCode:
-                                                        widget.shipmentCode ??
+                                                    toNum:
+                                                        widget.toNum ??
                                                             "")
                                               });
                                       return StatusListItem(
@@ -191,7 +191,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
   }
 
   Widget _getSearchBar(BuildContext ctx) {
-    if (widget.shipmentCode != null) {
+    if (widget.toNum != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
         child: Row(
@@ -201,7 +201,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Shipment Code = " + widget.shipmentCode!,
+                    "Seraching for Shipment Code = " + widget.toNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -225,7 +225,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => TransferOutPage(shipmentCode: str.trim())));
+                    builder: (_) => TransferOutPage(toNum: str.trim())));
           }
         },
       ),

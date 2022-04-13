@@ -24,6 +24,36 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
               name: '_LoginFormStore.isDataFilled'))
           .value;
 
+  final _$isChangingSiteAtom = Atom(name: '_LoginFormStore.isChangingSite');
+
+  @override
+  bool get isChangingSite {
+    _$isChangingSiteAtom.reportRead();
+    return super.isChangingSite;
+  }
+
+  @override
+  set isChangingSite(bool value) {
+    _$isChangingSiteAtom.reportWrite(value, super.isChangingSite, () {
+      super.isChangingSite = value;
+    });
+  }
+
+  final _$siteCodeAtom = Atom(name: '_LoginFormStore.siteCode');
+
+  @override
+  String? get siteCode {
+    _$siteCodeAtom.reportRead();
+    return super.siteCode;
+  }
+
+  @override
+  set siteCode(String? value) {
+    _$siteCodeAtom.reportWrite(value, super.siteCode, () {
+      super.siteCode = value;
+    });
+  }
+
   final _$accessTokenAtom = Atom(name: '_LoginFormStore.accessToken');
 
   @override
@@ -143,6 +173,14 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     return _$loginAsyncAction.run(() => super.login());
   }
 
+  final _$changeSiteAsyncAction = AsyncAction('_LoginFormStore.changeSite');
+
+  @override
+  Future<void> changeSite({String siteCode = ""}) {
+    return _$changeSiteAsyncAction
+        .run(() => super.changeSite(siteCode: siteCode));
+  }
+
   final _$_LoginFormStoreActionController =
       ActionController(name: '_LoginFormStore');
 
@@ -193,6 +231,8 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
   @override
   String toString() {
     return '''
+isChangingSite: ${isChangingSite},
+siteCode: ${siteCode},
 accessToken: ${accessToken},
 refreshToken: ${refreshToken},
 idToken: ${idToken},

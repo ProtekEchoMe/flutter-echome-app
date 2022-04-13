@@ -117,9 +117,9 @@ mixin _$AssetRegistrationStore on _AssetRegistrationStore, Store {
       AsyncAction('_AssetRegistrationStore.fetchData');
 
   @override
-  Future<void> fetchData({String docNum = "", int? requestedPage}) {
+  Future<void> fetchData({String regNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction.run(
-        () => super.fetchData(docNum: docNum, requestedPage: requestedPage));
+        () => super.fetchData(regNum: regNum, requestedPage: requestedPage));
   }
 
   final _$_AssetRegistrationStoreActionController =

@@ -67,23 +67,23 @@ abstract class _AssetRegistrationStore with Store {
   @action
   Future<void> nextPage({String docNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(docNum: docNum, requestedPage: page+1);
+      fetchData(regNum: docNum, requestedPage: page+1);
     }
   }
 
   @action
   Future<void> prevPage({String docNum = ""}) async{
     if(page>=1){
-      fetchData(docNum: docNum, requestedPage: page-1);
+      fetchData(regNum: docNum, requestedPage: page-1);
     }
   }
 
   @action
-  Future<void> fetchData({String docNum = "", int? requestedPage}) async {
+  Future<void> fetchData({String regNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getAssetRegistration(page: targetPage, limit: limit, docNumber: docNum);
+      var data = await repository.getAssetRegistration(page: targetPage, limit: limit, regNumber: regNum);
       int totalRow = data.rowNumber;
       List<AssetRegistrationItem> list = data.itemList.map((RegistrationItem e) =>AssetRegistrationItem(e)).toList();
       totalCount = totalRow;

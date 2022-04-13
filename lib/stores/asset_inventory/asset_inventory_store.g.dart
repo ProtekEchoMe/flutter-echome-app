@@ -102,26 +102,34 @@ mixin _$AssetInventoryStore on _AssetInventoryStore, Store {
   final _$nextPageAsyncAction = AsyncAction('_AssetInventoryStore.nextPage');
 
   @override
-  Future<void> nextPage({String assetId = "", String itemCode = ""}) {
-    return _$nextPageAsyncAction
-        .run(() => super.nextPage(assetId: assetId, itemCode: itemCode));
+  Future<void> nextPage(
+      {String assetCode = "", String itemCode = "", String siteCode = ""}) {
+    return _$nextPageAsyncAction.run(() => super.nextPage(
+        assetCode: assetCode, itemCode: itemCode, siteCode: siteCode));
   }
 
   final _$prevPageAsyncAction = AsyncAction('_AssetInventoryStore.prevPage');
 
   @override
-  Future<void> prevPage({String assetId = "", String itemCode = ""}) {
-    return _$prevPageAsyncAction
-        .run(() => super.prevPage(assetId: assetId, itemCode: itemCode));
+  Future<void> prevPage(
+      {String assetCode = "", String itemCode = "", String siteCode = ""}) {
+    return _$prevPageAsyncAction.run(() => super.prevPage(
+        assetCode: assetCode, itemCode: itemCode, siteCode: siteCode));
   }
 
   final _$fetchDataAsyncAction = AsyncAction('_AssetInventoryStore.fetchData');
 
   @override
   Future<void> fetchData(
-      {int? requestedPage, String assetId = "", String itemCode = ""}) {
+      {int? requestedPage,
+      String assetCode = "",
+      String itemCode = "",
+      String siteCode = ""}) {
     return _$fetchDataAsyncAction.run(() => super.fetchData(
-        requestedPage: requestedPage, assetId: assetId, itemCode: itemCode));
+        requestedPage: requestedPage,
+        assetCode: assetCode,
+        itemCode: itemCode,
+        siteCode: siteCode));
   }
 
   final _$_AssetInventoryStoreActionController =
