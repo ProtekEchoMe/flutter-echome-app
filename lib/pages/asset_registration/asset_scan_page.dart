@@ -27,13 +27,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
       getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
-  final Set itemRfidDataSet = {};
-  final Set checkedItem = {};
-  EquItem? equipmentChosen;
-  final bool isFetchingEquId = false;
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
-  final Map errorMap = {};
-  List<EquItem> equTable = [];
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -426,38 +420,6 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  Future<bool> _registerContainer(
-      {bool ignoreRegisteredError = false, String regNum = ""}) async {
-    try {
-      print(equipmentChosen);
-      if (equipmentChosen == null) {
-        throw "No Equipment detected";
-      }
-      var targetContainerCode = equipmentChosen!.containerCode;
-      List<String> rfidList = [];
-      for (var element in equTable) {
-        if (element.containerCode == targetContainerCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
-      await api.registerContainer(rfid: rfidList, regNum: regNum);
-      // EasyDebounce.debounce(
-      //     'validateContainerRfid', const Duration(milliseconds: 500), () {
-      //   _validateContainerRfid();
-      // });
-      return true;
-    } catch (e) {
-      if (e.toString().contains("Error 2109") &&
-          ignoreRegisteredError == true) {
-        return true;
-      }
-      _showSnackBar(e.toString());
-      return false;
-    }
-  }
-
   Widget _assetListContainer(bool isLast, Widget? child) {
     if (isLast) {
       return ClipRRect(
@@ -516,9 +478,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
   }
 
   void _addMockAssetId() {
-    _assetRegistrationScanStore.updateDataSet(itemList: [
-      AscToText.getAscIIString(new Random().nextInt(50).toString())
-    ]);
+    _assetRegistrationScanStore.updateDataSet(
+        itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
   void _addMockEquipmentId() {
@@ -534,34 +495,5 @@ class _AssetScanPageState extends State<AssetScanPage> {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
     _assetRegistrationScanStore.updateDataSet(equList: list);
-  }
-}
-
-class EquItem {
-  int? id;
-  String? containerCode;
-  String? rfid;
-  String? status;
-  int? createdDate;
-
-  EquItem(
-      {this.id, this.containerCode, this.rfid, this.status, this.createdDate});
-
-  EquItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    containerCode = json['containerCode'];
-    rfid = json['rfid'];
-    status = json['status'];
-    createdDate = json['createdDate'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['containerCode'] = this.containerCode;
-    data['rfid'] = this.rfid;
-    data['status'] = this.status;
-    data['createdDate'] = this.createdDate;
-    return data;
   }
 }
