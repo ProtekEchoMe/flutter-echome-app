@@ -68,7 +68,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
           .toList();
       await api.registerItem(
           regNum: args!.regNum,
-          containerCode: equipmentChosen!.containerCode!,
+          containerCode: _getContainerCode(),
           itemRfid: itemRfid);
       _assetRegistrationScanStore.reset();
     } catch (e) {
