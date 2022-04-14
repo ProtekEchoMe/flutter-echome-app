@@ -60,7 +60,7 @@ class AssetRegistrationApi {
           str = str + element + ",";
         }
       }
-      Map<String, dynamic> query = {"rfids": str.substring(0,str.length-1)};
+      Map<String, dynamic> query = {"rfids": str.substring(0, str.length - 1)};
       final res = await _dioClient.getRegistration(Endpoints.getContainerCode,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
@@ -89,7 +89,6 @@ class AssetRegistrationApi {
     }
   }
 
-  
   Future<void> completeToRegister({String toNum = ""}) async {
     try {
       final res = await _dioClient
@@ -110,7 +109,7 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> registerItem(
+  Future<void> registerItem(
       {String regNum = "",
       String containerCode = "",
       List<String> itemRfid = const []}) async {
@@ -127,9 +126,6 @@ class AssetRegistrationApi {
         "containerCode": containerCode,
         "rfids": str
       };
-      // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
-      //     queryParameters: query);
-      // print(res);
       final res1 = await _dioClient.getRegistration(Endpoints.registerItems,
           queryParameters: query);
     } catch (e) {
@@ -161,7 +157,7 @@ class AssetRegistrationApi {
       }
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
-        "toNum":toNum,
+        "toNum": toNum,
         "containerCode": containerCode,
         "rfids": str
       };
@@ -186,7 +182,8 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> registerContainer({List<String> rfid = const [], String regNum = ""}) async {
+  Future<dynamic> registerContainer(
+      {List<String> rfid = const [], String regNum = ""}) async {
     try {
       var str = "";
       if (rfid != null) {
@@ -195,7 +192,7 @@ class AssetRegistrationApi {
         }
       }
       str = str.substring(0, str.length - 1);
-      Map<String, dynamic> query = {"rfids": str, "regNum":regNum};
+      Map<String, dynamic> query = {"rfids": str, "regNum": regNum};
       final res = await _dioClient.getRegistration(Endpoints.registerContainer,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
@@ -212,7 +209,8 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> registerToContainer({List<String> rfid = const [], String toNum=""}) async {
+  Future<dynamic> registerToContainer(
+      {List<String> rfid = const [], String toNum = ""}) async {
     try {
       var str = "";
       if (rfid != null) {
@@ -221,7 +219,7 @@ class AssetRegistrationApi {
         }
       }
       str = str.substring(0, str.length - 1);
-      Map<String, dynamic> query = {"rfids": str, "toNum":toNum};
+      Map<String, dynamic> query = {"rfids": str, "toNum": toNum};
       final res = await _dioClient.getRegistration(
           Endpoints.registerToContainer,
           queryParameters: query);

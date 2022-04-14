@@ -13,7 +13,6 @@ class AssetRegistrationScanStore = _AssetRegistrationScanStore
     with _$AssetRegistrationScanStore;
 
 abstract class _AssetRegistrationScanStore with Store {
-
   final String TAG = "_AssetRegistrationScanStore";
 
   final ErrorStore errorStore = ErrorStore();
@@ -100,14 +99,47 @@ abstract class _AssetRegistrationScanStore with Store {
   }
 
   @action
-  Future<void> complete({String regNum=""}) async{
-     try {
-       isFetching = true;
+  Future<void> complete({String regNum = ""}) async {
+    try {
+      isFetching = true;
       await repository.completeAssetRegistration(regNum: regNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
       isFetching = false;
-    } 
+    }
+  }
+
+  @action
+  Future<void> registerContainer(
+      {List<String> rfid = const [], String regNum = "", bool throwError = false}) async {
+    try {
+      isFetching = true;
+      await repository.registerContainer(rfid: rfid, regNum: regNum);
+    } catch (e) {
+      if(throwError == true){
+        rethrow;
+      }else{
+        errorStore.setErrorMessage(e.toString());
+      }
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  @action
+  Future<void> registerItem(
+      {String regNum = "",
+      String containerCode = "",
+      List<String> itemRfid = const []}) async {
+    try {
+      isFetching = true;
+      await repository.registerItem(
+          regNum: regNum, containerCode: containerCode, itemRfid: itemRfid);
+    } catch (e) {
+      errorStore.setErrorMessage(e.toString());
+    } finally {
+      isFetching = false;
+    }
   }
 }

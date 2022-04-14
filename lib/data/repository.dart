@@ -30,12 +30,17 @@ class Repository {
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._sharedPrefsHelper, this._loginApi, this._logoutApi, this._assetInventoryApi, this._assetRegistrationApi, this._transferOutApi);
-
+  Repository(
+      this._sharedPrefsHelper,
+      this._loginApi,
+      this._logoutApi,
+      this._assetInventoryApi,
+      this._assetRegistrationApi,
+      this._transferOutApi);
 
   // Login:---------------------------------------------------------------------
-  Future<AuthResponse> login({String email="", String password=""}) async {
-     return await _loginApi.login(email: email, password: password);
+  Future<AuthResponse> login({String email = "", String password = ""}) async {
+    return await _loginApi.login(email: email, password: password);
     // return await _loginApi.login(email: email, password: password).then((String jwt){
     //   _sharedPrefsHelper.saveAuthToken(jwt);
     //   return jwt;
@@ -43,31 +48,45 @@ class Repository {
   }
 
   Future<void> logout({String refreshToken = ""}) async {
-     return await _logoutApi.logout(refreshToken);
+    return await _logoutApi.logout(refreshToken);
     // return await _loginApi.login(email: email, password: password).then((String jwt){
     //   _sharedPrefsHelper.saveAuthToken(jwt);
     //   return jwt;
     // }).catchError((error)=> throw error);
   }
 
-  Future<void> changeSite({String siteCode=""}) async {
+  Future<void> changeSite({String siteCode = ""}) async {
     return await _loginApi.setSiteCode(siteCode: siteCode);
   }
 
-  void cancelLogin(){
+  void cancelLogin() {
     _loginApi.cancelLogin();
   }
 
-  Future<AssetInventoryResponse> getAssetInventory({int page =0 , int limit = 10, String assetCode = "", String itemCode = "", String siteCode = "" }) async {
-    return await _assetInventoryApi.getAssetInventory(page: page, limit: limit, assetCode:assetCode, itemCode:itemCode, siteCode:siteCode );
+  Future<AssetInventoryResponse> getAssetInventory(
+      {int page = 0,
+      int limit = 10,
+      String assetCode = "",
+      String itemCode = "",
+      String siteCode = ""}) async {
+    return await _assetInventoryApi.getAssetInventory(
+        page: page,
+        limit: limit,
+        assetCode: assetCode,
+        itemCode: itemCode,
+        siteCode: siteCode);
   }
 
-  Future<AssetRegistrationResponse> getAssetRegistration({int page =0 , int limit = 10,String regNumber = "" }) async {
-    return await _assetRegistrationApi.getAssetRegistration(page: page, limit: limit, regNumber: regNumber );
+  Future<AssetRegistrationResponse> getAssetRegistration(
+      {int page = 0, int limit = 10, String regNumber = ""}) async {
+    return await _assetRegistrationApi.getAssetRegistration(
+        page: page, limit: limit, regNumber: regNumber);
   }
 
-  Future<TransferOutHeaderResponse> getTransferOutHeader({int page =0 , int limit = 10,String toNum = "" }) async {
-    return await _transferOutApi.getTransferOutHeaderItem(page: page, limit: limit, toNum: toNum);
+  Future<TransferOutHeaderResponse> getTransferOutHeader(
+      {int page = 0, int limit = 10, String toNum = ""}) async {
+    return await _transferOutApi.getTransferOutHeaderItem(
+        page: page, limit: limit, toNum: toNum);
   }
 
   // get Equipment Detail e.g. RFID
@@ -75,9 +94,24 @@ class Repository {
     return await _assetRegistrationApi.getContainerDetails(rfid: rfid);
   }
 
+  // register Container
+  Future<void> registerContainer(
+      {List<String> rfid = const [], String regNum = ""}) async {
+    return await _assetRegistrationApi.registerContainer(
+        rfid: rfid, regNum: regNum);
+  }
+
   // asset registration api
-  Future<void> completeAssetRegistration({String regNum=""}) async {
-     await _assetRegistrationApi.completeRegister(regNum:regNum);
+  Future<void> completeAssetRegistration({String regNum = ""}) async {
+    await _assetRegistrationApi.completeRegister(regNum: regNum);
+  }
+
+  Future<void> registerItem(
+      {String regNum = "",
+      String containerCode = "",
+      List<String> itemRfid = const []}) async {
+    await _assetRegistrationApi.registerItem(
+        regNum: regNum, containerCode: containerCode, itemRfid: itemRfid);
   }
 
   // Post: ---------------------------------------------------------------------
@@ -124,9 +158,7 @@ class Repository {
   //     .then((id) => id)
   //     .catchError((error) => throw error);
 
-
   // Login:---------------------------------------------------------------------
-
 
   Future<void> saveIsLoggedIn(bool value) =>
       _sharedPrefsHelper.saveIsLoggedIn(value);
@@ -137,9 +169,9 @@ class Repository {
   Future<void> changeBrightnessToDark(bool value) =>
       _sharedPrefsHelper.changeBrightnessToDark(value);
 
-  Future<void> changeBrightnessToSystemMode() => 
+  Future<void> changeBrightnessToSystemMode() =>
       _sharedPrefsHelper.changeBrightnessToSystem();
-      
+
   bool get isDarkMode => _sharedPrefsHelper.isDarkMode;
 
   bool get useSystemMode => _sharedPrefsHelper.useSystemTheme;

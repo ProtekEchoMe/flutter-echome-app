@@ -17,7 +17,7 @@ import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'asset_scan_page_arguments.dart';
 
 class AssetScanPage extends StatefulWidget {
-  AssetScanPage({Key? key}) : super(key: key);
+  const AssetScanPage({Key? key}) : super(key: key);
 
   @override
   State<AssetScanPage> createState() => _AssetScanPageState();
@@ -43,12 +43,20 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
+  String _getContainerCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore.chosenEquipmentData[0].containerCode ??
+            "")
+        : "";
+  }
+
   Future<void> _changeEquipment(AssetScanPageArguments? args) async {
     print("change equ");
     try {
       if (args?.regNum == null) {
         throw "Reg Number Not Found";
       }
+
       if (_getContainerCode().isEmpty) {
         throw "Container Code not found";
       }
@@ -57,24 +65,42 @@ class _AssetScanPageState extends State<AssetScanPage> {
         throw "Assets List is empty";
       }
 
-      var result = await _registerContainer(
-          ignoreRegisteredError: true, regNum: args?.regNum ?? "");
-      if (result == false) {
-        return;
+      if (_assetRegistrationScanStore.chosenEquipmentData.isEmpty) {
+        throw "No equipment detected";
+      }
+
+      var targetContainerCode = _getContainerCode();
+
+      List<String> rfidList = [];
+      for (var element in _assetRegistrationScanStore.equipmentData) {
+        if (element.containerCode == targetContainerCode) {
+          if (element.rfid != null) {
+            rfidList.add(element.rfid!);
+          }
+        }
+      }
+
+      try {
+        await _assetRegistrationScanStore.registerContainer(
+            rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
+      } catch (e) {
+        if (!e.toString().contains("Error 2109")) {
+          rethrow;
+        }
       }
 
       List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      await api.registerItem(
-          regNum: args!.regNum,
-          containerCode: _getContainerCode(),
-          itemRfid: itemRfid);
+
+      await _assetRegistrationScanStore.registerItem(
+          regNum: args?.regNum ?? "",
+          itemRfid: itemRfid,
+          containerCode: targetContainerCode);
+
       _assetRegistrationScanStore.reset();
     } catch (e) {
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
-    } finally {
-      setState(() {});
     }
   }
 
@@ -297,16 +323,6 @@ class _AssetScanPageState extends State<AssetScanPage> {
         ),
       ),
     );
-  }
-
-  String _getContainerCode() {
-    return _assetRegistrationScanStore
-                                      .chosenEquipmentData.isNotEmpty
-                                  ? (_assetRegistrationScanStore
-                                          .chosenEquipmentData[0]
-                                          .containerCode ??
-                                      "")
-                                  : "";
   }
 
   Widget _getBody(BuildContext ctx, AssetScanPageArguments? args) {
