@@ -1,3 +1,6 @@
+// ignore_for_file: unnecessary_new, prefer_collection_literals
+
+
 class InventoryResponse {
   int? totalRow;
   List<InventoryItem> itemRow;
@@ -83,29 +86,29 @@ class InventoryItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['skuCode'] = this.skuCode;
-    data['assetCode'] = this.assetCode;
-    data['itemCode'] = this.itemCode;
-    data['description'] = this.description;
-    data['style'] = this.style;
-    data['color'] = this.color;
-    data['size'] = this.size;
-    data['serial'] = this.serial;
-    data['eanupc'] = this.eanupc;
-    data['quantity'] = this.quantity;
-    data['locCode'] = this.locCode;
-    data['lastLocCode'] = this.lastLocCode;
-    data['checkpointCode'] = this.checkpointCode;
-    data['lastCheckpointCode'] = this.lastCheckpointCode;
-    data['status'] = this.status;
-    data['docPoId'] = this.docPoId;
-    data['docPoNum'] = this.docPoNum;
-    data['inboundDate'] = this.inboundDate;
-    data['expiryDate'] = this.expiryDate;
-    data['createdDate'] = this.createdDate;
-    data['modifiedDate'] = this.modifiedDate;
-    data['reason'] = this.reason;
+    data['id'] = id;
+    data['skuCode'] = skuCode;
+    data['assetCode'] = assetCode;
+    data['itemCode'] = itemCode;
+    data['description'] = description;
+    data['style'] = style;
+    data['color'] = color;
+    data['size'] = size;
+    data['serial'] = serial;
+    data['eanupc'] = eanupc;
+    data['quantity'] = quantity;
+    data['locCode'] = locCode;
+    data['lastLocCode'] = lastLocCode;
+    data['checkpointCode'] = checkpointCode;
+    data['lastCheckpointCode'] = lastCheckpointCode;
+    data['status'] = status;
+    data['docPoId'] = docPoId;
+    data['docPoNum'] = docPoNum;
+    data['inboundDate'] = inboundDate;
+    data['expiryDate'] = expiryDate;
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
+    data['reason'] = reason;
     return data;
   }
 }

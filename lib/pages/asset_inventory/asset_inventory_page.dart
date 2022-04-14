@@ -1,9 +1,7 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
@@ -12,7 +10,6 @@ import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:echo_me_mobile/widgets/status_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 import '../../stores/asset_inventory/asset_inventory_store.dart';
 
@@ -194,7 +191,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Asset ID = " + widget.assetCode!,
+                    "Searching for Asset ID = " + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!

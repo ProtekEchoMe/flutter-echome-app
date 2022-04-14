@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_new, prefer_collection_literals
 
 import 'dart:async';
 
@@ -147,16 +148,16 @@ class ModelInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['modelName'] = this.modelName;
-    data['isTagLocationingSupported'] = this.isTagLocationingSupported;
-    data['isTagEvenReportingSupported'] = this.isTagEvenReportingSupported;
-    data['countryCode'] = this.countryCode;
-    data['numAntennaSupported'] = this.numAntennaSupported;
-    data['isNXPCommandSupported'] = this.isNXPCommandSupported;
-    data['rssiFilter'] = this.rssiFilter;
-    data['communicationStandard'] = this.communicationStandard;
-    data['readerId'] = this.readerId;
-    data['antennaPower'] = this.antennaPower;
+    data['modelName'] = modelName;
+    data['isTagLocationingSupported'] = isTagLocationingSupported;
+    data['isTagEvenReportingSupported'] = isTagEvenReportingSupported;
+    data['countryCode'] = countryCode;
+    data['numAntennaSupported'] = numAntennaSupported;
+    data['isNXPCommandSupported'] = isNXPCommandSupported;
+    data['rssiFilter'] = rssiFilter;
+    data['communicationStandard'] = communicationStandard;
+    data['readerId'] = readerId;
+    data['antennaPower'] = antennaPower;
     return data;
   }
 }

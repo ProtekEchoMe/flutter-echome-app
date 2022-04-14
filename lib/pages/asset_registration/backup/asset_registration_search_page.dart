@@ -85,7 +85,7 @@
 //                 alignment: Alignment.centerLeft,
 //                 child: FittedBox(
 //                   child: Text(
-//                     "Seraching for Document Number = " + widget.searchDocNum,
+//                     "Searching for Document Number = " + widget.searchDocNum,
 //                     style: Theme.of(context)
 //                         .textTheme
 //                         .bodyLarge!.copyWith(

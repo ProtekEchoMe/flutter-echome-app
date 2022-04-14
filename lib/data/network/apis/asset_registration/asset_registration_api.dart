@@ -48,7 +48,7 @@ class AssetRegistrationApi {
       print(res);
       return AssetRegistrationResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -65,7 +65,7 @@ class AssetRegistrationApi {
           queryParameters: query);
       return {"itemList": res["itemRow"]};
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -85,7 +85,7 @@ class AssetRegistrationApi {
           throw Exception(e.response?.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -106,7 +106,7 @@ class AssetRegistrationApi {
           throw Exception(e.response?.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -144,7 +144,7 @@ class AssetRegistrationApi {
           throw Exception(e.response?.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -182,7 +182,7 @@ class AssetRegistrationApi {
           throw Exception(e.response?.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -208,7 +208,7 @@ class AssetRegistrationApi {
           throw Exception(e.response!.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -235,7 +235,7 @@ class AssetRegistrationApi {
           throw Exception(e.response!.data);
         }
       }
-      throw e;
+      rethrow;
     }
   }
 
@@ -246,34 +246,34 @@ class AssetRegistrationApi {
     return "a";
   }
 
-  Future<dynamic> getContainerRfidDetails(
-      {String rfid = "", String containerCode = ""}) async {
-    try {
-      var filter = [];
-      if (rfid.isNotEmpty) {
-        filter = [
-          {"value": rfid, "name": "rfid", "operator": "eq", "type": "string"}
-        ];
-      } else if (containerCode.isNotEmpty) {
-        filter = [
-          {
-            "value": containerCode,
-            "name": "containerCode",
-            "operator": "eq",
-            "type": "string"
-          }
-        ];
-      }
-      Map<String, dynamic> query = {"filterBy": jsonEncode(filter)};
-      final res = await _dioClient.getRegistration(Endpoints.listRfidContainer,
-          queryParameters: query);
-      print("ok");
-      print(res);
-      return {"itemList": res["itemRow"], "totalRow": res["totalRow"]};
-    } catch (e) {
-      throw e;
-    }
-  }
+  // Future<dynamic> getContainerRfidDetails(
+  //     {String rfid = "", String containerCode = ""}) async {
+  //   try {
+  //     var filter = [];
+  //     if (rfid.isNotEmpty) {
+  //       filter = [
+  //         {"value": rfid, "name": "rfid", "operator": "eq", "type": "string"}
+  //       ];
+  //     } else if (containerCode.isNotEmpty) {
+  //       filter = [
+  //         {
+  //           "value": containerCode,
+  //           "name": "containerCode",
+  //           "operator": "eq",
+  //           "type": "string"
+  //         }
+  //       ];
+  //     }
+  //     Map<String, dynamic> query = {"filterBy": jsonEncode(filter)};
+  //     final res = await _dioClient.getRegistration(Endpoints.listRfidContainer,
+  //         queryParameters: query);
+  //     print("ok");
+  //     print(res);
+  //     return {"itemList": res["itemRow"], "totalRow": res["totalRow"]};
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }
 
 class AssetRegistrationResponse {

@@ -58,7 +58,7 @@ class LoginApi {
       //   throw Exception("access_token not exist");
       // }
     } catch (e) {
-      throw e;
+      rethrow;
     } finally {
       _cancelTokenMap["login"]!.remove(token);
     }

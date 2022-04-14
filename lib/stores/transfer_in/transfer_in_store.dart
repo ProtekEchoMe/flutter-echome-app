@@ -3,13 +3,12 @@ import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 
+part 'transfer_in_store.g.dart';
 
-part 'transfer_out_store.g.dart';
-
-class TransferOutStore = _TransferOutStore with _$TransferOutStore;
+class TransferInStore = _TransferOutStore with _$TransferInStore;
 
 abstract class _TransferOutStore with Store {
-  final String TAG = "_TransferOutStore";
+  final String TAG = "_TransferInStore";
 
   final ErrorStore errorStore = ErrorStore();
 

@@ -10,10 +10,12 @@ import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/di/local_module.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
+import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,4 +61,8 @@ Future<void> setupLocator() async {
   getIt.registerFactory<TransferOutStore>(() => TransferOutStore(getIt<Repository>()));
 
   getIt.registerFactory<ForgetPasswordStore>(() => ForgetPasswordStore(getIt<Repository>()));
+
+  getIt.registerFactory<TransferInStore>(() => TransferInStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetRegistrationScanStore>(() => AssetRegistrationScanStore(getIt<Repository>()));
 }

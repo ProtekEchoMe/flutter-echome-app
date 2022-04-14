@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new, prefer_collection_literals
+
 class TransferOutHeaderItem {
   int? id;
   int? site;
@@ -43,18 +45,18 @@ class TransferOutHeaderItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['site'] = this.site;
-    data['toNum'] = this.toNum;
-    data['shipToDivision'] = this.shipToDivision;
-    data['shipFromLocation'] = this.shipFromLocation;
-    data['shipToLocation'] = this.shipToLocation;
-    data['shipType'] = this.shipType;
-    data['deliveryOrderNum'] = this.deliveryOrderNum;
-    data['status'] = this.status;
-    data['maker'] = this.maker;
-    data['createdDate'] = this.createdDate;
-    data['modifiedDate'] = this.modifiedDate;
+    data['id'] = id;
+    data['site'] = site;
+    data['toNum'] = toNum;
+    data['shipToDivision'] = shipToDivision;
+    data['shipFromLocation'] = shipFromLocation;
+    data['shipToLocation'] = shipToLocation;
+    data['shipType'] = shipType;
+    data['deliveryOrderNum'] = deliveryOrderNum;
+    data['status'] = status;
+    data['maker'] = maker;
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
     return data;
   }
 }

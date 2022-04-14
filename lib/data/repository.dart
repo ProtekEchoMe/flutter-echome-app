@@ -70,6 +70,15 @@ class Repository {
     return await _transferOutApi.getTransferOutHeaderItem(page: page, limit: limit, toNum: toNum);
   }
 
+  // get Equipment Detail e.g. RFID
+  Future<dynamic> getEquipmentDetail({List<String> rfid = const []}) async {
+    return await _assetRegistrationApi.getContainerDetails(rfid: rfid);
+  }
+
+  // asset registration api
+  Future<void> completeAssetRegistration({String regNum=""}) async {
+     await _assetRegistrationApi.completeRegister(regNum:regNum);
+  }
 
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {

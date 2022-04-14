@@ -5,7 +5,6 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';

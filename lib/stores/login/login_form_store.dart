@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/repository.dart';
-import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validators2/validators.dart';

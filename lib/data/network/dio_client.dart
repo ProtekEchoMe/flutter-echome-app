@@ -27,7 +27,7 @@ class DioClient {
       return response.data;
     } catch (e) {
     
-      throw e;
+      rethrow;
     }
   }
 
@@ -59,7 +59,7 @@ class DioClient {
         "itemRow":data
       };
     } catch (e) {
-      throw e;
+      rethrow;
     }
       }
   
@@ -86,7 +86,7 @@ class DioClient {
         "itemRow":data
       };
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -112,7 +112,7 @@ class DioClient {
       );
       return response.data;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -138,7 +138,7 @@ class DioClient {
       );
       return response.data;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -162,7 +162,7 @@ class DioClient {
       );
       return response.data;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

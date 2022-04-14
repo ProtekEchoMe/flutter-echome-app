@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new, prefer_collection_literals
+
 class AssetInventoryItem {
   int? id;
   int? site;
@@ -82,31 +84,31 @@ class AssetInventoryItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['site'] = this.site;
-    data['skuCode'] = this.skuCode;
-    data['assetCode'] = this.assetCode;
-    data['itemCode'] = this.itemCode;
-    data['description'] = this.description;
-    data['style'] = this.style;
-    data['color'] = this.color;
-    data['size'] = this.size;
-    data['serial'] = this.serial;
-    data['eanupc'] = this.eanupc;
-    data['quantity'] = this.quantity;
-    data['locCode'] = this.locCode;
-    data['lastLocCode'] = this.lastLocCode;
-    data['checkpointCode'] = this.checkpointCode;
-    data['lastCheckpointCode'] = this.lastCheckpointCode;
-    data['status'] = this.status;
-    data['regNum'] = this.regNum;
-    data['toNum'] = this.toNum;
-    data['tiNum'] = this.tiNum;
-    data['inboundDate'] = this.inboundDate;
-    data['expiryDate'] = this.expiryDate;
-    data['createdDate'] = this.createdDate;
-    data['modifiedDate'] = this.modifiedDate;
-    data['reason'] = this.reason;
+    data['id'] = id;
+    data['site'] = site;
+    data['skuCode'] = skuCode;
+    data['assetCode'] = assetCode;
+    data['itemCode'] = itemCode;
+    data['description'] = description;
+    data['style'] = style;
+    data['color'] = color;
+    data['size'] = size;
+    data['serial'] = serial;
+    data['eanupc'] = eanupc;
+    data['quantity'] = quantity;
+    data['locCode'] = locCode;
+    data['lastLocCode'] = lastLocCode;
+    data['checkpointCode'] = checkpointCode;
+    data['lastCheckpointCode'] = lastCheckpointCode;
+    data['status'] = status;
+    data['regNum'] = regNum;
+    data['toNum'] = toNum;
+    data['tiNum'] = tiNum;
+    data['inboundDate'] = inboundDate;
+    data['expiryDate'] = expiryDate;
+    data['createdDate'] = createdDate;
+    data['modifiedDate'] = modifiedDate;
+    data['reason'] = reason;
     return data;
   }
 }

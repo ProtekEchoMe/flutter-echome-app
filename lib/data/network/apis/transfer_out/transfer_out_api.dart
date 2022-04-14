@@ -43,7 +43,7 @@ class TransferOutApi {
       print(res);
       return TransferOutHeaderResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

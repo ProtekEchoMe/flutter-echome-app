@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_item.dart';
-import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
-import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
+
 
 class AssetInventoryApi {
   // dio instance
@@ -63,7 +59,7 @@ class AssetInventoryApi {
 
       return AssetInventoryResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

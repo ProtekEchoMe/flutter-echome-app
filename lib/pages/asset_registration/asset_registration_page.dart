@@ -183,7 +183,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Reg Number = " + widget.searchRegNum!,
+                    "Searching for Reg Number = " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!

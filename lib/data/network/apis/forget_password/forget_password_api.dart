@@ -27,7 +27,7 @@ class ForgetPasswordApi {
       );
       return res;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

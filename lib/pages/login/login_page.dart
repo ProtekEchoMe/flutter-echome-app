@@ -43,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
     loginFormStore.dispose();
     loginFormStore.cancelLogin();
+    if(disposer !=null) disposer!();
   }
 
   void _showSnackBar(String msg) {

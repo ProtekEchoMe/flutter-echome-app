@@ -201,7 +201,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Seraching for Shipment Code = " + widget.toNum!,
+                    "Searching for Transfer Out Number = " + widget.toNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -219,7 +219,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Shipment Code",
+        hintText: "Search by Transfer Out Number",
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

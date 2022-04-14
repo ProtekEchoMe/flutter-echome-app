@@ -24,6 +24,9 @@
 //   }
 // }
 
+// ignore_for_file: unnecessary_new, prefer_collection_literals
+
+
 class RowData {
   int? itemCode;
   String? itemDescription;
@@ -96,27 +99,27 @@ class RowData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['itemCode'] = this.itemCode;
-    data['itemDescription'] = this.itemDescription;
-    data['styleNumber'] = this.styleNumber;
-    data['color'] = this.color;
-    data['size'] = this.size;
-    data['sn'] = this.sn;
-    data['upcEan'] = this.upcEan;
-    data['brand'] = this.brand;
-    data['coo'] = this.coo;
-    data['expDate'] = this.expDate;
-    data['assetId'] = this.assetId;
-    data['eqmId'] = this.eqmId;
-    data['eqmCode'] = this.eqmCode;
-    data['inboundDate'] = this.inboundDate;
-    data['orderNum'] = this.orderNum;
-    data['itemStatus'] = this.itemStatus;
-    data['location'] = this.location;
-    data['checkPoint'] = this.checkPoint;
-    data['lastLocation'] = this.lastLocation;
-    data['lastCheckpoint'] = this.lastCheckpoint;
-    data['resOperation'] = this.resOperation;
+    data['itemCode'] = itemCode;
+    data['itemDescription'] = itemDescription;
+    data['styleNumber'] = styleNumber;
+    data['color'] = color;
+    data['size'] = size;
+    data['sn'] = sn;
+    data['upcEan'] = upcEan;
+    data['brand'] = brand;
+    data['coo'] = coo;
+    data['expDate'] = expDate;
+    data['assetId'] = assetId;
+    data['eqmId'] = eqmId;
+    data['eqmCode'] = eqmCode;
+    data['inboundDate'] = inboundDate;
+    data['orderNum'] = orderNum;
+    data['itemStatus'] = itemStatus;
+    data['location'] = location;
+    data['checkPoint'] = checkPoint;
+    data['lastLocation'] = lastLocation;
+    data['lastCheckpoint'] = lastCheckpoint;
+    data['resOperation'] = resOperation;
     return data;
   }
 }
