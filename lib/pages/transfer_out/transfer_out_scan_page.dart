@@ -19,17 +19,17 @@ import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
 class RfidContainer {
   int? id;
-  String? containerCode;
+  String? containerAssetCode;
   String? rfid;
   String? status;
   int? createdDate;
 
   RfidContainer(
-      {this.id, this.containerCode, this.rfid, this.status, this.createdDate});
+      {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
 
   RfidContainer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    containerCode = json['containerCode'];
+    containerAssetCode = json['containerAssetCode'];
     rfid = json['rfid'];
     status = json['status'];
     createdDate = json['createdDate'];
@@ -38,7 +38,7 @@ class RfidContainer {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['containerCode'] = this.containerCode;
+    data['containerAssetCode'] = this.containerAssetCode;
     data['rfid'] = this.rfid;
     data['status'] = this.status;
     data['createdDate'] = this.createdDate;
@@ -64,7 +64,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   List<RfidContainer> containerDetails = [];
   final bool isFetchingEquId = false;
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
-  final String testContainerCode = "E100000A";
+  final String testcontainerAssetCode = "E100000A";
   final String testRfid = "CRFID0001";
   bool isCheckingContainer = false;
   bool hasDifferentContainer = false;
@@ -85,7 +85,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         return value.toString();
       }
     }),
-    JsonTableColumn("containerCode", label: "Container Code"),
+    JsonTableColumn("containerAssetCode", label: "Container Code"),
     JsonTableColumn("status", label: "Status"),
     JsonTableColumn("createdDate", label: "Created At", valueBuilder: (value) {
       try {
@@ -115,7 +115,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         showMessage("Transfer Out Code not found");
         return;
       }
-      if (equipmentChosen?.containerCode == null) {
+      if (equipmentChosen?.containerAssetCode == null) {
         showMessage("Container Code not found");
         return;
       }
@@ -135,7 +135,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
           itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
       await api.registerToItem(
           toNum: args!.toNum,
-          containerCode: equipmentChosen!.containerCode!,
+          containerAssetCode: equipmentChosen!.containerAssetCode!,
           itemRfid: itemRfid);
       _rescan();
     } catch (e) {
@@ -184,7 +184,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     List<EquItem> newList = list.map((e) {
       var equItem = EquItem.fromJson(e);
       if (equipmentChosen != null &&
-          equipmentChosen!.containerCode == equItem.containerCode) {
+          equipmentChosen!.containerAssetCode == equItem.containerAssetCode) {
         //update EquipmentChosen
         equipmentChosen = equItem;
       }
@@ -205,8 +205,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
   void _setEquipmentAuto() {
     for (var element in equTable) {
-      if (element.containerCode != null) {
-        equipmentId = element.containerCode!;
+      if (element.containerAssetCode != null) {
+        equipmentId = element.containerAssetCode!;
         equipmentChosen = element;
         return;
       }
@@ -239,10 +239,10 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         // }
         // if ((result["itemList"] as List).isNotEmpty) {
         //   _handleEquTable(result["itemList"] as List);
-        //   var containerCode = result["itemList"][0]["containerCode"] as String;
-        //   equipmentId = containerCode;
+        //   var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
+        //   equipmentId = containerAssetCode;
         //   var result1 =
-        //       await api.getContainerRfidDetails(containerCode: containerCode);
+        //       await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
         //   if ((result1["itemList"] as List).isNotEmpty) {
         //     List<RfidContainer> list = (result1["itemList"] as List)
         //         .map((e) => RfidContainer.fromJson(e))
@@ -293,10 +293,10 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   //         throw Exception("Cant find container");
   //       }
   //       if ((result["itemList"] as List).isNotEmpty) {
-  //         var containerCode = result["itemList"][0]["containerCode"] as String;
-  //         equipmentId = containerCode;
+  //         var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
+  //         equipmentId = containerAssetCode;
   //         var result1 =
-  //             await api.getContainerRfidDetails(containerCode: containerCode);
+  //             await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
   //         if ((result1["itemList"] as List).isNotEmpty) {
   //           List<RfidContainer> list = (result1["itemList"] as List)
   //               .map((e) => RfidContainer.fromJson(e))
@@ -459,9 +459,9 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   void _addMockEquipmentId() {
     var init = equipmentRfidDataSet.length;
     if (init == 0) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000370"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0002"));
     } else if (init == 1) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000381"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0001"));
     } else if (init == 2) {
       equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000392"));
     } else {
@@ -595,7 +595,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                         //               onRowSelect: (index, map) {
                         //                 if ((map["status"] == "PRINTED" ||
                         //                     map["status"] == "REGISTERED")) {
-                        //                   equipmentId = map["containerCode"];
+                        //                   equipmentId = map["containerAssetCode"];
                         //                   equipmentChosen =
                         //                       EquItem.fromJson(map);
                         //                 } else {
@@ -724,10 +724,10 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
       if (equipmentChosen == null) {
         throw "No Equipment detected";
       }
-      var targetContainerCode = equipmentChosen!.containerCode;
+      var targetcontainerAssetCode = equipmentChosen!.containerAssetCode;
       List<String> rfidList = [];
       for (var element in equTable) {
-        if (element.containerCode == targetContainerCode) {
+        if (element.containerAssetCode == targetcontainerAssetCode) {
           if (element.rfid != null) {
             rfidList.add(element.rfid!);
           }
@@ -907,17 +907,17 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
 class EquItem {
   int? id;
-  String? containerCode;
+  String? containerAssetCode;
   String? rfid;
   String? status;
   int? createdDate;
 
   EquItem(
-      {this.id, this.containerCode, this.rfid, this.status, this.createdDate});
+      {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
 
   EquItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    containerCode = json['containerCode'];
+    containerAssetCode = json['containerAssetCode'];
     rfid = json['rfid'];
     status = json['status'];
     createdDate = json['createdDate'];
@@ -926,7 +926,7 @@ class EquItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['containerCode'] = this.containerCode;
+    data['containerAssetCode'] = this.containerAssetCode;
     data['rfid'] = this.rfid;
     data['status'] = this.status;
     data['createdDate'] = this.createdDate;

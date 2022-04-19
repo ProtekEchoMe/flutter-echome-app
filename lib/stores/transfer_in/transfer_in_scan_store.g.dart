@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'asset_registration_scan_store.dart';
+part of 'transfer_in_scan_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,9 @@ part of 'asset_registration_scan_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
+mixin _$TransferInScanStore on _TransferInScanStore, Store {
   final _$itemRfidDataSetAtom =
-      Atom(name: '_AssetRegistrationScanStore.itemRfidDataSet');
+      Atom(name: '_TransferInScanStore.itemRfidDataSet');
 
   @override
   ObservableSet<String> get itemRfidDataSet {
@@ -26,7 +26,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
   }
 
   final _$equipmentRfidDataSetAtom =
-      Atom(name: '_AssetRegistrationScanStore.equipmentRfidDataSet');
+      Atom(name: '_TransferInScanStore.equipmentRfidDataSet');
 
   @override
   ObservableSet<String> get equipmentRfidDataSet {
@@ -42,8 +42,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
     });
   }
 
-  final _$equipmentDataAtom =
-      Atom(name: '_AssetRegistrationScanStore.equipmentData');
+  final _$equipmentDataAtom = Atom(name: '_TransferInScanStore.equipmentData');
 
   @override
   ObservableList<EquipmentData> get equipmentData {
@@ -59,7 +58,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
   }
 
   final _$isFetchingEquDataAtom =
-      Atom(name: '_AssetRegistrationScanStore.isFetchingEquData');
+      Atom(name: '_TransferInScanStore.isFetchingEquData');
 
   @override
   bool get isFetchingEquData {
@@ -74,8 +73,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
     });
   }
 
-  final _$checkedItemAtom =
-      Atom(name: '_AssetRegistrationScanStore.checkedItem');
+  final _$checkedItemAtom = Atom(name: '_TransferInScanStore.checkedItem');
 
   @override
   ObservableSet<String> get checkedItem {
@@ -91,7 +89,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
   }
 
   final _$chosenEquipmentDataAtom =
-      Atom(name: '_AssetRegistrationScanStore.chosenEquipmentData');
+      Atom(name: '_TransferInScanStore.chosenEquipmentData');
 
   @override
   ObservableList<EquipmentData> get chosenEquipmentData {
@@ -106,7 +104,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
     });
   }
 
-  final _$isFetchingAtom = Atom(name: '_AssetRegistrationScanStore.isFetching');
+  final _$isFetchingAtom = Atom(name: '_TransferInScanStore.isFetching');
 
   @override
   bool get isFetching {
@@ -122,7 +120,7 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
   }
 
   final _$validateEquipmentRfidAsyncAction =
-      AsyncAction('_AssetRegistrationScanStore.validateEquipmentRfid');
+      AsyncAction('_TransferInScanStore.validateEquipmentRfid');
 
   @override
   Future<void> validateEquipmentRfid() {
@@ -130,65 +128,64 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeAsyncAction =
-      AsyncAction('_AssetRegistrationScanStore.complete');
+  final _$completeAsyncAction = AsyncAction('_TransferInScanStore.complete');
 
   @override
-  Future<void> complete({String regNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(regNum: regNum));
+  Future<void> complete({String tiNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(tiNum: tiNum));
   }
 
-  final _$registerContainerAsyncAction =
-      AsyncAction('_AssetRegistrationScanStore.registerContainer');
+  final _$checkInContainerAsyncAction =
+      AsyncAction('_TransferInScanStore.checkInContainer');
 
   @override
-  Future<void> registerContainer(
+  Future<void> checkInContainer(
       {List<String> rfid = const [],
-      String regNum = "",
+      String tiNum = "",
       bool throwError = false}) {
-    return _$registerContainerAsyncAction.run(() => super
-        .registerContainer(rfid: rfid, regNum: regNum, throwError: throwError));
+    return _$checkInContainerAsyncAction.run(() => super
+        .checkInContainer(rfid: rfid, tiNum: tiNum, throwError: throwError));
   }
 
-  final _$registerItemAsyncAction =
-      AsyncAction('_AssetRegistrationScanStore.registerItem');
+  final _$checkInItemAsyncAction =
+      AsyncAction('_TransferInScanStore.checkInItem');
 
   @override
-  Future<void> registerItem(
-      {String regNum = "",
+  Future<void> checkInItem(
+      {String tiNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) {
-    return _$registerItemAsyncAction.run(() => super.registerItem(
-        regNum: regNum,
+    return _$checkInItemAsyncAction.run(() => super.checkInItem(
+        tiNum: tiNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
         throwError: throwError));
   }
 
-  final _$_AssetRegistrationScanStoreActionController =
-      ActionController(name: '_AssetRegistrationScanStore');
+  final _$_TransferInScanStoreActionController =
+      ActionController(name: '_TransferInScanStore');
 
   @override
   void reset() {
-    final _$actionInfo = _$_AssetRegistrationScanStoreActionController
-        .startAction(name: '_AssetRegistrationScanStore.reset');
+    final _$actionInfo = _$_TransferInScanStoreActionController.startAction(
+        name: '_TransferInScanStore.reset');
     try {
       return super.reset();
     } finally {
-      _$_AssetRegistrationScanStoreActionController.endAction(_$actionInfo);
+      _$_TransferInScanStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    final _$actionInfo = _$_AssetRegistrationScanStoreActionController
-        .startAction(name: '_AssetRegistrationScanStore.updateDataSet');
+    final _$actionInfo = _$_TransferInScanStoreActionController.startAction(
+        name: '_TransferInScanStore.updateDataSet');
     try {
       return super.updateDataSet(itemList: itemList, equList: equList);
     } finally {
-      _$_AssetRegistrationScanStoreActionController.endAction(_$actionInfo);
+      _$_TransferInScanStoreActionController.endAction(_$actionInfo);
     }
   }
 

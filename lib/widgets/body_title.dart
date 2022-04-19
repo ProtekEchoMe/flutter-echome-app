@@ -1,5 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
-import 'package:echo_me_mobile/data/siteCode/siteCodeList.dart';
+import 'package:echo_me_mobile/data/siteCode/site_code_list.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:flutter/material.dart';

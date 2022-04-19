@@ -5,7 +5,6 @@ class AssetInventoryItem {
   int? site;
   String? skuCode;
   String? assetCode;
-  String? itemCode;
   String? description;
   String? style;
   String? color;
@@ -32,7 +31,6 @@ class AssetInventoryItem {
       this.site,
       this.skuCode,
       this.assetCode,
-      this.itemCode,
       this.description,
       this.style,
       this.color,
@@ -59,7 +57,7 @@ class AssetInventoryItem {
     site = json['site'];
     skuCode = json['skuCode'];
     assetCode = json['assetCode'];
-    itemCode = json['itemCode'];
+    skuCode = json['skuCode'];
     description = json['description'];
     style = json['style'];
     color = json['color'];
@@ -88,7 +86,7 @@ class AssetInventoryItem {
     data['site'] = site;
     data['skuCode'] = skuCode;
     data['assetCode'] = assetCode;
-    data['itemCode'] = itemCode;
+    data['skuCode'] = skuCode;
     data['description'] = description;
     data['style'] = style;
     data['color'] = color;

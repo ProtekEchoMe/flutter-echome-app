@@ -1,4 +1,4 @@
-class TransferOutHeaderItem {
+class ListTransferOutLineItem {
   int? id;
   int? site;
   String? toNum;
@@ -23,7 +23,7 @@ class TransferOutHeaderItem {
   int? createdDate;
   int? modifiedDate;
 
-  TransferOutHeaderItem(
+  ListTransferOutLineItem(
       {this.id,
       this.site,
       this.toNum,
@@ -48,7 +48,7 @@ class TransferOutHeaderItem {
       this.createdDate,
       this.modifiedDate});
 
-  TransferOutHeaderItem.fromJson(Map<String, dynamic> json) {
+  ListTransferOutLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     site = json['site'];
     toNum = json['toNum'];
@@ -75,30 +75,30 @@ class TransferOutHeaderItem {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['id'] = id;
-    data['site'] = site;
-    data['toNum'] = toNum;
-    data['containerCode'] = containerCode;
-    data['shipToDivision'] = shipToDivision;
-    data['shipToLocation'] = shipToLocation;
-    data['shipType'] = shipType;
-    data['deliveryOrderNum'] = deliveryOrderNum;
-    data['department'] = department;
-    data['productCode'] = productCode;
-    data['skuCode'] = skuCode;
-    data['description'] = description;
-    data['style'] = style;
-    data['color'] = color;
-    data['coo'] = coo;
-    data['rsku'] = rsku;
-    data['quantity'] = quantity;
-    data['checkinQty'] = checkinQty;
-    data['containerQty'] = containerQty;
-    data['status'] = status;
-    data['maker'] = maker;
-    data['createdDate'] = createdDate;
-    data['modifiedDate'] = modifiedDate;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['site'] = this.site;
+    data['toNum'] = this.toNum;
+    data['containerCode'] = this.containerCode;
+    data['shipToDivision'] = this.shipToDivision;
+    data['shipToLocation'] = this.shipToLocation;
+    data['shipType'] = this.shipType;
+    data['deliveryOrderNum'] = this.deliveryOrderNum;
+    data['department'] = this.department;
+    data['productCode'] = this.productCode;
+    data['skuCode'] = this.skuCode;
+    data['description'] = this.description;
+    data['style'] = this.style;
+    data['color'] = this.color;
+    data['coo'] = this.coo;
+    data['rsku'] = this.rsku;
+    data['quantity'] = this.quantity;
+    data['checkinQty'] = this.checkinQty;
+    data['containerQty'] = this.containerQty;
+    data['status'] = this.status;
+    data['maker'] = this.maker;
+    data['createdDate'] = this.createdDate;
+    data['modifiedDate'] = this.modifiedDate;
     return data;
   }
 }

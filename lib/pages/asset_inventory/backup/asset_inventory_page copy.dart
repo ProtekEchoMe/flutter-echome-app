@@ -106,7 +106,7 @@
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(
-//         label: Text('Asset ID'),
+//         label: Text('Asset Code'),
 //         onSort: (columnIndex, ascending) => sort(columnIndex, ascending),
 //       ),
 //        DataColumn(

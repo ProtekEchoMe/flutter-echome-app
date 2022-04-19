@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/data/repository.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
@@ -32,24 +33,19 @@ abstract class _TransferOutStore with Store {
   int get totalPage => (totalCount/limit).ceil();
 
   @observable 
-  ObservableList<TransferOutHeaderItem> itemList = ObservableList<TransferOutHeaderItem>();
+  ObservableList<TransferInHeaderItem> itemList = ObservableList<TransferInHeaderItem>();
   
   @observable
   bool isFetching = false;
 
   @action
-  void addItem(TransferOutHeaderItem item){
+  void addItem(TransferInHeaderItem item){
     itemList.add(item);
   }
 
   @action
-  void addAllItem(List<TransferOutHeaderItem> list){
-    print("????????");
-    print(list);
-    print(itemList);
+  void addAllItem(List<TransferInHeaderItem> list){
     itemList.addAll(list);
-    print(itemList.length);
-      print("????????");
   }
 
   @action 
@@ -58,32 +54,32 @@ abstract class _TransferOutStore with Store {
   }
 
   @action
-  void updateList(List<TransferOutHeaderItem> newList){
+  void updateList(List<TransferInHeaderItem> newList){
     itemList = ObservableList.of(newList);
   }
 
   @action
-  Future<void> nextPage({String toNum = ""}) async{
+  Future<void> nextPage({String tiNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(toNum: toNum, requestedPage: page+1);
+      fetchData(tiNum: tiNum, requestedPage: page+1);
     }
   }
 
   @action
-  Future<void> prevPage({String toNum = ""}) async{
+  Future<void> prevPage({String tiNum = ""}) async{
     if(page>=1){
-      fetchData(toNum: toNum, requestedPage: page-1);
+      fetchData(tiNum: tiNum, requestedPage: page-1);
     }
   }
 
   @action
-  Future<void> fetchData({String toNum = "", int? requestedPage}) async {
+  Future<void> fetchData({String tiNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getTransferOutHeader(page: targetPage, limit: limit, toNum: toNum);
+      var data = await repository.getTransferInHeader(page: targetPage, limit: limit, tiNum: tiNum);
       int totalRow = data.rowNumber;
-      List<TransferOutHeaderItem> list = data.itemList;
+      List<TransferInHeaderItem> list = data.itemList;
       totalCount = totalRow;
       page = targetPage;
       itemList.clear();

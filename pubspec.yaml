@@ -57,6 +57,8 @@ dependencies:
   intl: ^0.17.0
   sliver_tools: ^0.2.5
   dio_cookie_manager: ^2.0.0
+  ota_update: ^4.0.1
+
 
 dev_dependencies:
   flutter_test:

@@ -15,8 +15,8 @@ import '../../stores/asset_inventory/asset_inventory_store.dart';
 
 class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
-  final String? itemCode;
-  AssetInventoryPage({Key? key, this.assetCode, this.itemCode}) : super(key: key);
+  final String? skuCode;
+  AssetInventoryPage({Key? key, this.assetCode, this.skuCode}) : super(key: key);
 
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
@@ -31,7 +31,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
     // TODO: implement initState
     super.initState();
     _store.fetchData(
-        assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
+        assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
   }
 
   @override
@@ -80,7 +80,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     GestureDetector(
                                       onTap: () {
                                         _store.prevPage(
-                                          assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                          assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
                                       child: SizedBox(
@@ -107,7 +107,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     GestureDetector(
                                       onTap: () {
                                         _store.nextPage(
-                                          assetCode: widget.assetCode ?? "", itemCode: widget.itemCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                          assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
                                       child: SizedBox(
@@ -133,8 +133,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     builder: (context) {
                                       final listItem = _store.itemList[index];
                                       var assetCode = listItem.assetCode;
-                                      var itemCode = listItem.itemCode;
-                                      var title = "$itemCode/$assetCode";
+                                      var skuCode = listItem.skuCode;
+                                      var title = "$skuCode/$assetCode";
                                       var subtitle =
                                           listItem.description.toString();
                                       var status = listItem.status;
@@ -191,7 +191,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Asset ID = " + widget.assetCode!,
+                    "Searching for Asset Code = " + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -209,7 +209,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Asset ID",
+        hintText: "Search by Asset Code",
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

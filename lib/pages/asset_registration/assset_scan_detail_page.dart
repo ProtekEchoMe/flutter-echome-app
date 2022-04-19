@@ -36,7 +36,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
     var newDataList = (result as List).map((e) {
       try{
         newTotalQuantity += e["quantity"] as int ;
-        totalRegQuantity += e["regQty"] as int;
+        totalRegQuantity += e["checkinQty"] as int;
       }catch(e){
         print(e);
       }
@@ -103,7 +103,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                            Text("Product Code : ${listItem.itemCode}"),
+                            Text("Product Code : ${listItem.skuCode}"),
                             const SizedBox(
                               height: 5,
                             ),
@@ -115,7 +115,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
                             const SizedBox(
                               height: 5,
                             ),
-                            Text("Registered Quantity : ${listItem.regQty}")
+                            Text("Check In Quantity : ${listItem.checkinQty}")
                         ],
                       ),
                           )),
@@ -145,9 +145,10 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
   }
 
   Widget _getDocumentInfo(BuildContext ctx) {
-    String dataString = widget.arg.item?.createdDate != null
+    String dataString = widget.arg.item?.createdDate != String
         ? widget.arg.item!.createdDate!.toString()
         : "";
+        print(widget.arg.item);
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -156,7 +157,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
           children: [
             Text("Reg number : " + widget.arg.regNum),
             SizedBox(height: 5),
-            // ignore: unnecessary_null_comparison
+            // ignore: unnecessary_String_comparison
             Text(
                 "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
@@ -179,22 +180,21 @@ class ListDocumentLineItem {
   String? regNum;
   String? regDate;
   String? vendorCode;
+  String? productCode;
   String? skuCode;
-  String? itemCode;
   String? description;
   String? style;
   String? color;
   String? size;
-  Null? serial;
+  int? serial;
   String? eanupc;
   int? quantity;
-  int? regQty;
-  int? skuQty;
+  int? checkinQty;
   int? containerQty;
   String? status;
-  Null? maker;
-  Null? createdDate;
-  Null? modifiedDate;
+  String? maker;
+  int? createdDate;
+  int? modifiedDate;
 
   ListDocumentLineItem(
       {this.id,
@@ -202,8 +202,8 @@ class ListDocumentLineItem {
       this.regNum,
       this.regDate,
       this.vendorCode,
+      this.productCode,
       this.skuCode,
-      this.itemCode,
       this.description,
       this.style,
       this.color,
@@ -211,8 +211,7 @@ class ListDocumentLineItem {
       this.serial,
       this.eanupc,
       this.quantity,
-      this.regQty,
-      this.skuQty,
+      this.checkinQty,
       this.containerQty,
       this.status,
       this.maker,
@@ -225,8 +224,8 @@ class ListDocumentLineItem {
     regNum = json['regNum'];
     regDate = json['regDate'];
     vendorCode = json['vendorCode'];
+    productCode = json['productCode'];
     skuCode = json['skuCode'];
-    itemCode = json['itemCode'];
     description = json['description'];
     style = json['style'];
     color = json['color'];
@@ -234,8 +233,7 @@ class ListDocumentLineItem {
     serial = json['serial'];
     eanupc = json['eanupc'];
     quantity = json['quantity'];
-    regQty = json['regQty'];
-    skuQty = json['skuQty'];
+    checkinQty = json['checkinQty'];
     containerQty = json['containerQty'];
     status = json['status'];
     maker = json['maker'];
@@ -250,8 +248,8 @@ class ListDocumentLineItem {
     data['regNum'] = this.regNum;
     data['regDate'] = this.regDate;
     data['vendorCode'] = this.vendorCode;
+    data['productCode'] = this.productCode;
     data['skuCode'] = this.skuCode;
-    data['itemCode'] = this.itemCode;
     data['description'] = this.description;
     data['style'] = this.style;
     data['color'] = this.color;
@@ -259,8 +257,7 @@ class ListDocumentLineItem {
     data['serial'] = this.serial;
     data['eanupc'] = this.eanupc;
     data['quantity'] = this.quantity;
-    data['regQty'] = this.regQty;
-    data['skuQty'] = this.skuQty;
+    data['checkinQty'] = this.checkinQty;
     data['containerQty'] = this.containerQty;
     data['status'] = this.status;
     data['maker'] = this.maker;

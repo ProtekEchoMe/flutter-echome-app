@@ -1,9 +1,8 @@
 // ignore_for_file: unnecessary_new, prefer_collection_literals
-
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_line_item.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_line_item.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
@@ -12,18 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class TransferOutDetailPage extends HookWidget {
-  final TransferOutHeaderItem arg;
+class TransferInDetailPage extends HookWidget {
+  final TransferInHeaderItem arg;
   final dioClient = getIt<DioClient>();
   final inputFormat = DateFormat('dd/MM/yyyy');
-  TransferOutDetailPage({Key? key, required this.arg}) : super(key: key);
+  TransferInDetailPage({Key? key, required this.arg}) : super(key: key);
 
-  Widget _getListBox(bool isFetching, List<ListTransferOutLineItem> dataList) {
+  Widget _getListBox(bool isFetching, List<ListTransferInLineItem> dataList) {
     return Expanded(
-      child: Builder(builder: (context) {
-        return isFetching
+        child: isFetching
             ? const AppLoader()
             : AppContentBox(
                 child: Padding(
@@ -57,9 +56,7 @@ class TransferOutDetailPage extends HookWidget {
                         );
                       })),
                 ),
-              );
-      }),
-    );
+              ));
   }
 
   Widget _getDocumentInfo(
@@ -72,18 +69,18 @@ class TransferOutDetailPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Transfer Out Number: " + arg.toNum.toString()),
+            Text("Transfer In Number: " + arg.tiNum.toString()),
             const SizedBox(height: 5),
             Text(
-                "Transfer Out Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "Transfer In Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
             Text("Ship Type: ${arg.shipType.toString()}"),
             const SizedBox(height: 5),
             Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),
             Text("Total Quantity : $totalQuantity"),
-            const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            // const SizedBox(height: 5),
+            // Text("Total Tracker : $totalTracker")
           ],
         ),
       ),
@@ -97,13 +94,13 @@ class TransferOutDetailPage extends HookWidget {
     final totalTracker = useState<String>("");
     final isFetching = useState<bool>(false);
 
-    final dataList = useState<List<ListTransferOutLineItem>>([]);
+    final dataList = useState<List<ListTransferInLineItem>>([]);
 
     Future<void> fetchData() async {
       isFetching.value = true;
       try {
         var result = await dioClient
-            .get('${Endpoints.listTransferOutLine}?toNum=${arg.toNum}');
+            .get('${Endpoints.listTransferInLine}?tiNum=${arg.tiNum}');
         var newTotalProduct = (result as List).length.toString();
         int newTotalQuantity = 0;
         int totalRegQuantity = 0;
@@ -114,7 +111,7 @@ class TransferOutDetailPage extends HookWidget {
           } catch (e) {
             print(e);
           }
-          return ListTransferOutLineItem.fromJson(e);
+          return ListTransferInLineItem.fromJson(e);
         }).toList();
         dataList.value = newDataList;
         totalProduct.value = newTotalProduct;

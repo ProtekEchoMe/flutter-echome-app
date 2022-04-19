@@ -4,7 +4,10 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_in/transfer_in_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
+import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -14,18 +17,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
-import 'asset_scan_page_arguments.dart';
 
-class AssetScanPage extends StatefulWidget {
-  const AssetScanPage({Key? key}) : super(key: key);
+class TransferInScanPage extends StatefulWidget {
+  const TransferInScanPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanPage> createState() => _AssetScanPageState();
+  State<TransferInScanPage> createState() => _AssetScanPageState();
 }
 
-class _AssetScanPageState extends State<AssetScanPage> {
-  final AssetRegistrationScanStore _assetRegistrationScanStore =
-      getIt<AssetRegistrationScanStore>();
+class _AssetScanPageState extends State<TransferInScanPage> {
+  final TransferInScanStore _transferInScanStore =
+      getIt<TransferInScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
 
@@ -38,35 +40,35 @@ class _AssetScanPageState extends State<AssetScanPage> {
   }
 
   String _getcontainerAssetCode() {
-    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetRegistrationScanStore.chosenEquipmentData[0].containerAssetCode ??
+    return _transferInScanStore.chosenEquipmentData.isNotEmpty
+        ? (_transferInScanStore.chosenEquipmentData[0].containerAssetCode ??
             "")
         : "";
   }
 
-  Future<void> _changeEquipment(AssetScanPageArguments? args) async {
+  Future<void> _changeEquipment(TransferInScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.regNum == null) {
-        throw "Reg Number Not Found";
+      if (args?.tiNum== null) {
+        throw "Ti Number Not Found";
       }
 
       if (_getcontainerAssetCode().isEmpty) {
         throw "Container Code not found";
       }
 
-      if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
+      if (_transferInScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_assetRegistrationScanStore.chosenEquipmentData.isEmpty) {
+      if (_transferInScanStore.chosenEquipmentData.isEmpty) {
         throw "No equipment detected";
       }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _assetRegistrationScanStore.equipmentData) {
+      for (var element in _transferInScanStore.equipmentData) {
         if (element.containerAssetCode == targetcontainerAssetCode) {
           if (element.rfid != null) {
             rfidList.add(element.rfid!);
@@ -75,38 +77,38 @@ class _AssetScanPageState extends State<AssetScanPage> {
       }
 
       try {
-        await _assetRegistrationScanStore.registerContainer(
-            rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
+        await _transferInScanStore.checkInContainer(
+            rfid: rfidList, tiNum: args?.tiNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
           rethrow;
         }
       }
 
-      List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
+      List<String> itemRfid = _transferInScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
 
-      await _assetRegistrationScanStore.registerItem(
-          regNum: args?.regNum ?? "",
+      await _transferInScanStore.checkInItem(
+          tiNum: args?.tiNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
-      _assetRegistrationScanStore.reset();
+      _transferInScanStore.reset();
     } catch (e) {
-      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      _transferInScanStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
   void _rescan() {
-    _assetRegistrationScanStore.reset();
+    _transferInScanStore.reset();
   }
 
-  Future<void> _complete(AssetScanPageArguments? args) async {
-    _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
+  Future<void> _complete(TransferInScanPageArguments? args) async {
+    _transferInScanStore.complete(tiNum: args?.tiNum ?? "");
   }
 
-  void _onBottomBarItemTapped(AssetScanPageArguments? args, int index) {
+  void _onBottomBarItemTapped(TransferInScanPageArguments? args, int index) {
     if (index == 0) {
       _changeEquipment(args);
     } else if (index == 1) {
@@ -133,13 +135,13 @@ class _AssetScanPageState extends State<AssetScanPage> {
             item.add(element);
           }
         }
-        _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+        _transferInScanStore.updateDataSet(equList: equ, itemList: item);
       }
     });
     var disposerReaction = reaction(
-        (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
-      if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
-        _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
+        (_) => _transferInScanStore.errorStore.errorMessage, (_) {
+      if (_transferInScanStore.errorStore.errorMessage.isNotEmpty) {
+        _showSnackBar(_transferInScanStore.errorStore.errorMessage);
       }
     });
     disposer.add(() => eventSubscription.cancel());
@@ -156,8 +158,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AssetScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
+    final TransferInScanPageArguments? args =
+        ModalRoute.of(context)!.settings.arguments as TransferInScanPageArguments?;
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
@@ -182,7 +184,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
       // ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.regNum : "EchoMe")],
+          children: [Text(args != null ? args.tiNum : "EchoMe")],
         ),
         actions: [
           IconButton(
@@ -191,8 +193,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AssetScanDetailPage(
-                                arg: args,
+                          builder: (_) =>TransferInDetailPage(
+                                arg: args.item!,
                               )));
                 }
               },
@@ -254,7 +256,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _assetRegistrationScanStore.isFetchingEquData
+                            _transferInScanStore.isFetchingEquData
                                 ? const SpinKitDualRing(
                                     color: Colors.blue,
                                     size: 15,
@@ -274,7 +276,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _assetRegistrationScanStore
+                            _transferInScanStore
                                 .equipmentRfidDataSet.length
                                 .toString(),
                           ),
@@ -319,11 +321,11 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  Widget _getBody(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getBody(BuildContext ctx, TransferInScanPageArguments? args) {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
-            itemCount: 3 + _assetRegistrationScanStore.itemRfidDataSet.length,
+            itemCount: 3 + _transferInScanStore.itemRfidDataSet.length,
             itemBuilder: (ctx, index) {
               if (index == 0) {
                 return _getEquipmentDisplay();
@@ -363,7 +365,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Center(
-                                    child: Text(_assetRegistrationScanStore
+                                    child: Text(_transferInScanStore
                                         .itemRfidDataSet.length
                                         .toString())),
                               )
@@ -374,7 +376,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                 );
               }
               if (index == 2) {
-                if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
+                if (_transferInScanStore.itemRfidDataSet.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.horizontal_padding),
@@ -408,10 +410,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   return const SizedBox();
                 }
               }
-              var rfid = _assetRegistrationScanStore.itemRfidDataSet
+              var rfid = _transferInScanStore.itemRfidDataSet
                   .elementAt(index - 3);
               var isLast = index - 3 ==
-                      _assetRegistrationScanStore.itemRfidDataSet.length - 1
+                      _transferInScanStore.itemRfidDataSet.length - 1
                   ? true
                   : false;
               return _getAssetListItem(rfid, isLast);
@@ -455,7 +457,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
             child: IconButton(
                 onPressed: () {
                   setState(() {
-                    _assetRegistrationScanStore.itemRfidDataSet.remove(rfid);
+                    _transferInScanStore.itemRfidDataSet.remove(rfid);
                   });
                 },
                 icon: const Icon(Icons.close)),
@@ -470,20 +472,20 @@ class _AssetScanPageState extends State<AssetScanPage> {
         child: _assetListContainer(isLast, child));
   }
 
-  Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getTitle(BuildContext ctx, TransferInScanPageArguments? args) {
     return BodyTitle(
-      title: args?.regNum ?? "No RegNum",
+      title: args?.tiNum ?? "No tiNum",
       clipTitle: "Hong Kong-DC",
     );
   }
 
   void _addMockAssetId() {
-    _assetRegistrationScanStore.updateDataSet(
+    _transferInScanStore.updateDataSet(
         itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
   void _addMockEquipmentId() {
-    var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
+    var init = _transferInScanStore.equipmentRfidDataSet.length;
     List<String> list = [];
     if (init == 0) {
       list.add(AscToText.getAscIIString("CATL010000001708"));
@@ -494,6 +496,6 @@ class _AssetScanPageState extends State<AssetScanPage> {
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
-    _assetRegistrationScanStore.updateDataSet(equList: list);
+    _transferInScanStore.updateDataSet(equList: list);
   }
 }

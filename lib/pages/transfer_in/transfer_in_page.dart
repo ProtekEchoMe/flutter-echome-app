@@ -1,8 +1,8 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
+import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -13,21 +13,21 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
 class TransferInPage extends StatefulWidget {
-  final String? toNum;
-  TransferInPage({Key? key, this.toNum}) : super(key: key);
+  final String? tiNum;
+  const TransferInPage({Key? key, this.tiNum}) : super(key: key);
 
   @override
   State<TransferInPage> createState() => _TransferInPageState();
 }
 
 class _TransferInPageState extends State<TransferInPage> {
-  final TransferOutStore _store = getIt<TransferOutStore>();
+  final TransferInStore _store = getIt<TransferInStore>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData(toNum: widget.toNum ?? "");
+    _store.fetchData(tiNum: widget.tiNum ?? "");
   }
 
   @override
@@ -124,20 +124,20 @@ class _TransferInPageState extends State<TransferInPage> {
                                   final listItem = _store.itemList[index];
                                   return Observer(
                                     builder: (context) {
-                                      var title = listItem.toNum;
+                                      var title = listItem.tiNum;
                                       var subtitle =
                                           "${listItem.shipType} : ${listItem.shipToLocation}";
                                       var status = listItem.status;
                                       var fx = () => Navigator.pushNamed(
-                                              context, "/transfer_out_scan",
+                                              context, "/transfer_in_scan",
                                               arguments:
-                                                  TransferOutScanPageArguments(
-                                                      toNum:
-                                                          listItem.toNum ?? "",
+                                                  TransferInScanPageArguments(
+                                                      tiNum:
+                                                          listItem.tiNum ?? "",
                                                       item: listItem))
                                           .then((value) => {
                                                 _store.fetchData(
-                                                    toNum: widget.toNum ?? "")
+                                                    tiNum: widget.tiNum ?? "")
                                               });
                                       return StatusListItem(
                                         title: title,
@@ -159,21 +159,8 @@ class _TransferInPageState extends State<TransferInPage> {
     );
   }
 
-  Color _getColor(RegistrationItemStatus status) {
-    if (status.name == "draft") {
-      return Colors.grey;
-    }
-    if (status.name == "pending") {
-      return Colors.green;
-    }
-    if (status.name == "processing") {
-      return Colors.red;
-    }
-    return Colors.blue;
-  }
-
   Widget _getSearchBar(BuildContext ctx) {
-    if (widget.toNum != null) {
+    if (widget.tiNum != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
         child: Row(
@@ -183,7 +170,7 @@ class _TransferInPageState extends State<TransferInPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Transfer Out Number = " + widget.toNum!,
+                    "Searching for Transfer In Number = " + widget.tiNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -201,13 +188,13 @@ class _TransferInPageState extends State<TransferInPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Transfer Out Number",
+        hintText: "Search by Transfer In Number",
         onSearchButtonPressed: (str) {
-          if (str != null && str.isNotEmpty) {
+          if (str.isNotEmpty) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => TransferInPage(toNum: str.trim())));
+                    builder: (_) => TransferInPage(tiNum: str.trim())));
           }
         },
       ),

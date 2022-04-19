@@ -72,13 +72,13 @@ mixin _$TransferInStore on _TransferOutStore, Store {
   final _$itemListAtom = Atom(name: '_TransferOutStore.itemList');
 
   @override
-  ObservableList<TransferOutHeaderItem> get itemList {
+  ObservableList<TransferInHeaderItem> get itemList {
     _$itemListAtom.reportRead();
     return super.itemList;
   }
 
   @override
-  set itemList(ObservableList<TransferOutHeaderItem> value) {
+  set itemList(ObservableList<TransferInHeaderItem> value) {
     _$itemListAtom.reportWrite(value, super.itemList, () {
       super.itemList = value;
     });
@@ -102,30 +102,30 @@ mixin _$TransferInStore on _TransferOutStore, Store {
   final _$nextPageAsyncAction = AsyncAction('_TransferOutStore.nextPage');
 
   @override
-  Future<void> nextPage({String toNum = ""}) {
-    return _$nextPageAsyncAction.run(() => super.nextPage(toNum: toNum));
+  Future<void> nextPage({String tiNum = ""}) {
+    return _$nextPageAsyncAction.run(() => super.nextPage(tiNum: tiNum));
   }
 
   final _$prevPageAsyncAction = AsyncAction('_TransferOutStore.prevPage');
 
   @override
-  Future<void> prevPage({String toNum = ""}) {
-    return _$prevPageAsyncAction.run(() => super.prevPage(toNum: toNum));
+  Future<void> prevPage({String tiNum = ""}) {
+    return _$prevPageAsyncAction.run(() => super.prevPage(tiNum: tiNum));
   }
 
   final _$fetchDataAsyncAction = AsyncAction('_TransferOutStore.fetchData');
 
   @override
-  Future<void> fetchData({String toNum = "", int? requestedPage}) {
+  Future<void> fetchData({String tiNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction
-        .run(() => super.fetchData(toNum: toNum, requestedPage: requestedPage));
+        .run(() => super.fetchData(tiNum: tiNum, requestedPage: requestedPage));
   }
 
   final _$_TransferOutStoreActionController =
       ActionController(name: '_TransferOutStore');
 
   @override
-  void addItem(TransferOutHeaderItem item) {
+  void addItem(TransferInHeaderItem item) {
     final _$actionInfo = _$_TransferOutStoreActionController.startAction(
         name: '_TransferOutStore.addItem');
     try {
@@ -136,7 +136,7 @@ mixin _$TransferInStore on _TransferOutStore, Store {
   }
 
   @override
-  void addAllItem(List<TransferOutHeaderItem> list) {
+  void addAllItem(List<TransferInHeaderItem> list) {
     final _$actionInfo = _$_TransferOutStoreActionController.startAction(
         name: '_TransferOutStore.addAllItem');
     try {
@@ -158,7 +158,7 @@ mixin _$TransferInStore on _TransferOutStore, Store {
   }
 
   @override
-  void updateList(List<TransferOutHeaderItem> newList) {
+  void updateList(List<TransferInHeaderItem> newList) {
     final _$actionInfo = _$_TransferOutStoreActionController.startAction(
         name: '_TransferOutStore.updateList');
     try {

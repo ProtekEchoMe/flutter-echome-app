@@ -28,7 +28,7 @@
 
 
 class RowData {
-  int? itemCode;
+  int? skuCode;
   String? itemDescription;
   int? styleNumber;
   String? color;
@@ -51,7 +51,7 @@ class RowData {
   String? resOperation;
 
   RowData(
-      {this.itemCode,
+      {this.skuCode,
       this.itemDescription,
       this.styleNumber,
       this.color,
@@ -74,7 +74,7 @@ class RowData {
       this.resOperation});
 
   RowData.fromJson(Map<String, dynamic> json) {
-    itemCode = json['itemCode'];
+    skuCode = json['skuCode'];
     itemDescription = json['itemDescription'];
     styleNumber = json['styleNumber'];
     color = json['color'];
@@ -99,7 +99,7 @@ class RowData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['itemCode'] = itemCode;
+    data['skuCode'] = skuCode;
     data['itemDescription'] = itemDescription;
     data['styleNumber'] = styleNumber;
     data['color'] = color;

@@ -25,21 +25,26 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/reg/listRegisterHeader";
   static const String listRfidContainer =
       "http://qa-echome.ddns.net/echoMe/rfid/listRfidContainer";
-  static const String getContainerCode =
-      "https://qa-echome.ddns.net/echoMe/rfid/getContainerCode";
+  static const String getRfidTagContainer =
+      "https://qa-echome.ddns.net/echoMe/rfid/getRfidTagContainer";
   static const String registerItems =
       "http://qa-echome.ddns.net/echoMe/reg/checkInItems";
   static const String registerToItems =
       "http://qa-echome.ddns.net/echoMe/to/checkInItems";
+  static const String registerTiItems =
+      "http://qa-echome.ddns.net/echoMe/ti/checkInItems";
   static const String registerContainer =
       "http://qa-echome.ddns.net/echoMe/reg/checkInContainer";
   static const String registerToContainer =
       "http://qa-echome.ddns.net/echoMe/to/checkInContainer";
+  static const String registerTiContainer =
+      "http://qa-echome.ddns.net/echoMe/ti/checkInContainer";
   static const String registerComplete =
       "http://qa-echome.ddns.net/echoMe/reg/registerComplete";
-
   static const String registerToComplete =
       "http://qa-echome.ddns.net/echoMe/to/transferOutComplete";
+  static const String registerTiComplete =
+      "http://qa-echome.ddns.net/echoMe/ti/transferInComplete";
   static const String registerItemsValidation =
       "http://qa-echome.ddns.net/echoMe/reg/registerItemsValidation";
   static const String registerItem =
@@ -48,6 +53,9 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/to/listTransferOutHeader";
   static const String listTransferOutLine =
       "http://qa-echome.ddns.net/echoMe/to/listTransferOutLine";
-  static const String setSiteCode =
-      "http://qa-echome.ddns.net/echoMe/site";
+  static const String setSiteCode = "http://qa-echome.ddns.net/echoMe/site";
+  static const String listTransferInHeader =
+      "http://qa-echome.ddns.net/echoMe/ti/listTransferInHeader";
+  static const listTransferInLine =
+      "http://qa-echome.ddns.net/echoMe/ti/listTransferInLine";
 }

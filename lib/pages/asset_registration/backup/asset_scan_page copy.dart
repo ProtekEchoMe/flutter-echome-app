@@ -23,17 +23,17 @@
 
 // class RfidContainer {
 //   int? id;
-//   String? containerCode;
+//   String? containerAssetCode;
 //   String? rfid;
 //   String? status;
 //   int? createdDate;
 
 //   RfidContainer(
-//       {this.id, this.containerCode, this.rfid, this.status, this.createdDate});
+//       {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
 
 //   RfidContainer.fromJson(Map<String, dynamic> json) {
 //     id = json['id'];
-//     containerCode = json['containerCode'];
+//     containerAssetCode = json['containerAssetCode'];
 //     rfid = json['rfid'];
 //     status = json['status'];
 //     createdDate = json['createdDate'];
@@ -42,7 +42,7 @@
 //   Map<String, dynamic> toJson() {
 //     final Map<String, dynamic> data = new Map<String, dynamic>();
 //     data['id'] = this.id;
-//     data['containerCode'] = this.containerCode;
+//     data['containerAssetCode'] = this.containerAssetCode;
 //     data['rfid'] = this.rfid;
 //     data['status'] = this.status;
 //     data['createdDate'] = this.createdDate;
@@ -71,7 +71,7 @@
 //   List<RfidContainer> containerDetails = [];
 //   final bool isFetchingEquId = false;
 //   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
-//   final String testContainerCode = "E100000A";
+//   final String testcontainerAssetCode = "E100000A";
 //   final String testRfid = "CRFID0001";
 //   bool isCheckingContainer = false;
 //   bool hasDifferentContainer = false;
@@ -92,7 +92,7 @@
 //         return value.toString();
 //       }
 //     }),
-//     JsonTableColumn("containerCode", label: "Container Code"),
+//     JsonTableColumn("containerAssetCode", label: "Container Code"),
 //     JsonTableColumn("status", label: "Status"),
 //     JsonTableColumn("createdDate", label: "Created At", valueBuilder: (value) {
 //       try {
@@ -122,7 +122,7 @@
 //         showMessage("Reg Number not found");
 //         return;
 //       }
-//       if (equipmentChosen?.containerCode == null) {
+//       if (equipmentChosen?.containerAssetCode == null) {
 //         showMessage("Container Code not found");
 //         return;
 //       }
@@ -145,7 +145,7 @@
 //           itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
 //       await api.registerItem(
 //           regNum: args!.regNum,
-//           containerCode: equipmentChosen!.containerCode!,
+//           containerAssetCode: equipmentChosen!.containerAssetCode!,
 //           itemRfid: itemRfid);
 //       _rescan();
 //     } catch (e) {
@@ -194,7 +194,7 @@
 //     List<EquItem> newList = list.map((e) {
 //       var equItem = EquItem.fromJson(e);
 //       if (equipmentChosen != null &&
-//           equipmentChosen!.containerCode == equItem.containerCode) {
+//           equipmentChosen!.containerAssetCode == equItem.containerAssetCode) {
 //         //update EquipmentChosen
 //         equipmentChosen = equItem;
 //       }
@@ -215,8 +215,8 @@
 
 //   void _setEquipmentAuto() {
 //     for (var element in equTable) {
-//       if (element.containerCode != null) {
-//         equipmentId = element.containerCode!;
+//       if (element.containerAssetCode != null) {
+//         equipmentId = element.containerAssetCode!;
 //         equipmentChosen = element;
 //         return;
 //       }
@@ -249,10 +249,10 @@
 //         // }
 //         // if ((result["itemList"] as List).isNotEmpty) {
 //         //   _handleEquTable(result["itemList"] as List);
-//         //   var containerCode = result["itemList"][0]["containerCode"] as String;
-//         //   equipmentId = containerCode;
+//         //   var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
+//         //   equipmentId = containerAssetCode;
 //         //   var result1 =
-//         //       await api.getContainerRfidDetails(containerCode: containerCode);
+//         //       await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
 //         //   if ((result1["itemList"] as List).isNotEmpty) {
 //         //     List<RfidContainer> list = (result1["itemList"] as List)
 //         //         .map((e) => RfidContainer.fromJson(e))
@@ -303,10 +303,10 @@
 //   //         throw Exception("Cant find container");
 //   //       }
 //   //       if ((result["itemList"] as List).isNotEmpty) {
-//   //         var containerCode = result["itemList"][0]["containerCode"] as String;
-//   //         equipmentId = containerCode;
+//   //         var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
+//   //         equipmentId = containerAssetCode;
 //   //         var result1 =
-//   //             await api.getContainerRfidDetails(containerCode: containerCode);
+//   //             await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
 //   //         if ((result1["itemList"] as List).isNotEmpty) {
 //   //           List<RfidContainer> list = (result1["itemList"] as List)
 //   //               .map((e) => RfidContainer.fromJson(e))
@@ -604,7 +604,7 @@
 //             //               onRowSelect: (index, map) {
 //             //                 if ((map["status"] == "PRINTED" ||
 //             //                     map["status"] == "REGISTERED")) {
-//             //                   equipmentId = map["containerCode"];
+//             //                   equipmentId = map["containerAssetCode"];
 //             //                   equipmentChosen =
 //             //                       EquItem.fromJson(map);
 //             //                 } else {
@@ -744,10 +744,10 @@
 //       if (equipmentChosen == null) {
 //         throw "No Equipment detected";
 //       }
-//       var targetContainerCode = equipmentChosen!.containerCode;
+//       var targetcontainerAssetCode = equipmentChosen!.containerAssetCode;
 //       List<String> rfidList = [];
 //       for (var element in equTable) {
-//         if (element.containerCode == targetContainerCode) {
+//         if (element.containerAssetCode == targetcontainerAssetCode) {
 //           if (element.rfid != null) {
 //             rfidList.add(element.rfid!);
 //           }
@@ -927,17 +927,17 @@
 
 // class EquItem {
 //   int? id;
-//   String? containerCode;
+//   String? containerAssetCode;
 //   String? rfid;
 //   String? status;
 //   int? createdDate;
 
 //   EquItem(
-//       {this.id, this.containerCode, this.rfid, this.status, this.createdDate});
+//       {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
 
 //   EquItem.fromJson(Map<String, dynamic> json) {
 //     id = json['id'];
-//     containerCode = json['containerCode'];
+//     containerAssetCode = json['containerAssetCode'];
 //     rfid = json['rfid'];
 //     status = json['status'];
 //     createdDate = json['createdDate'];
@@ -946,7 +946,7 @@
 //   Map<String, dynamic> toJson() {
 //     final Map<String, dynamic> data = new Map<String, dynamic>();
 //     data['id'] = this.id;
-//     data['containerCode'] = this.containerCode;
+//     data['containerAssetCode'] = this.containerAssetCode;
 //     data['rfid'] = this.rfid;
 //     data['status'] = this.status;
 //     data['createdDate'] = this.createdDate;

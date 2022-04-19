@@ -1,7 +1,7 @@
 class ColumnMap {
   static Map<String, String> getMap(){
     return {
-      "itemCode":"Item Code",
+      "skuCode":"Item Code",
       "itemDescription":"Item Description",
       "styleNumber":"Style Number",
       "color":"Color",
@@ -11,7 +11,7 @@ class ColumnMap {
       "brand":"Brand",
       "coo":"Country of Origin",
       "expDate":"Expiry Date",
-      "assetId": "Asset ID",
+      "assetId": "Asset Code",
       "eqmCode":"Equipment Code",
       "eqmId":"Equipment ID",
       "inboundDate":"Inbound Date",

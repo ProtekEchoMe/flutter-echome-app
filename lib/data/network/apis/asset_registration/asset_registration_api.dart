@@ -61,7 +61,7 @@ class AssetRegistrationApi {
         }
       }
       Map<String, dynamic> query = {"rfids": str.substring(0, str.length - 1)};
-      final res = await _dioClient.getRegistration(Endpoints.getContainerCode,
+      final res = await _dioClient.getRegistration(Endpoints.getRfidTagContainer,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
     } catch (e) {
@@ -111,7 +111,7 @@ class AssetRegistrationApi {
 
   Future<void> registerItem(
       {String regNum = "",
-      String containerCode = "",
+      String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     try {
       var str = "";
@@ -123,7 +123,7 @@ class AssetRegistrationApi {
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
         "regNum": regNum,
-        "containerCode": containerCode,
+        "containerAssetCode": containerAssetCode,
         "rfids": str
       };
       final res1 = await _dioClient.getRegistration(Endpoints.registerItems,
@@ -146,7 +146,7 @@ class AssetRegistrationApi {
 
   Future<dynamic> registerToItem(
       {String toNum = "",
-      String containerCode = "",
+      String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     try {
       var str = "";
@@ -158,7 +158,7 @@ class AssetRegistrationApi {
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
         "toNum": toNum,
-        "containerCode": containerCode,
+        "containerAssetCode": containerAssetCode,
         "rfids": str
       };
       // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
@@ -237,26 +237,19 @@ class AssetRegistrationApi {
     }
   }
 
-  Future<dynamic> bundleContainerProduct(
-      {String docNum = "",
-      String containerCode = "",
-      List<String> rfid = const []}) async {
-    return "a";
-  }
-
   // Future<dynamic> getContainerRfidDetails(
-  //     {String rfid = "", String containerCode = ""}) async {
+  //     {String rfid = "", String containerAssetCode = ""}) async {
   //   try {
   //     var filter = [];
   //     if (rfid.isNotEmpty) {
   //       filter = [
   //         {"value": rfid, "name": "rfid", "operator": "eq", "type": "string"}
   //       ];
-  //     } else if (containerCode.isNotEmpty) {
+  //     } else if (containerAssetCode.isNotEmpty) {
   //       filter = [
   //         {
-  //           "value": containerCode,
-  //           "name": "containerCode",
+  //           "value": containerAssetCode,
+  //           "name": "containerAssetCode",
   //           "operator": "eq",
   //           "type": "string"
   //         }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
@@ -26,6 +27,8 @@ class Repository {
 
   final TransferOutApi _transferOutApi;
 
+  final TransferInApi _transferInApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
@@ -36,7 +39,8 @@ class Repository {
       this._logoutApi,
       this._assetInventoryApi,
       this._assetRegistrationApi,
-      this._transferOutApi);
+      this._transferOutApi,
+      this._transferInApi);
 
   // Login:---------------------------------------------------------------------
   Future<AuthResponse> login({String email = "", String password = ""}) async {
@@ -67,13 +71,13 @@ class Repository {
       {int page = 0,
       int limit = 10,
       String assetCode = "",
-      String itemCode = "",
+      String skuCode = "",
       String siteCode = ""}) async {
     return await _assetInventoryApi.getAssetInventory(
         page: page,
         limit: limit,
         assetCode: assetCode,
-        itemCode: itemCode,
+        skuCode: skuCode,
         siteCode: siteCode);
   }
 
@@ -82,6 +86,8 @@ class Repository {
     return await _assetRegistrationApi.getAssetRegistration(
         page: page, limit: limit, regNumber: regNumber);
   }
+
+  // transfer out api -------------------------------------------
 
   Future<TransferOutHeaderResponse> getTransferOutHeader(
       {int page = 0, int limit = 10, String toNum = ""}) async {
@@ -94,7 +100,7 @@ class Repository {
     return await _assetRegistrationApi.getContainerDetails(rfid: rfid);
   }
 
-  // register Container
+  // register Container ------------------------------------------------
   Future<void> registerContainer(
       {List<String> rfid = const [], String regNum = ""}) async {
     return await _assetRegistrationApi.registerContainer(
@@ -108,10 +114,36 @@ class Repository {
 
   Future<void> registerItem(
       {String regNum = "",
-      String containerCode = "",
+      String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     await _assetRegistrationApi.registerItem(
-        regNum: regNum, containerCode: containerCode, itemRfid: itemRfid);
+        regNum: regNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+  }
+
+  // Transfer In api
+  Future<TransferInHeaderResponse> getTransferInHeader(
+      {int page = 0, int limit = 10, String tiNum = ""}) async {
+    return await _transferInApi.getTransferInHeaderItem(
+        page: page, limit: limit, tiNum: tiNum);
+  }
+
+  Future<void> registerTiContainer(
+      {List<String> rfid = const [], String tiNum = ""}) async {
+    return await _transferInApi.registerTiContainer(
+        rfid: rfid, tiNum: tiNum);
+  }
+
+  // asset registration api
+  Future<void> completeTiRegistration({String tiNum = ""}) async {
+    await _transferInApi.completeTiRegister(tiNum:tiNum);
+  }
+
+  Future<void> registerTiItem(
+      {String tiNum = "",
+      String containerAssetCode = "",
+      List<String> itemRfid = const []}) async {
+    await _transferInApi.registerTiItem(
+        tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
   }
 
   // Post: ---------------------------------------------------------------------

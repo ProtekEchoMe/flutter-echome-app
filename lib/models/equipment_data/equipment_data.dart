@@ -3,7 +3,7 @@ class EquipmentData {
   String? regNum;
   String? toNum;
   String? tiNum;
-  String? containerCode;
+  String? containerAssetCode;
   String? rfid;
   String? status;
   int? version;
@@ -14,7 +14,7 @@ class EquipmentData {
       this.regNum,
       this.toNum,
       this.tiNum,
-      this.containerCode,
+      this.containerAssetCode,
       this.rfid,
       this.status,
       this.version,
@@ -25,7 +25,7 @@ class EquipmentData {
     regNum = json['regNum'];
     toNum = json['toNum'];
     tiNum = json['tiNum'];
-    containerCode = json['containerCode'];
+    containerAssetCode = json['containerAssetCode'];
     rfid = json['rfid'];
     status = json['status'];
     version = json['version'];
@@ -38,7 +38,7 @@ class EquipmentData {
     data['regNum'] = regNum;
     data['toNum'] = toNum;
     data['tiNum'] = tiNum;
-    data['containerCode'] = containerCode;
+    data['containerAssetCode'] = containerAssetCode;
     data['rfid'] = rfid;
     data['status'] = status;
     data['version'] = version;

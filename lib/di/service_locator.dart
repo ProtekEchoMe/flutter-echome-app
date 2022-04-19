@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/network/dio_base.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
@@ -15,6 +16,7 @@ import 'package:echo_me_mobile/stores/assest_registration/asset_registration_sto
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:get_it/get_it.dart';
@@ -41,28 +43,42 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(AssetInventoryApi(getIt<DioClient>()));
   getIt.registerSingleton(AssetRegistrationApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
+  getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
   // set up the repo
-  getIt.registerSingleton<Repository>(Repository(
+  getIt.registerSingleton<Repository>(
+    Repository(
       getIt<SharedPreferenceHelper>(),
       getIt<LoginApi>(),
       getIt<LogoutApi>(),
       getIt<AssetInventoryApi>(),
       getIt<AssetRegistrationApi>(),
-      getIt<TransferOutApi>()));
-      
+      getIt<TransferOutApi>(),
+      getIt<TransferInApi>(),
+    ),
+  );
+
   //  local store => only called when needed => use Factory
   getIt.registerSingleton<LoginFormStore>(LoginFormStore(getIt<Repository>()));
   // getIt.registerFactory<ForgetPasswordStore>(
   //     () => ForgetPasswordStore(getIt<Repository>()));
-  getIt.registerFactory<AssetRegistrationStore>(() => AssetRegistrationStore(getIt<Repository>()));
+  getIt.registerFactory<AssetRegistrationStore>(
+      () => AssetRegistrationStore(getIt<Repository>()));
 
-  getIt.registerFactory<AssetInventoryStore>(() => AssetInventoryStore(getIt<Repository>()));
+  getIt.registerFactory<AssetInventoryStore>(
+      () => AssetInventoryStore(getIt<Repository>()));
 
-  getIt.registerFactory<TransferOutStore>(() => TransferOutStore(getIt<Repository>()));
+  getIt.registerFactory<TransferOutStore>(
+      () => TransferOutStore(getIt<Repository>()));
 
-  getIt.registerFactory<ForgetPasswordStore>(() => ForgetPasswordStore(getIt<Repository>()));
+  getIt.registerFactory<ForgetPasswordStore>(
+      () => ForgetPasswordStore(getIt<Repository>()));
 
-  getIt.registerFactory<TransferInStore>(() => TransferInStore(getIt<Repository>()));
+  getIt.registerFactory<TransferInStore>(
+      () => TransferInStore(getIt<Repository>()));
 
-  getIt.registerFactory<AssetRegistrationScanStore>(() => AssetRegistrationScanStore(getIt<Repository>()));
+  getIt.registerFactory<AssetRegistrationScanStore>(
+      () => AssetRegistrationScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<TransferInScanStore>(
+      () => TransferInScanStore(getIt<Repository>()));
 }

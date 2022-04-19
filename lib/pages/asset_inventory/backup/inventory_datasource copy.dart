@@ -8,7 +8,7 @@
   
 //   InventoryDataSource(this._repository);
 
-//   String _sortColumn = "itemCode";
+//   String _sortColumn = "skuCode";
 //   bool _sortAscending = true;
 
 //   void sort(String columnName, bool ascending) {
@@ -27,10 +27,10 @@
 //         response. ?? 0,
 //         response.rowData!.map((e){
 //           return DataRow(
-//             key: ValueKey<int>(e.itemCode!),
+//             key: ValueKey<int>(e.skuCode!),
 //             selected: false,
 //             cells: [
-//               DataCell(Text(e.itemCode.toString())),
+//               DataCell(Text(e.skuCode.toString())),
 //               DataCell(Text(e.itemDescription!)),
 //               DataCell(Text(e.styleNumber.toString())),
 //               DataCell(Text(e.color.toString())),

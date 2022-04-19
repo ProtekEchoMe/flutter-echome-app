@@ -5,19 +5,19 @@ import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:mobx/mobx.dart';
 
-part 'asset_registration_scan_store.g.dart';
+part 'transfer_in_scan_store.g.dart';
 
-class AssetRegistrationScanStore = _AssetRegistrationScanStore
-    with _$AssetRegistrationScanStore;
+class TransferInScanStore = _TransferInScanStore
+    with _$TransferInScanStore;
 
-abstract class _AssetRegistrationScanStore with Store {
-  final String TAG = "_AssetRegistrationScanStore";
+abstract class _TransferInScanStore with Store {
+  final String TAG = "_TransferInScanStore";
 
   final ErrorStore errorStore = ErrorStore();
 
   final Repository repository;
 
-  _AssetRegistrationScanStore(this.repository);
+  _TransferInScanStore(this.repository);
 
   @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
@@ -97,10 +97,10 @@ abstract class _AssetRegistrationScanStore with Store {
   }
 
   @action
-  Future<void> complete({String regNum = ""}) async {
+  Future<void> complete({String tiNum = ""}) async {
     try {
       isFetching = true;
-      await repository.completeAssetRegistration(regNum: regNum);
+      await repository.completeTiRegistration(tiNum: tiNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
@@ -109,13 +109,13 @@ abstract class _AssetRegistrationScanStore with Store {
   }
 
   @action
-  Future<void> registerContainer(
+  Future<void> checkInContainer(
       {List<String> rfid = const [],
-      String regNum = "",
+      String tiNum = "",
       bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerContainer(rfid: rfid, regNum: regNum);
+      await repository.registerTiContainer(rfid: rfid, tiNum: tiNum);
     } catch (e) {
       if (throwError == true) {
         rethrow;
@@ -128,15 +128,15 @@ abstract class _AssetRegistrationScanStore with Store {
   }
 
   @action
-  Future<void> registerItem(
-      {String regNum = "",
+  Future<void> checkInItem(
+      {String tiNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerItem(
-          regNum: regNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+      await repository.registerTiItem(
+          tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
     } catch (e) {
       if (throwError == true) {
         rethrow;
