@@ -58,4 +58,8 @@ class Endpoints {
       "http://qa-echome.ddns.net/echoMe/ti/listTransferInHeader";
   static const listTransferInLine =
       "http://qa-echome.ddns.net/echoMe/ti/listTransferInLine";
+  static const getAppVersion =
+      'https://express-apk-update-service.herokuapp.com/api/v1/appVersion';
+  static const getAppDownloadLink =
+      "https://express-apk-update-service.herokuapp.com/api/v1/appDownload";
 }

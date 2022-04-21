@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
+import 'package:echo_me_mobile/models/asset_inventory/backup/inventory_item.dart';
 
 class DioClient {
   // base dio instance

@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:echo_me_mobile/data/network/apis/app_version_control/app_version_control_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
-import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_response.dart';
-import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
+import 'package:echo_me_mobile/models/asset_inventory/backup/asset_inventory_response.dart';
+import 'package:echo_me_mobile/models/asset_inventory/backup/inventory_item.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 
 import 'network/apis/login/login_api.dart';
@@ -29,6 +30,8 @@ class Repository {
 
   final TransferInApi _transferInApi;
 
+  final AppVersionControlApi _appVersionControlApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
@@ -40,7 +43,8 @@ class Repository {
       this._assetInventoryApi,
       this._assetRegistrationApi,
       this._transferOutApi,
-      this._transferInApi);
+      this._transferInApi,
+      this._appVersionControlApi);
 
   // Login:---------------------------------------------------------------------
   Future<AuthResponse> login({String email = "", String password = ""}) async {
@@ -117,7 +121,9 @@ class Repository {
       String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     await _assetRegistrationApi.registerItem(
-        regNum: regNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+        regNum: regNum,
+        containerAssetCode: containerAssetCode,
+        itemRfid: itemRfid);
   }
 
   // Transfer In api
@@ -129,13 +135,12 @@ class Repository {
 
   Future<void> registerTiContainer(
       {List<String> rfid = const [], String tiNum = ""}) async {
-    return await _transferInApi.registerTiContainer(
-        rfid: rfid, tiNum: tiNum);
+    return await _transferInApi.registerTiContainer(rfid: rfid, tiNum: tiNum);
   }
 
   // asset registration api
   Future<void> completeTiRegistration({String tiNum = ""}) async {
-    await _transferInApi.completeTiRegister(tiNum:tiNum);
+    await _transferInApi.completeTiRegister(tiNum: tiNum);
   }
 
   Future<void> registerTiItem(
@@ -143,7 +148,9 @@ class Repository {
       String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     await _transferInApi.registerTiItem(
-        tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+        tiNum: tiNum,
+        containerAssetCode: containerAssetCode,
+        itemRfid: itemRfid);
   }
 
   // Post: ---------------------------------------------------------------------
@@ -213,4 +220,21 @@ class Repository {
       _sharedPrefsHelper.changeLanguage(value);
 
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
+
+  // App Version Control
+  Future<String> getAppVersion() async {
+    try {
+      return await _appVersionControlApi.getLatestAppVersion();
+    } catch (e) {
+      throw "Failed to get app version";
+    }
+  }
+
+  Future<String> getAppDownloadLink() async {
+     try{
+      return await _appVersionControlApi.getAppDownloadLink();
+    }catch(e){
+      throw "Failed to get app download link";
+    }
+  }
 }

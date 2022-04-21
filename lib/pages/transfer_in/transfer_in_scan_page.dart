@@ -161,27 +161,27 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     final TransferInScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as TransferInScanPageArguments?;
     return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: const Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+                heroTag: null,
+                child: const Icon(Icons.add_box),
+                onPressed: _addMockEquipmentId),
+            const SizedBox(
+              width: 20,
+            ),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed: _addMockAssetId,
+              child: const Icon(MdiIcons.cart),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.tiNum : "EchoMe")],

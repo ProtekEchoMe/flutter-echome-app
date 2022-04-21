@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:echo_me_mobile/data/network/apis/app_version_control/app_version_control_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
@@ -11,6 +12,7 @@ import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/di/local_module.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
+import 'package:echo_me_mobile/stores/app_version_control/app_version_control_store.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
@@ -44,17 +46,18 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(AssetRegistrationApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
+  getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
   // set up the repo
   getIt.registerSingleton<Repository>(
     Repository(
-      getIt<SharedPreferenceHelper>(),
-      getIt<LoginApi>(),
-      getIt<LogoutApi>(),
-      getIt<AssetInventoryApi>(),
-      getIt<AssetRegistrationApi>(),
-      getIt<TransferOutApi>(),
-      getIt<TransferInApi>(),
-    ),
+        getIt<SharedPreferenceHelper>(),
+        getIt<LoginApi>(),
+        getIt<LogoutApi>(),
+        getIt<AssetInventoryApi>(),
+        getIt<AssetRegistrationApi>(),
+        getIt<TransferOutApi>(),
+        getIt<TransferInApi>(),
+        getIt<AppVersionControlApi>()),
   );
 
   //  local store => only called when needed => use Factory
@@ -81,4 +84,7 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<AppVersionControlStore>(
+      () => AppVersionControlStore(getIt<Repository>()));
 }

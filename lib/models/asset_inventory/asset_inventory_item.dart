@@ -1,16 +1,16 @@
-// ignore_for_file: unnecessary_new, prefer_collection_literals
-
 class AssetInventoryItem {
   int? id;
   int? site;
-  String? skuCode;
+  String? productCode;
   String? assetCode;
+  String? skuCode;
   String? description;
   String? style;
   String? color;
   String? size;
   String? serial;
   String? eanupc;
+  String? coo;
   int? quantity;
   String? locCode;
   String? lastLocCode;
@@ -21,22 +21,24 @@ class AssetInventoryItem {
   String? toNum;
   String? tiNum;
   int? inboundDate;
-  String? expiryDate;
+  int? expiryDate;
   int? createdDate;
   int? modifiedDate;
-  String? reason;
+  int? reason;
 
   AssetInventoryItem(
       {this.id,
       this.site,
-      this.skuCode,
+      this.productCode,
       this.assetCode,
+      this.skuCode,
       this.description,
       this.style,
       this.color,
       this.size,
       this.serial,
       this.eanupc,
+      this.coo,
       this.quantity,
       this.locCode,
       this.lastLocCode,
@@ -55,7 +57,7 @@ class AssetInventoryItem {
   AssetInventoryItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     site = json['site'];
-    skuCode = json['skuCode'];
+    productCode = json['productCode'];
     assetCode = json['assetCode'];
     skuCode = json['skuCode'];
     description = json['description'];
@@ -64,6 +66,7 @@ class AssetInventoryItem {
     size = json['size'];
     serial = json['serial'];
     eanupc = json['eanupc'];
+    coo = json['coo'];
     quantity = json['quantity'];
     locCode = json['locCode'];
     lastLocCode = json['lastLocCode'];
@@ -81,10 +84,10 @@ class AssetInventoryItem {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = {};
     data['id'] = id;
     data['site'] = site;
-    data['skuCode'] = skuCode;
+    data['productCode'] = productCode;
     data['assetCode'] = assetCode;
     data['skuCode'] = skuCode;
     data['description'] = description;
@@ -93,6 +96,7 @@ class AssetInventoryItem {
     data['size'] = size;
     data['serial'] = serial;
     data['eanupc'] = eanupc;
+    data['coo'] = coo;
     data['quantity'] = quantity;
     data['locCode'] = locCode;
     data['lastLocCode'] = lastLocCode;

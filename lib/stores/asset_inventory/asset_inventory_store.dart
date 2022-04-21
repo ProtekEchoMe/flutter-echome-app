@@ -1,6 +1,6 @@
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_item.dart';
-import 'package:echo_me_mobile/models/asset_inventory/inventory_item.dart';
+import 'package:echo_me_mobile/models/asset_inventory/backup/inventory_item.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 

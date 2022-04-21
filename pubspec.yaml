@@ -48,7 +48,7 @@ dependencies:
   flutter_spinkit: ^5.1.0
   flutter_overlay_loader: ^1.0.3
   flutter_hooks: ^0.18.2+1
-  zebra_rfd8500:
+  zebra_rfd8500: 
     path: "./zebra_rfd8500"
   data_table_2: ^2.2.1
   outline_search_bar: ^2.3.0
@@ -58,6 +58,7 @@ dependencies:
   sliver_tools: ^0.2.5
   dio_cookie_manager: ^2.0.0
   ota_update: ^4.0.1
+  permission_handler: ^9.2.0
 
 
 dev_dependencies:

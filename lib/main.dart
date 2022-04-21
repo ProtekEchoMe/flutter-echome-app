@@ -79,7 +79,7 @@ class MyApp extends HookWidget {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             routes: AppRoutes.getMap(),
-            initialRoute: "/home"
+            initialRoute: "/splash"
             // initialRoute: "/login",
             ),
         builder: (_) {
