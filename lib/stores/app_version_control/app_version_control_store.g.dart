@@ -85,6 +85,14 @@ mixin _$AppVersionControlStore on _AppVersionControlStore, Store {
     });
   }
 
+  final _$getAppPermissionAsyncAction =
+      AsyncAction('_AppVersionControlStore.getAppPermission');
+
+  @override
+  Future<bool> getAppPermission() {
+    return _$getAppPermissionAsyncAction.run(() => super.getAppPermission());
+  }
+
   final _$updateIfNeedAsyncAction =
       AsyncAction('_AppVersionControlStore.updateIfNeed');
 

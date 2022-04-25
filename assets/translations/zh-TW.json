@@ -1,6 +1,7 @@
 { 
     "@@lang":"zh_TW",
     "login": {
+      "username":"用戶",
       "title": "登錄",
       "submit": "登錄",
       "email": "郵箱",

@@ -8,6 +8,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,11 @@ class RfidContainer {
   int? createdDate;
 
   RfidContainer(
-      {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
+      {this.id,
+      this.containerAssetCode,
+      this.rfid,
+      this.status,
+      this.createdDate});
 
   RfidContainer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -100,6 +105,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     })
   ];
 
+  bool isDialogShown = false;
+
   void showMessage(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -127,7 +134,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
       //   showMessage("Container Code not registered");
       //   return;
       // }
-      var result = await _registerContainer(ignoreRegisteredError: true, toNum:args?.toNum ??"");
+      var result = await _registerContainer(
+          ignoreRegisteredError: true, toNum: args?.toNum ?? "");
       if (result == false) {
         return;
       }
@@ -204,12 +212,42 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   }
 
   void _setEquipmentAuto() {
+    var shouldStop = false;
+
+    Set<String> set = {};
     for (var element in equTable) {
-      if (element.containerAssetCode != null) {
+      if (element.containerAssetCode != null ||
+          !set.contains(element.containerAssetCode)) {
+            set.add(element.containerAssetCode!);
+          }
+
+      if (element.containerAssetCode != null || !shouldStop) {
         equipmentId = element.containerAssetCode!;
         equipmentChosen = element;
-        return;
+        shouldStop = true;
       }
+
+      if(set.length>1){
+        triggerDialog();
+      }
+    }
+  }
+
+  Future<void> triggerDialog() async {
+    if (!isDialogShown) {
+      isDialogShown = true;
+      DialogHelper.showCustomDialog(context, widgetList: [
+        Text("More than one container code detected, please rescan")
+      ], actionList: [
+        TextButton(
+          child: const Text('Rescan'),
+          onPressed: () {
+            Navigator.of(context).pop();
+            _rescan();
+            isDialogShown = false;
+          },
+        )
+      ]);
     }
   }
 
@@ -339,7 +377,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
           if (element.substring(0, 2) == "63" ||
               element.substring(0, 2) == "43") {
             equ.add(element);
-          } else {
+          } else if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
             item.add(element);
           }
         });
@@ -459,11 +498,13 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   void _addMockEquipmentId() {
     var init = equipmentRfidDataSet.length;
     if (init == 0) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0002"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000055"));
     } else if (init == 1) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CRFID0001"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000066"));
     } else if (init == 2) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000392"));
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000077"));
+    } else if (init == 3) {
+      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000088"));
     } else {
       equipmentRfidDataSet
           .add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
@@ -718,7 +759,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     );
   }
 
-  Future<bool> _registerContainer({bool ignoreRegisteredError = false, String toNum=""}) async {
+  Future<bool> _registerContainer(
+      {bool ignoreRegisteredError = false, String toNum = ""}) async {
     try {
       print(equipmentChosen);
       if (equipmentChosen == null) {
@@ -913,7 +955,11 @@ class EquItem {
   int? createdDate;
 
   EquItem(
-      {this.id, this.containerAssetCode, this.rfid, this.status, this.createdDate});
+      {this.id,
+      this.containerAssetCode,
+      this.rfid,
+      this.status,
+      this.createdDate});
 
   EquItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -24,11 +24,10 @@ class AssetRegistrationPage extends StatefulWidget {
 }
 
 class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
-  AssetRegistrationStore _store = getIt<AssetRegistrationStore>();
+  final AssetRegistrationStore _store = getIt<AssetRegistrationStore>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _store.fetchData(regNum: widget.searchRegNum ?? "");
   }
@@ -80,7 +79,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       onTap: () {
                                         _store.prevPage();
                                       },
-                                      child: SizedBox(
+                                      child:const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_back),
@@ -105,7 +104,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       onTap: () {
                                         _store.nextPage();
                                       },
-                                      child: SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_forward),

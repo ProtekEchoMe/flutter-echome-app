@@ -6,6 +6,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
       getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
+  bool isDialogShown = false;
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -39,7 +41,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   String _getcontainerAssetCode() {
     return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetRegistrationScanStore.chosenEquipmentData[0].containerAssetCode ??
+        ? (_assetRegistrationScanStore
+                .chosenEquipmentData[0].containerAssetCode ??
             "")
         : "";
   }
@@ -129,7 +132,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
           if (element.substring(0, 2) == "63" ||
               element.substring(0, 2) == "43") {
             equ.add(element);
-          } else {
+          } else if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
             item.add(element);
           }
         }
@@ -142,8 +146,29 @@ class _AssetScanPageState extends State<AssetScanPage> {
         _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
+    var disposerReaction1 =
+        reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
+      print("TRIGGER");
+      if (_assetRegistrationScanStore.chosenEquipmentData.length > 1 &&
+          !isDialogShown) {
+        isDialogShown = true;
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('Rescan'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _rescan();
+              isDialogShown = false;
+            },
+          )
+        ]);
+      }
+    });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
+    disposer.add(disposerReaction1);
   }
 
   @override
@@ -486,11 +511,13 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
     List<String> list = [];
     if (init == 0) {
-      list.add(AscToText.getAscIIString("CATL010000001708"));
+      list.add(AscToText.getAscIIString("CATL010000000055"));
     } else if (init == 1) {
-      list.add(AscToText.getAscIIString("CRFID0002"));
+      list.add(AscToText.getAscIIString("CATL010000000066"));
     } else if (init == 2) {
-      list.add(AscToText.getAscIIString("CRFID0001"));
+      list.add(AscToText.getAscIIString("CATL010000000077"));
+    } else if (init == 3) {
+      list.add(AscToText.getAscIIString("CATL010000000088"));
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }

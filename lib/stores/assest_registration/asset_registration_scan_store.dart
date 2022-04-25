@@ -64,14 +64,25 @@ abstract class _AssetRegistrationScanStore with Store {
         var result = await repository.getEquipmentDetail(rfid: list);
         var resList = result["itemList"] as List;
         List<EquipmentData> equList = [];
+        Set<String> addedContainerAssetCode = chosenEquipmentData
+            .map((element) => element.containerAssetCode ?? "")
+            .toSet();
         for (var e in resList) {
           EquipmentData data = EquipmentData.fromJson(e);
           equList.add(data);
-          if (data.containerAssetCode != null && chosenEquipmentData.isEmpty) {
+          // if (data.containerAssetCode != null && chosenEquipmentData.isEmpty) {
+          //   chosenEquipmentData.add(data);
+          // }
+          if (data.containerAssetCode != null &&
+              !addedContainerAssetCode.contains(data.containerAssetCode!)) {
             chosenEquipmentData.add(data);
+            addedContainerAssetCode.add(data.containerAssetCode!);
           }
         }
         equipmentData = ObservableList.of(equList);
+        if (chosenEquipmentData.length > 1) {
+          throw Exception("More than one container code found");
+        }
       }
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
@@ -136,7 +147,9 @@ abstract class _AssetRegistrationScanStore with Store {
     try {
       isFetching = true;
       await repository.registerItem(
-          regNum: regNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+          regNum: regNum,
+          containerAssetCode: containerAssetCode,
+          itemRfid: itemRfid);
     } catch (e) {
       if (throwError == true) {
         rethrow;

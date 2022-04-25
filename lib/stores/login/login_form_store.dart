@@ -121,7 +121,8 @@ abstract class _LoginFormStore with Store {
 
   @action
   void validateEmail(String value) {
-    error.email = isEmail(value) ? null : 'Not a valid email';
+    error.email = null;
+    // error.email = isEmail(value) ? null : 'Not a valid email';
   }
 
   @action

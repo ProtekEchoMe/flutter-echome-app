@@ -48,7 +48,7 @@ class _SplashPageState extends State<SplashPage> {
             builder: (context) {
               var x = _appVersionControlStore.versionCheckSuccess;
               if (x == true) {
-                Timer(Duration(milliseconds: 100),()=>Navigator.pushReplacementNamed(context, "/home"));
+                Timer(Duration(milliseconds: 100),()=>Navigator.pushReplacementNamed(context, "/login"));
               }
               return SizedBox();
             },

@@ -42,7 +42,7 @@ class LoginForm extends StatelessWidget {
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       isDense: true,
-                      labelText: "login".tr(gender: "email"),
+                      labelText: "login".tr(gender: "username"),
                       hintText: "login".tr(gender: "email_placeholder"),
                       errorText: loginFormStore.error.email,
                       prefixIcon: const Icon(Icons.email),

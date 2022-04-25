@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,11 @@ class TransferInScanPage extends StatefulWidget {
 }
 
 class _AssetScanPageState extends State<TransferInScanPage> {
-  final TransferInScanStore _transferInScanStore =
-      getIt<TransferInScanStore>();
+  final TransferInScanStore _transferInScanStore = getIt<TransferInScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
+
+  bool isDialogShown = false;
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -41,15 +43,14 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   String _getcontainerAssetCode() {
     return _transferInScanStore.chosenEquipmentData.isNotEmpty
-        ? (_transferInScanStore.chosenEquipmentData[0].containerAssetCode ??
-            "")
+        ? (_transferInScanStore.chosenEquipmentData[0].containerAssetCode ?? "")
         : "";
   }
 
   Future<void> _changeEquipment(TransferInScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.tiNum== null) {
+      if (args?.tiNum == null) {
         throw "Ti Number Not Found";
       }
 
@@ -131,21 +132,43 @@ class _AssetScanPageState extends State<TransferInScanPage> {
           if (element.substring(0, 2) == "63" ||
               element.substring(0, 2) == "43") {
             equ.add(element);
-          } else {
+          } else if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
             item.add(element);
           }
         }
         _transferInScanStore.updateDataSet(equList: equ, itemList: item);
       }
     });
-    var disposerReaction = reaction(
-        (_) => _transferInScanStore.errorStore.errorMessage, (_) {
+    var disposerReaction =
+        reaction((_) => _transferInScanStore.errorStore.errorMessage, (_) {
       if (_transferInScanStore.errorStore.errorMessage.isNotEmpty) {
         _showSnackBar(_transferInScanStore.errorStore.errorMessage);
       }
     });
+     var disposerReaction1 =
+        reaction((_) => _transferInScanStore.equipmentData, (_) {
+      print("TRIGGER");
+      if (_transferInScanStore.chosenEquipmentData.length > 1 &&
+          !isDialogShown) {
+        isDialogShown = true;
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('Rescan'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _rescan();
+              isDialogShown = false;
+            },
+          )
+        ]);
+      }
+    });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
+    disposer.add(disposerReaction1);
   }
 
   @override
@@ -158,30 +181,31 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TransferInScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as TransferInScanPageArguments?;
+    final TransferInScanPageArguments? args = ModalRoute.of(context)!
+        .settings
+        .arguments as TransferInScanPageArguments?;
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-                heroTag: null,
-                child: const Icon(Icons.add_box),
-                onPressed: _addMockEquipmentId),
-            const SizedBox(
-              width: 20,
-            ),
-            FloatingActionButton(
-              heroTag: null,
-              onPressed: _addMockAssetId,
-              child: const Icon(MdiIcons.cart),
-            )
-          ],
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: <Widget>[
+      //       FloatingActionButton(
+      //           heroTag: null,
+      //           child: const Icon(Icons.add_box),
+      //           onPressed: _addMockEquipmentId),
+      //       const SizedBox(
+      //         width: 20,
+      //       ),
+      //       FloatingActionButton(
+      //         heroTag: null,
+      //         onPressed: _addMockAssetId,
+      //         child: const Icon(MdiIcons.cart),
+      //       )
+      //     ],
+      //   ),
+      // ),
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.tiNum : "EchoMe")],
@@ -193,7 +217,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) =>TransferInDetailPage(
+                          builder: (_) => TransferInDetailPage(
                                 arg: args.item!,
                               )));
                 }
@@ -276,8 +300,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _transferInScanStore
-                                .equipmentRfidDataSet.length
+                            _transferInScanStore.equipmentRfidDataSet.length
                                 .toString(),
                           ),
                         ),
@@ -410,12 +433,12 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                   return const SizedBox();
                 }
               }
-              var rfid = _transferInScanStore.itemRfidDataSet
-                  .elementAt(index - 3);
-              var isLast = index - 3 ==
-                      _transferInScanStore.itemRfidDataSet.length - 1
-                  ? true
-                  : false;
+              var rfid =
+                  _transferInScanStore.itemRfidDataSet.elementAt(index - 3);
+              var isLast =
+                  index - 3 == _transferInScanStore.itemRfidDataSet.length - 1
+                      ? true
+                      : false;
               return _getAssetListItem(rfid, isLast);
             });
       }),
@@ -488,11 +511,13 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     var init = _transferInScanStore.equipmentRfidDataSet.length;
     List<String> list = [];
     if (init == 0) {
-      list.add(AscToText.getAscIIString("CATL010000001708"));
+      list.add(AscToText.getAscIIString("CATL010000000055"));
     } else if (init == 1) {
-      list.add(AscToText.getAscIIString("CRFID0002"));
+      list.add(AscToText.getAscIIString("CATL010000000066"));
     } else if (init == 2) {
-      list.add(AscToText.getAscIIString("CRFID0001"));
+      list.add(AscToText.getAscIIString("CATL010000000077"));
+    } else if (init == 3) {
+      list.add(AscToText.getAscIIString("CATL010000000088"));
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }

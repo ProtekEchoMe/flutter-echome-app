@@ -1,6 +1,7 @@
 {
     "@@lang":"en",
     "login":{
+        "username":"Username",
         "title": "Login",
         "description":"Please enter your email and password to login",
         "submit": "Login",

@@ -30,56 +30,50 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
 
-  // void tryUpdate() async {
-  //   try {
-  //     //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
-  //     var dio = DioBase.provideDio(getIt<SharedPreferenceHelper>());
-  //     var res = await dio.get(
-  //         "https://github.com/lclrobert2020/express-mock-server-apk/raw/c92eb5de5f29850d055763d626261655dfbb1964/app-release.apk",
-  //         options: Options(
-  //             followRedirects: false,
-  //             validateStatus: (status) => status! < 400));
-  //     if (res.statusCode == 302 && res.headers["location"]?[0] is String) {
-  //       var url = res.headers["location"]![0];
-  //       OtaUpdate()
-  //           .execute(
-  //         url,
-  //         destinationFilename: 'flutter_hello_world.apk',
-  //         //OPTIONAL, ANDROID ONLY - ABILITY TO VALIDATE CHECKSUM OF FILE:
-
-  //         // OPTIONAL
-  //       )
-  //           .listen(
-  //         (OtaEvent event) {
-  //           print(event.status);
-  //           print(event.value);
-  //         },
-  //       );
-  //     }
-  //     // OtaUpdate()
-  //     //     .execute(
-  //     //   'https://github.com/lclrobert2020/express-mock-server-apk/raw/c92eb5de5f29850d055763d626261655dfbb1964/app-release.apk',
-  //     //   destinationFilename: 'flutter_hello_world.apk',
-  //     //   //OPTIONAL, ANDROID ONLY - ABILITY TO VALIDATE CHECKSUM OF FILE:
-
-  //     //   // OPTIONAL
-  //     // )
-  //     //     .listen(
-  //     //   (OtaEvent event) {
-  //     //     print(event.status);
-  //     //     print(event.value);
-  //     //   },
-  //     // );
-  //   } catch (e) {
-  //     print('Failed to make OTA update. Details: $e');
-  //   }
-  // }
+  Future<void> _showMyDialog(BuildContext context) async {
+    print("called");
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: const Text("Choose the site"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  ...SiteCodeList.getList().map((e) {
+                    return GestureDetector(
+                      onTap: () async {
+                        if (e != loginFormStore.siteCode) {
+                          await loginFormStore.changeSite(siteCode: e);
+                        }
+                        Navigator.of(context).pop();
+                      },
+                      child: ListTile(
+                        title: Text(e),
+                      ),
+                    );
+                  }).toList()
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     loginFormStore.setupValidations();
     loginFormStore.changeSite(siteCode: SiteCodeList.getList()[0]);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _showMyDialog(context);
+    });
     // tryUpdate();
   }
 
@@ -98,38 +92,41 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: EchoMeAppBar(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).primaryColor,
-        onTap: _onItemTapped,
-      ),
-      body: Column(
-        children: [
-          BodyTitle(
-            title: "EchoMe Main Page",
-            clipTitle: "Hong Kong-DC",
-            allowSwitchSite: true,
-          ),
-          Expanded(
-            child: AppContentBox(
-              child: SingleChildScrollView(
-                child: _getPageContent(context),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: EchoMeAppBar(),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Theme.of(context).primaryColor,
+          onTap: _onItemTapped,
+        ),
+        body: Column(
+          children: [
+            BodyTitle(
+              title: "EchoMe Main Page",
+              clipTitle: "Hong Kong-DC",
+              allowSwitchSite: true,
+            ),
+            Expanded(
+              child: AppContentBox(
+                child: SingleChildScrollView(
+                  child: _getPageContent(context),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
