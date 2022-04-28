@@ -5,6 +5,7 @@ class DialogHelper {
       {
         List<Widget> widgetList = const [],
         List<Widget> actionList = const [],
+        String title = ""
       }) async {
     print("called");
     return showDialog<void>(
@@ -14,7 +15,6 @@ class DialogHelper {
         return WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
-            title: const Text("Choose the site"),
             content: SingleChildScrollView(
               child: ListBody(
                 children: widgetList,

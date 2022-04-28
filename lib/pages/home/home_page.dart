@@ -85,9 +85,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    Navigator.pushNamed(context, "/debug");
+    // setState(() {
+    //   _selectedIndex = index;
+    // });
   }
 
   @override

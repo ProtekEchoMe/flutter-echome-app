@@ -148,7 +148,6 @@ class _AssetScanPageState extends State<AssetScanPage> {
     });
     var disposerReaction1 =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-      print("TRIGGER");
       if (_assetRegistrationScanStore.chosenEquipmentData.length > 1 &&
           !isDialogShown) {
         isDialogShown = true;

@@ -9,6 +9,7 @@ class RouteConstant {
     RouteObject("Transfer Out", "Send to other site", "/transfer_out",  MdiIcons.inboxArrowUp),
     RouteObject("Assets Disposal", "Disposal and write-off", "/asset_disposal", MdiIcons.trashCan,),
     RouteObject("Stock Take", "Count your asset", "/stock_take", MdiIcons.fileDocumentMultipleOutline),
+    // RouteObject("Senser Setting", "For Debug", "/debug", MdiIcons.deathStar)
   ];
 }
 

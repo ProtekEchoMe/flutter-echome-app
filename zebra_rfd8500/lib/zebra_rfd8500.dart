@@ -3,16 +3,37 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:zebra_rfd8500/channel_constant.dart';
+import 'package:zebra_rfd8500/reader_connection_event.dart';
+import 'package:zebra_rfd8500/reader_list_change_event.dart';
 
-enum ReaderStatus {
-  connected,
-  disconnected
+enum ReaderStatus { connected, disconnected }
+
+enum ScannerEventType { read, test, readEvent }
+
+enum ErrorStatus {
+  // ignore: constant_identifier_names
+  READER_LIST_NOT_AVAILABLE
 }
 
-enum ScannerEventType {
-  read,
-  test,
-  readEvent
+extension ErrorStatusExtension on ErrorStatus {
+  String get name {
+    switch (this) {
+      case ErrorStatus.READER_LIST_NOT_AVAILABLE:
+        return '1001';
+      default:
+        return "1000"; //General Error
+    }
+  }
+
+  String get errorMessage {
+    switch (this) {
+      case ErrorStatus.READER_LIST_NOT_AVAILABLE:
+        return 'Reader list is not available';
+      default:
+        return 'General RFID SDK error';
+    }
+  }
 }
 
 class ConnectionStatus {
@@ -27,87 +48,151 @@ class ScannerEvent {
   ScannerEvent(this.type, this.data);
 }
 
-
 class ZebraRfd8500 {
   static const CHANNEL_NAME = "zebra_rfd8500";
-  static const MethodChannel _channel = MethodChannel(CHANNEL_NAME+"/plugin");
-  static const EventChannel _eventChannel = EventChannel(CHANNEL_NAME+"/event_channel");
+  static const MethodChannel _channel = MethodChannel(CHANNEL_NAME + "/plugin");
+  static const EventChannel _eventChannel =
+      EventChannel(CHANNEL_NAME + "/event_channel");
 
-  static final StreamController<ConnectionStatus> _connectController = StreamController.broadcast();
-  static Stream<ConnectionStatus> get connectStream => _connectController.stream;
+  static List<StreamSubscription<dynamic>?> sinkDispose = [];
 
-  static final StreamController<ScannerEvent> _eventController = StreamController.broadcast();
+  //channel for new RFID channels
+  static const EventChannel _readerListChannel =
+      EventChannel(ChannelConstant.READER_LIST_CHANNEL_NAME);
+  static const EventChannel _readerConnectionStatusChannel =
+      EventChannel(ChannelConstant.READER_CONNECTION_STATUS_CHANNEL);
+  static const EventChannel _readerRfidDataChannel =
+      EventChannel(ChannelConstant.READER_RFID_DATA_CHANNEL);
+
+  static final StreamController<ReaderListChangeEvent>
+      _readerListChannelStreamController = StreamController.broadcast();
+  static Stream<ReaderListChangeEvent> get readerListChannelStream =>
+      _readerListChannelStreamController.stream;
+
+  static final StreamController<ReaderConncetionEvent>
+      _readerConnectionStatusStreamController = StreamController.broadcast();
+  static Stream<ReaderConncetionEvent> get readerConnectionStatusStream =>
+      _readerConnectionStatusStreamController.stream;
+
+  static final StreamController<ConnectionStatus>
+      _readerRfidDataStreamController = StreamController.broadcast();
+  static Stream<ConnectionStatus> get readerRfidDataStream =>
+      _readerRfidDataStreamController.stream;
+
+  static final StreamController<ConnectionStatus> _connectController =
+      StreamController.broadcast();
+  static Stream<ConnectionStatus> get connectStream =>
+      _connectController.stream;
+
+  static final StreamController<ScannerEvent> _eventController =
+      StreamController.broadcast();
   static Stream<ScannerEvent> get eventStream => _eventController.stream;
 
   static StreamSubscription<dynamic>? _sink;
+
+  static bool isInit = false;
 
   static Future<String?> get platformVersion async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  static Future<void> connectScannerWithName (String name) async {
-     try{
-       String hostName = await _channel.invokeMethod('connectRFIDReader', name);
-       print("Connected! $hostName");
-       _connectController.sink.add(ConnectionStatus(hostName, ReaderStatus.connected));
-     }catch(e){
-
-     }
+  static Future<void> connectScannerWithName(String name) async {
+    try {
+      String hostName = await _channel.invokeMethod('connectRFIDReader', name);
+      print("Connected! $hostName");
+      _connectController.sink
+          .add(ConnectionStatus(hostName, ReaderStatus.connected));
+    } catch (e) {}
   }
 
-  static Future<void> setAntennaPower (int power) async {
-     try{
-       await _channel.invokeMethod('setAntennaPower', power);
-       print("setAntennaPower");
-
-     }catch(e){
-
-     }
+  static Future<void> setAntennaPower(int power) async {
+    try {
+      await _channel.invokeMethod('setAntennaPower', power);
+      print("setAntennaPower");
+    } catch (e) {}
   }
 
-  static Future<ModelInfo> getConnectedScannerInfo () async {
-       var map = await _channel.invokeMethod('getConnectedScannerInfo');
-       print(map.runtimeType);
-       ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
-       return modelInfo;
+  static Future<ModelInfo> getConnectedScannerInfo() async {
+    var map = await _channel.invokeMethod('getConnectedScannerInfo');
+    print(map.runtimeType);
+    ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return modelInfo;
   }
 
-  static Future<List<String>> getAvailableRFIDReaderList () async {
-    List list = await _channel.invokeMethod('getAvailableRFIDReaderList');
-    List<String> result = [];
-    for(var i =0; i< list.length; i++){
-      String str = list[i].toString();
-      result.add(str);
+  static Future<List<String>> getAvailableRFIDReaderList() async {
+    try {
+      print("Called !");
+      List list = await _channel.invokeMethod('getAvailableRFIDReaderList');
+      print("Get Success");
+      print(list);
+      List<String> result = [];
+      for (var i = 0; i < list.length; i++) {
+        String str = list[i].toString();
+        result.add(str);
+      }
+      return result;
+    } on PlatformException catch (_, e) {
+      print("Error!!");
+      print(e);
+      rethrow;
     }
-    return result;
   }
 
-  static void addEventChannelHandler(){
-    _sink = _eventChannel.receiveBroadcastStream().listen((event) { 
+  static void initSDK() {
+    addEventChannelHandler();
+  }
+
+  static void addEventChannelHandler() {
+    var _sink1 = _eventChannel.receiveBroadcastStream().listen((event) {
       print("on event call from native");
-      print(event);
-      print(event.runtimeType);
-      print(event is List);
-      if(event is List){
+      if (event is List) {
         var list = List<String>.from(event);
-        _eventController.sink.add(ScannerEvent(ScannerEventType.readEvent, list));
+        _eventController.sink
+            .add(ScannerEvent(ScannerEventType.readEvent, list));
         return;
       }
-        _eventController.sink.add(ScannerEvent(ScannerEventType.test, "onResume"));
+      // _eventController.sink
+      //     .add(ScannerEvent(ScannerEventType.test, "onResume"));
     });
+    var _sink2 = _readerListChannel.receiveBroadcastStream().listen((event) {
+      print("readerListChannel in flutter is being called");
+      print(event);
+      print(event.runtimeType);
+      _readerListChannelStreamController.sink.add(ReaderListChangeEvent(event[0] == "1", event[1]));
+    });
+    var _sink3 =
+        _readerConnectionStatusChannel.receiveBroadcastStream().listen((event) {
+      print("readerConnectionStatusChannel in flutter is being called");
+      print(event);
+      print(event.runtimeType);
+      _readerConnectionStatusStreamController.sink.add(ReaderConncetionEvent(event[0] == "1", event[1]));
+    });
+    var _sink4 =
+        _readerRfidDataChannel.receiveBroadcastStream().listen((event) {
+      print("readerRfidDataChannel in flutter is being called");
+      print(event);
+      print(event.runtimeType);
+      if (event is List) {
+        var list = List<String>.from(event);
+        _eventController.sink
+            .add(ScannerEvent(ScannerEventType.readEvent, list));
+        return;
+      }
+    });
+    sinkDispose.addAll([_sink1, _sink2, _sink3, _sink4]);
   }
 
-  static void dispose(){
-    _sink?.cancel();
+  static void dispose() {
+    for (var sink in sinkDispose) {
+      sink?.cancel();
+    }
   }
 
   static Stream<dynamic> getStream() {
     return _eventChannel.receiveBroadcastStream();
   }
-  
 }
-
 
 class ModelInfo {
   String? modelName;

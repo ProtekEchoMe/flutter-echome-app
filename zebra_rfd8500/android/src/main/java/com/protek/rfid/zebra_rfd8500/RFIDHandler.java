@@ -1,19 +1,16 @@
 package com.protek.rfid.zebra_rfd8500;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.protek.rfid.zebra_rfd8500.data.ScannerData;
 import com.zebra.rfid.api3.*;
 
 import io.flutter.Log;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
-import java.io.Reader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,11 +35,11 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
         sink = _sink;
     }
 
-    ArrayList<String> getAvailableRFIDReaderList(){
+    ArrayList<String> getAvailableRFIDReaderList() throws InvalidUsageException {
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<ReaderDevice> list = readers.GetAvailableRFIDReaderList();
         for (int i = 0; i < list.size(); i++) {
-            String hostName = list.get(i).getRFIDReader().getHostName();
+            String hostName = list.get(i).getName();
             result.add(hostName);
         }
         return result;
@@ -67,19 +64,8 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
             return;
         }
         RFIDReader reader = this.reader;
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("readerId", String.valueOf(reader.ReaderCapabilities.ReaderID.getID()));
-        map.put("modelName", String.valueOf(reader.ReaderCapabilities.getModelName()));
-        map.put("communicationStandard", String.valueOf(reader.ReaderCapabilities.getCommunicationStandard()));
-        map.put("countryCode", String.valueOf(reader.ReaderCapabilities.getCountryCode()));
-        map.put("rssiFilter",  String.valueOf(reader.ReaderCapabilities.isRSSIFilterSupported()));
-        map.put("isTagEvenReportingSupported",  String.valueOf(reader.ReaderCapabilities.isTagEventReportingSupported()));
-        map.put("isTagLocationingSupported",  String.valueOf(reader.ReaderCapabilities.isTagLocationingSupported()));
-        map.put("isNXPCommandSupported",  String.valueOf(reader.ReaderCapabilities.isNXPCommandSupported()));
-        map.put("numAntennaSupported", String.valueOf(reader.ReaderCapabilities.getNumAntennaSupported()));
-        map.put("antennaPower", String.valueOf(reader.Config.Antennas.getAntennaConfig(1).getTransmitPowerIndex()));
-        Log.d(TAG, "getConnectedScannerInfo");
-        result.success(map);
+        ScannerData scannerData = new ScannerData(reader);
+        result.success(scannerData.toHashMap());
 //
 ////
 ////        System.out.println("\nBlockEraseSupport: " + reader.ReaderCapabilities.isBlockEraseSupported());
@@ -140,8 +126,13 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
         @Override
         protected String doInBackground(Void... voids) {
             Log.d(TAG,"doInBackground");
-            ArrayList<ReaderDevice> list = readers.GetAvailableRFIDReaderList();
-                if(this.hostName == null){
+            ArrayList<ReaderDevice> list = null;
+            try {
+                list = readers.GetAvailableRFIDReaderList();
+            } catch (InvalidUsageException e) {
+                e.printStackTrace();
+            }
+            if(this.hostName == null){
                     ReaderDevice readerDevice = list.get(0);
                     mConnectedReaderDevice = readerDevice;
                     reader = readerDevice.getRFIDReader();
@@ -157,7 +148,8 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
                         Log.d(TAG,"2");
                         mConnectedReaderDevice = readerDevice;
                         reader = readerDevice.getRFIDReader();
-                        connect();
+                        String x = connect();
+                        Log.d(TAG, x);
                         return "done";
                     }
                 }
@@ -166,6 +158,7 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
 
         @Override
         protected void onPostExecute(String result){
+            Log.d(TAG,"Called");
             Log.d(TAG, result);
             super.onPostExecute(result);
             if(result == "done"){

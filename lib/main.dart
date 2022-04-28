@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:echo_me_mobile/constants/app_theme.dart';
 import 'package:echo_me_mobile/constants/strings.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -10,7 +9,6 @@ import 'package:echo_me_mobile/stores/language/language_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/stores/theme/theme_store.dart';
 import 'package:echo_me_mobile/utils/app_routes.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -19,13 +17,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HttpOverrides.global = MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides(); // remove in final
   await setPreferredOrientations();
   await setupLocator();
   await EasyLocalization.ensureInitialized();
   runZonedGuarded(() async {
     // ignore: prefer_const_constructors
-
     runApp(EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('zh', 'TW')],
         path: 'assets/translations',
@@ -79,7 +76,7 @@ class MyApp extends HookWidget {
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             routes: AppRoutes.getMap(),
-            initialRoute: "/splash"
+            initialRoute: "/splash",
             // initialRoute: "/login",
             ),
         builder: (_) {

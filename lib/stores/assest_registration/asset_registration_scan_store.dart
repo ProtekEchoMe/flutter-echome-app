@@ -73,10 +73,10 @@ abstract class _AssetRegistrationScanStore with Store {
           // if (data.containerAssetCode != null && chosenEquipmentData.isEmpty) {
           //   chosenEquipmentData.add(data);
           // }
-          if (data.containerAssetCode != null &&
-              !addedContainerAssetCode.contains(data.containerAssetCode!)) {
+          if (data.rfid != null &&
+              !addedContainerAssetCode.contains(data.rfid!)) {
             chosenEquipmentData.add(data);
-            addedContainerAssetCode.add(data.containerAssetCode!);
+            addedContainerAssetCode.add(data.rfid!);
           }
         }
         equipmentData = ObservableList.of(equList);

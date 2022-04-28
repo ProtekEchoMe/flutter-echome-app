@@ -6,7 +6,7 @@ class AscToText {
     }
     return result;
   }
-  static String getAscIIString (String str){
+  static String getAscIIString(String str){
      return str.codeUnits.map((e) => e.toRadixString(16)).join("");
   }
 }

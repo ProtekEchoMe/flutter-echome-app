@@ -18,6 +18,7 @@ import 'package:echo_me_mobile/stores/assest_registration/asset_registration_sto
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
@@ -47,6 +48,7 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
   getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
+  
   // set up the repo
   getIt.registerSingleton<Repository>(
     Repository(
@@ -61,7 +63,6 @@ Future<void> setupLocator() async {
   );
 
   //  local store => only called when needed => use Factory
-  getIt.registerSingleton<LoginFormStore>(LoginFormStore(getIt<Repository>()));
   // getIt.registerFactory<ForgetPasswordStore>(
   //     () => ForgetPasswordStore(getIt<Repository>()));
   getIt.registerFactory<AssetRegistrationStore>(
@@ -85,6 +86,12 @@ Future<void> setupLocator() async {
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));
 
-  getIt.registerFactory<AppVersionControlStore>(
-      () => AppVersionControlStore(getIt<Repository>()));
+  getIt.registerSingleton<AppVersionControlStore>(AppVersionControlStore(getIt<Repository>()));
+  
+  getIt.registerSingleton(ReaderConnectionStore());
+
+  getIt.registerSingleton<LoginFormStore>(LoginFormStore(getIt<Repository>()));
+
 }
+
+

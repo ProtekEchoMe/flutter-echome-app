@@ -1,6 +1,7 @@
 import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_registration_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page.dart';
+import 'package:echo_me_mobile/pages/debug_page/debug_page.dart';
 import 'package:echo_me_mobile/pages/home/home_page.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
 import 'package:echo_me_mobile/pages/login/login_page.dart';
@@ -27,7 +28,8 @@ class AppRoutes {
       "/transfer_out_scan": (_) => TransferOutScanPage(),
       "/transfer_in":(_)=>TransferInPage(),
       "/transfer_in_scan":(_)=> TransferInScanPage(),
-      "/splash":(_)=>SplashPage()
+      "/splash":(_)=>SplashPage(),
+      "/debug":(_)=>DebugPage(),
     };
   }
 }
