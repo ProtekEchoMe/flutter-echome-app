@@ -17,6 +17,7 @@ import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
 import 'asset_return_scan_page_arguments.dart';
+import 'assset_return_scan_detail_page.dart';
 
 class AssetScanPage extends StatefulWidget {
   const AssetScanPage({Key? key}) : super(key: key);
@@ -216,7 +217,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AssetScanDetailPage(
+                          builder: (_) => AssetReturnScanDetailPage(
                                 arg: args,
                               )));
                 }

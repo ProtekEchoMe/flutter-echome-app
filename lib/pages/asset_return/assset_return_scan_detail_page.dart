@@ -2,7 +2,7 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page_arguments.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 class AssetReturnScanDetailPage extends StatefulWidget {
-  AssetScanPageArguments arg;
+  AssetReturnScanPageArguments arg;
   AssetReturnScanDetailPage({Key? key, required this.arg}) : super(key: key);
 
   @override
