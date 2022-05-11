@@ -24,6 +24,7 @@ class AppRoutes {
       "/asset_registration":(_) => AssetRegistrationPage(),
       "/asset_scan":(_) => AssetScanPage(),
       "/asset_inventory_detail":(_) => AssetInventoryPage(),
+      "/asset_return": (_) => AssetReturnPage(),
       "/transfer_out":(_) => TransferOutPage(),
       "/transfer_out_scan": (_) => TransferOutScanPage(),
       "/transfer_in":(_)=>TransferInPage(),
