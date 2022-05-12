@@ -1,5 +1,6 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/assest_return/asset_return_store.dart';
@@ -132,10 +133,10 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
                             var status = listItem.status;
                             // ignore: prefer_function_declarations_over_variables
                             var fx = () => Navigator.pushNamed(
-                                context, "/asset_scan",
-                                // arguments: AssetReturnScanPageArguments(
-                                //     listItem.orderId,
-                                //     item: listItem.item)
+                                context, "/asset_return_scan",
+                                arguments: AssetReturnScanPageArguments(
+                                    listItem.orderId,  // listItem.orderId
+                                    item: listItem.item)
                             ).then((value) => {
                               _store.fetchData(regNum: widget.searchRegNum ?? "")
                             });
