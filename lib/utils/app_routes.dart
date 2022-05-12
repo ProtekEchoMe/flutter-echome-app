@@ -27,7 +27,7 @@ class AppRoutes {
       "/asset_scan":(_) => AssetScanPage(),
       "/asset_inventory_detail":(_) => AssetInventoryPage(),
       "/asset_return": (_) => AssetReturnPage(),
-      "/hot": (_) => AssetReturnScanPage(),
+      "/asset_return_scan": (_) => AssetReturnScanPage(),
       "/transfer_out":(_) => TransferOutPage(),
       "/transfer_out_scan": (_) => TransferOutScanPage(),
       "/transfer_in":(_)=>TransferInPage(),

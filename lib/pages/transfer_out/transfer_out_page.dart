@@ -5,8 +5,8 @@ import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registratio
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';

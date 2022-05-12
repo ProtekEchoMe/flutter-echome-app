@@ -1,6 +1,6 @@
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_registration/asset_registration_item.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/models/asset_return/return_item.dart';
 import 'package:echo_me_mobile/stores/assest_return/asset_return_item.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
