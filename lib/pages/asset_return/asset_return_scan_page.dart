@@ -19,14 +19,14 @@ import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'asset_return_scan_page_arguments.dart';
 import 'assset_return_scan_detail_page.dart';
 
-class AssetScanPage extends StatefulWidget {
-  const AssetScanPage({Key? key}) : super(key: key);
+class AssetReturnScanPage extends StatefulWidget {
+  const AssetReturnScanPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanPage> createState() => _AssetScanPageState();
+  State<AssetReturnScanPage> createState() => _AssetReturnScanPageState();
 }
 
-class _AssetScanPageState extends State<AssetScanPage> {
+class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
       getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
@@ -182,6 +182,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Debug Msg
+    print(this.runtimeType);
     final AssetReturnScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as AssetReturnScanPageArguments?;
     return Scaffold(

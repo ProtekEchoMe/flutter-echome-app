@@ -2,6 +2,7 @@ import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_registration_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page.dart';
 import 'package:echo_me_mobile/pages/asset_return/asset_return_page.dart';
+import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page.dart';
 import 'package:echo_me_mobile/pages/debug_page/debug_page.dart';
 import 'package:echo_me_mobile/pages/home/home_page.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
@@ -26,6 +27,7 @@ class AppRoutes {
       "/asset_scan":(_) => AssetScanPage(),
       "/asset_inventory_detail":(_) => AssetInventoryPage(),
       "/asset_return": (_) => AssetReturnPage(),
+      "/asset_return_scan": (_) => AssetReturnScanPage(),
       "/transfer_out":(_) => TransferOutPage(),
       "/transfer_out_scan": (_) => TransferOutScanPage(),
       "/transfer_in":(_)=>TransferInPage(),

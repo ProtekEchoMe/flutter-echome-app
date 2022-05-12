@@ -60,6 +60,8 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Debug Msg
+    print(this.runtimeType);
     print(widget.arg.item!.createdDate);
     return Scaffold(
       appBar: EchoMeAppBar(titleText: "Document Details"),

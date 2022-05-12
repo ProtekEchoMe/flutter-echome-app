@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:echo_me_mobile/data/network/apis/app_version_control/app_version_control_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
@@ -26,6 +27,8 @@ class Repository {
 
   final AssetRegistrationApi _assetRegistrationApi;
 
+  final AssetReturnApi _assetReturnApi;
+
   final TransferOutApi _transferOutApi;
 
   final TransferInApi _transferInApi;
@@ -42,6 +45,7 @@ class Repository {
       this._logoutApi,
       this._assetInventoryApi,
       this._assetRegistrationApi,
+      this._assetReturnApi,
       this._transferOutApi,
       this._transferInApi,
       this._appVersionControlApi);
@@ -88,6 +92,13 @@ class Repository {
   Future<AssetRegistrationResponse> getAssetRegistration(
       {int page = 0, int limit = 10, String regNumber = ""}) async {
     return await _assetRegistrationApi.getAssetRegistration(
+        page: page, limit: limit, regNumber: regNumber);
+  }
+
+  //TODO Update Corresponding API --> getAssetReturnFunction
+  Future<AssetReturnResponse> getAssetReturn(
+      {int page = 0, int limit = 10, String regNumber = ""}) async {
+    return await _assetReturnApi.getAssetReturn(
         page: page, limit: limit, regNumber: regNumber);
   }
 

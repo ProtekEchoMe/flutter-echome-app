@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/apis/app_version_control/app_version_control_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
@@ -15,6 +16,8 @@ import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
 import 'package:echo_me_mobile/stores/app_version_control/app_version_control_store.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/assest_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/assest_return/asset_return_scan_store.dart';
+import 'package:echo_me_mobile/stores/assest_return/asset_return_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
@@ -45,6 +48,7 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(LogoutApi(getIt<DioClient>()));
   getIt.registerSingleton(AssetInventoryApi(getIt<DioClient>()));
   getIt.registerSingleton(AssetRegistrationApi(getIt<DioClient>()));
+  getIt.registerSingleton(AssetReturnApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
   getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
@@ -57,6 +61,7 @@ Future<void> setupLocator() async {
         getIt<LogoutApi>(),
         getIt<AssetInventoryApi>(),
         getIt<AssetRegistrationApi>(),
+        getIt<AssetReturnApi>(),
         getIt<TransferOutApi>(),
         getIt<TransferInApi>(),
         getIt<AppVersionControlApi>()),
@@ -67,6 +72,9 @@ Future<void> setupLocator() async {
   //     () => ForgetPasswordStore(getIt<Repository>()));
   getIt.registerFactory<AssetRegistrationStore>(
       () => AssetRegistrationStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetReturnStore>(
+          () => AssetReturnStore(getIt<Repository>()));
 
   getIt.registerFactory<AssetInventoryStore>(
       () => AssetInventoryStore(getIt<Repository>()));
@@ -82,6 +90,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<AssetRegistrationScanStore>(
       () => AssetRegistrationScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetReturnScanStore>(
+          () => AssetReturnScanStore(getIt<Repository>()));
 
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));
