@@ -7,7 +7,7 @@ class RouteConstant {
     RouteObject("Asset Inventory", "Check you inventory", "/asset_inventory", MdiIcons.warehouse),
     RouteObject("Transfer In", "Receive from other site", "/transfer_in", MdiIcons.inboxArrowDown),
     RouteObject("Transfer Out", "Send to other site", "/transfer_out",  MdiIcons.inboxArrowUp),
-    RouteObject("Asset Return", "Return Inventory", "/asset_return",  MdiIcons.messageArrowLeft),
+    RouteObject("Asset Return", "Return to Inventory", "/asset_return",  MdiIcons.messageArrowLeft),
     RouteObject("Assets Disposal", "Disposal and write-off", "/asset_disposal", MdiIcons.trashCan,),
     RouteObject("Stock Take", "Count your asset", "/stock_take", MdiIcons.fileDocumentMultipleOutline),
 
