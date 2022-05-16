@@ -7,6 +7,7 @@ import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_base.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
@@ -102,6 +103,10 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(ReaderConnectionStore());
 
   getIt.registerSingleton<LoginFormStore>(LoginFormStore(getIt<Repository>()));
+
+  //debug
+  // Endpoints.printEndPoint();
+  // print("");
 
 }
 

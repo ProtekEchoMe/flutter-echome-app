@@ -1,65 +1,173 @@
 class Endpoints {
   Endpoints._();
 
+  // server domain map
+  static Map domainMap = {"AWS": "http://qa-echome.ddns.net",
+                          "DFS": "http://echome.dfs.com"};
+
+  static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
+                                  "DFS": "https://atlrfid.dfs.com"};
+
+  static Map versionControlDomainMap = {"vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app"};
+
   // base url
-  static const String baseUrl =
-      "https://qa-proteksso.ddns.net/auth/realms/Protek/protocol/openid-connect/";
-  static const String clientSecret = "11e7cb78-8a61-4ca8-a88b-c6c572069fd4";
-  static const String client_id = "echoMe";
+  static String authMethod = "/auth/realms/Protek/protocol/openid-connect";
+  static String forgetPasswordPageMethod = "/auth/realms/Protek/account";
+  static String forgetPasswordMethod = "/auth/forgetPassword";
+
+  static String keyCloakActiveDomain = keyClockDomainMap["AWS"];
+  static  String baseUrl = "$keyCloakActiveDomain$authMethod";
+  static  String clientSecret = "11e7cb78-8a61-4ca8-a88b-c6c572069fd4";
+  static  String client_id = "echoMe";
   // receiveTimeout
-  static const int receiveTimeout = 15000;
+  static  int receiveTimeout = 15000;
 
   // connectTimeout
-  static const int connectionTimeout = 20000;
+  static  int connectionTimeout = 20000;
 
+  //apps update apis
   // booking endpoints
-  static const String login = baseUrl + "/token";
-  static const String logout = baseUrl + "/logout";
-  static const String forgetPasswordPageUrl =
-      "https://qa-proteksso.ddns.net/auth/realms/Protek/account";
-  static const String forgetPassword = baseUrl + "/auth/forgetPassword";
+  static  String login = baseUrl + "/token";
+  static  String logout = baseUrl + "/logout";
+  static  String forgetPasswordPageUrl = "$keyCloakActiveDomain$forgetPasswordPageMethod";
+  static  String forgetPassword = "$keyCloakActiveDomain$forgetPasswordMethod";
 
-  static const String assetInventory =
-      "http://qa-echome.ddns.net/echoMe/inv/listInventory";
-  static const String assetRegistration =
-      "http://qa-echome.ddns.net/echoMe/reg/listRegisterHeader";
-  static const String listRfidContainer =
-      "http://qa-echome.ddns.net/echoMe/rfid/listRfidContainer";
-  static const String getRfidTagContainer =
-      "https://qa-echome.ddns.net/echoMe/rfid/getRfidTagContainer";
-  static const String registerItems =
-      "http://qa-echome.ddns.net/echoMe/reg/checkInItems";
-  static const String registerToItems =
-      "http://qa-echome.ddns.net/echoMe/to/checkInItems";
-  static const String registerTiItems =
-      "http://qa-echome.ddns.net/echoMe/ti/checkInItems";
-  static const String registerContainer =
-      "http://qa-echome.ddns.net/echoMe/reg/checkInContainer";
-  static const String registerToContainer =
-      "http://qa-echome.ddns.net/echoMe/to/checkInContainer";
-  static const String registerTiContainer =
-      "http://qa-echome.ddns.net/echoMe/ti/checkInContainer";
-  static const String registerComplete =
-      "http://qa-echome.ddns.net/echoMe/reg/registerComplete";
-  static const String registerToComplete =
-      "http://qa-echome.ddns.net/echoMe/to/transferOutComplete";
-  static const String registerTiComplete =
-      "http://qa-echome.ddns.net/echoMe/ti/transferInComplete";
-  static const String registerItemsValidation =
-      "http://qa-echome.ddns.net/echoMe/reg/registerItemsValidation";
-  static const String registerItem =
-      "http://qa-echome.ddns.net/echoMe/reg/registerItems";
-  static const String listTransferOutHeader =
-      "http://qa-echome.ddns.net/echoMe/to/listTransferOutHeader";
-  static const String listTransferOutLine =
-      "http://qa-echome.ddns.net/echoMe/to/listTransferOutLine";
-  static const String setSiteCode = "http://qa-echome.ddns.net/echoMe/site";
-  static const String listTransferInHeader =
-      "http://qa-echome.ddns.net/echoMe/ti/listTransferInHeader";
-  static const listTransferInLine =
-      "http://qa-echome.ddns.net/echoMe/ti/listTransferInLine";
-  static const getAppVersion =
-      'https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appVersion';
-  static const getAppDownloadLink =
-      "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appDownload";
+
+  // apps function apis
+  static String awsDomain = domainMap["AWS"];
+  static String dfsDomain = "";
+  static String appDir = "/echoMe";
+  static String activeDomain = awsDomain;
+  static String activeUrl = "$activeDomain$appDir";
+
+  static const String assetInventoryMethod = "/inv/listInventory";
+  static const String assetRegistrationMethod = "/reg/listRegisterHeader";
+  static const String listRfidContainerMethod = "/rfid/listRfidContainer";
+  static const String getRfidTagContainerMethod = "/rfid/getRfidTagContainer";
+  static const String registerItemsMethod = "/reg/checkInItems";
+  static const String registerToItemsMethod = "/to/checkInItems";
+  static const String registerTiItemsMethod = "/ti/checkInItems";
+  static const String registerContainerMethod = "/reg/checkInContainer";
+  static const String registerToContainerMethod = "/to/checkInContainer";
+  static const String registerTiContainerMethod = "/ti/checkInContainer";
+  static const String registerCompleteMethod = "/reg/registerComplete";
+  static const String registerToCompleteMethod = "/to/transferOutComplete";
+  static const String registerTiCompleteMethod = "/ti/transferInComplete";
+  static const String registerItemsValidationMethod = "/reg/registerItemsValidation";
+  static const String registerItemMethod = "/reg/registerItems";
+  static const String listTransferOutHeaderMethod = "/to/listTransferOutHeader";
+  static const String listTransferOutLineMethod = "/to/listTransferOutLine";
+  static const String setSiteCodeMethod = "/site";
+  static const String listTransferInHeaderMethod = "/ti/listTransferInHeader";
+  static const String listTransferInLineMethod = "/ti/listTransferInLine";
+
+  static String assetInventory = "$activeUrl$assetInventoryMethod";
+  static String assetRegistration = "$activeUrl$assetRegistrationMethod";
+  static String listRfidContainer = "$activeUrl$listRfidContainerMethod";
+  static String getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";
+  static String registerItems = "$activeUrl$registerItemsMethod";
+  static String registerToItems = "$activeUrl$registerToItemsMethod";
+  static String registerTiItems = "$activeUrl$registerTiItemsMethod";
+  static String registerContainer = "$activeUrl$registerContainerMethod";
+  static String registerToContainer = "$activeUrl$registerToContainerMethod";
+  static String registerTiContainer = "$activeUrl$registerTiContainerMethod";
+  static String registerComplete = "$activeUrl$registerCompleteMethod";
+  static String registerToComplete = "$activeUrl$registerToCompleteMethod";
+  static String registerTiComplete = "$activeUrl$registerTiCompleteMethod";
+  static String registerItemsValidation = "$activeUrl$registerItemsValidationMethod";
+  static String registerItem = "$activeUrl$registerItemMethod";
+  static String listTransferOutHeader = "$activeUrl$listTransferOutHeaderMethod";
+  static String listTransferOutLine = "$activeUrl$listTransferOutLineMethod";
+  static String setSiteCode =  "$activeUrl$setSiteCodeMethod";
+  static String listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
+  static String listTransferInLine = "$activeUrl$listTransferInLineMethod";
+
+
+  static String activeVersionControlDomain = versionControlDomainMap["vercal"];
+  static String getAppVersionMethod = "/api/v1/appVersion";
+  static String getAppDownloadLinkMethod = "/api/v1/appDownload";
+  static String getAppVersion =
+      '$activeVersionControlDomain$getAppVersionMethod';
+  static String getAppDownloadLink =
+      "$activeVersionControlDomain$getAppDownloadLinkMethod";
+
+  // static String getAppVersion =
+  //     'https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appVersion';
+  // static String getAppDownloadLink =
+  //     "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appDownload";
+
+  static updateVersionControlEndPoint(activeDomain){
+    Endpoints.activeVersionControlDomain = activeDomain;
+    Endpoints.getAppVersion = '$activeVersionControlDomain$getAppVersionMethod';
+    Endpoints.getAppDownloadLink = '$activeVersionControlDomain$getAppDownloadLinkMethod';
+  }
+
+  static updateKeyCloakEndPoint(activeDomain){
+    Endpoints.keyCloakActiveDomain = activeDomain;
+    Endpoints.baseUrl = "$keyCloakActiveDomain$authMethod";
+    Endpoints.forgetPassword = "$keyCloakActiveDomain$forgetPasswordMethod";
+    Endpoints.forgetPasswordPageUrl = "$keyCloakActiveDomain$forgetPasswordPageMethod";
+    Endpoints.login = baseUrl + "/token";
+    Endpoints.logout = baseUrl + "/logout";
+  }
+
+  static updateFunctionEndPoint(activeDomain){
+    Endpoints.activeDomain = activeDomain;
+    Endpoints.activeUrl = "$activeDomain$appDir";
+    Endpoints.assetInventory = "$activeUrl$assetInventoryMethod";
+    Endpoints.assetRegistration = "$activeUrl$assetRegistrationMethod";
+    Endpoints.listRfidContainer = "$activeUrl$listRfidContainerMethod";
+    Endpoints.getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";
+    Endpoints.registerItems = "$activeUrl$registerItemsMethod";
+    Endpoints.registerToItems = "$activeUrl$registerToItemsMethod";
+    Endpoints.registerTiItems = "$activeUrl$registerTiItemsMethod";
+    Endpoints.registerContainer = "$activeUrl$registerContainerMethod";
+    Endpoints.registerToContainer = "$activeUrl$registerToContainerMethod";
+    Endpoints.registerTiContainer = "$activeUrl$registerTiContainerMethod";
+    Endpoints.registerComplete = "$activeUrl$registerCompleteMethod";
+    Endpoints.registerToComplete = "$activeUrl$registerToCompleteMethod";
+    Endpoints.registerTiComplete = "$activeUrl$registerTiCompleteMethod";
+    Endpoints.registerItemsValidation = "$activeUrl$registerItemsValidationMethod";
+    Endpoints.registerItem = "$activeUrl$registerItemMethod";
+    Endpoints.listTransferOutHeader = "$activeUrl$listTransferOutHeaderMethod";
+    Endpoints.listTransferOutLine = "$activeUrl$listTransferOutLineMethod";
+    Endpoints.setSiteCode =  "$activeUrl$setSiteCodeMethod";
+    Endpoints.listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
+    Endpoints.listTransferInLine = "$activeUrl$listTransferInLineMethod";
+  }
+
+  // testing
+  static printEndPoint(){
+    print("Function URL:\n");
+    print(Endpoints.activeDomain );
+    print(Endpoints.assetInventory);
+    print(Endpoints.assetRegistration);
+    print(Endpoints.listRfidContainer);
+    print(Endpoints.getRfidTagContainer);
+    print(Endpoints.registerItems);
+    print(Endpoints.registerToItems);
+    print(Endpoints.registerTiItems);
+    print(Endpoints.registerContainer );
+    print(Endpoints.registerToContainer);
+    print(Endpoints.registerTiContainer );
+    print(Endpoints.registerComplete );
+    print(Endpoints.registerToComplete);
+    print(Endpoints.registerTiComplete );
+    print(Endpoints.registerItemsValidation);
+    print(Endpoints.registerItem );
+    print(Endpoints.listTransferOutHeader);
+    print(Endpoints.listTransferOutLine);
+    print(Endpoints.setSiteCode);
+    print(Endpoints.listTransferInHeader);
+    print(Endpoints.listTransferInLine);
+
+    print("KeyCloak URL\n");
+    print(Endpoints.forgetPassword);
+    print(Endpoints.forgetPasswordPageUrl);
+
+    print("Version Conttrol URL\n");
+    print(Endpoints.getAppVersion);
+    print(Endpoints.getAppDownloadLink);
+  }
+
 }

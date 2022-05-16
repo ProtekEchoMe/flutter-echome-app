@@ -105,7 +105,10 @@ abstract class _LoginFormStore with Store {
     } catch (e) {
       print(e);
       if (e is DioError) {
-        var message = (e as DioError).response?.data?["error_description"];
+        String message = (e as DioError).response?.data?["error_description"];
+        // message = message ?? "";
+        //
+        // message += e.error.message;
         errorStore.setErrorMessage(message);
       }
     } finally {

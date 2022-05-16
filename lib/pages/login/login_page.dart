@@ -2,9 +2,11 @@ import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/constants/strings.dart';
+import 'package:echo_me_mobile/data/sharedpref/constants/preferences.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/widgets/login_form.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -126,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                                       fontWeight: FontWeight.bold,
                                       color: Theme.of(context)
                                           .cardColor),
+
                             ),
                             Text(
                               "login".tr(gender: "description"),
@@ -138,7 +141,54 @@ class _LoginPageState extends State<LoginPage> {
                                       fontWeight: FontWeight.normal,
                                       color: Theme.of(context)
                                           .cardColor),
+
+                            ),
+                          TextButton(
+                            onPressed: () => showDialog<String>(
+                                context: context,
+                                barrierDismissible: false, // user must tap button!
+                                builder: (BuildContext context) {
+                                  return WillPopScope(
+                                    onWillPop: () async => false,
+                                    child: AlertDialog(
+                                      title: const Text("Choose the Server"),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            ...Endpoints.domainMap.keys.toList().map((e) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  print(e);
+                                                  // Endpoints.printEndPoint();
+                                                  print(Preferences.defaultDomain);
+                                                  Preferences.defaultDomain = e;
+                                                  print(Preferences.defaultDomain);
+                                                  Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
+                                                  Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
+                                                  // Endpoints.printEndPoint();
+                                                  // if (e != loginFormStore.siteCode) {
+                                                  //   await loginFormStore.changeSite(siteCode: e);
+                                                  // }
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: ListTile(
+                                                  title: Text(e),
+                                                ),
+                                              );
+                                            }).toList()
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[],
+                                    ),
+                                  );
+                                },
                             )
+                                ,
+                            child: const Text('Show Dialog'),
+
+
+                          ),
                           ],
                         ),
                       ),
@@ -151,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         width: double.infinity,
                         height: 12,
+
                       ),
                       GestureDetector(
                         onTap: () =>
@@ -175,6 +226,43 @@ class _LoginPageState extends State<LoginPage> {
           ],
         )),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    print("called");
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: const Text("Choose the site"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  ...Endpoints.domainMap.keys.toList().map((e) {
+                    return GestureDetector(
+                      onTap: () async {
+                        print(e);
+                        // if (e != loginFormStore.siteCode) {
+                        //   await loginFormStore.changeSite(siteCode: e);
+                        // }
+                        Navigator.of(context).pop();
+                      },
+                      child: ListTile(
+                        title: Text(e),
+                      ),
+                    );
+                  }).toList()
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          ),
+        );
+      },
     );
   }
 }

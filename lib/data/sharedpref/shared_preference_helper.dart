@@ -63,4 +63,12 @@ class SharedPreferenceHelper {
   Future<void> changeLanguage(String language) {
     return _sharedPreference.setString(Preferences.current_language, language);
   }
+
+  String? get defaultDomain {
+    return _sharedPreference.getString(Preferences.defaultDomain);
+  }
+
+  Future<void> changeDefaultDomain(String domainKey) {
+    return _sharedPreference.setString(Preferences.defaultDomain, domainKey);
+  }
 }
