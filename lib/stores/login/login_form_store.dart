@@ -148,8 +148,15 @@ abstract class _LoginFormStore with Store {
     } catch (e) {
       print(e);
       if (e is DioError) {
-        var message = (e as DioError).response?.data?["error_description"];
-        errorStore.setErrorMessage(message);
+        DioError errorIO = e as DioError;
+        if (errorIO.response != null) {
+          var message = errorIO.response?.data?["error_description"];
+          errorStore.setErrorMessage(message);
+        }else{
+          var message = errorIO.error.message;
+          errorStore.setErrorMessage(message);
+        }
+
       }
     } finally {
         isChangingSite = false;

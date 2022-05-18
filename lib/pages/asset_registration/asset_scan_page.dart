@@ -42,8 +42,16 @@ class _AssetScanPageState extends State<AssetScanPage> {
   String _getcontainerAssetCode() {
     return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
         ? (_assetRegistrationScanStore
-                .chosenEquipmentData[0].containerAssetCode ??
+                .chosenEquipmentData[0].containerCode ??
             "")
+        : "";
+  }
+
+  String _getContainerCode(){
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore
+        .chosenEquipmentData[0].containerAssetCode ??
+        "")
         : "";
   }
 

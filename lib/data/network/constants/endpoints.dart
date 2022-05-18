@@ -2,8 +2,12 @@ class Endpoints {
   Endpoints._();
 
   // server domain map
-  static Map domainMap = {"AWS": "http://qa-echome.ddns.net",
-                          "DFS": "http://echome.dfs.com"};
+  static Map domainMap = {"DFS": "http://echome.dfs.com",
+    "AWS": "http://qa-echome.ddns.net",
+                          };
+
+  static List domainList = domainMap.keys.toList();
+  static String activeServerStr = domainList[0];
 
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
                                   "DFS": "https://atlrfid.dfs.com"};
@@ -15,7 +19,7 @@ class Endpoints {
   static String forgetPasswordPageMethod = "/auth/realms/Protek/account";
   static String forgetPasswordMethod = "/auth/forgetPassword";
 
-  static String keyCloakActiveDomain = keyClockDomainMap["AWS"];
+  static String keyCloakActiveDomain = keyClockDomainMap[activeServerStr];
   static  String baseUrl = "$keyCloakActiveDomain$authMethod";
   static  String clientSecret = "11e7cb78-8a61-4ca8-a88b-c6c572069fd4";
   static  String client_id = "echoMe";
@@ -35,9 +39,9 @@ class Endpoints {
 
   // apps function apis
   static String awsDomain = domainMap["AWS"];
-  static String dfsDomain = "";
+  static String dfsDomain = domainMap["DFS"];
   static String appDir = "/echoMe";
-  static String activeDomain = awsDomain;
+  static String activeDomain = domainMap[activeServerStr];
   static String activeUrl = "$activeDomain$appDir";
 
   static const String assetInventoryMethod = "/inv/listInventory";
