@@ -192,7 +192,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     List<EquItem> newList = list.map((e) {
       var equItem = EquItem.fromJson(e);
       if (equipmentChosen != null &&
-          equipmentChosen!.containerAssetCode == equItem.containerAssetCode) {
+          equipmentChosen!.containerCode == equItem.containerCode) {
         //update EquipmentChosen
         equipmentChosen = equItem;
       }
@@ -216,13 +216,13 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
     Set<String> set = {};
     for (var element in equTable) {
-      if (element.containerAssetCode != null ||
-          !set.contains(element.containerAssetCode)) {
-            set.add(element.containerAssetCode!);
+      if (element.containerCode != null ||
+          !set.contains(element.containerCode)) {
+            set.add(element.containerCode!);
           }
 
-      if (element.containerAssetCode != null || !shouldStop) {
-        equipmentId = element.containerAssetCode!;
+      if (element.containerCode != null || !shouldStop) {
+        equipmentId = element.containerCode!;
         equipmentChosen = element;
         shouldStop = true;
       }
@@ -231,6 +231,23 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         triggerDialog();
       }
     }
+
+    // for (var element in equTable) {
+    //   if (element.containerAssetCode != null ||
+    //       !set.contains(element.containerAssetCode)) {
+    //     set.add(element.containerAssetCode!);
+    //   }
+    //
+    //   if (element.containerAssetCode != null || !shouldStop) {
+    //     equipmentId = element.containerAssetCode!;
+    //     equipmentChosen = element;
+    //     shouldStop = true;
+    //   }
+    //
+    //   if(set.length>1){
+    //     triggerDialog();
+    //   }
+    // }
   }
 
   Future<void> triggerDialog() async {
@@ -949,6 +966,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
 class EquItem {
   int? id;
+  String? containerCode;
   String? containerAssetCode;
   String? rfid;
   String? status;
@@ -957,12 +975,14 @@ class EquItem {
   EquItem(
       {this.id,
       this.containerAssetCode,
+        this.containerCode,
       this.rfid,
       this.status,
       this.createdDate});
 
   EquItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    containerCode = json['containerCode'];
     containerAssetCode = json['containerAssetCode'];
     rfid = json['rfid'];
     status = json['status'];
@@ -972,6 +992,7 @@ class EquItem {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['containerCode'] = this.containerCode;
     data['containerAssetCode'] = this.containerAssetCode;
     data['rfid'] = this.rfid;
     data['status'] = this.status;

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
@@ -67,7 +69,16 @@ abstract class _AssetRegistrationScanStore with Store {
         Set<String> addedContainerAssetCode = chosenEquipmentData
             .map((element) => element.containerAssetCode ?? "")
             .toSet();
+
+
+        Set<String?> containerCodeSet = Set<String?>();
+
+        // var duplicatedFlag = false;
+        // String? tmpCode = "";
+        // int seq = 0;
+
         for (var e in resList) {
+          // seq ++;
           EquipmentData data = EquipmentData.fromJson(e);
           equList.add(data);
           // if (data.containerAssetCode != null && chosenEquipmentData.isEmpty) {
@@ -78,9 +89,16 @@ abstract class _AssetRegistrationScanStore with Store {
             chosenEquipmentData.add(data);
             addedContainerAssetCode.add(data.rfid!);
           }
+          // check containerCode duplication
+          // if (data.containerCode != tmpCode && seq > 1){
+          //   duplicatedFlag = true;
+          // }
+          //  tmpCode = data.containerCode;
+          containerCodeSet.add(data.containerCode);
+
         }
         equipmentData = ObservableList.of(equList);
-        if (chosenEquipmentData.length > 1) {
+        if (chosenEquipmentData.length > 1 && containerCodeSet.length > 1) {
           throw Exception("More than one container code found");
         }
       }
@@ -138,6 +156,7 @@ abstract class _AssetRegistrationScanStore with Store {
     }
   }
 
+  //TODO:: [bugs]just using containerAssetCode got problem to verify --> multi containers
   @action
   Future<void> registerItem(
       {String regNum = "",

@@ -23,10 +23,28 @@ class LoginApi {
   }
 
   Future<void> setSiteCode({String siteCode = ""}) async {
+    // TODO: [Bug] Connection Closed Error Will Occur when no cookies JSESSIOMID is passed to site
+    // call list reg header to get cookies http://qa-echome.ddns.net/echoMe/reg/listRegisterHeader?skip=0&limit=10
+    final res1 = await _dioClient.get(Endpoints.assetRegistration,
+        queryParameters: {"siteCode": siteCode},
+        options: Options(
+            followRedirects: false, validateStatus: (status) => status! < 400)
+    );
+
+    Map<String, dynamic> query = {
+      "skip": 1,
+      "limit": 1,
+    };
+
+    final res2 = await _dioClient.getRegistration(Endpoints.assetRegistration,
+        queryParameters: query);
+
+
     final res = await _dioClient.get(Endpoints.setSiteCode,
         queryParameters: {"siteCode": siteCode},
         options: Options(
-            followRedirects: false, validateStatus: (status) => status! < 400));
+            followRedirects: false, validateStatus: (status) => status! < 400)
+    );
   }
 
   /// Returns list of post in response

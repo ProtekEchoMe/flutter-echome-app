@@ -39,7 +39,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     );
   }
 
-  String _getcontainerAssetCode() {
+  String _getContainerCode() {
     return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
         ? (_assetRegistrationScanStore
                 .chosenEquipmentData[0].containerCode ??
@@ -47,7 +47,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
         : "";
   }
 
-  String _getContainerCode(){
+  String _getcontainerAssetCode(){
     return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
         ? (_assetRegistrationScanStore
         .chosenEquipmentData[0].containerAssetCode ??
@@ -97,7 +97,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
       List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-
+  // TODO: wait for update containerAssetCode accept multi value
       await _assetRegistrationScanStore.registerItem(
           regNum: args?.regNum ?? "",
           itemRfid: itemRfid,
@@ -146,6 +146,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
           }
         }
         _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+        print("");
       }
     });
     var disposerReaction = reaction(
@@ -157,7 +158,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var disposerReaction1 =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
       if (_assetRegistrationScanStore.chosenEquipmentData.length > 1 &&
-          !isDialogShown) {
+          !isDialogShown && false) {
         isDialogShown = true;
         DialogHelper.showCustomDialog(context, widgetList: [
           Text("More than one container code detected, please rescan")
@@ -338,7 +339,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.blueAccent)),
                               child: Center(
-                                child: Text(_getcontainerAssetCode()),
+                                child: Text(_getContainerCode()),
                               ),
                             )),
                       ),
