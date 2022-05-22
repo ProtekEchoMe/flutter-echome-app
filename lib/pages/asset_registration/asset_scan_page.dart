@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
@@ -113,17 +114,48 @@ class _AssetScanPageState extends State<AssetScanPage> {
     _assetRegistrationScanStore.reset();
   }
 
+  void _rescanContainer(){
+    _assetRegistrationScanStore.resetContainer();
+  }
+
   Future<void> _complete(AssetScanPageArguments? args) async {
     _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
   }
 
-  void _onBottomBarItemTapped(AssetScanPageArguments? args, int index) {
+  Future<void> _onBottomBarItemTapped(AssetScanPageArguments? args, int index) async {
     if (index == 0) {
-      _changeEquipment(args);
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
+      if (flag == true) _changeEquipment(args);
     } else if (index == 1) {
-      _rescan();
-    } else {
-      _complete(args);
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
+      if (flag == true) _rescan();
+    } else if (index == 2){
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
+      if (flag == true) _complete(args);
+
+    } else if (index == 3){ // debug version
+      DialogHelper.showCustomDialog(context, widgetList: [
+        Text("More than one container code detected, please rescan")
+      ], actionList: [
+        TextButton(
+          child: const Text('DContainesrs'),
+          onPressed: () {
+            _addMockEquipmentIdCaseOne();
+            Navigator.of(context).pop();
+          },
+        )
+        ,
+        TextButton(
+          child: const Text('SContainer'),
+          onPressed: () {
+            _addMockEquipmentIdCaseTwo();
+            Navigator.of(context).pop();
+          },
+        )
+      ]);
     }
   }
 
@@ -157,12 +189,24 @@ class _AssetScanPageState extends State<AssetScanPage> {
     });
     var disposerReaction1 =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-      if (_assetRegistrationScanStore.chosenEquipmentData.length > 1 &&
-          !isDialogShown && false) {
+          Set<String?> containerAssetCodeSet = Set<String?>();
+          // print("disposer1 called");
+          _assetRegistrationScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));
+      if (containerAssetCodeSet.length > 1 &&
+          !isDialogShown) {
         isDialogShown = true;
         DialogHelper.showCustomDialog(context, widgetList: [
           Text("More than one container code detected, please rescan")
         ], actionList: [
+          TextButton(
+            child: const Text('Rescan Container'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _rescanContainer();
+              isDialogShown = false;
+            },
+          )
+        ,
           TextButton(
             child: const Text('Rescan'),
             onPressed: () {
@@ -253,6 +297,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -516,12 +564,13 @@ class _AssetScanPageState extends State<AssetScanPage> {
   }
 
   void _addMockEquipmentId() {
-    var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
+    // var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
+    var init = 0;
     List<String> list = [];
     if (init == 0) {
-      list.add(AscToText.getAscIIString("CATL010000000055"));
+      list.add(AscToText.getAscIIString("CATL010000000820"));
     } else if (init == 1) {
-      list.add(AscToText.getAscIIString("CATL010000000066"));
+      list.add(AscToText.getAscIIString("CATL010000000831"));
     } else if (init == 2) {
       list.add(AscToText.getAscIIString("CATL010000000077"));
     } else if (init == 3) {
@@ -529,6 +578,20 @@ class _AssetScanPageState extends State<AssetScanPage> {
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
+    _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  void _addMockEquipmentIdCaseOne() {
+    List<String> list = [];
+    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("CATL010000000842"));
+    _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  void _addMockEquipmentIdCaseTwo() {
+    List<String> list = [];
+    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("CATL010000000819"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
   }
 }

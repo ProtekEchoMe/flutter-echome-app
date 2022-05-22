@@ -181,6 +181,17 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
   }
 
   @override
+  void resetContainer() {
+    final _$actionInfo = _$_AssetRegistrationScanStoreActionController
+        .startAction(name: '_AssetRegistrationScanStore.resetContainer');
+    try {
+      return super.resetContainer();
+    } finally {
+      _$_AssetRegistrationScanStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
     final _$actionInfo = _$_AssetRegistrationScanStoreActionController

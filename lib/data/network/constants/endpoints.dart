@@ -65,6 +65,15 @@ class Endpoints {
   static const String listTransferInHeaderMethod = "/ti/listTransferInHeader";
   static const String listTransferInLineMethod = "/ti/listTransferInLine";
 
+  // asset Return Method
+  static const String assetReturnReturnMethod = "/assetReturn/listAssetReturnHeader";
+  static const String assetReturnItemsMethod = "/assetReturn/checkInItems";
+  static const String assetReturnContainerMethod = "/assetReturn/checkInContainer";
+  static const String assetReturnCompleteMethod = "/assetReturn/returnComplete";
+  static const String assetReturnItemsValidationMethod = "/reg/registerItemsValidation";
+  static const String assetReturnItemMethod = "/reg/registerItems";
+
+
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
   static String listRfidContainer = "$activeUrl$listRfidContainerMethod";
@@ -85,6 +94,14 @@ class Endpoints {
   static String setSiteCode =  "$activeUrl$setSiteCodeMethod";
   static String listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
   static String listTransferInLine = "$activeUrl$listTransferInLineMethod";
+
+  // asset Return URL
+  static String assetReturnReturn = "$activeUrl$assetReturnReturnMethod";
+  static String assetReturnItems = "/assetReturn/checkInItems";
+  static String assetReturnContainer = "/assetReturn/checkInContainer";
+  static String assetReturnComplete = "/assetReturn/returnComplete";
+  static String assetReturnItemsValidation = "/reg/registerItemsValidation";
+  static String assetReturnItem = "/reg/registerItems";
 
 
   static String activeVersionControlDomain = versionControlDomainMap["vercal"];

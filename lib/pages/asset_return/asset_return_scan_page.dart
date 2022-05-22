@@ -49,6 +49,15 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         : "";
   }
 
+  String _getcontainerCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore
+        .chosenEquipmentData[0].containerCode ??
+        "")
+        : "";
+  }
+
+
   Future<void> _changeEquipment(AssetReturnScanPageArguments? args) async {
     print("change equ");
     try {

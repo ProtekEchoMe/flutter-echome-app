@@ -54,6 +54,15 @@ abstract class _AssetRegistrationScanStore with Store {
   }
 
   @action
+  void resetContainer(){
+    equipmentRfidDataSet.clear();
+    equipmentData.clear();
+    isFetchingEquData = false;
+    chosenEquipmentData.clear();
+    EasyDebounce.cancel('validateContainerRfid');
+  }
+
+  @action
   Future<void> validateEquipmentRfid() async {
     if (equipmentRfidDataSet.isEmpty) {
       return;
@@ -70,35 +79,25 @@ abstract class _AssetRegistrationScanStore with Store {
             .map((element) => element.containerAssetCode ?? "")
             .toSet();
 
-
-        Set<String?> containerCodeSet = Set<String?>();
-
-        // var duplicatedFlag = false;
-        // String? tmpCode = "";
-        // int seq = 0;
+        // Check for different containerAssetCode --> Remark same number of cartoon
+        // have same containerAssetCode and containerCode
+        Set<String?> containerAssetCodeSet = Set<String?>();
 
         for (var e in resList) {
-          // seq ++;
           EquipmentData data = EquipmentData.fromJson(e);
           equList.add(data);
-          // if (data.containerAssetCode != null && chosenEquipmentData.isEmpty) {
-          //   chosenEquipmentData.add(data);
-          // }
+
           if (data.rfid != null &&
               !addedContainerAssetCode.contains(data.rfid!)) {
             chosenEquipmentData.add(data);
             addedContainerAssetCode.add(data.rfid!);
           }
-          // check containerCode duplication
-          // if (data.containerCode != tmpCode && seq > 1){
-          //   duplicatedFlag = true;
-          // }
-          //  tmpCode = data.containerCode;
-          containerCodeSet.add(data.containerCode);
+
+          containerAssetCodeSet.add(data.containerCode);
 
         }
         equipmentData = ObservableList.of(equList);
-        if (chosenEquipmentData.length > 1 && containerCodeSet.length > 1) {
+        if (chosenEquipmentData.length > 1 && containerAssetCodeSet.length > 1) {
           throw Exception("More than one container code found");
         }
       }
