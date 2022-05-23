@@ -109,13 +109,51 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     _transferInScanStore.complete(tiNum: args?.tiNum ?? "");
   }
 
-  void _onBottomBarItemTapped(TransferInScanPageArguments? args, int index) {
+  Future<void> _onBottomBarItemTapped(TransferInScanPageArguments? args, int index) async {
     if (index == 0) {
-      _changeEquipment(args);
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
+      if (flag == true) {
+        _changeEquipment(args);
+        DialogHelper.showSnackBar(context, str: "Change Successfully");
+        // _assetRegistrationScanStore.reset();
+      }
     } else if (index == 1) {
-      _rescan();
-    } else {
-      _complete(args);
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
+      if (flag == true) {
+        _rescan();
+        DialogHelper.showSnackBar(context, str: "Rescan Successfully");
+      }
+    } else if (index == 2){
+      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+          title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
+      if (flag == true) {
+        _complete(args);
+        DialogHelper.showSnackBar(context, str: "Complete Successfully");
+        // _assetRegistrationScanStore.reset();
+      }
+
+    } else if (index == 3){ // debug version
+      DialogHelper.showCustomDialog(context, widgetList: [
+        Text("More than one container code detected, please rescan")
+      ], actionList: [
+        TextButton(
+          child: const Text('DContainesrs'),
+          onPressed: () {
+            // _addMockEquipmentIdCaseOne();
+            Navigator.of(context).pop();
+          },
+        )
+        ,
+        TextButton(
+          child: const Text('SContainer'),
+          onPressed: () {
+            // _addMockEquipmentIdCaseTwo();
+            Navigator.of(context).pop();
+          },
+        )
+      ]);
     }
   }
 

@@ -69,4 +69,15 @@ class DialogHelper {
       },
     );
   }
+
+  static Future<void> showSnackBar(BuildContext context,
+  {
+    String str = "",
+  }) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(str ?? ""),
+      ),
+    );
+  }
 }
