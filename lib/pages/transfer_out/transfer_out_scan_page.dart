@@ -216,13 +216,13 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
 
     Set<String> set = {};
     for (var element in equTable) {
-      if (element.containerCode != null ||
-          !set.contains(element.containerCode)) {
-            set.add(element.containerCode!);
+      if (element.containerAssetCode != null ||
+          !set.contains(element.containerAssetCode)) {
+            set.add(element.containerAssetCode!);
           }
 
-      if (element.containerCode != null || !shouldStop) {
-        equipmentId = element.containerCode!;
+      if (element.containerAssetCode != null || !shouldStop) {
+        equipmentId = element.containerAssetCode!;
         equipmentChosen = element;
         shouldStop = true;
       }

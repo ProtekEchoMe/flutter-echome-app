@@ -52,7 +52,7 @@ abstract class _AssetRegistrationScanStore with Store {
     chosenEquipmentData.clear();
     EasyDebounce.cancel('validateContainerRfid');
   }
-
+  
   @action
   void resetContainer(){
     equipmentRfidDataSet.clear();

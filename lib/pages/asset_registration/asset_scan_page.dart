@@ -126,15 +126,26 @@ class _AssetScanPageState extends State<AssetScanPage> {
     if (index == 0) {
       bool? flag = await DialogHelper.showTwoOptionsDialog(context,
           title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
-      if (flag == true) _changeEquipment(args);
+      if (flag == true) {
+        _changeEquipment(args);
+        _showSnackBar("Change Successfully");
+        // _assetRegistrationScanStore.reset();
+      }
     } else if (index == 1) {
       bool? flag = await DialogHelper.showTwoOptionsDialog(context,
           title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
-      if (flag == true) _rescan();
+      if (flag == true) {
+        _rescan();
+        _showSnackBar("Data Cleaned");
+      }
     } else if (index == 2){
       bool? flag = await DialogHelper.showTwoOptionsDialog(context,
           title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
-      if (flag == true) _complete(args);
+      if (flag == true) {
+        _complete(args);
+        _showSnackBar("Complete Successfully");
+        // _assetRegistrationScanStore.reset();
+      }
 
     } else if (index == 3){ // debug version
       DialogHelper.showCustomDialog(context, widgetList: [
