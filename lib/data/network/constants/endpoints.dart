@@ -66,12 +66,12 @@ class Endpoints {
   static const String listTransferInLineMethod = "/ti/listTransferInLine";
 
   // asset Return Method
-  static const String assetReturnReturnMethod = "/assetReturn/listAssetReturnHeader";
+  static const String assetReturnHeaderMethod = "/assetReturn/listAssetReturnHeader";
   static const String assetReturnItemsMethod = "/assetReturn/checkInItems";
   static const String assetReturnContainerMethod = "/assetReturn/checkInContainer";
   static const String assetReturnCompleteMethod = "/assetReturn/returnComplete";
   static const String assetReturnItemsValidationMethod = "/reg/registerItemsValidation";
-  static const String assetReturnItemMethod = "/reg/registerItems";
+  static const String assetReturnRegisterItemsMethod = "/reg/registerItems";
 
   // siteLoc Method
   static const String listLocSiteMethod = "/loc/listLocSite";
@@ -100,12 +100,12 @@ class Endpoints {
 
   //TODO: wait for update the link of Asset Return
   // asset Return URL
-  static String assetReturnReturn = "$activeUrl$assetReturnReturnMethod";
-  static String assetReturnItems = "/assetReturn/checkInItems";
-  static String assetReturnContainer = "/assetReturn/checkInContainer";
-  static String assetReturnComplete = "/assetReturn/returnComplete";
-  static String assetReturnItemsValidation = "/reg/registerItemsValidation";
-  static String assetReturnItem = "/reg/registerItems";
+  static String assetReturnHeader = "$activeUrl$assetReturnHeaderMethod";
+  static String assetReturnItems = "$activeUrl$assetReturnItemsMethod";
+  static String assetReturnContainer = "$activeUrl$assetReturnContainerMethod";
+  static String assetReturnComplete = "$activeUrl$assetReturnCompleteMethod";
+  static String assetReturnItemsValidation = "$activeUrl$assetReturnItemsValidationMethod";
+  static String assetReturnRegisterItem = "$activeUrl$assetReturnRegisterItemsMethod";
   // listLocSite URL
   static String listLocSite = "$activeUrl$listLocSiteMethod";
 
@@ -161,6 +161,12 @@ class Endpoints {
     Endpoints.setSiteCode =  "$activeUrl$setSiteCodeMethod";
     Endpoints.listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
     Endpoints.listTransferInLine = "$activeUrl$listTransferInLineMethod";
+    Endpoints.assetReturnHeader = "$activeUrl$assetReturnHeaderMethod";
+    Endpoints.assetReturnItems = "$activeUrl$assetReturnItemsMethod";
+    Endpoints.assetReturnContainer = "$activeUrl$assetReturnContainerMethod";
+    Endpoints.assetReturnComplete = "$activeUrl$assetReturnCompleteMethod";
+    Endpoints.assetReturnItemsValidation = "$activeUrl$assetReturnItemsValidationMethod";
+    Endpoints.assetReturnRegisterItem = "$activeUrl$assetReturnRegisterItemsMethod";
     Endpoints.listLocSite = "$activeUrl$listLocSiteMethod";
   }
 
@@ -188,6 +194,13 @@ class Endpoints {
     print(Endpoints.setSiteCode);
     print(Endpoints.listTransferInHeader);
     print(Endpoints.listTransferInLine);
+    print(Endpoints.assetReturnHeader);
+    print(Endpoints.assetReturnItems);
+    print(Endpoints.assetReturnContainer);
+    print(Endpoints.assetReturnComplete);
+    print(Endpoints.assetReturnItemsValidation);
+    print(Endpoints.assetReturnRegisterItem);
+
     print(Endpoints.listLocSite);
 
     print("KeyCloak URL\n");
