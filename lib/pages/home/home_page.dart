@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_argument
 import 'package:echo_me_mobile/pages/home/route_constant.dart';
 import 'package:echo_me_mobile/pages/sensor_settings/sensor_settings.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
@@ -27,8 +28,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final loginApi = getIt<LoginApi>();
 
+
   int _selectedIndex = 0;
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
+  final SiteCodeItemStore siteCodeStore = getIt<SiteCodeItemStore>();
 
   Future<void> _showMyDialog(BuildContext context) async {
     print("called");
@@ -43,16 +46,17 @@ class _HomePageState extends State<HomePage> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  ...SiteCodeList.getList().map((e) {
+                  // ...SiteCodeList.getList().map((e
+                  ...siteCodeStore.siteCodeNameList.map((e) {
                     return GestureDetector(
                       onTap: () async {
                         if (e != loginFormStore.siteCode) {
-                          await loginFormStore.changeSite(siteCode: e);
+                          await loginFormStore.changeSite(siteCode: e!);
                         }
                         Navigator.of(context).pop();
                       },
                       child: ListTile(
-                        title: Text(e),
+                        title: Text(e!),
                       ),
                     );
                   }).toList()
@@ -70,11 +74,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     loginFormStore.setupValidations();
-    loginFormStore.changeSite(siteCode: SiteCodeList.getList()[0]);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _showMyDialog(context);
-    });
+    siteCodeStore.fetchData().then(
+            (value) => _showMyDialog(context));
+        // .then(
+        //     (value) => loginFormStore.changeSite(siteCode: siteCodeStore.siteCodeNameList[0]!));
+    
+    // loginFormStore.changeSite(siteCode: SiteCodeList.getList()[0]);
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   _showMyDialog(context);
+    // });
     // tryUpdate();
+    // print("");
   }
 
   @override

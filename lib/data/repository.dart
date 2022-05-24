@@ -7,6 +7,7 @@ import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.d
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
+import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/asset_inventory/backup/asset_inventory_response.dart';
 import 'package:echo_me_mobile/models/asset_inventory/backup/inventory_item.dart';
@@ -35,6 +36,8 @@ class Repository {
 
   final AppVersionControlApi _appVersionControlApi;
 
+  final LocSiteApi _siteCodeApi;
+
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
@@ -48,7 +51,8 @@ class Repository {
       this._assetReturnApi,
       this._transferOutApi,
       this._transferInApi,
-      this._appVersionControlApi);
+      this._appVersionControlApi,
+      this._siteCodeApi);
 
   // Login:---------------------------------------------------------------------
   Future<AuthResponse> login({String email = "", String password = ""}) async {
@@ -100,6 +104,14 @@ class Repository {
       {int page = 0, int limit = 10, String regNumber = ""}) async {
     return await _assetReturnApi.getAssetReturn(
         page: page, limit: limit, regNumber: regNumber);
+  }
+
+  Future<LocSiteResponse> listSiteCode({int page = 0, int limit = 10, String siteCode = ""}) async {
+    try{
+      return await _siteCodeApi.listLocSite(page:page, limit: limit, siteCode: siteCode);
+    }catch(e){
+      throw "Failed to get Loc Site";
+    }
   }
 
   // transfer out api -------------------------------------------
@@ -248,4 +260,6 @@ class Repository {
       throw "Failed to get app download link";
     }
   }
+
+
 }

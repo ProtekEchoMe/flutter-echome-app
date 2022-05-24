@@ -466,6 +466,70 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     disposer.add(eventSubscription);
   }
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
+  //     print(event);
+  //     print(event.type);
+  //     if (event.type == ScannerEventType.readEvent) {
+  //       List<String> item = [];
+  //       List<String> equ = [];
+  //       for (var element in (event.data as List<String>)) {
+  //         if (element.substring(0, 2) == "63" ||
+  //             element.substring(0, 2) == "43") {
+  //           equ.add(element);
+  //         } else if (element.substring(0, 2) == "53" ||
+  //             element.substring(0, 2) == "73") {
+  //           item.add(element);
+  //         }
+  //       }
+  //       _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+  //       print("");
+  //     }
+  //   });
+  //   var disposerReaction = reaction(
+  //           (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
+  //     if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
+  //       _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
+  //     }
+  //   });
+  //   var disposerReaction1 =
+  //   reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
+  //     Set<String?> containerAssetCodeSet = Set<String?>();
+  //     // print("disposer1 called");
+  //     _assetRegistrationScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));
+  //     if (containerAssetCodeSet.length > 1 &&
+  //         !isDialogShown) {
+  //       isDialogShown = true;
+  //       DialogHelper.showCustomDialog(context, widgetList: [
+  //         Text("More than one container code detected, please rescan")
+  //       ], actionList: [
+  //         TextButton(
+  //           child: const Text('Rescan Container'),
+  //           onPressed: () {
+  //             Navigator.of(context).pop();
+  //             _rescanContainer();
+  //             isDialogShown = false;
+  //           },
+  //         )
+  //         ,
+  //         TextButton(
+  //           child: const Text('Rescan'),
+  //           onPressed: () {
+  //             Navigator.of(context).pop();
+  //             _rescan();
+  //             isDialogShown = false;
+  //           },
+  //         )
+  //       ]);
+  //     }
+  //   });
+  //   disposer.add(() => eventSubscription.cancel());
+  //   disposer.add(disposerReaction);
+  //   disposer.add(disposerReaction1);
+  // }
+
   @override
   void dispose() {
     super.dispose();

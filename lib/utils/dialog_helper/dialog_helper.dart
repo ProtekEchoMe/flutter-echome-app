@@ -72,7 +72,7 @@ class DialogHelper {
 
   static Future<void> showSnackBar(BuildContext context,
   {
-    String str = "",
+    String? str = "",
   }) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

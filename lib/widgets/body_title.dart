@@ -2,12 +2,14 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/siteCode/site_code_list.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 
 class BodyTitle extends StatelessWidget {
-  LoginFormStore loginFormStore = getIt<LoginFormStore>();
+  final LoginFormStore loginFormStore = getIt<LoginFormStore>();
+  final SiteCodeItemStore siteCodeStore = getIt<SiteCodeItemStore>();
   String? title;
   String? clipTitle;
   bool allowSwitchSite;
@@ -65,16 +67,17 @@ class BodyTitle extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                ...SiteCodeList.getList().map((e){
+                // ...SiteCodeList.getList().map((e){
+                ...siteCodeStore.siteCodeNameList.map((e){
                    return GestureDetector(
                      onTap: ()async{
                        if(e != loginFormStore.siteCode){
-                          await loginFormStore.changeSite(siteCode: e);
+                          await loginFormStore.changeSite(siteCode: e!);
                        }
                         Navigator.of(context).pop();
                      },
                      child: ListTile(
-                      title: Text(e),
+                      title: Text(e!),
                                      ),
                    );
                 }).toList()

@@ -73,6 +73,9 @@ class Endpoints {
   static const String assetReturnItemsValidationMethod = "/reg/registerItemsValidation";
   static const String assetReturnItemMethod = "/reg/registerItems";
 
+  // siteLoc Method
+  static const String listLocSiteMethod = "/loc/listLocSite";
+
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
@@ -95,6 +98,7 @@ class Endpoints {
   static String listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
   static String listTransferInLine = "$activeUrl$listTransferInLineMethod";
 
+  //TODO: wait for update the link of Asset Return
   // asset Return URL
   static String assetReturnReturn = "$activeUrl$assetReturnReturnMethod";
   static String assetReturnItems = "/assetReturn/checkInItems";
@@ -102,6 +106,8 @@ class Endpoints {
   static String assetReturnComplete = "/assetReturn/returnComplete";
   static String assetReturnItemsValidation = "/reg/registerItemsValidation";
   static String assetReturnItem = "/reg/registerItems";
+  // listLocSite URL
+  static String listLocSite = "$activeUrl$listLocSiteMethod";
 
 
   static String activeVersionControlDomain = versionControlDomainMap["vercal"];
@@ -155,6 +161,7 @@ class Endpoints {
     Endpoints.setSiteCode =  "$activeUrl$setSiteCodeMethod";
     Endpoints.listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
     Endpoints.listTransferInLine = "$activeUrl$listTransferInLineMethod";
+    Endpoints.listLocSite = "$activeUrl$listLocSiteMethod";
   }
 
   // testing
@@ -181,6 +188,7 @@ class Endpoints {
     print(Endpoints.setSiteCode);
     print(Endpoints.listTransferInHeader);
     print(Endpoints.listTransferInLine);
+    print(Endpoints.listLocSite);
 
     print("KeyCloak URL\n");
     print(Endpoints.forgetPassword);

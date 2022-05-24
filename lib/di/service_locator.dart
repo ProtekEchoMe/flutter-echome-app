@@ -7,6 +7,7 @@ import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
+import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_base.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
@@ -22,6 +23,7 @@ import 'package:echo_me_mobile/stores/assest_return/asset_return_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
@@ -53,6 +55,8 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
   getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
+  // getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
+  getIt.registerSingleton(LocSiteApi(getIt<DioClient>()));
   
   // set up the repo
   getIt.registerSingleton<Repository>(
@@ -65,7 +69,8 @@ Future<void> setupLocator() async {
         getIt<AssetReturnApi>(),
         getIt<TransferOutApi>(),
         getIt<TransferInApi>(),
-        getIt<AppVersionControlApi>()),
+        getIt<AppVersionControlApi>(),
+        getIt<LocSiteApi>()),
   );
 
   //  local store => only called when needed => use Factory
@@ -99,6 +104,8 @@ Future<void> setupLocator() async {
       () => TransferInScanStore(getIt<Repository>()));
 
   getIt.registerSingleton<AppVersionControlStore>(AppVersionControlStore(getIt<Repository>()));
+
+  getIt.registerSingleton<SiteCodeItemStore>(SiteCodeItemStore(getIt<Repository>()));
   
   getIt.registerSingleton(ReaderConnectionStore());
 
