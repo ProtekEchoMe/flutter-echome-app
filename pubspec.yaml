@@ -59,6 +59,7 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   ota_update: ^4.0.1
   permission_handler: ^9.2.0
+  jwt_decode: ^0.3.1
 
 
 dev_dependencies:

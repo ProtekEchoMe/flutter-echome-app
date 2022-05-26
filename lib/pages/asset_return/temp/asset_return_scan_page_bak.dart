@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
-import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
+import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
-import 'package:echo_me_mobile/pages/asset_return/assset_return_scan_detail_page.dart';
-import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_store.dart';
-import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
@@ -18,7 +16,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
-
+import '../asset_return_scan_page_arguments.dart';
+import '../assset_return_scan_detail_page.dart';
 
 class AssetReturnScanPage extends StatefulWidget {
   const AssetReturnScanPage({Key? key}) : super(key: key);
@@ -28,10 +27,10 @@ class AssetReturnScanPage extends StatefulWidget {
 }
 
 class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
-  final AssetReturnScanStore _assetReturnScanStore =
-  getIt<AssetReturnScanStore>();
+  final AssetRegistrationScanStore _assetRegistrationScanStore =
+      getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
-  final AssetReturnApi api = getIt<AssetReturnApi>();
+  final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   bool isDialogShown = false;
 
   void _showSnackBar(String? str) {
@@ -42,21 +41,22 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     );
   }
 
-  String _getContainerCode() {
-    return _assetReturnScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetReturnScanStore
+  String _getcontainerAssetCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore
+                .chosenEquipmentData[0].containerAssetCode ??
+            "")
+        : "";
+  }
+
+  String _getcontainerCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore
         .chosenEquipmentData[0].containerCode ??
         "")
         : "";
   }
 
-  String _getcontainerAssetCode(){
-    return _assetReturnScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetReturnScanStore
-        .chosenEquipmentData[0].containerAssetCode ??
-        "")
-        : "";
-  }
 
   Future<void> _changeEquipment(AssetReturnScanPageArguments? args) async {
     print("change equ");
@@ -69,18 +69,18 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         throw "Container Code not found";
       }
 
-      if (_assetReturnScanStore.itemRfidDataSet.isEmpty) {
+      if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_assetReturnScanStore.chosenEquipmentData.isEmpty) {
+      if (_assetRegistrationScanStore.chosenEquipmentData.isEmpty) {
         throw "No equipment detected";
       }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _assetReturnScanStore.equipmentData) {
+      for (var element in _assetRegistrationScanStore.equipmentData) {
         if (element.containerAssetCode == targetcontainerAssetCode) {
           if (element.rfid != null) {
             rfidList.add(element.rfid!);
@@ -89,86 +89,44 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
       }
 
       try {
-        await _assetReturnScanStore.registerContainer(
-            rfid: rfidList, rtnNum: args?.rtnNum ?? "", throwError: true);
+        await _assetRegistrationScanStore.registerContainer(
+            rfid: rfidList, regNum: args?.rtnNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
           rethrow;
         }
       }
 
-      List<String> itemRfid = _assetReturnScanStore.itemRfidDataSet
+      List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      // TODO: wait for update containerAssetCode accept multi value
-      await _assetReturnScanStore.registerItem(
-          rtnNum: args?.rtnNum ?? "",
+
+      await _assetRegistrationScanStore.registerItem(
+          regNum: args?.rtnNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
-      _assetReturnScanStore.reset();
+      _assetRegistrationScanStore.reset();
     } catch (e) {
-      _assetReturnScanStore.errorStore.setErrorMessage(e.toString());
+      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
   void _rescan() {
-    _assetReturnScanStore.reset();
-  }
-
-  void _rescanContainer(){
-    _assetReturnScanStore.resetContainer();
+    _assetRegistrationScanStore.reset();
   }
 
   Future<void> _complete(AssetReturnScanPageArguments? args) async {
-    _assetReturnScanStore.complete(rtnNum: args?.rtnNum ?? "");
+    _assetRegistrationScanStore.complete(regNum: args?.rtnNum ?? "");
   }
 
-  Future<void> _onBottomBarItemTapped(AssetReturnScanPageArguments? args, int index) async {
+  void _onBottomBarItemTapped(AssetReturnScanPageArguments? args, int index) {
     if (index == 0) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
-      if (flag == true) {
-        _changeEquipment(args);
-        _showSnackBar("Change Successfully");
-        // _assetReturnScanStore.reset();
-      }
+      _changeEquipment(args);
     } else if (index == 1) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
-      if (flag == true) {
-        _rescan();
-        _showSnackBar("Data Cleaned");
-      }
-    } else if (index == 2){
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
-      if (flag == true) {
-        _complete(args);
-        _showSnackBar("Complete Successfully");
-        // _assetReturnScanStore.reset();
-      }
-
-    } else if (index == 3){ // debug version
-      DialogHelper.showCustomDialog(context, widgetList: [
-        Text("More than one container code detected, please rescan")
-      ], actionList: [
-        TextButton(
-          child: const Text('DContainesrs'),
-          onPressed: () {
-            _addMockEquipmentIdCaseOne();
-            Navigator.of(context).pop();
-          },
-        )
-        ,
-        TextButton(
-          child: const Text('SContainer'),
-          onPressed: () {
-            _addMockEquipmentIdCaseTwo();
-            Navigator.of(context).pop();
-          },
-        )
-      ]);
+      _rescan();
+    } else {
+      _complete(args);
     }
   }
 
@@ -190,36 +148,23 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
             item.add(element);
           }
         }
-        _assetReturnScanStore.updateDataSet(equList: equ, itemList: item);
-        print("");
+        _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
       }
     });
     var disposerReaction = reaction(
-            (_) => _assetReturnScanStore.errorStore.errorMessage, (_) {
-      if (_assetReturnScanStore.errorStore.errorMessage.isNotEmpty) {
-        _showSnackBar(_assetReturnScanStore.errorStore.errorMessage);
+        (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
+      if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
+        _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
     var disposerReaction1 =
-    reaction((_) => _assetReturnScanStore.equipmentData, (_) {
-      Set<String?> containerAssetCodeSet = Set<String?>();
-      // print("disposer1 called");
-      _assetReturnScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));
-      if (containerAssetCodeSet.length > 1 &&
+        reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
+      if (_assetRegistrationScanStore.chosenEquipmentData.length > 1 &&
           !isDialogShown) {
         isDialogShown = true;
         DialogHelper.showCustomDialog(context, widgetList: [
           Text("More than one container code detected, please rescan")
         ], actionList: [
-          TextButton(
-            child: const Text('Rescan Container'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              _rescanContainer();
-              isDialogShown = false;
-            },
-          )
-          ,
           TextButton(
             child: const Text('Rescan'),
             onPressed: () {
@@ -246,8 +191,10 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Debug Msg
+    print(this.runtimeType);
     final AssetReturnScanPageArguments? args =
-    ModalRoute.of(context)!.settings.arguments as AssetReturnScanPageArguments?;
+        ModalRoute.of(context)!.settings.arguments as AssetReturnScanPageArguments?;
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
@@ -282,8 +229,8 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => AssetReturnScanDetailPage(
-                            arg: args,
-                          )));
+                                arg: args,
+                              )));
                 }
               },
               icon: const Icon(MdiIcons.clipboardList)),
@@ -294,9 +241,9 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
@@ -310,10 +257,6 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.eleven_mp),
-          //   label: 'Debug',
-          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -348,12 +291,12 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _assetReturnScanStore.isFetchingEquData
+                            _assetRegistrationScanStore.isFetchingEquData
                                 ? const SpinKitDualRing(
-                              color: Colors.blue,
-                              size: 15,
-                              lineWidth: 2,
-                            )
+                                    color: Colors.blue,
+                                    size: 15,
+                                    lineWidth: 2,
+                                  )
                                 : const SizedBox()
                           ],
                         );
@@ -368,7 +311,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _assetReturnScanStore
+                            _assetRegistrationScanStore
                                 .equipmentRfidDataSet.length
                                 .toString(),
                           ),
@@ -394,15 +337,15 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.blueAccent)),
-                          child: Center(
-                            child: Text(_getContainerCode()),
-                          ),
-                        )),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Center(
+                                child: Text(_getcontainerAssetCode()),
+                              ),
+                            )),
                       ),
                     )
                   ]),
@@ -417,7 +360,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
-            itemCount: 3 + _assetReturnScanStore.itemRfidDataSet.length,
+            itemCount: 3 + _assetRegistrationScanStore.itemRfidDataSet.length,
             itemBuilder: (ctx, index) {
               if (index == 0) {
                 return _getEquipmentDisplay();
@@ -457,7 +400,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Center(
-                                    child: Text(_assetReturnScanStore
+                                    child: Text(_assetRegistrationScanStore
                                         .itemRfidDataSet.length
                                         .toString())),
                               )
@@ -468,7 +411,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                 );
               }
               if (index == 2) {
-                if (_assetReturnScanStore.itemRfidDataSet.isEmpty) {
+                if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.horizontal_padding),
@@ -487,7 +430,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                             )),
                         child: Padding(
                           padding:
-                          const EdgeInsets.all(Dimens.horizontal_padding),
+                              const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
                               child: Text("No Data",
                                   style: Theme.of(context)
@@ -502,10 +445,10 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                   return const SizedBox();
                 }
               }
-              var rfid = _assetReturnScanStore.itemRfidDataSet
+              var rfid = _assetRegistrationScanStore.itemRfidDataSet
                   .elementAt(index - 3);
               var isLast = index - 3 ==
-                  _assetReturnScanStore.itemRfidDataSet.length - 1
+                      _assetRegistrationScanStore.itemRfidDataSet.length - 1
                   ? true
                   : false;
               return _getAssetListItem(rfid, isLast);
@@ -532,24 +475,24 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
           color: Colors.white,
           border: Border.symmetric(
             vertical:
-            BorderSide(color: Theme.of(context).primaryColor, width: 6),
+                BorderSide(color: Theme.of(context).primaryColor, width: 6),
           )),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child:
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Expanded(
               child: Text(
-                AscToText.getString(rfid),
-                style: Theme.of(context).textTheme.bodyMedium,
-              )),
+            AscToText.getString(rfid),
+            style: Theme.of(context).textTheme.bodyMedium,
+          )),
           Material(
             borderRadius: BorderRadius.circular(50),
             clipBehavior: Clip.antiAlias,
             child: IconButton(
                 onPressed: () {
                   setState(() {
-                    _assetReturnScanStore.itemRfidDataSet.remove(rfid);
+                    _assetRegistrationScanStore.itemRfidDataSet.remove(rfid);
                   });
                 },
                 icon: const Icon(Icons.close)),
@@ -560,7 +503,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
 
     return Padding(
         padding:
-        const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
+            const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
         child: _assetListContainer(isLast, child));
   }
 
@@ -572,18 +515,17 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
   }
 
   void _addMockAssetId() {
-    _assetReturnScanStore.updateDataSet(
+    _assetRegistrationScanStore.updateDataSet(
         itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
   void _addMockEquipmentId() {
-    // var init = _assetReturnScanStore.equipmentRfidDataSet.length;
-    var init = 0;
+    var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
     List<String> list = [];
     if (init == 0) {
-      list.add(AscToText.getAscIIString("CATL010000000820"));
+      list.add(AscToText.getAscIIString("CATL010000000055"));
     } else if (init == 1) {
-      list.add(AscToText.getAscIIString("CATL010000000831"));
+      list.add(AscToText.getAscIIString("CATL010000000066"));
     } else if (init == 2) {
       list.add(AscToText.getAscIIString("CATL010000000077"));
     } else if (init == 3) {
@@ -591,20 +533,6 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
-    _assetReturnScanStore.updateDataSet(equList: list);
-  }
-
-  void _addMockEquipmentIdCaseOne() {
-    List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
-    list.add(AscToText.getAscIIString("CATL010000000842"));
-    _assetReturnScanStore.updateDataSet(equList: list);
-  }
-
-  void _addMockEquipmentIdCaseTwo() {
-    List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
-    list.add(AscToText.getAscIIString("CATL010000000819"));
-    _assetReturnScanStore.updateDataSet(equList: list);
+    _assetRegistrationScanStore.updateDataSet(equList: list);
   }
 }

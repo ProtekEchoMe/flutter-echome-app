@@ -52,6 +52,16 @@ abstract class _AssetReturnScanStore with Store {
   }
 
   @action
+  void resetContainer(){
+    equipmentRfidDataSet.clear();
+    equipmentData.clear();
+    isFetchingEquData = false;
+    chosenEquipmentData.clear();
+    EasyDebounce.cancel('validateContainerRfid');
+  }
+
+
+  @action
   Future<void> validateEquipmentRfid() async {
     if (equipmentRfidDataSet.isEmpty) {
       return;
@@ -108,10 +118,10 @@ abstract class _AssetReturnScanStore with Store {
   }
 
   @action
-  Future<void> complete({String regNum = ""}) async {
+  Future<void> complete({String rtnNum = ""}) async {
     try {
       isFetching = true;
-      await repository.completeAssetRegistration(regNum: regNum);
+      await repository.completeArRegistration(rtnNum: rtnNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
@@ -122,11 +132,11 @@ abstract class _AssetReturnScanStore with Store {
   @action
   Future<void> registerContainer(
       {List<String> rfid = const [],
-      String regNum = "",
+      String rtnNum = "",
       bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerContainer(rfid: rfid, regNum: regNum);
+      await repository.registerArContainer(rfid: rfid, rtnNum: rtnNum);
     } catch (e) {
       if (throwError == true) {
         rethrow;
@@ -140,14 +150,14 @@ abstract class _AssetReturnScanStore with Store {
 
   @action
   Future<void> registerItem(
-      {String regNum = "",
+      {String rtnNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerItem(
-          regNum: regNum,
+      await repository.registerArItem(
+          rtnNum: rtnNum,
           containerAssetCode: containerAssetCode,
           itemRfid: itemRfid);
     } catch (e) {

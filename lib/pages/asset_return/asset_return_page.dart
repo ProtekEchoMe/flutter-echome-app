@@ -3,7 +3,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/assest_return/asset_return_store.dart';
+import 'package:echo_me_mobile/stores/asset_return/asset_return_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -30,7 +30,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
   @override
   void initState() {
     super.initState();
-    _store.fetchData(regNum: widget.searchRegNum ?? "");
+    _store.fetchData(rtnNum: widget.searchRegNum ?? "");
   }
 
   @override
@@ -138,7 +138,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
                                     listItem.orderId,  // listItem.orderId
                                     item: listItem.item)
                             ).then((value) => {
-                              _store.fetchData(regNum: widget.searchRegNum ?? "")
+                              _store.fetchData(rtnNum: widget.searchRegNum ?? "")
                             });
                             return StatusListItem(
                               title: title,

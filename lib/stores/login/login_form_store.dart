@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validators2/validators.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 // Include generated file
 part 'login_form_store.g.dart';
@@ -39,6 +40,9 @@ abstract class _LoginFormStore with Store {
 
   @observable
   String? idToken;
+
+  @observable
+  Map<String, dynamic>? payload;
 
   @observable
   String email = "";
@@ -102,6 +106,9 @@ abstract class _LoginFormStore with Store {
       refreshToken = auth.refreshToken;
       idToken = auth.idToken;
       isLoggedIn = true;
+      payload = Jwt.parseJwt(auth.accessToken!);
+      // repository.saveAuthToken(auth.accessToken!); // will trigger Header Interceptor afterwards
+
     } catch (e) {
       print(e);
       if (e is DioError) {

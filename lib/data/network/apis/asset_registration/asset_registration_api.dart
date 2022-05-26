@@ -14,16 +14,16 @@ class AssetRegistrationApi {
 
   /// Returns list of post in response
   Future<AssetRegistrationResponse> getAssetRegistration(
-      {int page = 0, int limit = 10, String regNumber = ""}) async {
+      {int page = 0, int limit = 10, String regNum = ""}) async {
     try {
       print(page * limit);
       print(limit);
-      print(regNumber);
+      print(regNum);
       List<dynamic> filter = [];
-      if (regNumber.isNotEmpty) {
+      if (regNum.isNotEmpty) {
         filter = [
           {
-            "value": regNumber,
+            "value": regNum,
             "name": "regNum",
             "operator": "eq",
             "type": "string"

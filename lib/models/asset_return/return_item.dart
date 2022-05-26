@@ -3,8 +3,8 @@
 class ReturnItem {
   int? id;
   int? site;
-  String? regNum;
-  String? regDate;
+  String? rtnNum;
+  String? rtnDate;
   String? shipperCode;
   String? status;
   String? maker;
@@ -14,8 +14,8 @@ class ReturnItem {
   ReturnItem(
       {this.id,
       this.site,
-      this.regNum,
-      this.regDate,
+      this.rtnNum,
+      this.rtnDate,
       this.shipperCode,
       this.status,
       this.maker,
@@ -25,8 +25,8 @@ class ReturnItem {
   ReturnItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     site = json['site'];
-    regNum = json['regNum'];
-    regDate = json['regDate'];
+    rtnNum = json['rtnNum'];
+    rtnDate = json['rtnDate'];
     shipperCode = json['shipperCode'];
     status = json['status'];
     maker = json['maker'];
@@ -38,8 +38,8 @@ class ReturnItem {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['site'] = this.site;
-    data['regNum'] = this.regNum;
-    data['regDate'] = this.regDate;
+    data['rtnNum'] = this.rtnNum;
+    data['rtnDate'] = this.rtnDate;
     data['shipperCode'] = this.shipperCode;
     data['status'] = this.status;
     data['maker'] = this.maker;

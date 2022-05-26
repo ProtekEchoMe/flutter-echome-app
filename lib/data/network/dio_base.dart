@@ -23,7 +23,9 @@ class DioBase {
             // getting token
             var token = await sharedPreferenceHelper.authToken;
             if (token != null) {
-              options.headers.putIfAbsent('Authorization', () => token);
+              // options.headers.putIfAbsent('Authorization', () => token);
+              String bearerValue = "Bearer " + token;
+              options.headers.putIfAbsent('Authorization', () => bearerValue);
             } else {
               print('Auth token is null');
             }

@@ -94,16 +94,16 @@ class Repository {
   }
 
   Future<AssetRegistrationResponse> getAssetRegistration(
-      {int page = 0, int limit = 10, String regNumber = ""}) async {
+      {int page = 0, int limit = 10, String regNum = ""}) async {
     return await _assetRegistrationApi.getAssetRegistration(
-        page: page, limit: limit, regNumber: regNumber);
+        page: page, limit: limit, regNum: regNum);
   }
 
   //TODO Update Corresponding API --> getAssetReturnFunction
   Future<AssetReturnResponse> getAssetReturn(
-      {int page = 0, int limit = 10, String regNumber = ""}) async {
+      {int page = 0, int limit = 10, String rtnNum = ""}) async {
     return await _assetReturnApi.getAssetReturn(
-        page: page, limit: limit, regNumber: regNumber);
+        page: page, limit: limit, rtnNum: rtnNum);
   }
 
   Future<LocSiteResponse> listSiteCode({int page = 0, int limit = 10, String siteCode = ""}) async {
@@ -176,6 +176,26 @@ class Repository {
         itemRfid: itemRfid);
   }
 
+  Future<void> registerArContainer(
+      {List<String> rfid = const [], String rtnNum = ""}) async {
+    return await _assetReturnApi.registerArContainer(rfid: rfid, rtnNum: rtnNum);
+  }
+
+  // asset registration api
+  Future<void> completeArRegistration({String rtnNum = ""}) async {
+    await _assetReturnApi.completeArRegister(rtnNum: rtnNum);
+  }
+
+  Future<void> registerArItem(
+      {String rtnNum = "",
+        String containerAssetCode = "",
+        List<String> itemRfid = const []}) async {
+    await _assetReturnApi.registerArItem(
+        rtnNum: rtnNum,
+        containerAssetCode: containerAssetCode,
+        itemRfid: itemRfid);
+  }
+
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {
   //   // check to see if posts are present in database, then fetch from database
@@ -243,6 +263,13 @@ class Repository {
       _sharedPrefsHelper.changeLanguage(value);
 
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
+
+
+  // General Methods: ----------------------------------------------------------
+  Future<bool> saveAuthToken(String authToken) =>
+      _sharedPrefsHelper.saveAuthToken(authToken);
+
+  Future<String?> get authToken => _sharedPrefsHelper.authToken;
 
   // App Version Control
   Future<String> getAppVersion() async {

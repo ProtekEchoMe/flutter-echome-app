@@ -131,8 +131,8 @@ mixin _$AssetReturnScanStore on _AssetReturnScanStore, Store {
   final _$completeAsyncAction = AsyncAction('_AssetReturnScanStore.complete');
 
   @override
-  Future<void> complete({String regNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(regNum: regNum));
+  Future<void> complete({String rtnNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(rtnNum: rtnNum));
   }
 
   final _$registerContainerAsyncAction =
@@ -141,10 +141,10 @@ mixin _$AssetReturnScanStore on _AssetReturnScanStore, Store {
   @override
   Future<void> registerContainer(
       {List<String> rfid = const [],
-      String regNum = "",
+      String rtnNum = "",
       bool throwError = false}) {
     return _$registerContainerAsyncAction.run(() => super
-        .registerContainer(rfid: rfid, regNum: regNum, throwError: throwError));
+        .registerContainer(rfid: rfid, rtnNum: rtnNum, throwError: throwError));
   }
 
   final _$registerItemAsyncAction =
@@ -152,12 +152,12 @@ mixin _$AssetReturnScanStore on _AssetReturnScanStore, Store {
 
   @override
   Future<void> registerItem(
-      {String regNum = "",
+      {String rtnNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) {
     return _$registerItemAsyncAction.run(() => super.registerItem(
-        regNum: regNum,
+        rtnNum: rtnNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
         throwError: throwError));
@@ -172,6 +172,17 @@ mixin _$AssetReturnScanStore on _AssetReturnScanStore, Store {
         name: '_AssetReturnScanStore.reset');
     try {
       return super.reset();
+    } finally {
+      _$_AssetReturnScanStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void resetContainer() {
+    final _$actionInfo = _$_AssetReturnScanStoreActionController.startAction(
+        name: '_AssetReturnScanStore.resetContainer');
+    try {
+      return super.resetContainer();
     } finally {
       _$_AssetReturnScanStoreActionController.endAction(_$actionInfo);
     }

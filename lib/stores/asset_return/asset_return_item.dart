@@ -1,5 +1,5 @@
 
-// import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
+
 import 'package:echo_me_mobile/models/asset_return/return_item.dart';
 import 'package:mobx/mobx.dart';
 
@@ -35,7 +35,7 @@ abstract class _AssetReturnItem with Store {
   final ReturnItem item;
 
   _AssetReturnItem(this.item){
-    orderId = item.regNum.toString();
+    orderId = item.rtnNum.toString();
     status = item.status ?? "";
   }
 

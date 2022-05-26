@@ -160,9 +160,9 @@ class _LoginPageState extends State<LoginPage> {
                                                 onTap: () async {
                                                   print(e);
                                                   // Endpoints.printEndPoint();
-                                                  print(Preferences.defaultDomain);
+                                                  // print(Preferences.defaultDomain);
                                                   Preferences.defaultDomain = e;
-                                                  print(Preferences.defaultDomain);
+                                                  // print(Preferences.defaultDomain);
                                                   Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
                                                   Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
                                                   // Endpoints.printEndPoint();

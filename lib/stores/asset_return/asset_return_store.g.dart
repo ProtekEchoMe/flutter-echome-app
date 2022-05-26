@@ -116,9 +116,9 @@ mixin _$AssetReturnStore on _AssetReturnStore, Store {
   final _$fetchDataAsyncAction = AsyncAction('_AssetReturnStore.fetchData');
 
   @override
-  Future<void> fetchData({String regNum = "", int? requestedPage}) {
+  Future<void> fetchData({String rtnNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction.run(
-        () => super.fetchData(regNum: regNum, requestedPage: requestedPage));
+        () => super.fetchData(rtnNum: rtnNum, requestedPage: requestedPage));
   }
 
   final _$_AssetReturnStoreActionController =

@@ -99,6 +99,21 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     });
   }
 
+  final _$payloadAtom = Atom(name: '_LoginFormStore.payload');
+
+  @override
+  Map<String, dynamic>? get payload {
+    _$payloadAtom.reportRead();
+    return super.payload;
+  }
+
+  @override
+  set payload(Map<String, dynamic>? value) {
+    _$payloadAtom.reportWrite(value, super.payload, () {
+      super.payload = value;
+    });
+  }
+
   final _$emailAtom = Atom(name: '_LoginFormStore.email');
 
   @override
@@ -236,6 +251,7 @@ siteCode: ${siteCode},
 accessToken: ${accessToken},
 refreshToken: ${refreshToken},
 idToken: ${idToken},
+payload: ${payload},
 email: ${email},
 password: ${password},
 isLogining: ${isLogining},

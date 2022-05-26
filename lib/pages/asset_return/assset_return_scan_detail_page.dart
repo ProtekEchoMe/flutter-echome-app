@@ -27,9 +27,9 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
   DioClient repository = getIt<DioClient>();
   List<ListDocumentLineItem> dataList = [];
 
-  Future<void> fetchData() async {
+  Future<void> fetchData() async { // TODO: [need transfer it back to not hard-coded]
     var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
+        'http://qa-echome.ddns.net/echoMe/assetReturn/listAssetReturnLine?rtn=${widget.arg.rtnNum}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -157,7 +157,7 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Reg number : " + widget.arg.regNum),
+            Text("Reg number : " + widget.arg.rtnNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(

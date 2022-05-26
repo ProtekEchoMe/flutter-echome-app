@@ -1,10 +1,10 @@
 import 'package:echo_me_mobile/data/repository.dart';
-import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/models/asset_return/return_item.dart';
-import 'package:echo_me_mobile/stores/assest_return/asset_return_item.dart';
+import 'package:echo_me_mobile/stores/asset_return/asset_return_item.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
+
+import 'asset_return_item.dart';
 
 
 part 'asset_return_store.g.dart';
@@ -69,23 +69,23 @@ abstract class _AssetReturnStore with Store {
   @action
   Future<void> nextPage({String docNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(regNum: docNum, requestedPage: page+1);
+      fetchData(rtnNum: docNum, requestedPage: page+1);
     }
   }
 
   @action
   Future<void> prevPage({String docNum = ""}) async{
     if(page>=1){
-      fetchData(regNum: docNum, requestedPage: page-1);
+      fetchData(rtnNum: docNum, requestedPage: page-1);
     }
   }
 
   @action
-  Future<void> fetchData({String regNum = "", int? requestedPage}) async {
+  Future<void> fetchData({String rtnNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getAssetReturn(page: targetPage, limit: limit, regNumber: regNum);
+      var data = await repository.getAssetReturn(page: targetPage, limit: limit, rtnNum: rtnNum);
       int totalRow = data.rowNumber;
       List<AssetReturnItem> list = data.itemList.map((ReturnItem e) =>AssetReturnItem(e)).toList();
       totalCount = totalRow;

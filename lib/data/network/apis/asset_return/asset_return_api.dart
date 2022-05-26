@@ -14,17 +14,17 @@ class AssetReturnApi {
 
   /// Returns list of post in response
   Future<AssetReturnResponse> getAssetReturn(
-      {int page = 0, int limit = 10, String regNumber = ""}) async {
+      {int page = 0, int limit = 10, String rtnNum = ""}) async {
     try {
       print(page * limit);
       print(limit);
-      print(regNumber);
+      print(rtnNum);
       List<dynamic> filter = [];
-      if (regNumber.isNotEmpty) {
+      if (rtnNum.isNotEmpty) {
         filter = [
           {
-            "value": regNumber,
-            "name": "regNum",
+            "value": rtnNum,
+            "name": "rtnNum",
             "operator": "eq",
             "type": "string"
           }
@@ -42,7 +42,7 @@ class AssetReturnApi {
           "filterBy": jsonEncode(filter)
         };
       }
-      final res = await _dioClient.getRegistration(Endpoints.assetRegistration,
+      final res = await _dioClient.getRegistration(Endpoints.assetReturnHeader,
           queryParameters: query);
       print("ok");
       print(res);
@@ -72,7 +72,7 @@ class AssetReturnApi {
   Future<void> completeRegister({String regNum = ""}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.registerComplete, queryParameters: {"regNum": regNum});
+          .get(Endpoints.registerItems, queryParameters: {"regNum": regNum});
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
@@ -89,10 +89,10 @@ class AssetReturnApi {
     }
   }
 
-  Future<void> completeToRegister({String toNum = ""}) async {
+  Future<void> completeArRegister({String rtnNum = ""}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
+          .get(Endpoints.assetReturnComplete, queryParameters: {"rtnNum": rtnNum});
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
@@ -144,8 +144,8 @@ class AssetReturnApi {
     }
   }
 
-  Future<dynamic> registerToItem(
-      {String toNum = "",
+  Future<dynamic> registerArItem(
+      {String rtnNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const []}) async {
     try {
@@ -157,14 +157,14 @@ class AssetReturnApi {
       }
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
-        "toNum": toNum,
+        "rtnNum": rtnNum,
         "containerAssetCode": containerAssetCode,
         "rfids": str
       };
       // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
       //     queryParameters: query);
       // print(res);
-      final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
+      final res1 = await _dioClient.getRegistration(Endpoints.assetReturnItems,
           queryParameters: query);
     } catch (e) {
       if (e is DioError) {
@@ -209,8 +209,8 @@ class AssetReturnApi {
     }
   }
 
-  Future<dynamic> registerToContainer(
-      {List<String> rfid = const [], String toNum = ""}) async {
+  Future<dynamic> registerArContainer(
+      {List<String> rfid = const [], String rtnNum = ""}) async {
     try {
       var str = "";
       if (rfid != null) {
@@ -219,9 +219,9 @@ class AssetReturnApi {
         }
       }
       str = str.substring(0, str.length - 1);
-      Map<String, dynamic> query = {"rfids": str, "toNum": toNum};
+      Map<String, dynamic> query = {"rfids": str, "rtnNum": rtnNum};
       final res = await _dioClient.getRegistration(
-          Endpoints.registerToContainer,
+          Endpoints.assetReturnContainer,
           queryParameters: query);
       return {"itemList": res["itemRow"]};
     } catch (e) {
