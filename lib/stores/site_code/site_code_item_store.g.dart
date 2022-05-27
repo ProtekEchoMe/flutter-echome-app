@@ -9,6 +9,23 @@ part of 'site_code_item_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SiteCodeItemStore on _SiteCodeItemStore, Store {
+  Computed<ObservableList<String?>>? _$siteCodeNameListComputed;
+
+  @override
+  ObservableList<String?> get siteCodeNameList =>
+      (_$siteCodeNameListComputed ??= Computed<ObservableList<String?>>(
+              () => super.siteCodeNameList,
+              name: '_SiteCodeItemStore.siteCodeNameList'))
+          .value;
+  Computed<ObservableList<String?>>? _$filteredSiteCodeNameListComputed;
+
+  @override
+  ObservableList<String?> get filteredSiteCodeNameList =>
+      (_$filteredSiteCodeNameListComputed ??= Computed<ObservableList<String?>>(
+              () => super.filteredSiteCodeNameList,
+              name: '_SiteCodeItemStore.filteredSiteCodeNameList'))
+          .value;
+
   final _$pageAtom = Atom(name: '_SiteCodeItemStore.page');
 
   @override
@@ -67,22 +84,6 @@ mixin _$SiteCodeItemStore on _SiteCodeItemStore, Store {
   set siteCodeDataList(ObservableList<LocSiteItem> value) {
     _$siteCodeDataListAtom.reportWrite(value, super.siteCodeDataList, () {
       super.siteCodeDataList = value;
-    });
-  }
-
-  final _$siteCodeNameListAtom =
-      Atom(name: '_SiteCodeItemStore.siteCodeNameList');
-
-  @override
-  ObservableList<String?> get siteCodeNameList {
-    _$siteCodeNameListAtom.reportRead();
-    return super.siteCodeNameList;
-  }
-
-  @override
-  set siteCodeNameList(ObservableList<String?> value) {
-    _$siteCodeNameListAtom.reportWrite(value, super.siteCodeNameList, () {
-      super.siteCodeNameList = value;
     });
   }
 
@@ -193,11 +194,12 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 siteCodeDataList: ${siteCodeDataList},
-siteCodeNameList: ${siteCodeNameList},
 isFetchingEquData: ${isFetchingEquData},
 checkedSite: ${checkedSite},
 chosenSite: ${chosenSite},
-isFetching: ${isFetching}
+isFetching: ${isFetching},
+siteCodeNameList: ${siteCodeNameList},
+filteredSiteCodeNameList: ${filteredSiteCodeNameList}
     ''';
   }
 }

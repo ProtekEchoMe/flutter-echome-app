@@ -19,7 +19,7 @@ class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: [
         Container(
           child: Center(child: 
-          Observer(builder: (context){
+          Observer(builder: (context){ //TODO: adding last 4 digits to show string (0421)Connected
             var str = _readerConnectionStore.currentReader != null ? "Connected":"Not Connected";
             return Text(str, style: TextStyle(fontSize: 14));
           },) ),

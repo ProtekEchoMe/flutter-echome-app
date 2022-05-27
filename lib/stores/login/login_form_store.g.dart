@@ -9,6 +9,13 @@ part of 'login_form_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$LoginFormStore on _LoginFormStore, Store {
+  Computed<Map<String, dynamic>?>? _$payloadComputed;
+
+  @override
+  Map<String, dynamic>? get payload => (_$payloadComputed ??=
+          Computed<Map<String, dynamic>?>(() => super.payload,
+              name: '_LoginFormStore.payload'))
+      .value;
   Computed<bool>? _$isUserLoginingComputed;
 
   @override
@@ -96,21 +103,6 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
   set idToken(String? value) {
     _$idTokenAtom.reportWrite(value, super.idToken, () {
       super.idToken = value;
-    });
-  }
-
-  final _$payloadAtom = Atom(name: '_LoginFormStore.payload');
-
-  @override
-  Map<String, dynamic>? get payload {
-    _$payloadAtom.reportRead();
-    return super.payload;
-  }
-
-  @override
-  set payload(Map<String, dynamic>? value) {
-    _$payloadAtom.reportWrite(value, super.payload, () {
-      super.payload = value;
     });
   }
 
@@ -251,11 +243,11 @@ siteCode: ${siteCode},
 accessToken: ${accessToken},
 refreshToken: ${refreshToken},
 idToken: ${idToken},
-payload: ${payload},
 email: ${email},
 password: ${password},
 isLogining: ${isLogining},
 isLoggedIn: ${isLoggedIn},
+payload: ${payload},
 isUserLogining: ${isUserLogining},
 isDataFilled: ${isDataFilled}
     ''';

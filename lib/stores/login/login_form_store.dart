@@ -5,6 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:validators2/validators.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
+
 // Include generated file
 part 'login_form_store.g.dart';
 
@@ -41,8 +42,8 @@ abstract class _LoginFormStore with Store {
   @observable
   String? idToken;
 
-  @observable
-  Map<String, dynamic>? payload;
+  @computed
+  Map<String, dynamic>? get payload => Jwt.parseJwt(accessToken!);
 
   @observable
   String email = "";
@@ -106,7 +107,7 @@ abstract class _LoginFormStore with Store {
       refreshToken = auth.refreshToken;
       idToken = auth.idToken;
       isLoggedIn = true;
-      payload = Jwt.parseJwt(auth.accessToken!);
+      // payload = Jwt.parseJwt(auth.accessToken!);
       // repository.saveAuthToken(auth.accessToken!); // will trigger Header Interceptor afterwards
 
     } catch (e) {

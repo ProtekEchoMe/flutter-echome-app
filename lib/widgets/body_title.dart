@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/data/siteCode/site_code_list.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -10,6 +11,7 @@ import 'package:mobx/mobx.dart';
 class BodyTitle extends StatelessWidget {
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
   final SiteCodeItemStore siteCodeStore = getIt<SiteCodeItemStore>();
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
   String? title;
   String? clipTitle;
   bool allowSwitchSite;
@@ -33,7 +35,7 @@ class BodyTitle extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: GestureDetector(
-                onTap: (){if(allowSwitchSite)_showMyDialog(context);},
+                onTap: (){if(allowSwitchSite)_showSiteSelectionDialog(context, accessControlStore.roleSiteNameList);},
                 child: Container(
                   width: 130,
                   height: 30,
@@ -68,7 +70,7 @@ class BodyTitle extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 // ...SiteCodeList.getList().map((e){
-                ...siteCodeStore.siteCodeNameList.map((e){
+                ...siteCodeStore.filteredSiteCodeNameList.map((e){
                    return GestureDetector(
                      onTap: ()async{
                        if(e != loginFormStore.siteCode){
@@ -92,6 +94,44 @@ class BodyTitle extends StatelessWidget {
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSiteSelectionDialog(BuildContext context, ObservableList<String?> siteNameList) async {
+    print("called");
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: const Text("Choose the site"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  // ...SiteCodeList.getList().map((e
+                  //...siteCodeStore.siteCodeNameList.map((e)
+                  ...siteNameList.map((e) {
+                    return GestureDetector(
+                      onTap: () async {
+                        if (e != loginFormStore.siteCode) {
+                          await loginFormStore.changeSite(siteCode: e!);
+                        }
+                        Navigator.of(context).pop();
+                      },
+                      child: ListTile(
+                        title: Text(e!),
+                      ),
+                    );
+                  }).toList()
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          ),
         );
       },
     );

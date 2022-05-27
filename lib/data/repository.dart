@@ -9,8 +9,6 @@ import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dar
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
-import 'package:echo_me_mobile/models/asset_inventory/backup/asset_inventory_response.dart';
-import 'package:echo_me_mobile/models/asset_inventory/backup/inventory_item.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 
 import 'network/apis/login/login_api.dart';
