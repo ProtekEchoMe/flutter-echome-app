@@ -34,7 +34,7 @@ class AssetReturnApi {
           {
             "value": rtnNum,
             "name": "rtnNum",
-            "operator": "eq",
+            "operator": "contains",
             "type": "string"
           }
         ];

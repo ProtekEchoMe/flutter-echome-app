@@ -30,7 +30,7 @@ class TransferInApi {
 
       if (tiNum.isNotEmpty) {
         filter = [
-          {"value": tiNum, "name": "tiNum", "operator": "eq", "type": "string"}
+          {"value": tiNum, "name": "tiNum", "operator": "contains", "type": "string"}
         ];
       }
       Map<String, dynamic> query = {

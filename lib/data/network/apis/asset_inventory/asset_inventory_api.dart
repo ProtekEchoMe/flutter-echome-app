@@ -42,7 +42,7 @@ class AssetInventoryApi {
           {
             "value": skuCode,
             "name": "skuCode",
-            "operator": "eq",
+            "operator": "contains",
             "type": "string"
           }
         ];

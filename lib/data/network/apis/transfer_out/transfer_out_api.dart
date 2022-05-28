@@ -29,7 +29,7 @@ class TransferOutApi {
           {
             "value": toNum,
             "name": "toNum",
-            "operator": "eq",
+            "operator": "contains",
             "type": "string"
           }
         ];
