@@ -80,4 +80,40 @@ class DialogHelper {
       ),
     );
   }
+
+  Future<void> _listSelectionDialog(BuildContext context, List<String?> inputList, Function onTapFunction) async {
+    print("called");
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: const Text("Choose the site"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  // ...SiteCodeList.getList().map((e
+                  //...siteCodeStore.siteCodeNameList.map((e)
+                  ...inputList.map((e) {
+                    return GestureDetector(
+                      onTap: () async {
+                          onTapFunction(e);
+                        Navigator.of(context).pop();
+                      },
+                      child: ListTile(
+                        title: Text(e!),
+                      ),
+                    );
+                  }).toList()
+                ],
+              ),
+            ),
+            actions: <Widget>[],
+          ),
+        );
+      },
+    );
+  }
 }

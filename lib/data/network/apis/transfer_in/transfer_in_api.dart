@@ -19,6 +19,15 @@ class TransferInApi {
       print(limit);
       print(tiNum);
       List<dynamic> filter = [];
+      Map sortInfo = {};
+
+      sortInfo = {
+        "id": 1,
+        "name": "modifiedDate",
+        "type": "",
+        "dir": -1
+      };
+
       if (tiNum.isNotEmpty) {
         filter = [
           {"value": tiNum, "name": "tiNum", "operator": "eq", "type": "string"}
@@ -27,13 +36,15 @@ class TransferInApi {
       Map<String, dynamic> query = {
         "skip": page * limit,
         "limit": limit,
+        "sortInfo": jsonEncode(sortInfo),
       };
 
       if (filter.isNotEmpty) {
         query = {
           "skip": page * limit,
           "limit": limit,
-          "filterBy": jsonEncode(filter)
+          "filterBy": jsonEncode(filter),
+          "sortInfo": jsonEncode(sortInfo),
         };
       }
       final res = await _dioClient.getRegistration(

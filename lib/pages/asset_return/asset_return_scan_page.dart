@@ -154,17 +154,17 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         Text("More than one container code detected, please rescan")
       ], actionList: [
         TextButton(
-          child: const Text('DContainesrs'),
+          child: const Text('test1'),
           onPressed: () {
-            _addMockEquipmentIdCaseOne();
+            _addTest1();
             Navigator.of(context).pop();
           },
         )
         ,
         TextButton(
-          child: const Text('SContainer'),
+          child: const Text('test2'),
           onPressed: () {
-            _addMockEquipmentIdCaseTwo();
+            _addTest2();
             Navigator.of(context).pop();
           },
         )
@@ -310,10 +310,10 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.eleven_mp),
-          //   label: 'Debug',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eleven_mp),
+            label: 'Debug',
+          ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -594,17 +594,18 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     _assetReturnScanStore.updateDataSet(equList: list);
   }
 
-  void _addMockEquipmentIdCaseOne() {
+
+  void _addTest1(){
     List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
-    list.add(AscToText.getAscIIString("CATL010000000842"));
+    list.add(AscToText.getAscIIString("CATL010000001360")); // box 1
+    list.add(AscToText.getAscIIString("SATL010000006871")); // item 1
     _assetReturnScanStore.updateDataSet(equList: list);
   }
 
-  void _addMockEquipmentIdCaseTwo() {
+  void _addTest2(){
     List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
-    list.add(AscToText.getAscIIString("CATL010000000819"));
+    list.add(AscToText.getAscIIString("CATL010000001371")); // box 2
+    list.add(AscToText.getAscIIString("SATL010000006882")); // item 2
     _assetReturnScanStore.updateDataSet(equList: list);
   }
 }

@@ -20,26 +20,38 @@ class AssetRegistrationApi {
       print(limit);
       print(regNum);
       List<dynamic> filter = [];
+      Map sortInfo = {};
+
+      sortInfo = {
+        "id": 1,
+        "name": "modifiedDate",
+        "type": "",
+        "dir": -1
+      };
+
       if (regNum.isNotEmpty) {
         filter = [
           {
             "value": regNum,
             "name": "regNum",
-            "operator": "eq",
+            "operator": "contains",
             "type": "string"
           }
         ];
       }
+
       Map<String, dynamic> query = {
         "skip": page * limit,
         "limit": limit,
+        "sortInfo": jsonEncode(sortInfo)
       };
 
       if (filter.isNotEmpty) {
         query = {
           "skip": page * limit,
           "limit": limit,
-          "filterBy": jsonEncode(filter)
+          "filterBy": jsonEncode(filter),
+          "sortInfo": jsonEncode(sortInfo)
         };
       }
       final res = await _dioClient.getRegistration(Endpoints.assetRegistration,
