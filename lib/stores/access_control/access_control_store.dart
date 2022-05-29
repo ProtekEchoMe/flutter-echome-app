@@ -71,7 +71,7 @@ abstract class _AccessControlStore with Store {
   }
 
   @computed
-  ObservableList<String?> get modulesViewRolesList => getRoleList(Strings.viewIdStr);
+  ObservableList<String?> get modulesViewRolesList => getRoleList(Strings.viewRightIdStr);
 
   @computed
   ObservableList<RouteObject> get modulesObjectViewList {
@@ -103,13 +103,49 @@ abstract class _AccessControlStore with Store {
   ObservableList<String?> get TIRoleList  => getRoleList(Strings.tiRoleIdStr);
 
   @computed
+  bool get hasTIChangeRight  => checkRight(TIRoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasTIRescanRight  => checkRight(TIRoleList, Strings.rescanRightIdStr);
+
+  @computed
+  bool get hasTICompleteRight  => checkRight(TIRoleList, Strings.completeRightIdStr);
+
+  @computed
   ObservableList<String?> get TORoleList  => getRoleList(Strings.toRoleIdStr);
+
+  @computed
+  bool get hasTOChangeRight  => checkRight(TORoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasTORescanRight  => checkRight(TORoleList, Strings.rescanRightIdStr);
+
+  @computed
+  bool get hasTOCompleteRight  => checkRight(TORoleList, Strings.completeRightIdStr);
 
   @computed
   ObservableList<String?> get STRoleList => getRoleList(Strings.stRoleIdStr);
 
   @computed
+  bool get hasSTChangeRight  => checkRight(STRoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasSTRescanRight  => checkRight(STRoleList, Strings.rescanRightIdStr);
+
+  @computed
+  bool get hasSTCompleteRight  => checkRight(STRoleList, Strings.completeRightIdStr);
+
+  @computed
   ObservableList<String?> get INVRoleList => getRoleList(Strings.invRoleIdStr);
+
+  @computed
+  bool get hasINVChangeRight  => checkRight(INVRoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasINVRescanRight  => checkRight(INVRoleList, Strings.rescanRightIdStr);
+
+  @computed
+  bool get hasINVCompleteRight  => checkRight(INVRoleList, Strings.completeRightIdStr);
 
     late List<ReactionDisposer> _disposers;
 
@@ -123,6 +159,7 @@ abstract class _AccessControlStore with Store {
 
   ObservableList<String?> getRoleList(String roleIdStr) => ObservableList<String?>.of(appModulesAccessRoleList.where((accessRole) => accessRole!.contains(roleIdStr)));
 
+  bool checkRight(ObservableList<String?> moduleRoleList, String? rightIdStr)=> moduleRoleList.any((role) => role!.contains(RegExp(rightIdStr!)));
 }
 
 class AccessControlErrorState = _AccessControlErrorState with _$AccessControlErrorState;
