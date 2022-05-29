@@ -128,50 +128,61 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
   }
 
   Future<void> _onBottomBarItemTapped(AssetReturnScanPageArguments? args, int index) async {
-    if (index == 0) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
-      if (flag == true) {
-        _changeEquipment(args);
-        _showSnackBar("Change Successfully");
-        // _assetReturnScanStore.reset();
+    try {
+      if (index == 0) {
+        if (!accessControlStore.hasARtnChangeRight) throw "No Change Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Change Equipment(s)?",
+            trueOptionText: "Change",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _changeEquipment(args);
+          _showSnackBar("Change Successfully");
+          // _assetReturnScanStore.reset();
+        }
+      } else if (index == 1) {
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Rescan?",
+            trueOptionText: "Rescan",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _rescan();
+          _showSnackBar("Data Cleaned");
+        }
+      } else if (index == 2) {
+        if (!accessControlStore.hasARtnCompleteRight) throw "No Complete Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Complete?",
+            trueOptionText: "Complete",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _complete(args);
+          _showSnackBar("Complete Successfully");
+          // _assetReturnScanStore.reset();
+        }
+      } else if (index == 3) { // debug version
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('test1'),
+            onPressed: () {
+              _addTest1();
+              Navigator.of(context).pop();
+            },
+          )
+          ,
+          TextButton(
+            child: const Text('test2'),
+            onPressed: () {
+              _addTest2();
+              Navigator.of(context).pop();
+            },
+          )
+        ]);
       }
-    } else if (index == 1) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
-      if (flag == true) {
-        _rescan();
-        _showSnackBar("Data Cleaned");
-      }
-    } else if (index == 2){
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
-      if (flag == true) {
-        _complete(args);
-        _showSnackBar("Complete Successfully");
-        // _assetReturnScanStore.reset();
-      }
-
-    } else if (index == 3){ // debug version
-      DialogHelper.showCustomDialog(context, widgetList: [
-        Text("More than one container code detected, please rescan")
-      ], actionList: [
-        TextButton(
-          child: const Text('test1'),
-          onPressed: () {
-            _addTest1();
-            Navigator.of(context).pop();
-          },
-        )
-        ,
-        TextButton(
-          child: const Text('test2'),
-          onPressed: () {
-            _addTest2();
-            Navigator.of(context).pop();
-          },
-        )
-      ]);
+    }catch (e){
+      _assetReturnScanStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
@@ -205,6 +216,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     });
     var disposerReaction1 =
     reaction((_) => _assetReturnScanStore.equipmentData, (_) {
+      if (!accessControlStore.hasARtnScanRight) throw "No Scan Right";
       Set<String?> containerAssetCodeSet = Set<String?>();
       // print("disposer1 called");
       _assetReturnScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));

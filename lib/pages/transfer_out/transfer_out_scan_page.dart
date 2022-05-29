@@ -12,6 +12,7 @@ import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -79,6 +80,9 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   String? highlightedIndex;
   final Map errorMap = {};
   List<EquItem> equTable = [];
+
+  final TransferOutStore _transferOutScanStore = getIt<TransferOutStore>();
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -189,52 +193,63 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     // } else {
     //   _complete(args);
     // }
-
-    if (index == 0) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Change Equipment(s)?", trueOptionText: "Change", falseOptionText: "Cancel");
-      if (flag == true) {
-        _changeEquipment(args);
-        DialogHelper.showSnackBar(context, str: "Change Successfully");
-        // _assetRegistrationScanStore.reset();
+    try {
+      if (index == 0) {
+        if (!accessControlStore.hasTOChangeRight) throw "No Change Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Change Equipment(s)?",
+            trueOptionText: "Change",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _changeEquipment(args);
+          DialogHelper.showSnackBar(context, str: "Change Successfully");
+          // _assetRegistrationScanStore.reset();
+        }
+      } else if (index == 1) {
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Rescan?",
+            trueOptionText: "Rescan",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _rescan();
+          DialogHelper.showSnackBar(context, str: "Rescan Successfully");
+        }
+      } else if (index == 2) {
+        if (!accessControlStore.hasTOCompleteRight) throw "No Complete Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Complete?",
+            trueOptionText: "Complete",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _complete(args);
+          DialogHelper.showSnackBar(context, str: "Complete Successfully");
+          // _assetRegistrationScanStore.reset();
+        }
+      } else if (index == 3) { // debug version
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('DContainesrs'),
+            onPressed: () {
+              // _addMockEquipmentIdCaseOne();
+              Navigator.of(context).pop();
+            },
+          )
+          ,
+          TextButton(
+            child: const Text('SContainer'),
+            onPressed: () {
+              // _addMockEquipmentIdCaseTwo();
+              Navigator.of(context).pop();
+            },
+          )
+        ]);
       }
-    } else if (index == 1) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Rescan?", trueOptionText: "Rescan", falseOptionText: "Cancel");
-      if (flag == true) {
-        _rescan();
-        DialogHelper.showSnackBar(context, str: "Rescan Successfully");
-      }
-    } else if (index == 2){
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Complete?", trueOptionText: "Complete", falseOptionText: "Cancel");
-      if (flag == true) {
-        _complete(args);
-        DialogHelper.showSnackBar(context, str: "Complete Successfully");
-        // _assetRegistrationScanStore.reset();
-      }
-
-    } else if (index == 3){ // debug version
-      DialogHelper.showCustomDialog(context, widgetList: [
-        Text("More than one container code detected, please rescan")
-      ], actionList: [
-        TextButton(
-          child: const Text('DContainesrs'),
-          onPressed: () {
-            // _addMockEquipmentIdCaseOne();
-            Navigator.of(context).pop();
-          },
-        )
-        ,
-        TextButton(
-          child: const Text('SContainer'),
-          onPressed: () {
-            // _addMockEquipmentIdCaseTwo();
-            Navigator.of(context).pop();
-          },
-        )
-      ]);
+    }catch (e){
+      _transferOutScanStore.errorStore.setErrorMessage(e.toString());
     }
+
   }
 
   void _handleEquTable(List list) {
@@ -430,6 +445,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   @override
   void initState() {
     // TODO: implement initState
+    // TODO: Access Control SCAN Right shall be added to TransferOut Logic
     super.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
