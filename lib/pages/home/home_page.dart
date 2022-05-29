@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     loginFormStore.setupValidations();
     siteCodeStore.fetchData().then(
-            (value) => _showSiteSelectionDialog(context, accessControlStore.roleSiteNameList));
+            (value) => _showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList));
         // .then(
         //     (value) => loginFormStore.changeSite(siteCode: siteCodeStore.siteCodeNameList[0]!));
     
@@ -147,7 +147,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> _getRouteButtonList(BuildContext context) {
-    return RouteConstant.getRouteList.map((e) {
+    // return RouteConstant.getRouteList.map((e) {
+    return accessControlStore.modulesObjectViewList.map((e) {
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, e.routeName),
         child: SizedBox(

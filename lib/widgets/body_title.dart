@@ -35,7 +35,7 @@ class BodyTitle extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: GestureDetector(
-                onTap: (){if(allowSwitchSite)_showSiteSelectionDialog(context, accessControlStore.roleSiteNameList);},
+                onTap: (){if(allowSwitchSite)_showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList);},
                 child: Container(
                   width: 130,
                   height: 30,
@@ -70,7 +70,7 @@ class BodyTitle extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 // ...SiteCodeList.getList().map((e){
-                ...siteCodeStore.filteredSiteCodeNameList.map((e){
+                ...siteCodeStore.siteCodeNameList.map((e){
                    return GestureDetector(
                      onTap: ()async{
                        if(e != loginFormStore.siteCode){

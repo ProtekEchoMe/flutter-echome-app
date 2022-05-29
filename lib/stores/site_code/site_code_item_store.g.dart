@@ -17,14 +17,6 @@ mixin _$SiteCodeItemStore on _SiteCodeItemStore, Store {
               () => super.siteCodeNameList,
               name: '_SiteCodeItemStore.siteCodeNameList'))
           .value;
-  Computed<ObservableList<String?>>? _$filteredSiteCodeNameListComputed;
-
-  @override
-  ObservableList<String?> get filteredSiteCodeNameList =>
-      (_$filteredSiteCodeNameListComputed ??= Computed<ObservableList<String?>>(
-              () => super.filteredSiteCodeNameList,
-              name: '_SiteCodeItemStore.filteredSiteCodeNameList'))
-          .value;
 
   final _$pageAtom = Atom(name: '_SiteCodeItemStore.page');
 
@@ -198,8 +190,7 @@ isFetchingEquData: ${isFetchingEquData},
 checkedSite: ${checkedSite},
 chosenSite: ${chosenSite},
 isFetching: ${isFetching},
-siteCodeNameList: ${siteCodeNameList},
-filteredSiteCodeNameList: ${filteredSiteCodeNameList}
+siteCodeNameList: ${siteCodeNameList}
     ''';
   }
 }
