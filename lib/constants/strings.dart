@@ -16,6 +16,6 @@ class Strings {
 
   static const String viewRightIdStr = "VIEW";
   static const String changeRightIdStr = "CHANGE";
-  static const String rescanRightIdStr = "RESCAN";
+  static const String scanRightIdStr = "SCAN";
   static const String completeRightIdStr = "COMPLETE";
 }

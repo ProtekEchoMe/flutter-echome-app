@@ -6,6 +6,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
@@ -31,6 +32,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   bool isDialogShown = false;
+
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -123,56 +126,63 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Future<void> _onBottomBarItemTapped(
       AssetScanPageArguments? args, int index) async {
-    if (index == 0) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Change Equipment(s)?",
-          trueOptionText: "Change",
-          falseOptionText: "Cancel");
-      if (flag == true) {
-        _changeEquipment(args);
-        _showSnackBar("Change Successfully");
-        // _assetRegistrationScanStore.reset();
+    try{
+      if (index == 0) {
+        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Change Equipment(s)?",
+            trueOptionText: "Change",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _changeEquipment(args);
+          _showSnackBar("Change Successfully");
+          // _assetRegistrationScanStore.reset();
+        }
+      } else if (index == 1) {
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Rescan?",
+            trueOptionText: "Rescan",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _rescan();
+          _showSnackBar("Data Cleaned");
+        }
+      } else if (index == 2) {
+        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Complete?",
+            trueOptionText: "Complete",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          _complete(args);
+          _showSnackBar("Complete Successfully");
+          // _assetRegistrationScanStore.reset();
+        }
+      } else if (index == 3) {
+        // debug version
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('DContainesrs'),
+            onPressed: () {
+              _addMockEquipmentIdCaseOne();
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('SContainer'),
+            onPressed: () {
+              _addMockEquipmentIdCaseTwo();
+              Navigator.of(context).pop();
+            },
+          )
+        ]);
       }
-    } else if (index == 1) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Rescan?",
-          trueOptionText: "Rescan",
-          falseOptionText: "Cancel");
-      if (flag == true) {
-        _rescan();
-        _showSnackBar("Data Cleaned");
-      }
-    } else if (index == 2) {
-      bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-          title: "Confirm to Complete?",
-          trueOptionText: "Complete",
-          falseOptionText: "Cancel");
-      if (flag == true) {
-        _complete(args);
-        _showSnackBar("Complete Successfully");
-        // _assetRegistrationScanStore.reset();
-      }
-    } else if (index == 3) {
-      // debug version
-      DialogHelper.showCustomDialog(context, widgetList: [
-        Text("More than one container code detected, please rescan")
-      ], actionList: [
-        TextButton(
-          child: const Text('DContainesrs'),
-          onPressed: () {
-            _addMockEquipmentIdCaseOne();
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          child: const Text('SContainer'),
-          onPressed: () {
-            _addMockEquipmentIdCaseTwo();
-            Navigator.of(context).pop();
-          },
-        )
-      ]);
+    }catch (e){
+      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
+
   }
 
   @override
@@ -205,33 +215,39 @@ class _AssetScanPageState extends State<AssetScanPage> {
     });
     var disposerReaction1 =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-      Set<String?> containerAssetCodeSet = Set<String?>();
-      // print("disposer1 called");
-      _assetRegistrationScanStore.chosenEquipmentData.forEach(
-          (element) => containerAssetCodeSet.add(element.containerAssetCode));
-      if (containerAssetCodeSet.length > 1 && !isDialogShown) {
-        isDialogShown = true;
-        DialogHelper.showCustomDialog(context, widgetList: [
-          Text("More than one container code detected, please rescan")
-        ], actionList: [
-          TextButton(
-            child: const Text('Rescan Container'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              _rescanContainer();
-              isDialogShown = false;
-            },
-          ),
-          TextButton(
-            child: const Text('Rescan'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              _rescan();
-              isDialogShown = false;
-            },
-          )
-        ]);
-      }
+          try{
+            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            Set<String?> containerAssetCodeSet = Set<String?>();
+            // print("disposer1 called");
+            _assetRegistrationScanStore.chosenEquipmentData.forEach(
+                    (element) => containerAssetCodeSet.add(element.containerAssetCode));
+            if (containerAssetCodeSet.length > 1 && !isDialogShown) {
+              isDialogShown = true;
+              DialogHelper.showCustomDialog(context, widgetList: [
+                Text("More than one container code detected, please rescan")
+              ], actionList: [
+                TextButton(
+                  child: const Text('Rescan Container'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescanContainer();
+                    isDialogShown = false;
+                  },
+                ),
+                TextButton(
+                  child: const Text('Rescan'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescan();
+                    isDialogShown = false;
+                  },
+                )
+              ]);
+            }
+          }catch (e){
+            _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+          }
+
     });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
@@ -312,10 +328,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),

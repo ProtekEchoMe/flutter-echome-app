@@ -6,6 +6,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_return/assset_return_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page_arguments.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
@@ -33,6 +34,8 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
   List<dynamic> disposer = [];
   final AssetReturnApi api = getIt<AssetReturnApi>();
   bool isDialogShown = false;
+
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(

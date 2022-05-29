@@ -11,6 +11,7 @@ import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -106,6 +107,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
   ];
 
   bool isDialogShown = false;
+
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
   void showMessage(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(

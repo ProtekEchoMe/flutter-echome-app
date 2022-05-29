@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -17,6 +18,8 @@ class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
   final String? skuCode;
   AssetInventoryPage({Key? key, this.assetCode, this.skuCode}) : super(key: key);
+
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();

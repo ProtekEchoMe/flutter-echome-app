@@ -97,7 +97,25 @@ abstract class _AccessControlStore with Store {
   ObservableList<String?> get assetRegistrationRoleList  => getRoleList(Strings.assetRegRoleIdStr);
 
   @computed
+  bool get hasARChangeRight  => checkRight(assetRegistrationRoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasARScanRight  => checkRight(assetRegistrationRoleList, Strings.scanRightIdStr);
+
+  @computed
+  bool get hasARCompleteRight  => checkRight(assetRegistrationRoleList, Strings.completeRightIdStr);
+
+  @computed
   ObservableList<String?> get assetReturnRoleList  => getRoleList(Strings.assetReturnRoleIdStr);
+
+  @computed
+  bool get hasARtnChangeRight  => checkRight(assetReturnRoleList, Strings.changeRightIdStr);
+
+  @computed
+  bool get hasARtnScanRight  => checkRight(assetReturnRoleList, Strings.scanRightIdStr);
+
+  @computed
+  bool get hasARtnCompleteRight  => checkRight(assetReturnRoleList, Strings.completeRightIdStr);
 
   @computed
   ObservableList<String?> get TIRoleList  => getRoleList(Strings.tiRoleIdStr);
@@ -106,7 +124,7 @@ abstract class _AccessControlStore with Store {
   bool get hasTIChangeRight  => checkRight(TIRoleList, Strings.changeRightIdStr);
 
   @computed
-  bool get hasTIRescanRight  => checkRight(TIRoleList, Strings.rescanRightIdStr);
+  bool get hasTIScanRight  => checkRight(TIRoleList, Strings.scanRightIdStr);
 
   @computed
   bool get hasTICompleteRight  => checkRight(TIRoleList, Strings.completeRightIdStr);
@@ -118,7 +136,7 @@ abstract class _AccessControlStore with Store {
   bool get hasTOChangeRight  => checkRight(TORoleList, Strings.changeRightIdStr);
 
   @computed
-  bool get hasTORescanRight  => checkRight(TORoleList, Strings.rescanRightIdStr);
+  bool get hasTOScanRight  => checkRight(TORoleList, Strings.scanRightIdStr);
 
   @computed
   bool get hasTOCompleteRight  => checkRight(TORoleList, Strings.completeRightIdStr);
@@ -130,7 +148,7 @@ abstract class _AccessControlStore with Store {
   bool get hasSTChangeRight  => checkRight(STRoleList, Strings.changeRightIdStr);
 
   @computed
-  bool get hasSTRescanRight  => checkRight(STRoleList, Strings.rescanRightIdStr);
+  bool get hasSTScanRight  => checkRight(STRoleList, Strings.scanRightIdStr);
 
   @computed
   bool get hasSTCompleteRight  => checkRight(STRoleList, Strings.completeRightIdStr);
@@ -142,7 +160,7 @@ abstract class _AccessControlStore with Store {
   bool get hasINVChangeRight  => checkRight(INVRoleList, Strings.changeRightIdStr);
 
   @computed
-  bool get hasINVRescanRight  => checkRight(INVRoleList, Strings.rescanRightIdStr);
+  bool get hasINVScanRight  => checkRight(INVRoleList, Strings.scanRightIdStr);
 
   @computed
   bool get hasINVCompleteRight  => checkRight(INVRoleList, Strings.completeRightIdStr);

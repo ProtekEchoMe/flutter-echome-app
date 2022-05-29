@@ -8,6 +8,7 @@ import 'package:echo_me_mobile/pages/transfer_in/transfer_in_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
@@ -32,6 +33,8 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
 
   bool isDialogShown = false;
+
+  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
