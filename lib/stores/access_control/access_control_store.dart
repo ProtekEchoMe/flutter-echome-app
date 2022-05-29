@@ -43,70 +43,46 @@ abstract class _AccessControlStore with Store {
   bool get isSiteSuperuser => accessRoleList.any((element) {return element!.contains(Strings.siteSuperUserStr);});
   
   @computed
-  ObservableList<String?> get accessRoleList{
-    ObservableList<String?> tempList = ObservableList<String?>();
-    List<dynamic> tempRoleList = loginFormStore.payload!["resource_access"]![Strings.appName]!["roles"]!;
-    tempRoleList.forEach((element) {tempList.add(element.toString());});
-    return tempList;
-  }
+  ObservableList<String?> get accessRoleList => ObservableList<String?>.of(
+      List<String?>.from(
+        loginFormStore.payload!["resource_access"]![Strings.appName]!["roles"]!.map(
+                (role) => role.toString()).toList()));
 
   @computed
-  ObservableList<String?> get appModulesAccessRoleList{
-    ObservableList<String?> tempList = ObservableList<String?>();
-    List<dynamic> tempRoleList = accessRoleList;
-    tempRoleList.forEach((element) {
-      if (element.contains(Strings.appRoleIdStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get appModulesAccessRoleList => ObservableList<String?>.of(accessRoleList.where((accessRole) => accessRole!.contains(Strings.appRoleIdStr)));
 
   @computed
   ObservableList<String?> get roleSiteNameList {
     ObservableList<String?> tempList = ObservableList<String?>();
     String roleSiteStr = Strings.roleSiteIdStr; // "SITE_"
-    accessRoleList.forEach((element) {
-      if(element!.contains(roleSiteStr)) tempList.add(element.substring(element.indexOf(roleSiteStr) + roleSiteStr.length));
+
+    accessRoleList.forEach((accessRole) {
+      if(accessRole!.contains(roleSiteStr)) tempList.add(accessRole.substring(accessRole.indexOf(roleSiteStr) + roleSiteStr.length));
     });
     return tempList;
   }
 
   @computed
   ObservableList<String?> get accessControlledSiteNameList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    ObservableList<String?> roleSiteNameList = this.roleSiteNameList;
-    ObservableList<String?> siteCodeNameList = siteCodeItemStore.siteCodeNameList;
-    if (isSiteSuperuser || isEchoMeSuperuser){
-      siteCodeNameList.forEach((siteCodeName) {tempList.add(siteCodeName);});
-    }else{
-      roleSiteNameList.forEach((siteCodeName) {
-        if (siteCodeNameList.contains(siteCodeName)) tempList.add(siteCodeName);
-      });
-    };
-
-    return tempList;
+    final ObservableList<String?> siteCodeNameList = siteCodeItemStore.siteCodeNameList;
+    return (isSiteSuperuser || isEchoMeSuperuser) ? 
+      siteCodeNameList : 
+      ObservableList<String?>.of(roleSiteNameList.where((roleSiteName) => siteCodeNameList.contains(roleSiteName)));
   }
 
   @computed
-  ObservableList<String?> get modulesViewRolesList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.viewIdStr; // "_VIEW"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get modulesViewRolesList => getRoleList(Strings.viewIdStr);
 
   @computed
   ObservableList<RouteObject> get modulesObjectViewList {
     ObservableList<RouteObject> tempList = ObservableList<RouteObject>();
-    ObservableList<String?> modulesViewRolesList = this.modulesViewRolesList;
-    Map<String, RouteObject>routeMap = RouteConstant.getRouteMap;
+    final Map<String, RouteObject>routeMap = RouteConstant.getRouteMap;
     if (isEchoMeSuperuser || isEchoMeAdmin){
-      routeMap.forEach((routeId, routeOb) {tempList.add(routeOb);});
+      routeMap.forEach((_, routeOb) {tempList.add(routeOb);});
     }else{
       routeMap.forEach((routeId, routeOb) {
-        for (final String? routeRole in modulesViewRolesList){
-          if (routeRole!.contains('_${routeId}_')){
+        for (final String? routeViewRole in modulesViewRolesList){
+          if (routeViewRole!.contains('_${routeId}_')){
             tempList.add(routeOb);
             break;
           }
@@ -118,67 +94,22 @@ abstract class _AccessControlStore with Store {
   }
 
   @computed
-  ObservableList<String?> get assetRegistrationRoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.assetRegRoleIdStr; // "_AR"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
-
+  ObservableList<String?> get assetRegistrationRoleList  => getRoleList(Strings.assetRegRoleIdStr);
 
   @computed
-  ObservableList<String?> get assetReturnRoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.assetReturnRoleIdStr; // "_ARTN"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get assetReturnRoleList  => getRoleList(Strings.assetReturnRoleIdStr);
 
   @computed
-  ObservableList<String?> get TIRoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.tiRoleIdStr; // "_TI"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get TIRoleList  => getRoleList(Strings.tiRoleIdStr);
 
   @computed
-  ObservableList<String?> get TORoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.toRoleIdStr; // "TO"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get TORoleList  => getRoleList(Strings.toRoleIdStr);
 
   @computed
-  ObservableList<String?> get STRoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.stRoleIdStr; // "_ST"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
+  ObservableList<String?> get STRoleList => getRoleList(Strings.stRoleIdStr);
 
   @computed
-  ObservableList<String?> get INVRoleList {
-    ObservableList<String?> tempList = ObservableList<String?>();
-    String viewIdentifierStr = Strings.invRoleIdStr; // "_INV"
-    appModulesAccessRoleList.forEach((element) {
-      if (element!.contains(viewIdentifierStr)) tempList.add(element.toString());
-    });
-    return tempList;
-  }
-
-
+  ObservableList<String?> get INVRoleList => getRoleList(Strings.invRoleIdStr);
 
     late List<ReactionDisposer> _disposers;
 
@@ -188,9 +119,11 @@ abstract class _AccessControlStore with Store {
       }
     }
 
+  ObservableList<String?> getAppRoleList(String roleIdStr) => ObservableList<String?>.of(accessRoleList.where((accessRole) => accessRole!.contains(roleIdStr)));
+
+  ObservableList<String?> getRoleList(String roleIdStr) => ObservableList<String?>.of(appModulesAccessRoleList.where((accessRole) => accessRole!.contains(roleIdStr)));
+
 }
-
-
 
 class AccessControlErrorState = _AccessControlErrorState with _$AccessControlErrorState;
 
