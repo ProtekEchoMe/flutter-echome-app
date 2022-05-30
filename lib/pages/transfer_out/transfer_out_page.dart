@@ -20,6 +20,7 @@ import 'package:outline_search_bar/outline_search_bar.dart';
 
 class TransferOutPage extends StatefulWidget {
   final String? toNum;
+
   TransferOutPage({Key? key, this.toNum}) : super(key: key);
 
   @override
@@ -83,7 +84,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                       onTap: () {
                                         _store.prevPage();
                                       },
-                                      child: SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_back),
@@ -108,7 +109,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                       onTap: () {
                                         _store.nextPage();
                                       },
-                                      child: SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_forward),
@@ -147,15 +148,12 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                               context, "/transfer_out_scan",
                                               arguments:
                                                   TransferOutScanPageArguments(
-                                                      toNum: listItem
-                                                              .toNum ??
-                                                          "",
+                                                      toNum:
+                                                          listItem.toNum ?? "",
                                                       item: listItem))
                                           .then((value) => {
                                                 _store.fetchData(
-                                                    toNum:
-                                                        widget.toNum ??
-                                                            "")
+                                                    toNum: widget.toNum ?? "")
                                               });
                                       return StatusListItem(
                                         title: title,

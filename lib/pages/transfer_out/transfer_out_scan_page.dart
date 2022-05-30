@@ -1,120 +1,40 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
-import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
-import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
-import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
-import 'package:json_table/json_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
-
-class RfidContainer {
-  int? id;
-  String? containerAssetCode;
-  String? rfid;
-  String? status;
-  int? createdDate;
-
-  RfidContainer(
-      {this.id,
-      this.containerAssetCode,
-      this.rfid,
-      this.status,
-      this.createdDate});
-
-  RfidContainer.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    containerAssetCode = json['containerAssetCode'];
-    rfid = json['rfid'];
-    status = json['status'];
-    createdDate = json['createdDate'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['containerAssetCode'] = this.containerAssetCode;
-    data['rfid'] = this.rfid;
-    data['status'] = this.status;
-    data['createdDate'] = this.createdDate;
-    return data;
-  }
-}
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 
 class TransferOutScanPage extends StatefulWidget {
-  TransferOutScanPage({Key? key}) : super(key: key);
+  const TransferOutScanPage({Key? key}) : super(key: key);
 
   @override
-  State<TransferOutScanPage> createState() => _TransferOutScanPageState();
+  State<TransferOutScanPage> createState() => _TransferOutPageState();
 }
 
-class _TransferOutScanPageState extends State<TransferOutScanPage> {
-  static final inputFormat = DateFormat('dd/MM/yyyy');
-  List<StreamSubscription> disposer = [];
-  final Set itemRfidDataSet = {};
-  final Set checkedItem = {};
-  final Set<String> equipmentRfidDataSet = {};
-  String equipmentId = "";
-  EquItem? equipmentChosen;
-  List<RfidContainer> containerDetails = [];
-  final bool isFetchingEquId = false;
+class _TransferOutPageState extends State<TransferOutScanPage> {
+  final AssetRegistrationScanStore _assetRegistrationScanStore =
+      getIt<AssetRegistrationScanStore>();
+  List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
-  final String testcontainerAssetCode = "E100000A";
-  final String testRfid = "CRFID0001";
-  bool isCheckingContainer = false;
-  bool hasDifferentContainer = false;
-  bool isDebouncing = false;
-  String containerErrorMsg = "";
-  String? highlightedIndex;
-  final Map errorMap = {};
-  List<EquItem> equTable = [];
-
-  final TransferOutStore _transferOutScanStore = getIt<TransferOutStore>();
-
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  final List<JsonTableColumn> columns = [
-    JsonTableColumn("id", label: "id"),
-    JsonTableColumn("rfid", label: "Container RFID", valueBuilder: (value) {
-      try {
-        return AscToText.getString(value.toString());
-      } catch (e) {
-        return value.toString();
-      }
-    }),
-    JsonTableColumn("containerAssetCode", label: "Container Code"),
-    JsonTableColumn("status", label: "Status"),
-    JsonTableColumn("createdDate", label: "Created At", valueBuilder: (value) {
-      try {
-        if (value is String) {
-          return inputFormat
-              .format(DateTime.fromMillisecondsSinceEpoch(int.parse(value)));
-        }
-        return inputFormat.format(DateTime.fromMillisecondsSinceEpoch(value));
-      } catch (e) {
-        return value.toString();
-      }
-    })
-  ];
-
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
-  void showMessage(String? str) {
+  void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(str ?? ""),
@@ -122,87 +42,99 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     );
   }
 
+  String _getContainerCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore.chosenEquipmentData[0].containerCode ??
+            "")
+        : "";
+  }
+
+  String _getcontainerAssetCode() {
+    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
+        ? (_assetRegistrationScanStore
+                .chosenEquipmentData[0].containerAssetCode ??
+            "")
+        : "";
+  }
+
   Future<void> _changeEquipment(TransferOutScanPageArguments? args) async {
     print("change equ");
     try {
       if (args?.toNum == null) {
-        showMessage("Transfer Out Code not found");
-        return;
+        throw "Reg Number Not Found";
       }
-      if (equipmentChosen?.containerAssetCode == null) {
-        showMessage("Container Code not found");
-        return;
+
+      if (_getcontainerAssetCode().isEmpty) {
+        throw "Container Code not found";
       }
-      if (itemRfidDataSet.isEmpty) {
-        showMessage("Assets List is empty");
-        return;
+
+      if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
+        throw "Assets List is empty";
       }
-      // if (equipmentChosen!.status != "REGISTERED") {
-      //   showMessage("Container Code not registered");
-      //   return;
-      // }
-      var result = await _registerContainer(
-          ignoreRegisteredError: true, toNum: args?.toNum ?? "");
-      if (result == false) {
-        return;
+
+      if (_assetRegistrationScanStore.chosenEquipmentData.isEmpty) {
+        throw "No equipment detected";
       }
-      List<String> itemRfid =
-          itemRfidDataSet.map((e) => AscToText.getString(e)).toList();
-      await api.registerToItem(
-          toNum: args!.toNum,
-          containerAssetCode: equipmentChosen!.containerAssetCode!,
-          itemRfid: itemRfid);
-      _rescan();
+
+      var targetcontainerAssetCode = _getcontainerAssetCode();
+
+      List<String> rfidList = [];
+      for (var element in _assetRegistrationScanStore.equipmentData) {
+        if (element.containerAssetCode == targetcontainerAssetCode) {
+          if (element.rfid != null) {
+            rfidList.add(element.rfid!);
+          }
+        }
+      }
+
+      try {
+        await _assetRegistrationScanStore.registerContainer(
+            rfid: rfidList, regNum: args?.toNum ?? "", throwError: true);
+      } catch (e) {
+        if (!e.toString().contains("Error 2109")) {
+          rethrow;
+        }
+      }
+
+      List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
+          .map((e) => AscToText.getString(e))
+          .toList();
+      // TODO: wait for update containerAssetCode accept multi value
+      await _assetRegistrationScanStore.registerItem(
+          regNum: args?.toNum ?? "",
+          itemRfid: itemRfid,
+          containerAssetCode: targetcontainerAssetCode,
+          throwError: true);
+      _assetRegistrationScanStore.reset();
     } catch (e) {
-      showMessage(e.toString());
-    } finally {
-      setState(() {});
+      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
   void _rescan() {
-    itemRfidDataSet.clear();
-    checkedItem.clear();
-    equipmentRfidDataSet.clear();
-    containerErrorMsg = "";
-    hasDifferentContainer = false;
-    isDebouncing = false;
-    isCheckingContainer = false;
-    equipmentId = "";
-    equipmentChosen = null;
-    equTable.clear();
-    EasyDebounce.cancel('validateContainerRfid');
-    setState(() {});
+    _assetRegistrationScanStore.reset();
+  }
+
+  void _rescanContainer() {
+    _assetRegistrationScanStore.resetContainer();
   }
 
   Future<void> _complete(TransferOutScanPageArguments? args) async {
-    try {
-      await api.completeToRegister(toNum: args!.toNum);
-    } catch (e) {
-      showMessage(e.toString());
-    } finally {
-      setState(() {});
-    }
+    _assetRegistrationScanStore.complete(regNum: args?.toNum ?? "");
   }
 
-  Future<void> _onItemTapped(TransferOutScanPageArguments? args, int index) async {
-    // if (index == 0) {
-    //   _changeEquipment(args);
-    // } else if (index == 1) {
-    //   _rescan();
-    // } else {
-    //   _complete(args);
-    // }
-    try {
+  Future<void> _onBottomBarItemTapped(
+      TransferOutScanPageArguments? args, int index) async {
+    try{
       if (index == 0) {
-        if (!accessControlStore.hasTOChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
             title: "Confirm to Change Equipment(s)?",
             trueOptionText: "Change",
             falseOptionText: "Cancel");
         if (flag == true) {
           _changeEquipment(args);
-          DialogHelper.showSnackBar(context, str: "Change Successfully");
+          _showSnackBar("Change Successfully");
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
@@ -212,250 +144,56 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
             falseOptionText: "Cancel");
         if (flag == true) {
           _rescan();
-          DialogHelper.showSnackBar(context, str: "Rescan Successfully");
+          _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasTOCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
             title: "Confirm to Complete?",
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
           _complete(args);
-          DialogHelper.showSnackBar(context, str: "Complete Successfully");
+          _showSnackBar("Complete Successfully");
           // _assetRegistrationScanStore.reset();
         }
-      } else if (index == 3) { // debug version
+      } else if (index == 3) {
+        // debug version
         DialogHelper.showCustomDialog(context, widgetList: [
           Text("More than one container code detected, please rescan")
         ], actionList: [
           TextButton(
             child: const Text('DContainesrs'),
             onPressed: () {
-              // _addMockEquipmentIdCaseOne();
+              _addMockEquipmentIdCaseOne();
               Navigator.of(context).pop();
             },
-          )
-          ,
+          ),
           TextButton(
             child: const Text('SContainer'),
             onPressed: () {
-              // _addMockEquipmentIdCaseTwo();
+              _addMockEquipmentIdCaseTwo();
               Navigator.of(context).pop();
             },
           )
         ]);
       }
     }catch (e){
-      _transferOutScanStore.errorStore.setErrorMessage(e.toString());
+      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
 
   }
-
-  void _handleEquTable(List list) {
-    List<EquItem> newList = list.map((e) {
-      var equItem = EquItem.fromJson(e);
-      if (equipmentChosen != null &&
-          equipmentChosen!.containerCode == equItem.containerCode) {
-        //update EquipmentChosen
-        equipmentChosen = equItem;
-      }
-      return equItem;
-    }).toList();
-    if (newList.length < equipmentRfidDataSet.length) {
-      var newListRfidSet = newList.map((e) => e.rfid).toSet();
-      for (var i = 0; i < equipmentRfidDataSet.length; i++) {
-        String equRfid = AscToText.getString(equipmentRfidDataSet.elementAt(i));
-        var newRow = EquItem(rfid: equRfid, status: "CANT FIND");
-        if (!newListRfidSet.contains(equRfid)) newList.add(newRow);
-      }
-    }
-    equTable = newList;
-    _setEquipmentAuto();
-    setState(() {});
-  }
-
-  void _setEquipmentAuto() {
-    var shouldStop = false;
-
-    Set<String> set = {};
-    for (var element in equTable) {
-      if (element.containerAssetCode != null ||
-          !set.contains(element.containerAssetCode)) {
-            set.add(element.containerAssetCode!);
-          }
-
-      if (element.containerAssetCode != null || !shouldStop) {
-        equipmentId = element.containerAssetCode!;
-        equipmentChosen = element;
-        shouldStop = true;
-      }
-
-      if(set.length>1){
-        triggerDialog();
-      }
-    }
-
-    // for (var element in equTable) {
-    //   if (element.containerAssetCode != null ||
-    //       !set.contains(element.containerAssetCode)) {
-    //     set.add(element.containerAssetCode!);
-    //   }
-    //
-    //   if (element.containerAssetCode != null || !shouldStop) {
-    //     equipmentId = element.containerAssetCode!;
-    //     equipmentChosen = element;
-    //     shouldStop = true;
-    //   }
-    //
-    //   if(set.length>1){
-    //     triggerDialog();
-    //   }
-    // }
-  }
-
-  Future<void> triggerDialog() async {
-    if (!isDialogShown) {
-      isDialogShown = true;
-      DialogHelper.showCustomDialog(context, widgetList: [
-        Text("More than one container code detected, please rescan")
-      ], actionList: [
-        TextButton(
-          child: const Text('Rescan'),
-          onPressed: () {
-            Navigator.of(context).pop();
-            _rescan();
-            isDialogShown = false;
-          },
-        )
-      ]);
-    }
-  }
-
-  // ^^^^ copy paste code, please rearrange
-  Future<void> _validateContainerRfid() async {
-    if (isCheckingContainer || equipmentRfidDataSet.isEmpty) {
-      return;
-    }
-    setState(() {
-      isCheckingContainer = true;
-      isDebouncing = false;
-    });
-
-    var hasDiff = false;
-    var containerErrorMsg1 = "";
-    try {
-      if (containerDetails.isEmpty) {
-        List<String> list =
-            equipmentRfidDataSet.map((e) => AscToText.getString(e)).toList();
-        var result = await api.getContainerDetails(rfid: list);
-        _handleEquTable(result["itemList"] as List);
-        // if ((result["itemList"] as List).isEmpty) {
-        //   hasDiff = true;
-        //   containerErrorMsg1 = "Can't Find Container";
-        //   print("cant find container");
-        //   throw Exception("Cant find container");
-        // }
-        // if ((result["itemList"] as List).isNotEmpty) {
-        //   _handleEquTable(result["itemList"] as List);
-        //   var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
-        //   equipmentId = containerAssetCode;
-        //   var result1 =
-        //       await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
-        //   if ((result1["itemList"] as List).isNotEmpty) {
-        //     List<RfidContainer> list = (result1["itemList"] as List)
-        //         .map((e) => RfidContainer.fromJson(e))
-        //         .toList();
-        //     containerDetails = list;
-        //   }
-        // }
-      }
-      // var set = containerDetails.map((e) => e.rfid).toSet();
-      // equipmentRfidDataSet.forEach((element) {
-      //   if (!set.contains(element)) {
-      //     hasDiff = true;
-      //     containerErrorMsg1 = "Different Equipment";
-      //   }
-      // });
-    } catch (e) {
-      showMessage(e.toString());
-    } finally {
-      setState(() {
-        isCheckingContainer = false;
-        hasDifferentContainer = hasDiff;
-        containerErrorMsg = containerErrorMsg1;
-      });
-    }
-  }
-
-  // Future<void> _validateContainerRfid() async {
-  //   if (isCheckingContainer) {
-  //     return;
-  //   }
-  //   setState(() {
-  //     isCheckingContainer = true;
-  //     isDebouncing = false;
-  //   });
-  //   if (equipmentRfidDataSet.isEmpty) {
-  //     return;
-  //   }
-  //   var hasDiff = false;
-  //   var containerErrorMsg1 = "";
-  //   try {
-  //     if (containerDetails.isEmpty) {
-  //       String containerRfid = equipmentRfidDataSet.first;
-  //       var result = await api.getContainerRfidDetails(rfid: containerRfid);
-  //       if ((result["itemList"] as List).isEmpty) {
-  //         hasDiff = true;
-  //         containerErrorMsg1 = "Can't Find Container";
-  //         print("cant find container");
-  //         throw Exception("Cant find container");
-  //       }
-  //       if ((result["itemList"] as List).isNotEmpty) {
-  //         var containerAssetCode = result["itemList"][0]["containerAssetCode"] as String;
-  //         equipmentId = containerAssetCode;
-  //         var result1 =
-  //             await api.getContainerRfidDetails(containerAssetCode: containerAssetCode);
-  //         if ((result1["itemList"] as List).isNotEmpty) {
-  //           List<RfidContainer> list = (result1["itemList"] as List)
-  //               .map((e) => RfidContainer.fromJson(e))
-  //               .toList();
-  //           containerDetails = list;
-  //         }
-  //       }
-  //     }
-  //     var set = containerDetails.map((e) => e.rfid).toSet();
-  //     equipmentRfidDataSet.forEach((element) {
-  //       if (!set.contains(element)) {
-  //         hasDiff = true;
-  //         containerErrorMsg1 = "Different Equipment";
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   } finally {
-  //     setState(() {
-  //       isCheckingContainer = false;
-  //       hasDifferentContainer = hasDiff;
-  //       containerErrorMsg = containerErrorMsg1;
-  //     });
-  //   }
-  // }
 
   @override
   void initState() {
-    // TODO: implement initState
-    // TODO: Access Control SCAN Right shall be added to TransferOut Logic
     super.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
       print(event.type);
       if (event.type == ScannerEventType.readEvent) {
-        var init = itemRfidDataSet.length;
-        var init1 = equipmentRfidDataSet.length;
         List<String> item = [];
         List<String> equ = [];
-        (event.data as List<String>).forEach((element) {
+        for (var element in (event.data as List<String>)) {
           if (element.substring(0, 2) == "63" ||
               element.substring(0, 2) == "43") {
             equ.add(element);
@@ -463,105 +201,70 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
               element.substring(0, 2) == "73") {
             item.add(element);
           }
-        });
-        itemRfidDataSet.addAll(item);
-        equipmentRfidDataSet.addAll(equ);
-        var after = itemRfidDataSet.length;
-        var after1 = equipmentRfidDataSet.length;
-        if (init1 != after1) {
-          EasyDebounce.debounce(
-              'validateContainerRfid', const Duration(milliseconds: 500), () {
-            _validateContainerRfid();
-          });
-          setState(() {
-            isDebouncing = true;
-          });
         }
-        if (init != after || init1 != after1) {
-          setState(() {});
-        }
+        _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+        print("");
       }
     });
-    disposer.add(eventSubscription);
-  }
+    var disposerReaction = reaction(
+        (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
+      if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
+        _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
+      }
+    });
+    var disposerReaction1 =
+        reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
+          try{
+            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            Set<String?> containerAssetCodeSet = Set<String?>();
+            // print("disposer1 called");
+            _assetRegistrationScanStore.chosenEquipmentData.forEach(
+                    (element) => containerAssetCodeSet.add(element.containerAssetCode));
+            if (containerAssetCodeSet.length > 1 && !isDialogShown) {
+              isDialogShown = true;
+              DialogHelper.showCustomDialog(context, widgetList: [
+                Text("More than one container code detected, please rescan")
+              ], actionList: [
+                TextButton(
+                  child: const Text('Rescan Container'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescanContainer();
+                    isDialogShown = false;
+                  },
+                ),
+                TextButton(
+                  child: const Text('Rescan'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescan();
+                    isDialogShown = false;
+                  },
+                )
+              ]);
+            }
+          }catch (e){
+            _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+          }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
-  //     print(event);
-  //     print(event.type);
-  //     if (event.type == ScannerEventType.readEvent) {
-  //       List<String> item = [];
-  //       List<String> equ = [];
-  //       for (var element in (event.data as List<String>)) {
-  //         if (element.substring(0, 2) == "63" ||
-  //             element.substring(0, 2) == "43") {
-  //           equ.add(element);
-  //         } else if (element.substring(0, 2) == "53" ||
-  //             element.substring(0, 2) == "73") {
-  //           item.add(element);
-  //         }
-  //       }
-  //       _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
-  //       print("");
-  //     }
-  //   });
-  //   var disposerReaction = reaction(
-  //           (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
-  //     if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
-  //       _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
-  //     }
-  //   });
-  //   var disposerReaction1 =
-  //   reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-  //     Set<String?> containerAssetCodeSet = Set<String?>();
-  //     // print("disposer1 called");
-  //     _assetRegistrationScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));
-  //     if (containerAssetCodeSet.length > 1 &&
-  //         !isDialogShown) {
-  //       isDialogShown = true;
-  //       DialogHelper.showCustomDialog(context, widgetList: [
-  //         Text("More than one container code detected, please rescan")
-  //       ], actionList: [
-  //         TextButton(
-  //           child: const Text('Rescan Container'),
-  //           onPressed: () {
-  //             Navigator.of(context).pop();
-  //             _rescanContainer();
-  //             isDialogShown = false;
-  //           },
-  //         )
-  //         ,
-  //         TextButton(
-  //           child: const Text('Rescan'),
-  //           onPressed: () {
-  //             Navigator.of(context).pop();
-  //             _rescan();
-  //             isDialogShown = false;
-  //           },
-  //         )
-  //       ]);
-  //     }
-  //   });
-  //   disposer.add(() => eventSubscription.cancel());
-  //   disposer.add(disposerReaction);
-  //   disposer.add(disposerReaction1);
-  // }
+    });
+    disposer.add(() => eventSubscription.cancel());
+    disposer.add(disposerReaction);
+    disposer.add(disposerReaction1);
+  }
 
   @override
   void dispose() {
     super.dispose();
     for (var i = 0; i < disposer.length; i++) {
-      disposer[i].cancel();
+      disposer[i]();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final TransferOutScanPageArguments? args = ModalRoute.of(context)!
-        .settings
-        .arguments as TransferOutScanPageArguments?;
+    final TransferOutScanPageArguments? args =
+        ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
@@ -591,17 +294,16 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         actions: [
           IconButton(
               onPressed: () {
-                if (args != null && args.item != null) {
+                if (args != null) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (_) => TransferOutDetailPage(
-                                arg: args.item!,
-                                // arg: args.item!,
+                                arg: args,
                               )));
                 }
               },
-              icon: Icon(MdiIcons.clipboardList)),
+              icon: const Icon(MdiIcons.clipboardList)),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -609,9 +311,9 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-            IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-            IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
@@ -625,8 +327,12 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
-        onTap: (int index) => _onItemTapped(args, index),
+        onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
       body: SizedBox.expand(
         child: Column(
@@ -636,194 +342,109 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
     );
   }
 
-  void _addMockAssetId() {
-    itemRfidDataSet.add(AscToText.getAscIIString("SATL010000000011"));
-    setState(() {});
-  }
-
-  void _addMockEquipmentId() {
-    var init = equipmentRfidDataSet.length;
-    if (init == 0) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000055"));
-    } else if (init == 1) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000066"));
-    } else if (init == 2) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000077"));
-    } else if (init == 3) {
-      equipmentRfidDataSet.add(AscToText.getAscIIString("CATL010000000088"));
-    } else {
-      equipmentRfidDataSet
-          .add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
-    }
-
-    var after = equipmentRfidDataSet.length;
-    if (init != after) {
-      EasyDebounce.debounce(
-          'validateContainerRfid', const Duration(milliseconds: 500), () {
-        _validateContainerRfid();
-      });
-      setState(() {
-        isDebouncing = true;
-      });
-    }
+  Widget _getEquipmentDisplay() {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 0, maxHeight: 350),
+      child: AppContentBox(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Observer(
+                      builder: (context) {
+                        return Row(
+                          children: [
+                            Text(
+                              "Equipment",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            _assetRegistrationScanStore.isFetchingEquData
+                                ? const SpinKitDualRing(
+                                    color: Colors.blue,
+                                    size: 15,
+                                    lineWidth: 2,
+                                  )
+                                : const SizedBox()
+                          ],
+                        );
+                      },
+                    ),
+                    Observer(
+                      builder: (context) => Container(
+                        width: 40,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Center(
+                          child: Text(
+                            _assetRegistrationScanStore
+                                .equipmentRfidDataSet.length
+                                .toString(),
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Container Code :",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                      width: 40,
+                    ),
+                    Expanded(
+                      child: Observer(
+                        builder: ((context) => Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Center(
+                                child: Text(_getContainerCode()),
+                              ),
+                            )),
+                      ),
+                    )
+                  ]),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _getBody(BuildContext ctx, TransferOutScanPageArguments? args) {
     return Expanded(
-      child: Container(
-        child: ListView.builder(
-            itemCount: 3 + itemRfidDataSet.length,
+      child: Observer(builder: (context) {
+        return ListView.builder(
+            itemCount: 3 + _assetRegistrationScanStore.itemRfidDataSet.length,
             itemBuilder: (ctx, index) {
               if (index == 0) {
-                return ConstrainedBox(
-                  constraints:
-                      const BoxConstraints(minHeight: 0, maxHeight: 350),
-                  child: AppContentBox(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Equipment",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    isDebouncing || isCheckingContainer
-                                        ? const SpinKitDualRing(
-                                            color: Colors.blue,
-                                            size: 15,
-                                            lineWidth: 2,
-                                          )
-                                        : const SizedBox()
-                                    // ElevatedButton(
-                                    //     onPressed: false
-                                    //         ? null
-                                    //         : _registerContainer,
-                                    //     child:
-                                    //         isDebouncing || isCheckingContainer
-                                    //             ? const SpinKitDualRing(
-                                    //                 color: Colors.blue,
-                                    //                 size: 15,
-                                    //                 lineWidth: 2,
-                                    //               )
-                                    //             : const Text("Reg"))
-                                  ],
-                                ),
-                                Container(
-                                  width: 40,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                      child: Text(equipmentRfidDataSet.length
-                                          .toString())),
-                                )
-                              ]),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Container Code :",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  // child: IconButton(
-                                  //   icon: Icon(Icons.close),
-                                  //   onPressed: () {
-                                  //     setState(() {
-                                  //       equipmentId = "";
-                                  //       equipmentChosen = null;
-                                  //     });
-                                  //   },
-                                  // )
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    width: 40,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color: Colors.blueAccent)),
-                                    child: Center(
-                                        child: Text(equipmentId.toString())),
-                                  ),
-                                )
-                              ]),
-                        ),
-                        // Flexible(
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(15.0),
-                        //     child: SingleChildScrollView(
-                        //       child: equTable.isEmpty
-                        //           ? SizedBox()
-                        //           : JsonTable(
-                        //               equTable.map((e) => e.toJson()).toList(),
-                        //               columns: columns,
-                        //               onRowSelect: (index, map) {
-                        //                 if ((map["status"] == "PRINTED" ||
-                        //                     map["status"] == "REGISTERED")) {
-                        //                   equipmentId = map["containerAssetCode"];
-                        //                   equipmentChosen =
-                        //                       EquItem.fromJson(map);
-                        //                 } else {
-                        //                   equipmentId = "";
-                        //                   equipmentChosen = null;
-                        //                 }
-                        //                 setState(() {});
-                        //               },
-                        //               tableCellBuilder: (value) {
-                        //                 return Container(
-                        //                   height: 50,
-                        //                   padding: EdgeInsets.symmetric(
-                        //                       horizontal: 4.0, vertical: 2.0),
-                        //                   decoration: BoxDecoration(
-                        //                       border: Border.all(
-                        //                           width: 0.5,
-                        //                           color: Colors.grey
-                        //                               .withOpacity(0.5))),
-                        //                   child: Center(
-                        //                     child: Text(
-                        //                       value,
-                        //                       textAlign: TextAlign.center,
-                        //                     ),
-                        //                   ),
-                        //                 );
-                        //               },
-                        //             ),
-                        //     ),
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  ),
-                );
+                return _getEquipmentDisplay();
               }
               if (index == 1) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: Dimens.horizontal_padding),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20)),
                     child: Container(
@@ -838,7 +459,7 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                                   width: 6),
                               bottom: BorderSide(color: Colors.grey.shade400))),
                       child: Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -853,8 +474,9 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Center(
-                                    child: Text(
-                                        itemRfidDataSet.length.toString())),
+                                    child: Text(_assetRegistrationScanStore
+                                        .itemRfidDataSet.length
+                                        .toString())),
                               )
                             ]),
                       ),
@@ -863,12 +485,12 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                 );
               }
               if (index == 2) {
-                if (itemRfidDataSet.isEmpty) {
+                if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.horizontal_padding),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20)),
                       child: Container(
@@ -881,7 +503,8 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                                   width: 6),
                             )),
                         child: Padding(
-                          padding: EdgeInsets.all(Dimens.horizontal_padding),
+                          padding:
+                              const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
                               child: Text("No Data",
                                   style: Theme.of(context)
@@ -893,239 +516,112 @@ class _TransferOutScanPageState extends State<TransferOutScanPage> {
                     ),
                   );
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               }
-              var rfid = itemRfidDataSet.elementAt(index - 3);
-              var isLast =
-                  index - 3 == itemRfidDataSet.length - 1 ? true : false;
+              var rfid = _assetRegistrationScanStore.itemRfidDataSet
+                  .elementAt(index - 3);
+              var isLast = index - 3 ==
+                      _assetRegistrationScanStore.itemRfidDataSet.length - 1
+                  ? true
+                  : false;
               return _getAssetListItem(rfid, isLast);
-            }),
-      ),
+            });
+      }),
     );
   }
 
-  Future<bool> _registerContainer(
-      {bool ignoreRegisteredError = false, String toNum = ""}) async {
-    try {
-      print(equipmentChosen);
-      if (equipmentChosen == null) {
-        throw "No Equipment detected";
-      }
-      var targetcontainerAssetCode = equipmentChosen!.containerAssetCode;
-      List<String> rfidList = [];
-      for (var element in equTable) {
-        if (element.containerAssetCode == targetcontainerAssetCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
-      await api.registerToContainer(rfid: rfidList, toNum: toNum);
-      EasyDebounce.debounce(
-          'validateContainerRfid', const Duration(milliseconds: 500), () {
-        _validateContainerRfid();
-      });
-      setState(() {
-        isDebouncing = true;
-      });
-      return true;
-    } catch (e) {
-      if (e.toString().contains("Error 2109") &&
-          ignoreRegisteredError == true) {
-        return true;
-      }
-      showMessage(e.toString());
-      return false;
+  Widget _assetListContainer(bool isLast, Widget? child) {
+    if (isLast) {
+      return ClipRRect(
+          borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20)),
+          child: child);
     }
+    return SizedBox(child: child);
   }
 
   Widget _getAssetListItem(rfid, isLast) {
-    if (isLast) {
-      return Padding(
+    var child = Container(
+      height: 80,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.symmetric(
+            vertical:
+                BorderSide(color: Theme.of(context).primaryColor, width: 6),
+          )),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Expanded(
+              child: Text(
+            AscToText.getString(rfid),
+            style: Theme.of(context).textTheme.bodyMedium,
+          )),
+          Material(
+            borderRadius: BorderRadius.circular(50),
+            clipBehavior: Clip.antiAlias,
+            child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _assetRegistrationScanStore.itemRfidDataSet.remove(rfid);
+                  });
+                },
+                icon: const Icon(Icons.close)),
+          )
+        ]),
+      ),
+    );
+
+    return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20)),
-          child: Container(
-            height: 80,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.symmetric(
-                  vertical: BorderSide(
-                      color: Theme.of(context).primaryColor, width: 6),
-                )),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Checkbox(
-                        value: checkedItem.contains(rfid),
-                        onChanged: (bool? value) {
-                          if (value == null) {
-                            value = false;
-                          }
-                          if (value == true) {
-                            setState(() {
-                              checkedItem.add(rfid);
-                            });
-                            return;
-                          }
-                          if (value == false) {
-                            setState(() {
-                              checkedItem.remove(rfid);
-                            });
-                            return;
-                          }
-                        }),
-                    Expanded(
-                        child: Text(
-                      AscToText.getString(rfid),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )),
-                    Material(
-                      borderRadius: BorderRadius.circular(50),
-                      clipBehavior: Clip.antiAlias,
-                      child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              itemRfidDataSet.remove(rfid);
-                              checkedItem.remove(rfid);
-                            });
-                          },
-                          icon: Icon(Icons.close)),
-                    )
-                  ]),
-            ),
-          ),
-        ),
-      );
-    }
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.symmetric(
-              vertical:
-                  BorderSide(color: Theme.of(context).primaryColor, width: 6),
-            )),
-        child: Container(
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade400))),
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Checkbox(
-                      value: checkedItem.contains(rfid),
-                      onChanged: (bool? value) {
-                        if (value == null) {
-                          value = false;
-                        }
-                        if (value == true) {
-                          setState(() {
-                            checkedItem.add(rfid);
-                          });
-                          return;
-                        }
-                        if (value == false) {
-                          setState(() {
-                            checkedItem.remove(rfid);
-                          });
-                          return;
-                        }
-                      }),
-                  Expanded(
-                      child: Text(
-                    AscToText.getString(rfid),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  )),
-                  Material(
-                    borderRadius: BorderRadius.circular(50),
-                    clipBehavior: Clip.antiAlias,
-                    child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            itemRfidDataSet.remove(rfid);
-                            checkedItem.remove(rfid);
-                          });
-                        },
-                        icon: Icon(Icons.close)),
-                  )
-                ]),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _getAssetListBottom({double padding = Dimens.horizontal_padding}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-        child: Container(
-          height: 40,
-          decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              border: Border.symmetric(
-                vertical:
-                    BorderSide(color: Theme.of(context).primaryColor, width: 6),
-              )),
-        ),
-      ),
-    );
+        child: _assetListContainer(isLast, child));
   }
 
   Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: args?.toNum ?? "No DocNum",
+      title: args?.toNum ?? "No TO Num",
       clipTitle: "Hong Kong-DC",
     );
   }
-}
 
-class EquItem {
-  int? id;
-  String? containerCode;
-  String? containerAssetCode;
-  String? rfid;
-  String? status;
-  int? createdDate;
-
-  EquItem(
-      {this.id,
-      this.containerAssetCode,
-        this.containerCode,
-      this.rfid,
-      this.status,
-      this.createdDate});
-
-  EquItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    containerCode = json['containerCode'];
-    containerAssetCode = json['containerAssetCode'];
-    rfid = json['rfid'];
-    status = json['status'];
-    createdDate = json['createdDate'];
+  void _addMockAssetId() {
+    _assetRegistrationScanStore.updateDataSet(
+        itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['containerCode'] = this.containerCode;
-    data['containerAssetCode'] = this.containerAssetCode;
-    data['rfid'] = this.rfid;
-    data['status'] = this.status;
-    data['createdDate'] = this.createdDate;
-    return data;
+  void _addMockEquipmentId() {
+    // var init = _assetRegistrationScanStore.equipmentRfidDataSet.length;
+    var init = 0;
+    List<String> list = [];
+    if (init == 0) {
+      list.add(AscToText.getAscIIString("CATL010000000820"));
+    } else if (init == 1) {
+      list.add(AscToText.getAscIIString("CATL010000000831"));
+    } else if (init == 2) {
+      list.add(AscToText.getAscIIString("CATL010000000077"));
+    } else if (init == 3) {
+      list.add(AscToText.getAscIIString("CATL010000000088"));
+    } else {
+      list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
+    }
+    _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  void _addMockEquipmentIdCaseOne() {
+    List<String> list = [];
+    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("CATL010000000842"));
+    _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  void _addMockEquipmentIdCaseTwo() {
+    List<String> list = [];
+    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("CATL010000000819"));
+    _assetRegistrationScanStore.updateDataSet(equList: list);
   }
 }

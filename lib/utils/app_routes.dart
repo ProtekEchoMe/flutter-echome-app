@@ -30,7 +30,7 @@ class AppRoutes {
       "/asset_return_scan": (_) => AssetReturnScanPage(),
       "/transfer_out":(_) => TransferOutPage(),
       "/transfer_out_scan": (_) => TransferOutScanPage(),
-      "/transfer_in":(_)=>TransferInPage(),
+      "/transfer_in":(_)=> TransferInPage(),
       "/transfer_in_scan":(_)=> TransferInScanPage(),
       "/splash":(_)=>SplashPage(),
       "/debug":(_)=>DebugPage(),

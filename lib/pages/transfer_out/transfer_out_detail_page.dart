@@ -5,6 +5,7 @@ import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_line_item.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
@@ -15,9 +16,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class TransferOutDetailPage extends HookWidget {
-  final TransferOutHeaderItem arg;
+  final TransferOutScanPageArguments arg;
   final dioClient = getIt<DioClient>();
   final inputFormat = DateFormat('dd/MM/yyyy');
+  // TransferOutDetailPage({Key? key, required this.arg}) : super(key: key);
   TransferOutDetailPage({Key? key, required this.arg}) : super(key: key);
 
   Widget _getListBox(bool isFetching, List<ListTransferOutLineItem> dataList) {
@@ -64,8 +66,8 @@ class TransferOutDetailPage extends HookWidget {
 
   Widget _getDocumentInfo(
       String totalProduct, String totalQuantity, String totalTracker) {
-    String dataString =
-        arg.createdDate != null ? arg.createdDate!.toString() : "";
+    String? dataString =
+        arg.item?.createdDate != null ? arg.item?.createdDate!.toString() : "";
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -75,9 +77,9 @@ class TransferOutDetailPage extends HookWidget {
             Text("Transfer Out Number: " + arg.toNum.toString()),
             const SizedBox(height: 5),
             Text(
-                "Transfer Out Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "Transfer Out Date : ${dataString!.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("Ship Type: ${arg.shipType.toString()}"),
+            Text("Ship Type: ${arg.item?.shipType.toString()}"),
             const SizedBox(height: 5),
             Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),
