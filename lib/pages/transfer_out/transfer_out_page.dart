@@ -13,7 +13,10 @@ import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:echo_me_mobile/widgets/status_list_item.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
@@ -30,12 +33,50 @@ class TransferOutPage extends StatefulWidget {
 class _TransferOutPageState extends State<TransferOutPage> {
   TransferOutStore _store = getIt<TransferOutStore>();
 
+  var selectItem;
+  double _kPickerSheetHeight = 216.0;
+  DateTime? dateTime;
+  Duration initialtimer = new Duration();
+  var time;
+  int value=0;
+  final items=[
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+  ];
+
+
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: Access Control SCAN Right shall be added to TransferOut Logic
     super.initState();
     _store.fetchData(toNum: widget.toNum ?? "");
   }
+
+  Widget _buildBottomPicker(Widget picker) {
+    return Container(
+      height: _kPickerSheetHeight,
+      padding: const EdgeInsets.only(top: 6.0),
+      color: CupertinoColors.white,
+      child: DefaultTextStyle(
+        style: const TextStyle(
+          color: CupertinoColors.black,
+          fontSize: 22.0,
+        ),
+        child: GestureDetector(
+          // Blocks taps from propagating to the modal sheet and popping.
+          onTap: () {},
+          child: SafeArea(
+            top: false,
+            child: picker,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +88,96 @@ class _TransferOutPageState extends State<TransferOutPage> {
             _getSearchBar(context),
             _getListBox(context),
           ]),
-        ));
+        ),
+      floatingActionButton: FloatingActionButton( //TODO: Direct Transfer Out Create API
+        onPressed: () {
+          showCupertinoModalPopup<void>(
+              context: context, builder: (BuildContext context){
+            return _buildBottomPicker2(
+                _buildCupertinoPicker()
+            );
+          });
+        },
+        child: const Icon(Icons.add),
+          backgroundColor: Colors.orange[700]!.withOpacity(0.5),
+      ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat
+
+    );
   }
+
+  Widget _buildBottomPicker2(Widget picker) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          decoration: const BoxDecoration(
+            color: Color(0xffffffff),
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xff999999),
+                width: 0.0,
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              CupertinoButton(
+                child: Text('Cancel'),
+                onPressed: () {},
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 5.0,
+                ),
+              ),
+              CupertinoButton(
+                child: Text('Confirm'),
+                onPressed: () {},
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 5.0,
+                ),
+              )
+            ],
+          ),
+        ),
+        Container(
+          height: 320.0,
+          color: Color(0xfff7f7f7),
+          child: picker
+          /* the rest of the picker */
+          ,
+        )
+      ],
+    );
+  }
+
+  Widget _buildCupertinoPicker(){
+    return Container(
+      child: CupertinoPicker(
+        magnification: 1.5,
+        backgroundColor: Colors.white,
+        itemExtent: 50, //height of each item
+        looping: true,
+        children: items.map((item)=> Center(
+          child: Text(item,
+            style: TextStyle(fontSize: 20),),
+        )).toList(),
+        onSelectedItemChanged: (index) {
+          setState(() => this.value= index);
+          selectItem= items[index];
+          print("Selected Iem: $index");
+          // setState(() {
+          //   selectItem=value.toString();
+          // });
+        },
+      ),
+    );
+
+  }
+
+
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(

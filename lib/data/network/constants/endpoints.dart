@@ -76,6 +76,8 @@ class Endpoints {
   // siteLoc Method
   static const String listLocSiteMethod = "/loc/listLocSite";
 
+  // Direct TransferOut Method
+  static const String createDirectToMethod = "/to/newTransferOutHeader";
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
@@ -98,7 +100,6 @@ class Endpoints {
   static String listTransferInHeader = "$activeUrl$listTransferInHeaderMethod";
   static String listTransferInLine = "$activeUrl$listTransferInLineMethod";
 
-  //TODO: wait for update the link of Asset Return
   // asset Return URL
   static String assetReturnHeader = "$activeUrl$assetReturnHeaderMethod";
   static String assetReturnItems = "$activeUrl$assetReturnItemsMethod";

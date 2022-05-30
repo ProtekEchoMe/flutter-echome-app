@@ -100,7 +100,6 @@ class _AssetScanPageState extends State<AssetScanPage> {
       List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      // TODO: wait for update containerAssetCode accept multi value
       await _assetRegistrationScanStore.registerItem(
           regNum: args?.regNum ?? "",
           itemRfid: itemRfid,

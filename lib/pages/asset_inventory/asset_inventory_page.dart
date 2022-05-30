@@ -31,7 +31,6 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _store.fetchData(
         assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? "");

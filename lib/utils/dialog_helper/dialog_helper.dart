@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class DialogHelper {
   static Future<bool?> showCustomDialog(BuildContext context,
@@ -117,3 +118,27 @@ class DialogHelper {
     );
   }
 }
+
+
+// Widget _buildCupertinoPicker(List<String?> items){
+//   return Container(
+//     child: CupertinoPicker(
+//       magnification: 1.5,
+//       backgroundColor: Colors.white,
+//       itemExtent: 50, //height of each item
+//       looping: true,
+//       children: items.map((item)=> Center(
+//         child: Text(item!,
+//           style: TextStyle(fontSize: 32),),
+//       )).toList(),
+//       onSelectedItemChanged: (index) {
+//         value= index);
+//         selectItem= items[index];
+//         print("Selected Iem: $index");
+//         // setState(() {
+//         //   selectItem=value.toString();
+//         // });
+//       },
+//     ),
+//   );
+

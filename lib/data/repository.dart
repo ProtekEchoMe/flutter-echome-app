@@ -97,7 +97,7 @@ class Repository {
         page: page, limit: limit, regNum: regNum);
   }
 
-  //TODO Update Corresponding API --> getAssetReturnFunction
+
   Future<AssetReturnResponse> getAssetReturn(
       {int page = 0, int limit = 10, String rtnNum = ""}) async {
     return await _assetReturnApi.getAssetReturn(

@@ -103,7 +103,6 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
       List<String> itemRfid = _assetReturnScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      // TODO: wait for update containerAssetCode accept multi value
       await _assetReturnScanStore.registerItem(
           rtnNum: args?.rtnNum ?? "",
           itemRfid: itemRfid,

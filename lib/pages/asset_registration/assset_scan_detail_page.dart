@@ -53,7 +53,6 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchData();
   }

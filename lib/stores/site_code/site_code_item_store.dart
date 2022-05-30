@@ -171,7 +171,6 @@ abstract class _SiteCodeItemStore with Store {
 }
 
 
-  // //TODO:: [bugs]just using containerAssetCode got problem to verify --> multi containers
   // @action
   // Future<void> registerItem(
   //     {String regNum = "",
