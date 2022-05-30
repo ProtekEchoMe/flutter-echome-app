@@ -4,7 +4,7 @@ class RegistrationItem {
   int? id;
   int? site;
   String? regNum;
-  String? regDate;
+  int? regDate;
   String? shipperCode;
   String? status;
   String? maker;
