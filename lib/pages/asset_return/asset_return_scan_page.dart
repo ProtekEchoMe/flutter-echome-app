@@ -324,10 +324,10 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -610,16 +610,18 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
 
 
   void _addTest1(){
-    List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000001360")); // box 1
-    list.add(AscToText.getAscIIString("SATL010000006871")); // item 1
-    _assetReturnScanStore.updateDataSet(equList: list);
+    List<String> list1 = [];
+    List<String> list2 = [];
+    list1.add(AscToText.getAscIIString("CATL010000001360")); // box 1
+    list2.add(AscToText.getAscIIString("SATL010000006725")); // item 1
+    _assetReturnScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 
   void _addTest2(){
-    List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000001371")); // box 2
-    list.add(AscToText.getAscIIString("SATL010000006882")); // item 2
-    _assetReturnScanStore.updateDataSet(equList: list);
+    List<String> list1 = [];
+    List<String> list2 = [];
+    list1.add(AscToText.getAscIIString("CATL010000001371")); // box 2
+    list2.add(AscToText.getAscIIString("SATL010000006736")); // item 2
+    _assetReturnScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

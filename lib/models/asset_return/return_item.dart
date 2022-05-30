@@ -4,7 +4,7 @@ class ReturnItem {
   int? id;
   int? site;
   String? rtnNum;
-  String? rtnDate;
+  int? rtnDate;
   String? shipperCode;
   String? status;
   String? maker;
