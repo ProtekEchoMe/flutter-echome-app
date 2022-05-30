@@ -88,6 +88,27 @@ mixin _$AccessControlStore on _AccessControlStore, Store {
                   () => super.assetRegistrationRoleList,
                   name: '_AccessControlStore.assetRegistrationRoleList'))
           .value;
+  Computed<bool>? _$hasARChangeRightComputed;
+
+  @override
+  bool get hasARChangeRight => (_$hasARChangeRightComputed ??= Computed<bool>(
+          () => super.hasARChangeRight,
+          name: '_AccessControlStore.hasARChangeRight'))
+      .value;
+  Computed<bool>? _$hasARScanRightComputed;
+
+  @override
+  bool get hasARScanRight =>
+      (_$hasARScanRightComputed ??= Computed<bool>(() => super.hasARScanRight,
+              name: '_AccessControlStore.hasARScanRight'))
+          .value;
+  Computed<bool>? _$hasARCompleteRightComputed;
+
+  @override
+  bool get hasARCompleteRight => (_$hasARCompleteRightComputed ??=
+          Computed<bool>(() => super.hasARCompleteRight,
+              name: '_AccessControlStore.hasARCompleteRight'))
+      .value;
   Computed<ObservableList<String?>>? _$assetReturnRoleListComputed;
 
   @override
@@ -96,12 +117,54 @@ mixin _$AccessControlStore on _AccessControlStore, Store {
               () => super.assetReturnRoleList,
               name: '_AccessControlStore.assetReturnRoleList'))
           .value;
+  Computed<bool>? _$hasARtnChangeRightComputed;
+
+  @override
+  bool get hasARtnChangeRight => (_$hasARtnChangeRightComputed ??=
+          Computed<bool>(() => super.hasARtnChangeRight,
+              name: '_AccessControlStore.hasARtnChangeRight'))
+      .value;
+  Computed<bool>? _$hasARtnScanRightComputed;
+
+  @override
+  bool get hasARtnScanRight => (_$hasARtnScanRightComputed ??= Computed<bool>(
+          () => super.hasARtnScanRight,
+          name: '_AccessControlStore.hasARtnScanRight'))
+      .value;
+  Computed<bool>? _$hasARtnCompleteRightComputed;
+
+  @override
+  bool get hasARtnCompleteRight => (_$hasARtnCompleteRightComputed ??=
+          Computed<bool>(() => super.hasARtnCompleteRight,
+              name: '_AccessControlStore.hasARtnCompleteRight'))
+      .value;
   Computed<ObservableList<String?>>? _$TIRoleListComputed;
 
   @override
   ObservableList<String?> get TIRoleList => (_$TIRoleListComputed ??=
           Computed<ObservableList<String?>>(() => super.TIRoleList,
               name: '_AccessControlStore.TIRoleList'))
+      .value;
+  Computed<bool>? _$hasTIChangeRightComputed;
+
+  @override
+  bool get hasTIChangeRight => (_$hasTIChangeRightComputed ??= Computed<bool>(
+          () => super.hasTIChangeRight,
+          name: '_AccessControlStore.hasTIChangeRight'))
+      .value;
+  Computed<bool>? _$hasTIScanRightComputed;
+
+  @override
+  bool get hasTIScanRight =>
+      (_$hasTIScanRightComputed ??= Computed<bool>(() => super.hasTIScanRight,
+              name: '_AccessControlStore.hasTIScanRight'))
+          .value;
+  Computed<bool>? _$hasTICompleteRightComputed;
+
+  @override
+  bool get hasTICompleteRight => (_$hasTICompleteRightComputed ??=
+          Computed<bool>(() => super.hasTICompleteRight,
+              name: '_AccessControlStore.hasTICompleteRight'))
       .value;
   Computed<ObservableList<String?>>? _$TORoleListComputed;
 
@@ -110,6 +173,27 @@ mixin _$AccessControlStore on _AccessControlStore, Store {
           Computed<ObservableList<String?>>(() => super.TORoleList,
               name: '_AccessControlStore.TORoleList'))
       .value;
+  Computed<bool>? _$hasTOChangeRightComputed;
+
+  @override
+  bool get hasTOChangeRight => (_$hasTOChangeRightComputed ??= Computed<bool>(
+          () => super.hasTOChangeRight,
+          name: '_AccessControlStore.hasTOChangeRight'))
+      .value;
+  Computed<bool>? _$hasTOScanRightComputed;
+
+  @override
+  bool get hasTOScanRight =>
+      (_$hasTOScanRightComputed ??= Computed<bool>(() => super.hasTOScanRight,
+              name: '_AccessControlStore.hasTOScanRight'))
+          .value;
+  Computed<bool>? _$hasTOCompleteRightComputed;
+
+  @override
+  bool get hasTOCompleteRight => (_$hasTOCompleteRightComputed ??=
+          Computed<bool>(() => super.hasTOCompleteRight,
+              name: '_AccessControlStore.hasTOCompleteRight'))
+      .value;
   Computed<ObservableList<String?>>? _$STRoleListComputed;
 
   @override
@@ -117,12 +201,54 @@ mixin _$AccessControlStore on _AccessControlStore, Store {
           Computed<ObservableList<String?>>(() => super.STRoleList,
               name: '_AccessControlStore.STRoleList'))
       .value;
+  Computed<bool>? _$hasSTChangeRightComputed;
+
+  @override
+  bool get hasSTChangeRight => (_$hasSTChangeRightComputed ??= Computed<bool>(
+          () => super.hasSTChangeRight,
+          name: '_AccessControlStore.hasSTChangeRight'))
+      .value;
+  Computed<bool>? _$hasSTScanRightComputed;
+
+  @override
+  bool get hasSTScanRight =>
+      (_$hasSTScanRightComputed ??= Computed<bool>(() => super.hasSTScanRight,
+              name: '_AccessControlStore.hasSTScanRight'))
+          .value;
+  Computed<bool>? _$hasSTCompleteRightComputed;
+
+  @override
+  bool get hasSTCompleteRight => (_$hasSTCompleteRightComputed ??=
+          Computed<bool>(() => super.hasSTCompleteRight,
+              name: '_AccessControlStore.hasSTCompleteRight'))
+      .value;
   Computed<ObservableList<String?>>? _$INVRoleListComputed;
 
   @override
   ObservableList<String?> get INVRoleList => (_$INVRoleListComputed ??=
           Computed<ObservableList<String?>>(() => super.INVRoleList,
               name: '_AccessControlStore.INVRoleList'))
+      .value;
+  Computed<bool>? _$hasINVChangeRightComputed;
+
+  @override
+  bool get hasINVChangeRight => (_$hasINVChangeRightComputed ??= Computed<bool>(
+          () => super.hasINVChangeRight,
+          name: '_AccessControlStore.hasINVChangeRight'))
+      .value;
+  Computed<bool>? _$hasINVScanRightComputed;
+
+  @override
+  bool get hasINVScanRight =>
+      (_$hasINVScanRightComputed ??= Computed<bool>(() => super.hasINVScanRight,
+              name: '_AccessControlStore.hasINVScanRight'))
+          .value;
+  Computed<bool>? _$hasINVCompleteRightComputed;
+
+  @override
+  bool get hasINVCompleteRight => (_$hasINVCompleteRightComputed ??=
+          Computed<bool>(() => super.hasINVCompleteRight,
+              name: '_AccessControlStore.hasINVCompleteRight'))
       .value;
 
   @override
@@ -138,11 +264,29 @@ accessControlledSiteNameList: ${accessControlledSiteNameList},
 modulesViewRolesList: ${modulesViewRolesList},
 modulesObjectViewList: ${modulesObjectViewList},
 assetRegistrationRoleList: ${assetRegistrationRoleList},
+hasARChangeRight: ${hasARChangeRight},
+hasARScanRight: ${hasARScanRight},
+hasARCompleteRight: ${hasARCompleteRight},
 assetReturnRoleList: ${assetReturnRoleList},
+hasARtnChangeRight: ${hasARtnChangeRight},
+hasARtnScanRight: ${hasARtnScanRight},
+hasARtnCompleteRight: ${hasARtnCompleteRight},
 TIRoleList: ${TIRoleList},
+hasTIChangeRight: ${hasTIChangeRight},
+hasTIScanRight: ${hasTIScanRight},
+hasTICompleteRight: ${hasTICompleteRight},
 TORoleList: ${TORoleList},
+hasTOChangeRight: ${hasTOChangeRight},
+hasTOScanRight: ${hasTOScanRight},
+hasTOCompleteRight: ${hasTOCompleteRight},
 STRoleList: ${STRoleList},
-INVRoleList: ${INVRoleList}
+hasSTChangeRight: ${hasSTChangeRight},
+hasSTScanRight: ${hasSTScanRight},
+hasSTCompleteRight: ${hasSTCompleteRight},
+INVRoleList: ${INVRoleList},
+hasINVChangeRight: ${hasINVChangeRight},
+hasINVScanRight: ${hasINVScanRight},
+hasINVCompleteRight: ${hasINVCompleteRight}
     ''';
   }
 }
