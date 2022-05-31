@@ -85,8 +85,9 @@ class _AssetScanPageState extends State<TransferInScanPage> {
             rfid: rfidList, tiNum: args?.tiNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
-          _transferInScanStore.errorStore.setErrorMessage(e.toString());
+          // _transferInScanStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
+          print(e.toString());
         }
       }
 

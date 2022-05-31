@@ -92,8 +92,9 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             rfid: rfidList, regNum: args?.toNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
-          _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+          // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
+          print(e.toString());
         }
       }
 

@@ -95,7 +95,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
         if (!e.toString().contains("Error 2109")) {
           // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
-          print("");
+          print(e.toString());
         }
       }
 
