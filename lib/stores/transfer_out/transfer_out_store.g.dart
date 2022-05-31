@@ -84,17 +84,18 @@ mixin _$TransferOutStore on _TransferOutStore, Store {
     });
   }
 
-  final _$responseAtom = Atom(name: '_TransferOutStore.response');
+  final _$directTOResponseAtom =
+      Atom(name: '_TransferOutStore.directTOResponse');
 
   @override
   TransferOutHeaderItem? get directTOResponse {
-    _$responseAtom.reportRead();
+    _$directTOResponseAtom.reportRead();
     return super.directTOResponse;
   }
 
   @override
   set directTOResponse(TransferOutHeaderItem? value) {
-    _$responseAtom.reportWrite(value, super.directTOResponse, () {
+    _$directTOResponseAtom.reportWrite(value, super.directTOResponse, () {
       super.directTOResponse = value;
     });
   }
@@ -200,7 +201,7 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
-response: ${directTOResponse},
+directTOResponse: ${directTOResponse},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage}

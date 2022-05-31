@@ -21,6 +21,7 @@ import 'package:echo_me_mobile/stores/asset_registration/asset_registration_stor
 import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_store.dart';
 import 'package:echo_me_mobile/stores/asset_return/asset_return_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
+import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store.dart';
 import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
@@ -86,6 +87,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<AssetInventoryStore>(
       () => AssetInventoryStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetInventoryScanStore>(
+          () => AssetInventoryScanStore(getIt<Repository>()));
 
   getIt.registerFactory<TransferOutStore>(
       () => TransferOutStore(getIt<Repository>()));

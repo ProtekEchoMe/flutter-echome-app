@@ -12,28 +12,55 @@ import 'package:echo_me_mobile/widgets/status_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
-import '../../stores/asset_inventory/asset_inventory_store.dart';
+import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
+import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store.dart';
+import 'package:zebra_rfd8500/zebra_rfd8500.dart';
+
+import 'package:mobx/mobx.dart';
 
 class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
   final String? skuCode;
   AssetInventoryPage({Key? key, this.assetCode, this.skuCode}) : super(key: key);
 
-  final AccessControlStore accessControlStore = getIt<AccessControlStore>();
-
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
 }
 
 class _AssetInventoryPageState extends State<AssetInventoryPage> {
-  AssetInventoryStore _store = getIt<AssetInventoryStore>();
-  LoginFormStore _loginFormStore = getIt<LoginFormStore>();
+  final AssetInventoryStore _assetInventoryStore = getIt<AssetInventoryStore>();
+  final AssetInventoryScanStore _assetInventoryScanStore = getIt<AssetInventoryScanStore>();
+  final LoginFormStore _loginFormStore = getIt<LoginFormStore>();
+  List<dynamic> disposer = [];
 
   @override
   void initState() {
     super.initState();
-    _store.fetchData(
+    _assetInventoryStore.fetchData(
         assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
+
+    var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
+      print(event);
+      print(event.type);
+      if (event.type == ScannerEventType.readEvent) {
+        List<String> item = [];
+        List<String> equ = [];
+        for (var element in (event.data as List<String>)) {
+          if (element.substring(0, 2) == "63" ||
+              element.substring(0, 2) == "43") {
+            equ.add(element);
+          } else if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
+            item.add(element);
+          }
+        }
+        _assetInventoryScanStore.updateDataSet(equList: equ, itemList: item);
+        print("");
+      }
+    });
+
+    disposer.add(() => eventSubscription.cancel());
+
   }
 
   @override
@@ -61,11 +88,11 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
     return Expanded(
       child: Observer(
         builder: (context) {
-          var isFetching = _store.isFetching;
+          var isFetching = _assetInventoryStore.isFetching;
           return AppContentBox(
             child: isFetching
                 ? const AppLoader()
-                : _store.itemList.isEmpty
+                : _assetInventoryStore.itemList.isEmpty
                     ? const Center(child: Text("No Data"))
                     : Stack(
                         children: [
@@ -82,7 +109,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage(
+                                        _assetInventoryStore.prevPage(
                                           assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
@@ -95,21 +122,21 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     ),
                                     Expanded(
                                       child: Observer(builder: (context) {
-                                        var total = _store.totalCount;
+                                        var total = _assetInventoryStore.totalCount;
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Text("Total: ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "Page: ${_assetInventoryStore.currentPage}/${_assetInventoryStore.totalPage} ")
                                           ],
                                         );
                                       }),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage(
+                                        _assetInventoryStore.nextPage(
                                           assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
@@ -130,11 +157,11 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemList.length,
+                                itemCount: _assetInventoryStore.itemList.length,
                                 itemBuilder: ((context, index) {
                                   return Observer(
                                     builder: (context) {
-                                      final listItem = _store.itemList[index];
+                                      final listItem = _assetInventoryStore.itemList[index];
                                       var assetCode = listItem.assetCode;
                                       var skuCode = listItem.skuCode;
                                       var title = "$skuCode/$assetCode";
