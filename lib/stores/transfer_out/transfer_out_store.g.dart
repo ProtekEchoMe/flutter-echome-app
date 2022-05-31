@@ -84,6 +84,21 @@ mixin _$TransferOutStore on _TransferOutStore, Store {
     });
   }
 
+  final _$responseAtom = Atom(name: '_TransferOutStore.response');
+
+  @override
+  TransferOutHeaderItem? get response {
+    _$responseAtom.reportRead();
+    return super.response;
+  }
+
+  @override
+  set response(TransferOutHeaderItem? value) {
+    _$responseAtom.reportWrite(value, super.response, () {
+      super.response = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_TransferOutStore.isFetching');
 
   @override
@@ -119,6 +134,16 @@ mixin _$TransferOutStore on _TransferOutStore, Store {
   Future<void> fetchData({String toNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction
         .run(() => super.fetchData(toNum: toNum, requestedPage: requestedPage));
+  }
+
+  final _$createTransferOutHeaderItemAsyncAction =
+      AsyncAction('_TransferOutStore.createTransferOutHeaderItem');
+
+  @override
+  Future<void> createTransferOutHeaderItem(
+      {required int? toSite, bool throwError = false}) {
+    return _$createTransferOutHeaderItemAsyncAction.run(() => super
+        .createTransferOutHeaderItem(toSite: toSite, throwError: throwError));
   }
 
   final _$_TransferOutStoreActionController =
@@ -175,6 +200,7 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
+response: ${response},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage}

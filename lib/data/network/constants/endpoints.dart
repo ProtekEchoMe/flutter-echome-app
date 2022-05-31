@@ -110,6 +110,9 @@ class Endpoints {
   // listLocSite URL
   static String listLocSite = "$activeUrl$listLocSiteMethod";
 
+  // Direct Transfer Out
+  static String createDirectTo = "$activeUrl$createDirectToMethod";
+
 
   static String activeVersionControlDomain = versionControlDomainMap["vercal"];
   static String getAppVersionMethod = "/api/v1/appVersion";
@@ -118,6 +121,8 @@ class Endpoints {
       '$activeVersionControlDomain$getAppVersionMethod';
   static String getAppDownloadLink =
       "$activeVersionControlDomain$getAppDownloadLinkMethod";
+
+
 
   // static String getAppVersion =
   //     'https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appVersion';

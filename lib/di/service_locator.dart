@@ -28,6 +28,7 @@ import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,6 +89,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<TransferOutStore>(
       () => TransferOutStore(getIt<Repository>()));
+
+  getIt.registerFactory<TransferOutScanStore>(
+          () => TransferOutScanStore(getIt<Repository>()));
 
   getIt.registerFactory<ForgetPasswordStore>(
       () => ForgetPasswordStore(getIt<Repository>()));

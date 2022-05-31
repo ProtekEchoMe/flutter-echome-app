@@ -10,6 +10,7 @@ import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.d
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
+import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 
 import 'network/apis/login/login_api.dart';
 
@@ -119,6 +120,33 @@ class Repository {
     return await _transferOutApi.getTransferOutHeaderItem(
         page: page, limit: limit, toNum: toNum);
   }
+
+  Future<TransferOutHeaderItem> createTransferOutHeaderItem(
+      {required int? toSite}) async {
+    return await _transferOutApi.createTransferOutHeaderItem(
+        toSite: toSite);
+  }
+
+  Future<void> registerToContainer(
+      {List<String> rfid = const [], String toNum = ""}) async {
+    return await _transferOutApi.registerToContainer(rfid: rfid, toNum: toNum);
+  }
+
+  // asset registration api
+  Future<void> completeToRegistration({String toNum = ""}) async {
+    await _transferOutApi.completeToRegister(toNum: toNum);
+  }
+
+  Future<void> registerToItem(
+      {String tiNum = "",
+        String containerAssetCode = "",
+        List<String> itemRfid = const []}) async {
+    await _transferOutApi.registerToItem(
+        tiNum: tiNum,
+        containerAssetCode: containerAssetCode,
+        itemRfid: itemRfid);
+  }
+
 
   // get Equipment Detail e.g. RFID
   Future<dynamic> getEquipmentDetail({List<String> rfid = const []}) async {

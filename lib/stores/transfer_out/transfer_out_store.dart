@@ -34,7 +34,10 @@ abstract class _TransferOutStore with Store {
 
   @observable 
   ObservableList<TransferOutHeaderItem> itemList = ObservableList<TransferOutHeaderItem>();
-  
+
+  @observable
+  TransferOutHeaderItem? response;
+
   @observable
   bool isFetching = false;
 
@@ -95,6 +98,23 @@ abstract class _TransferOutStore with Store {
     }finally{
       isFetching = false;
       print("finally");
+    }
+  }
+
+  @action
+  Future<void> createTransferOutHeaderItem(
+      {required int? toSite,
+        bool throwError = false}) async {
+    try {
+      response = await repository.createTransferOutHeaderItem(
+          toSite: toSite);
+      print("");
+    } catch (e) {
+      if (throwError == true) {
+        rethrow;
+      } else {
+        errorStore.setErrorMessage(e.toString());
+      }
     }
   }
 

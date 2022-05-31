@@ -1,5 +1,4 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
-import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
@@ -21,6 +20,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
+//testing
+import 'package:echo_me_mobile/data/repository.dart';
+import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
+
 class TransferOutPage extends StatefulWidget {
   final String? toNum;
 
@@ -31,7 +35,7 @@ class TransferOutPage extends StatefulWidget {
 }
 
 class _TransferOutPageState extends State<TransferOutPage> {
-  TransferOutStore _store = getIt<TransferOutStore>();
+  final TransferOutStore _transferOutStore = getIt<TransferOutStore>();
 
   var selectItem;
   double _kPickerSheetHeight = 216.0;
@@ -52,7 +56,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
   void initState() {
     // TODO: Access Control SCAN Right shall be added to TransferOut Logic
     super.initState();
-    _store.fetchData(toNum: widget.toNum ?? "");
+    _transferOutStore.fetchData(toNum: widget.toNum ?? "");
   }
 
   Widget _buildBottomPicker(Widget picker) {
@@ -91,6 +95,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
         ),
       floatingActionButton: FloatingActionButton( //TODO: Direct Transfer Out Create API
         onPressed: () {
+          _transferOutStore.createTransferOutHeaderItem(toSite: 1);
           showCupertinoModalPopup<void>(
               context: context, builder: (BuildContext context){
             return _buildBottomPicker2(
@@ -124,7 +129,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               CupertinoButton(
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
                 onPressed: () {},
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -132,7 +137,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                 ),
               ),
               CupertinoButton(
-                child: Text('Confirm'),
+                child: const Text('Confirm'),
                 onPressed: () {},
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -190,11 +195,11 @@ class _TransferOutPageState extends State<TransferOutPage> {
     return Expanded(
       child: Observer(
         builder: (context) {
-          var isFetching = _store.isFetching;
+          var isFetching = _transferOutStore.isFetching;
           return AppContentBox(
             child: isFetching
                 ? const AppLoader()
-                : _store.itemList.isEmpty
+                : _transferOutStore.itemList.isEmpty
                     ? const Center(child: Text("No Data"))
                     : Stack(
                         children: [
@@ -211,7 +216,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage();
+                                        _transferOutStore.prevPage();
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -222,21 +227,21 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                     ),
                                     Expanded(
                                       child: Observer(builder: (context) {
-                                        var total = _store.totalCount;
+                                        var total = _transferOutStore.totalCount;
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Text("Total: ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "Page: ${_transferOutStore.currentPage}/${_transferOutStore.totalPage} ")
                                           ],
                                         );
                                       }),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage();
+                                        _transferOutStore.nextPage();
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -255,9 +260,9 @@ class _TransferOutPageState extends State<TransferOutPage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemList.length,
+                                itemCount: _transferOutStore.itemList.length,
                                 itemBuilder: ((context, index) {
-                                  final listItem = _store.itemList[index];
+                                  final listItem = _transferOutStore.itemList[index];
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.toNum;
@@ -281,7 +286,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                                           listItem.toNum ?? "",
                                                       item: listItem))
                                           .then((value) => {
-                                                _store.fetchData(
+                                                _transferOutStore.fetchData(
                                                     toNum: widget.toNum ?? "")
                                               });
                                       return StatusListItem(

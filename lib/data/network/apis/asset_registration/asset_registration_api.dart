@@ -36,7 +36,13 @@ class AssetRegistrationApi {
             "name": "regNum",
             "operator": "contains",
             "type": "string"
-          }
+          },
+          // {
+          //   "value": "COMPLETED",
+          //   "name": "status",
+          //   "operator": "eq",
+          //   "type": "string"
+          // }
         ];
       }
 
