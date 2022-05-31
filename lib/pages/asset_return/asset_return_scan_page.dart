@@ -96,7 +96,8 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
             rfid: rfidList, rtnNum: args?.rtnNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
-          rethrow;
+          _assetReturnScanStore.errorStore.setErrorMessage(e.toString());
+          // rethrow;
         }
       }
 
