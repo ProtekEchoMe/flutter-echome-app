@@ -212,7 +212,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
         _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
-    var disposerReaction1 =
+    var scanDisposeReaction =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
           try{
             if (!accessControlStore.hasARScanRight) throw "No Scan Right";
@@ -250,7 +250,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
-    disposer.add(disposerReaction1);
+    disposer.add(scanDisposeReaction);
   }
 
   @override

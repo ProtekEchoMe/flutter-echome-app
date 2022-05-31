@@ -122,11 +122,11 @@ abstract class _TransferOutScanStore with Store {
   @action
   Future<void> checkInContainer(
       {List<String> rfid = const [],
-      String tiNum = "",
+      String toNum = "",
       bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerToContainer(rfid: rfid, tiNum: tiNum);
+      await repository.registerToContainer(rfid: rfid, toNum: toNum);
     } catch (e) {
       if (throwError == true) {
         rethrow;

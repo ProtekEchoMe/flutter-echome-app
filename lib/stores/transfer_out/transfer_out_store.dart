@@ -108,7 +108,6 @@ abstract class _TransferOutStore with Store {
     try {
       response = await repository.createTransferOutHeaderItem(
           toSite: toSite);
-      print("");
     } catch (e) {
       if (throwError == true) {
         rethrow;

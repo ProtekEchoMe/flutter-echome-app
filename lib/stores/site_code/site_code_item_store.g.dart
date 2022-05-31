@@ -9,6 +9,14 @@ part of 'site_code_item_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SiteCodeItemStore on _SiteCodeItemStore, Store {
+  Computed<ObservableMap<String?, LocSiteItem>>? _$siteCodeMapComputed;
+
+  @override
+  ObservableMap<String?, LocSiteItem> get siteCodeMap =>
+      (_$siteCodeMapComputed ??= Computed<ObservableMap<String?, LocSiteItem>>(
+              () => super.siteCodeMap,
+              name: '_SiteCodeItemStore.siteCodeMap'))
+          .value;
   Computed<ObservableList<String?>>? _$siteCodeNameListComputed;
 
   @override
@@ -190,6 +198,7 @@ isFetchingEquData: ${isFetchingEquData},
 checkedSite: ${checkedSite},
 chosenSite: ${chosenSite},
 isFetching: ${isFetching},
+siteCodeMap: ${siteCodeMap},
 siteCodeNameList: ${siteCodeNameList}
     ''';
   }

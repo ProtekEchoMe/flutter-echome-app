@@ -39,21 +39,26 @@ abstract class _SiteCodeItemStore with Store {
   // ObservableList<String?> siteCodeNameList = ObservableList();
 
   @computed
+
+  ObservableMap<String?, LocSiteItem> get siteCodeMap{
+    ObservableMap<String?, LocSiteItem> tempMap = ObservableMap<String?, LocSiteItem>();
+    siteCodeDataList.forEach((siteCodeData) {
+      tempMap[siteCodeData.siteCode] = siteCodeData;
+    });
+    return tempMap;
+  }
+
+  @computed
   ObservableList<String?> get siteCodeNameList => ObservableList<String?>.of(
       List<String?>.from(
           siteCodeDataList.map(
                   (siteCodeData) => siteCodeData.siteCode).toList()));
 
   // @computed
-  // ObservableList<String?> get siteCodeNameList {
-  //   ObservableList<String?>.of(List<String?>.from(siteCodeDataList.map((siteCodeData) => siteCodeData.siteCode).toList()));
-  //   ObservableList<String?> tempObList = ObservableList<String?>();
-  //   siteCodeDataList.forEach((element) {
-  //     tempObList.add(element.siteCode);
-  //   });
-  //   return tempObList;
-  // }
-
+  // ObservableList<String?> get siteCodeNameList => ObservableList<String?>.of(
+  //     List<String?>.from(
+  //         siteCodeDataList.map(
+  //                 (siteCodeData) => siteCodeData.siteCode).toList()));
 
 
   @observable

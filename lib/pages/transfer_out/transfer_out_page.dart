@@ -4,8 +4,9 @@ import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registratio
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
@@ -20,11 +21,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
-//testing
-import 'package:echo_me_mobile/data/repository.dart';
-import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
-import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
-
 class TransferOutPage extends StatefulWidget {
   final String? toNum;
 
@@ -36,13 +32,15 @@ class TransferOutPage extends StatefulWidget {
 
 class _TransferOutPageState extends State<TransferOutPage> {
   final TransferOutStore _transferOutStore = getIt<TransferOutStore>();
+  final AccessControlStore _accessControlStore = getIt<AccessControlStore>();
+  final SiteCodeItemStore _siteCodeItemStore = getIt<SiteCodeItemStore>();
 
   var selectItem;
   double _kPickerSheetHeight = 216.0;
   DateTime? dateTime;
   Duration initialtimer = new Duration();
   var time;
-  int value=0;
+  int selectedIndex=0;
   final items=[
     "Item 1",
     "Item 2",
@@ -50,6 +48,8 @@ class _TransferOutPageState extends State<TransferOutPage> {
     "Item 4",
     "Item 5",
   ];
+
+
 
 
   @override
@@ -95,12 +95,10 @@ class _TransferOutPageState extends State<TransferOutPage> {
         ),
       floatingActionButton: FloatingActionButton( //TODO: Direct Transfer Out Create API
         onPressed: () {
-          _transferOutStore.createTransferOutHeaderItem(toSite: 1);
           showCupertinoModalPopup<void>(
               context: context, builder: (BuildContext context){
             return _buildBottomPicker2(
-                _buildCupertinoPicker()
-            );
+                _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
           });
         },
         child: const Icon(Icons.add),
@@ -128,22 +126,25 @@ class _TransferOutPageState extends State<TransferOutPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              CupertinoButton(
-                child: const Text('Cancel'),
-                onPressed: () {},
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 5.0,
+                CupertinoButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {Navigator.of(context).pop();},
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 5.0,
+                  ),
                 ),
-              ),
-              CupertinoButton(
-                child: const Text('Confirm'),
-                onPressed: () {},
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 5.0,
-                ),
-              )
+                  CupertinoButton(
+                  child: const Text('Confirm'),
+                  onPressed: () {
+                    _transferOutStore.createTransferOutHeaderItem(
+                        toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id);
+                    Navigator.of(context).pop();},
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 5.0,
+                  ))
+              ,
             ],
           ),
         ),
@@ -158,21 +159,21 @@ class _TransferOutPageState extends State<TransferOutPage> {
     );
   }
 
-  Widget _buildCupertinoPicker(){
+  Widget _buildCupertinoPicker(List<String?> itemList){
     return Container(
       child: CupertinoPicker(
         magnification: 1.5,
         backgroundColor: Colors.white,
         itemExtent: 50, //height of each item
         looping: true,
-        children: items.map((item)=> Center(
-          child: Text(item,
+        children: itemList.map((item)=> Center(
+          child: Text(item!,
             style: TextStyle(fontSize: 20),),
         )).toList(),
         onSelectedItemChanged: (index) {
-          setState(() => this.value= index);
-          selectItem= items[index];
-          print("Selected Iem: $index");
+          setState(() => selectedIndex = index);
+          selectItem = itemList[selectedIndex];
+          print("Selected Iem: $index $selectItem");
           // setState(() {
           //   selectItem=value.toString();
           // });

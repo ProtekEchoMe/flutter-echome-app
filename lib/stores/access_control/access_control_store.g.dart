@@ -62,6 +62,17 @@ mixin _$AccessControlStore on _AccessControlStore, Store {
                   () => super.accessControlledSiteNameList,
                   name: '_AccessControlStore.accessControlledSiteNameList'))
           .value;
+  Computed<ObservableList<String?>>?
+      _$getAccessControlledTOSiteNameListComputed;
+
+  @override
+  ObservableList<String?> get getAccessControlledTOSiteNameList =>
+      (_$getAccessControlledTOSiteNameListComputed ??=
+              Computed<ObservableList<String?>>(
+                  () => super.getAccessControlledTOSiteNameList,
+                  name:
+                      '_AccessControlStore.getAccessControlledTOSiteNameList'))
+          .value;
   Computed<ObservableList<String?>>? _$modulesViewRolesListComputed;
 
   @override
@@ -261,6 +272,7 @@ accessRoleList: ${accessRoleList},
 appModulesAccessRoleList: ${appModulesAccessRoleList},
 roleSiteNameList: ${roleSiteNameList},
 accessControlledSiteNameList: ${accessControlledSiteNameList},
+getAccessControlledTOSiteNameList: ${getAccessControlledTOSiteNameList},
 modulesViewRolesList: ${modulesViewRolesList},
 modulesObjectViewList: ${modulesObjectViewList},
 assetRegistrationRoleList: ${assetRegistrationRoleList},
