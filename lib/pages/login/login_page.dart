@@ -1,5 +1,6 @@
 import 'package:clippy_flutter/clippy_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:echo_me_mobile/constants/app_data.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/constants/strings.dart';
 import 'package:echo_me_mobile/data/sharedpref/constants/preferences.dart';
@@ -143,52 +144,52 @@ class _LoginPageState extends State<LoginPage> {
                                           .cardColor),
 
                             ),
-                          TextButton(
-                            onPressed: () => showDialog<String>(
-                                context: context,
-                                barrierDismissible: false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return WillPopScope(
-                                    onWillPop: () async => false,
-                                    child: AlertDialog(
-                                      title: const Text("Choose the Server"),
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            ...Endpoints.domainMap.keys.toList().map((e) {
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  print(e);
-                                                  // Endpoints.printEndPoint();
-                                                  // print(Preferences.defaultDomain);
-                                                  Preferences.defaultDomain = e;
-                                                  // print(Preferences.defaultDomain);
-                                                  Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
-                                                  Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
-                                                  // Endpoints.printEndPoint();
-                                                  // if (e != loginFormStore.siteCode) {
-                                                  //   await loginFormStore.changeSite(siteCode: e);
-                                                  // }
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: ListTile(
-                                                  title: Text(e),
-                                                ),
-                                              );
-                                            }).toList()
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[],
-                                    ),
-                                  );
-                                },
-                            )
-                                ,
-                            child: const Text(''),
-
-
-                          ),
+                          // TextButton(
+                          //   onPressed: () => showDialog<String>(
+                          //       context: context,
+                          //       barrierDismissible: false, // user must tap button!
+                          //       builder: (BuildContext context) {
+                          //         return WillPopScope(
+                          //           onWillPop: () async => false,
+                          //           child: AlertDialog(
+                          //             title: const Text("Choose the Server"),
+                          //             content: SingleChildScrollView(
+                          //               child: ListBody(
+                          //                 children: <Widget>[
+                          //                   ...Endpoints.domainMap.keys.toList().map((e) {
+                          //                     return GestureDetector(
+                          //                       onTap: () async {
+                          //                         print(e);
+                          //                         // Endpoints.printEndPoint();
+                          //                         // print(Preferences.defaultDomain);
+                          //                         Preferences.defaultDomain = e;
+                          //                         // print(Preferences.defaultDomain);
+                          //                         Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
+                          //                         Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
+                          //                         // Endpoints.printEndPoint();
+                          //                         // if (e != loginFormStore.siteCode) {
+                          //                         //   await loginFormStore.changeSite(siteCode: e);
+                          //                         // }
+                          //                         Navigator.of(context).pop();
+                          //                       },
+                          //                       child: ListTile(
+                          //                         title: Text(e),
+                          //                       ),
+                          //                     );
+                          //                   }).toList()
+                          //                 ],
+                          //               ),
+                          //             ),
+                          //             actions: <Widget>[],
+                          //           ),
+                          //         );
+                          //       },
+                          //   )
+                          //       ,
+                          //   child: const Text(''),
+                          //
+                          //
+                          // ),
                           ],
                         ),
                       ),
@@ -217,12 +218,61 @@ class _LoginPageState extends State<LoginPage> {
                                       .colorScheme
                                       .onBackground),
                         ),
+                      ),
+                      Text(""),
+                      Text("App Version: ${AppData.appVersion}"),
+                      TextButton(
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return WillPopScope(
+                              onWillPop: () async => false,
+                              child: AlertDialog(
+                                title: const Text("Choose the Server"),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      ...Endpoints.domainMap.keys.toList().map((e) {
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            print(e);
+                                            // Endpoints.printEndPoint();
+                                            // print(Preferences.defaultDomain);
+                                            Preferences.defaultDomain = e;
+                                            // print(Preferences.defaultDomain);
+                                            Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
+                                            Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
+                                            // Endpoints.printEndPoint();
+                                            // if (e != loginFormStore.siteCode) {
+                                            //   await loginFormStore.changeSite(siteCode: e);
+                                            // }
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: ListTile(
+                                            title: Text(e),
+                                          ),
+                                        );
+                                      }).toList()
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[],
+                              ),
+                            );
+                          },
+                        )
+                        ,
+                        child: const Text(''),
+
+
                       )
+
                     ],
                   ),
                 ),
               ),
-            )
+            ),
           ],
         )),
       ),

@@ -36,7 +36,7 @@ abstract class _TransferOutStore with Store {
   ObservableList<TransferOutHeaderItem> itemList = ObservableList<TransferOutHeaderItem>();
 
   @observable
-  TransferOutHeaderItem? response;
+  TransferOutHeaderItem? directTOResponse;
 
   @observable
   bool isFetching = false;
@@ -106,7 +106,7 @@ abstract class _TransferOutStore with Store {
       {required int? toSite,
         bool throwError = false}) async {
     try {
-      response = await repository.createTransferOutHeaderItem(
+      directTOResponse = await repository.createTransferOutHeaderItem(
           toSite: toSite);
     } catch (e) {
       if (throwError == true) {

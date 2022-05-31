@@ -35,21 +35,9 @@ class _TransferOutPageState extends State<TransferOutPage> {
   final AccessControlStore _accessControlStore = getIt<AccessControlStore>();
   final SiteCodeItemStore _siteCodeItemStore = getIt<SiteCodeItemStore>();
 
-  var selectItem;
+  String? selectItem = "";
+  int selectedIndex = 0;
   double _kPickerSheetHeight = 216.0;
-  DateTime? dateTime;
-  Duration initialtimer = new Duration();
-  var time;
-  int selectedIndex=0;
-  final items=[
-    "Item 1",
-    "Item 2",
-    "Item 3",
-    "Item 4",
-    "Item 5",
-  ];
-
-
 
 
   @override
@@ -57,6 +45,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
     // TODO: Access Control SCAN Right shall be added to TransferOut Logic
     super.initState();
     _transferOutStore.fetchData(toNum: widget.toNum ?? "");
+    selectItem = _siteCodeItemStore.siteCodeMap.keys.first; // for  no onSelectedItemChanged
   }
 
   Widget _buildBottomPicker(Widget picker) {
@@ -93,17 +82,23 @@ class _TransferOutPageState extends State<TransferOutPage> {
             _getListBox(context),
           ]),
         ),
-      floatingActionButton: FloatingActionButton( //TODO: Direct Transfer Out Create API
-        onPressed: () {
-          showCupertinoModalPopup<void>(
-              context: context, builder: (BuildContext context){
-            return _buildBottomPicker2(
-                _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
-          });
-        },
-        child: const Icon(Icons.add),
-          backgroundColor: Colors.orange[700]!.withOpacity(0.5),
-      ),
+      floatingActionButton:
+      Container(
+        height: 50,
+        width: 50,
+        child: FittedBox(
+            child: FloatingActionButton( //TODO: Direct Transfer Out Create API
+          onPressed: () {
+            showCupertinoModalPopup<void>(
+                context: context, builder: (BuildContext context){
+              return _buildBottomPicker2(
+                  _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+            });
+          },
+          child: const Icon(Icons.add),
+              // foregroundColor:  Colors.orange[700]!.withOpacity(0.5),
+            backgroundColor: Colors.orange[700]!.withOpacity(0.9),
+      ))),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat
 
     );
@@ -138,8 +133,21 @@ class _TransferOutPageState extends State<TransferOutPage> {
                   child: const Text('Confirm'),
                   onPressed: () {
                     _transferOutStore.createTransferOutHeaderItem(
-                        toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id);
-                    Navigator.of(context).pop();},
+                        toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id).then((_) {
+                        Navigator.pushNamed(
+                            context, "/transfer_out_scan",
+                            arguments:
+                            TransferOutScanPageArguments(
+                                toNum:
+                                _transferOutStore.directTOResponse!.toNum ?? "",
+                                item: _transferOutStore.directTOResponse))
+                            .then((value) => {
+                          _transferOutStore.fetchData(
+                              toNum: widget.toNum ?? "")
+                        });
+                    });
+                      Navigator.of(context).pop();
+                    },
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 5.0,
@@ -162,7 +170,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
   Widget _buildCupertinoPicker(List<String?> itemList){
     return Container(
       child: CupertinoPicker(
-        magnification: 1.5,
+        magnification: 1.1,
         backgroundColor: Colors.white,
         itemExtent: 50, //height of each item
         looping: true,
@@ -171,12 +179,10 @@ class _TransferOutPageState extends State<TransferOutPage> {
             style: TextStyle(fontSize: 20),),
         )).toList(),
         onSelectedItemChanged: (index) {
-          setState(() => selectedIndex = index);
+          // setState(() => selectedIndex = index);
+          // selectItem = itemList[selectedIndex];
+          selectedIndex = index;
           selectItem = itemList[selectedIndex];
-          print("Selected Iem: $index $selectItem");
-          // setState(() {
-          //   selectItem=value.toString();
-          // });
         },
       ),
     );
@@ -235,7 +241,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                           children: [
                                             Text("Total: ${total}"),
                                             Text(
-                                                "Page: ${_transferOutStore.currentPage}/${_transferOutStore.totalPage} ")
+                                                "          Page: ${_transferOutStore.currentPage}/${_transferOutStore.totalPage} ")
                                           ],
                                         );
                                       }),

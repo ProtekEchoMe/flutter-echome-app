@@ -87,15 +87,15 @@ mixin _$TransferOutStore on _TransferOutStore, Store {
   final _$responseAtom = Atom(name: '_TransferOutStore.response');
 
   @override
-  TransferOutHeaderItem? get response {
+  TransferOutHeaderItem? get directTOResponse {
     _$responseAtom.reportRead();
-    return super.response;
+    return super.directTOResponse;
   }
 
   @override
-  set response(TransferOutHeaderItem? value) {
-    _$responseAtom.reportWrite(value, super.response, () {
-      super.response = value;
+  set directTOResponse(TransferOutHeaderItem? value) {
+    _$responseAtom.reportWrite(value, super.directTOResponse, () {
+      super.directTOResponse = value;
     });
   }
 
@@ -200,7 +200,7 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
-response: ${response},
+response: ${directTOResponse},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage}

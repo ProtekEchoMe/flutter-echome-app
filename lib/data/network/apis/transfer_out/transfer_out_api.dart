@@ -75,10 +75,9 @@ class TransferOutApi {
       {List<String> rfid = const [], String toNum = ""}) async {
     try {
       var str = "";
-      if (rfid != null) {
-        for (var element in rfid) {
-          str = str + element + ",";
-        }
+
+      for (var element in rfid) {
+        str = str + element + ",";
       }
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {"rfids": str, "toNum": toNum};
@@ -105,22 +104,23 @@ class TransferOutApi {
         List<String> itemRfid = const []}) async {
     try {
       var str = "";
-      if (itemRfid != null) {
-        for (var element in itemRfid) {
-          str = str + element + ",";
-        }
+      for (var element in itemRfid) {
+        str = str + element + ",";
       }
+
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
         "tiNum": tiNum,
         "containerAssetCode": containerAssetCode,
         "rfids": str
       };
-      // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
-      //     queryParameters: query);
-      // print(res);
-      final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
+
+      await _dioClient.getRegistration(Endpoints.registerToItems,
           queryParameters: query);
+
+      // final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
+      //     queryParameters: query);
+      // print(res1); // debug
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
@@ -139,8 +139,10 @@ class TransferOutApi {
 
   Future<void> completeToRegister({String toNum = ""}) async {
     try {
-      final res = await _dioClient
-          .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
+      await _dioClient.get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
+      // final res = await _dioClient
+      //     .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
+      // print(res); // debug
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {

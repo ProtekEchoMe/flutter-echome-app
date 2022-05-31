@@ -613,7 +613,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   void _addMockEquipmentIdCaseOne() {
     List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("CATL010000001382"));
     list.add(AscToText.getAscIIString("CATL010000000842"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
   }
@@ -623,5 +623,15 @@ class _AssetScanPageState extends State<AssetScanPage> {
     list.add(AscToText.getAscIIString("CATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  void _mockscan1() {
+    List<String> list1 = [];
+    list1.add(AscToText.getAscIIString("CATL010000000808"));
+    list1.add(AscToText.getAscIIString("CATL010000000819"));
+    List<String> list2 = [];
+    list2.add(AscToText.getAscIIString("CATL010000000808"));
+    list2.add(AscToText.getAscIIString("CATL010000000819"));
+    _assetRegistrationScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }
