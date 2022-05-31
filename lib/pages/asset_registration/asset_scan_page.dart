@@ -93,8 +93,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
             rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
-          _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+          // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
+          print("");
         }
       }
 
