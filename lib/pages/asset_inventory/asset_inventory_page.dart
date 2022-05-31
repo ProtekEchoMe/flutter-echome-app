@@ -43,7 +43,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         body: SizedBox.expand(
           child: Column(children: [
             _getTitle(context),
-            _getSearchBar(context),
+            _getSearchBarSKU(context),
+            _getSearchBarAsset(context),
             _getListBox(context),
           ]),
         ));
@@ -85,7 +86,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                           assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
-                                      child: SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_back),
@@ -112,7 +113,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                           assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
-                                      child: SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_forward),
@@ -182,7 +183,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
     return Colors.blue;
   }
 
-  Widget _getSearchBar(BuildContext ctx) {
+  Widget _getSearchBarAsset(BuildContext ctx) {
     if (widget.assetCode != null) {
       return Padding(
         padding: const EdgeInsets.all(Dimens.horizontal_padding),
@@ -218,6 +219,48 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) => AssetInventoryPage(assetCode: str.trim())));
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _getSearchBarSKU(BuildContext ctx) {
+    if (widget.assetCode != null) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.horizontal_padding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    "Searching for SKU  = " + widget.skuCode!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.horizontal_padding),
+      child: OutlineSearchBar(
+        // initText: "INIT TEXT",
+        backgroundColor: Theme.of(context).cardColor,
+        hintText: "Search by SKU",
+        onSearchButtonPressed: (str) {
+          if (str != null && str.isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => AssetInventoryPage(skuCode: str.trim())));
           }
         },
       ),
