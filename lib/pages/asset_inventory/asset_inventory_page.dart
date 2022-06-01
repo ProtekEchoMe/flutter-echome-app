@@ -21,6 +21,7 @@ import 'package:mobx/mobx.dart';
 class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
   final String? skuCode;
+
   AssetInventoryPage({Key? key, this.assetCode, this.skuCode}) : super(key: key);
 
   @override
@@ -31,6 +32,12 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
   final AssetInventoryStore _assetInventoryStore = getIt<AssetInventoryStore>();
   final AssetInventoryScanStore _assetInventoryScanStore = getIt<AssetInventoryScanStore>();
   final LoginFormStore _loginFormStore = getIt<LoginFormStore>();
+
+  TextEditingController skuSearchBarTextController = TextEditingController();
+
+  //test
+  int i = 0;
+
   List<dynamic> disposer = [];
 
   @override
@@ -54,7 +61,9 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             item.add(element);
           }
         }
+        //TODO: Update Serach Bar Input wheen having input from scanner gun
         _assetInventoryScanStore.updateDataSet(equList: equ, itemList: item);
+        skuSearchBarTextController.text ??= item[0];
         print("");
       }
     });
@@ -70,8 +79,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         body: SizedBox.expand(
           child: Column(children: [
             _getTitle(context),
-            _getSearchBarSKU(context),
-            _getSearchBarAsset(context),
+            _getSearchBarCombined(context),
             _getListBox(context),
           ]),
         ));
@@ -238,6 +246,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
       padding: const EdgeInsets.all(Dimens.horizontal_padding),
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
+        textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
         hintText: "Search by Asset Code",
         onSearchButtonPressed: (str) {
@@ -288,6 +297,51 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) => AssetInventoryPage(skuCode: str.trim())));
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _getSearchBarCombined(BuildContext ctx) {
+    if (widget.assetCode != null) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.horizontal_padding),
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  child: Text(
+                    "Searching for SKU  = " + widget.skuCode!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.horizontal_padding),
+      child: OutlineSearchBar(
+        // initText: "INIT TEXT",
+        backgroundColor: Theme.of(context).cardColor,
+        hintText: "Search by SKU/AssetCode",
+        onSearchButtonPressed: (str) {
+          if (str != null && str.isNotEmpty) {
+            String skuCode = "";
+            String assetCode = "";
+            str.startsWith("SATL")? assetCode = str.trim() : skuCode = str.trim();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => AssetInventoryPage(skuCode: skuCode, assetCode: assetCode)));
           }
         },
       ),

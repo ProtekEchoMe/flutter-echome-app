@@ -32,7 +32,7 @@ class AssetInventoryApi {
           {
             "value": assetCode,
             "name": "assetCode",
-            "operator": "eq",
+            "operator": "contains",
             "type": "string"
           }
         ];
