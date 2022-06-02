@@ -16,7 +16,8 @@ import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
-import 'package:mobx/mobx.dart';
+import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+
 
 class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
@@ -63,7 +64,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         }
         //TODO: Update Serach Bar Input wheen having input from scanner gun
         _assetInventoryScanStore.updateDataSet(equList: equ, itemList: item);
-        skuSearchBarTextController.text ??= item[0];
+        skuSearchBarTextController.text = AscToText.getString(item[0]);
         print("");
       }
     });
@@ -289,6 +290,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
       padding: const EdgeInsets.all(Dimens.horizontal_padding),
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
+        textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
         hintText: "Search by SKU",
         onSearchButtonPressed: (str) {
@@ -296,7 +298,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => AssetInventoryPage(skuCode: str.trim())));
+                    builder: (_) => AssetInventoryPage(skuCode: skuSearchBarTextController.text.trim())));
           }
         },
       ),
@@ -314,7 +316,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for SKU  = " + widget.skuCode!,
+                    "Searching for SKU/ AssetCode  = " + widget.skuCode! + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -331,6 +333,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
       padding: const EdgeInsets.all(Dimens.horizontal_padding),
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
+        textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
         hintText: "Search by SKU/AssetCode",
         onSearchButtonPressed: (str) {
