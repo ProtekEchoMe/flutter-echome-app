@@ -185,7 +185,7 @@ class ListDocumentLineItem {
   String? style;
   String? color;
   String? size;
-  int? serial;
+  String? serial;
   String? eanupc;
   int? quantity;
   int? checkinQty;
