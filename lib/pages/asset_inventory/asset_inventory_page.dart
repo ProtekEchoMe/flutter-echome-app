@@ -172,8 +172,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                       final listItem = _assetInventoryStore.itemList[index];
                                       var assetCode = listItem.assetCode;
                                       var skuCode = listItem.skuCode;
-                                      var title = "$skuCode/$assetCode";
-                                      var subtitle =
+                                      var subtitle = "$skuCode/$assetCode";
+                                      var title =
                                           listItem.description.toString();
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
@@ -185,8 +185,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                               builder: (_) =>
                                                   AssetInventoryDetailPage(item:listItem)));};
                                       return StatusListItem(
-                                        title: title,
-                                        subtitle: subtitle,
+                                        title: subtitle,
+                                        subtitle: title,
                                         titleTextSize: 15,
                                         subtitleTextSize: 15,
                                         callback: fx,
