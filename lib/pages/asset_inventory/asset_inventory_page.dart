@@ -186,8 +186,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                               builder: (_) =>
                                                   AssetInventoryDetailPage(item:listItem)));};
                                       return StatusListItem(
-                                        title: subtitle,
-                                        subtitle: title,
+                                        title: title,
+                                        subtitle: subtitle,
                                         titleTextSize: 15,
                                         subtitleTextSize: 15,
                                         callback: fx,
