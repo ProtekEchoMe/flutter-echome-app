@@ -64,11 +64,16 @@ class SharedPreferenceHelper {
     return _sharedPreference.setString(Preferences.current_language, language);
   }
 
-  String? get defaultDomain {
-    return _sharedPreference.getString(Preferences.defaultDomain);
-  }
+  String? get defaultServierDomainName => _sharedPreference.getString(Preferences.defaultServerDomainName);
 
-  Future<void> changeDefaultDomain(String domainKey) {
-    return _sharedPreference.setString(Preferences.defaultDomain, domainKey);
-  }
+  Future<void> changeDefaulServicetDomainName(String serverDomainName) =>
+      _sharedPreference.setString(Preferences.defaultServerDomainName, serverDomainName);
+
+
+  String? get defaultVersionControlDomainName => _sharedPreference.getString(Preferences.defaultVersionControlDomainName);
+
+  Future<void> changeDefaultVersionControlDomainName(String versionControlDomainName)=>
+      _sharedPreference.setString(Preferences.defaultVersionControlDomainName, versionControlDomainName);
+
+
 }

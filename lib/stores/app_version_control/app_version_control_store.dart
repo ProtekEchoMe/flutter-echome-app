@@ -5,6 +5,11 @@ import 'package:echo_me_mobile/utils/permission_helper/permission_helper.dart';
 import 'package:mobx/mobx.dart';
 import 'package:ota_update/ota_update.dart';
 
+import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
+import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
+
+
 part 'app_version_control_store.g.dart';
 
 class AppVersionControlStore = _AppVersionControlStore
@@ -14,6 +19,9 @@ abstract class _AppVersionControlStore with Store {
   final String TAG = "_AppVersionControlStore";
 
   final Repository _repository;
+
+  final SharedPreferenceHelper _sharedPreferenceHelper =
+  getIt<SharedPreferenceHelper>();
 
   _AppVersionControlStore(this._repository) {
     appVerion = AppData.appVersion;
@@ -34,6 +42,8 @@ abstract class _AppVersionControlStore with Store {
   @observable
   String message = "";
 
+
+
   @action
   Future<bool> getAppPermission () async {
     var permissionHelper= PermissionHelper();
@@ -48,6 +58,17 @@ abstract class _AppVersionControlStore with Store {
   @action
   Future<void> updateIfNeed() async {
     try {
+      String? currentSelectedServer = _sharedPreferenceHelper.defaultVersionControlDomainName;
+      if (currentSelectedServer == null) {
+        // set Default Value into shared preference
+        String defaultServerDomainNameKey = Endpoints.versionControlDomainMap.keys.toList()[0];
+        _sharedPreferenceHelper.changeDefaultVersionControlDomainName(defaultServerDomainNameKey);
+        currentSelectedServer = _sharedPreferenceHelper.defaultVersionControlDomainName;
+      }
+
+      String domainNameUrl = Endpoints.versionControlDomainMap[currentSelectedServer];
+      Endpoints.updateVersionControlEndPointUrl(domainNameUrl);
+
       message = "Getting information about app version";
       var latestVer = await _repository.getAppVersion();
       if (latestVer == appVerion) {

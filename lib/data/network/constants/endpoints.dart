@@ -12,7 +12,8 @@ class Endpoints {
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
                                   "DFS": "https://atlrfid.dfs.com"};
 
-  static Map versionControlDomainMap = {"vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app"};
+  static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
+                                        "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app"};
 
   // base url
   static String authMethod = "/auth/realms/Protek/protocol/openid-connect";
@@ -129,7 +130,7 @@ class Endpoints {
   // static String getAppDownloadLink =
   //     "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appDownload";
 
-  static updateVersionControlEndPoint(activeDomain){
+  static updateVersionControlEndPointUrl(activeDomain){
     Endpoints.activeVersionControlDomain = activeDomain;
     Endpoints.getAppVersion = '$activeVersionControlDomain$getAppVersionMethod';
     Endpoints.getAppDownloadLink = '$activeVersionControlDomain$getAppDownloadLinkMethod';

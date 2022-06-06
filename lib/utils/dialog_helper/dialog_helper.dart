@@ -82,7 +82,7 @@ class DialogHelper {
     );
   }
 
-  Future<void> _listSelectionDialog(BuildContext context, List<String?> inputList, Function onTapFunction) async {
+  static Future<void> listSelectionDialog(BuildContext context, List<String?> inputList, Function onTapFunction) async {
     print("called");
     return showDialog<void>(
       context: context,

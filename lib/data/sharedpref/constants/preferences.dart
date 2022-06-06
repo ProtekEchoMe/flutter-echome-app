@@ -7,4 +7,6 @@ class Preferences {
   static const String use_system_theme = "use_system_theme";
   static const String current_language = "current_language";
   static String defaultDomain = "AWS";
+  static String defaultServerDomainName = "defaultServerDomainName";
+  static String defaultVersionControlDomainName = "defaultVersionControlDomainName";
 }
