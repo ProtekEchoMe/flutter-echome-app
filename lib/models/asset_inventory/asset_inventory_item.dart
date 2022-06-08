@@ -1,6 +1,8 @@
 class AssetInventoryItem {
   int? id;
   int? site;
+  String? equipmentId;
+  String? rfid;
   String? productCode;
   String? assetCode;
   String? skuCode;
@@ -29,6 +31,8 @@ class AssetInventoryItem {
   AssetInventoryItem(
       {this.id,
       this.site,
+      this.equipmentId,
+      this.rfid,
       this.productCode,
       this.assetCode,
       this.skuCode,
@@ -57,6 +61,8 @@ class AssetInventoryItem {
   AssetInventoryItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     site = json['site'];
+    equipmentId = json['equipmentId'];
+    rfid = json['rfid'];
     productCode = json['productCode'];
     assetCode = json['assetCode'];
     skuCode = json['skuCode'];
@@ -87,6 +93,8 @@ class AssetInventoryItem {
     final Map<String, dynamic> data = {};
     data['id'] = id;
     data['site'] = site;
+    data['equipmentId'] = equipmentId;
+    data['rfid'] = rfid;
     data['productCode'] = productCode;
     data['assetCode'] = assetCode;
     data['skuCode'] = skuCode;

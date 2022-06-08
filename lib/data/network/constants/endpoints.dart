@@ -45,7 +45,8 @@ class Endpoints {
   static String activeDomain = domainMap[activeServerStr];
   static String activeUrl = "$activeDomain$appDir";
 
-  static const String assetInventoryMethod = "/inv/listInventory";
+  static const String assetInventoryMethod = "/inv/listInventory"; // depreciated
+  static const String assetInventoryContainerMethod = "/inv/listInventoryContainer";
   static const String assetRegistrationMethod = "/reg/listRegisterHeader";
   static const String listRfidContainerMethod = "/rfid/listRfidContainer";
   static const String getRfidTagContainerMethod = "/rfid/getRfidTagContainer";
@@ -81,6 +82,7 @@ class Endpoints {
   static const String createDirectToMethod = "/to/newTransferOutHeader";
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
+  static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
   static String listRfidContainer = "$activeUrl$listRfidContainerMethod";
   static String getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";

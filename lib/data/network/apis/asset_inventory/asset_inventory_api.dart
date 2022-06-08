@@ -64,7 +64,7 @@ class AssetInventoryApi {
       }
       query["siteCode"]=siteCode;
       final res = await _dioClient.getInventory(
-        Endpoints.assetInventory,
+        Endpoints.assetInventoryContainer,
         queryParameters: query
       );
 

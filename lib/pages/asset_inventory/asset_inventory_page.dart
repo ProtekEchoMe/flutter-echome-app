@@ -171,9 +171,21 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                   return Observer(
                                     builder: (context) {
                                       final listItem = _assetInventoryStore.itemList[index];
-                                      var assetCode = listItem.assetCode;
                                       var skuCode = listItem.skuCode;
-                                      var subtitle = "$skuCode/$assetCode";
+                                      var regNum = listItem.regNum;
+                                      var tiNum = listItem.tiNum;
+                                      var toNum = listItem.toNum;
+                                      var rfid = listItem.rfid;
+
+                                      var subtitle = "";
+                                      (skuCode != null) ? subtitle += "SKU:$skuCode" : "";
+                                      (tiNum != null) ? subtitle += "\nTi:$tiNum" : "";
+                                      (toNum != null) ? subtitle += "\nTo:$toNum" : "";
+                                      (regNum != null) ? subtitle += "\nReg:$regNum" : "";
+                                      (rfid != null) ? subtitle += "\nRfid:$rfid" : "";
+                                      // subtitle += tiNum ?? "";
+                                      // subtitle += toNum ?? "";
+
                                       var title =
                                           listItem.description.toString();
                                       var status = listItem.status;
