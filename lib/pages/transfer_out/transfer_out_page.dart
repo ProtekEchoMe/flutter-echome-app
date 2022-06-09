@@ -223,7 +223,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _transferOutStore.prevPage();
+                                        _transferOutStore.prevPage(toNum: widget.toNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -248,7 +248,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _transferOutStore.nextPage();
+                                        _transferOutStore.nextPage(toNum: widget.toNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,

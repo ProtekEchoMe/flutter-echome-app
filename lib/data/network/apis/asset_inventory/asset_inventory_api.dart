@@ -31,7 +31,8 @@ class AssetInventoryApi {
         filter = [
           {
             "value": assetCode,
-            "name": "assetCode",
+            // "name": "assetCode",
+            "name": "rfid",
             "operator": "contains",
             "type": "string"
           }

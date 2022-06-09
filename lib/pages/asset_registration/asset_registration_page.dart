@@ -77,7 +77,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage();
+                                        _store.prevPage(docNum: widget.searchRegNum ?? "");
                                       },
                                       child:const SizedBox(
                                         width: 40,
@@ -102,7 +102,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage();
+                                        _store.nextPage(docNum: widget.searchRegNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,

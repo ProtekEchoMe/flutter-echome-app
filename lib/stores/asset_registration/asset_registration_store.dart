@@ -67,7 +67,7 @@ abstract class _AssetRegistrationStore with Store {
   @action
   Future<void> nextPage({String docNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(regNum: docNum, requestedPage: page+1);
+      fetchData(regNum: docNum, requestedPage: page+1, );
     }
   }
 

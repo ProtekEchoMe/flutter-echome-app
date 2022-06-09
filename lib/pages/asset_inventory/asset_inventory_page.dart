@@ -178,11 +178,11 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                       var rfid = listItem.rfid;
 
                                       var subtitle = "";
-                                      (skuCode != null) ? subtitle += "SKU:$skuCode" : "";
-                                      (tiNum != null) ? subtitle += "\nTi:$tiNum" : "";
-                                      (toNum != null) ? subtitle += "\nTo:$toNum" : "";
-                                      (regNum != null) ? subtitle += "\nReg:$regNum" : "";
-                                      (rfid != null) ? subtitle += "\nRfid:$rfid" : "";
+                                      (skuCode != null) ? subtitle += "SKU: $skuCode" : "";
+                                      (tiNum != null) ? subtitle += "\nTi: $tiNum" : "";
+                                      (toNum != null) ? subtitle += "\nTo :$toNum" : "";
+                                      (regNum != null) ? subtitle += "\nReg: $regNum" : "";
+                                      (rfid != null) ? subtitle += "\nRfid: $rfid" : "";
                                       // subtitle += tiNum ?? "";
                                       // subtitle += toNum ?? "";
 
@@ -328,7 +328,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for SKU/ AssetCode  = " + widget.skuCode! + widget.assetCode!,
+                    "Searching for SKU/RFID  = " + widget.skuCode! + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -347,7 +347,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         // initText: "INIT TEXT",
         textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by SKU/AssetCode",
+        hintText: "Search by SKU/Rfid",
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             String skuCode = "";

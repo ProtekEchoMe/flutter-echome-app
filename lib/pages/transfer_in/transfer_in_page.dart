@@ -75,7 +75,7 @@ class _TransferInPageState extends State<TransferInPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage();
+                                        _store.prevPage(tiNum: widget.tiNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -100,7 +100,7 @@ class _TransferInPageState extends State<TransferInPage> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage();
+                                        _store.nextPage(tiNum: widget.tiNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
