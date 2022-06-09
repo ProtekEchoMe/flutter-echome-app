@@ -96,6 +96,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
           // rethrow;
           print(e.toString());
         }
+        rethrow;
       }
 
       List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet

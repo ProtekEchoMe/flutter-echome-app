@@ -100,6 +100,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
           // rethrow;
           print(e.toString());
         }
+        rethrow;
       }
 
       List<String> itemRfid = _assetReturnScanStore.itemRfidDataSet

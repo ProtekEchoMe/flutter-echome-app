@@ -89,6 +89,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
           // rethrow;
           print(e.toString());
         }
+        rethrow;
       }
 
       List<String> itemRfid = _transferInScanStore.itemRfidDataSet
