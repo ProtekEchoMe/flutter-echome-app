@@ -131,33 +131,33 @@ mixin _$TransferOutScanStore on _TransferOutScanStore, Store {
   final _$completeAsyncAction = AsyncAction('_TransferOutScanStore.complete');
 
   @override
-  Future<void> complete({String tiNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(tiNum: tiNum));
+  Future<void> complete({String toNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(toNum: toNum));
   }
 
-  final _$checkInContainerAsyncAction =
-      AsyncAction('_TransferOutScanStore.checkInContainer');
+  final _$checkInTOContainerAsyncAction =
+      AsyncAction('_TransferOutScanStore.checkInTOContainer');
 
   @override
-  Future<void> checkInContainer(
+  Future<void> checkInTOContainer(
       {List<String> rfid = const [],
       String toNum = "",
       bool throwError = false}) {
-    return _$checkInContainerAsyncAction.run(() => super
-        .checkInContainer(rfid: rfid, toNum: toNum, throwError: throwError));
+    return _$checkInTOContainerAsyncAction.run(() => super
+        .checkInTOContainer(rfid: rfid, toNum: toNum, throwError: throwError));
   }
 
-  final _$checkInItemAsyncAction =
-      AsyncAction('_TransferOutScanStore.checkInItem');
+  final _$checkInTOItemAsyncAction =
+      AsyncAction('_TransferOutScanStore.checkInTOItem');
 
   @override
-  Future<void> checkInItem(
-      {String tiNum = "",
+  Future<void> checkInTOItem(
+      {String toNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) {
-    return _$checkInItemAsyncAction.run(() => super.checkInItem(
-        tiNum: tiNum,
+    return _$checkInTOItemAsyncAction.run(() => super.checkInTOItem(
+        toNum: toNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
         throwError: throwError));
@@ -184,6 +184,17 @@ mixin _$TransferOutScanStore on _TransferOutScanStore, Store {
         name: '_TransferOutScanStore.updateDataSet');
     try {
       return super.updateDataSet(itemList: itemList, equList: equList);
+    } finally {
+      _$_TransferOutScanStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void resetContainer() {
+    final _$actionInfo = _$_TransferOutScanStoreActionController.startAction(
+        name: '_TransferOutScanStore.resetContainer');
+    try {
+      return super.resetContainer();
     } finally {
       _$_TransferOutScanStoreActionController.endAction(_$actionInfo);
     }

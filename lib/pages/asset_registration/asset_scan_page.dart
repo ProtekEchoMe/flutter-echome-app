@@ -97,7 +97,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
           // rethrow;
           print(e.toString());
         }
-        rethrow;
+        // rethrow;
       }
 
       List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet

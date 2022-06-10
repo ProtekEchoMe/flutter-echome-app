@@ -5,6 +5,7 @@ import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_regist
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
@@ -26,8 +27,8 @@ class TransferOutScanPage extends StatefulWidget {
 }
 
 class _TransferOutPageState extends State<TransferOutScanPage> {
-  final AssetRegistrationScanStore _assetRegistrationScanStore =
-      getIt<AssetRegistrationScanStore>();
+  final TransferOutScanStore _transferOutScanStore =
+      getIt<TransferOutScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   bool isDialogShown = false;
@@ -43,15 +44,15 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
   }
 
   String _getContainerCode() {
-    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetRegistrationScanStore.chosenEquipmentData[0].containerCode ??
+    return _transferOutScanStore.chosenEquipmentData.isNotEmpty
+        ? (_transferOutScanStore.chosenEquipmentData[0].containerCode ??
             "")
         : "";
   }
 
   String _getcontainerAssetCode() {
-    return _assetRegistrationScanStore.chosenEquipmentData.isNotEmpty
-        ? (_assetRegistrationScanStore
+    return _transferOutScanStore.chosenEquipmentData.isNotEmpty
+        ? (_transferOutScanStore
                 .chosenEquipmentData[0].containerAssetCode ??
             "")
         : "";
@@ -68,18 +69,18 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         throw "Container Code not found";
       }
 
-      if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
+      if (_transferOutScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_assetRegistrationScanStore.chosenEquipmentData.isEmpty) {
+      if (_transferOutScanStore.chosenEquipmentData.isEmpty) {
         throw "No equipment detected";
       }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _assetRegistrationScanStore.equipmentData) {
+      for (var element in _transferOutScanStore.equipmentData) {
         if (element.containerAssetCode == targetcontainerAssetCode) {
           if (element.rfid != null) {
             rfidList.add(element.rfid!);
@@ -88,41 +89,41 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       }
 
       try {
-        await _assetRegistrationScanStore.registerContainer(
-            rfid: rfidList, regNum: args?.toNum ?? "", throwError: true);
+        await _transferOutScanStore.checkInTOContainer(
+            rfid: rfidList, toNum: args?.toNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
           // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
           print(e.toString());
         }
-        rethrow;
+        // rethrow;
       }
 
-      List<String> itemRfid = _assetRegistrationScanStore.itemRfidDataSet
+      List<String> itemRfid = _transferOutScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      await _assetRegistrationScanStore.registerItem(
-          regNum: args?.toNum ?? "",
+      await _transferOutScanStore.checkInTOItem(
+          toNum: args?.toNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
-      _assetRegistrationScanStore.reset();
+      _transferOutScanStore.reset();
     } catch (e) {
-      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      _transferOutScanStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
   void _rescan() {
-    _assetRegistrationScanStore.reset();
+    _transferOutScanStore.reset();
   }
 
   void _rescanContainer() {
-    _assetRegistrationScanStore.resetContainer();
+    _transferOutScanStore.resetContainer();
   }
 
   Future<void> _complete(TransferOutScanPageArguments? args) async {
-    _assetRegistrationScanStore.complete(regNum: args?.toNum ?? "");
+    _transferOutScanStore.complete(toNum: args?.toNum ?? "");
   }
 
   Future<void> _onBottomBarItemTapped(
@@ -181,7 +182,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         ]);
       }
     }catch (e){
-      _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      _transferOutScanStore.errorStore.setErrorMessage(e.toString());
     }
 
   }
@@ -204,23 +205,23 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             item.add(element);
           }
         }
-        _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+        _transferOutScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
       }
     });
     var disposerReaction = reaction(
-        (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
-      if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
-        _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
+        (_) => _transferOutScanStore.errorStore.errorMessage, (_) {
+      if (_transferOutScanStore.errorStore.errorMessage.isNotEmpty) {
+        _showSnackBar(_transferOutScanStore.errorStore.errorMessage);
       }
     });
     var disposerReaction1 =
-        reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
+        reaction((_) => _transferOutScanStore.equipmentData, (_) {
           try{
             if (!accessControlStore.hasARScanRight) throw "No Scan Right";
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
-            _assetRegistrationScanStore.chosenEquipmentData.forEach(
+            _transferOutScanStore.chosenEquipmentData.forEach(
                     (element) => containerAssetCodeSet.add(element.containerAssetCode));
             if (containerAssetCodeSet.length > 1 && !isDialogShown) {
               isDialogShown = true;
@@ -246,7 +247,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
               ]);
             }
           }catch (e){
-            _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+            _transferOutScanStore.errorStore.setErrorMessage(e.toString());
           }
 
     });
@@ -367,7 +368,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _assetRegistrationScanStore.isFetchingEquData
+                            _transferOutScanStore.isFetchingEquData
                                 ? const SpinKitDualRing(
                                     color: Colors.blue,
                                     size: 15,
@@ -387,7 +388,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _assetRegistrationScanStore
+                            _transferOutScanStore
                                 .equipmentRfidDataSet.length
                                 .toString(),
                           ),
@@ -436,7 +437,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
-            itemCount: 3 + _assetRegistrationScanStore.itemRfidDataSet.length,
+            itemCount: 3 + _transferOutScanStore.itemRfidDataSet.length,
             itemBuilder: (ctx, index) {
               if (index == 0) {
                 return _getEquipmentDisplay();
@@ -476,7 +477,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Center(
-                                    child: Text(_assetRegistrationScanStore
+                                    child: Text(_transferOutScanStore
                                         .itemRfidDataSet.length
                                         .toString())),
                               )
@@ -487,7 +488,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                 );
               }
               if (index == 2) {
-                if (_assetRegistrationScanStore.itemRfidDataSet.isEmpty) {
+                if (_transferOutScanStore.itemRfidDataSet.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.horizontal_padding),
@@ -521,10 +522,10 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                   return const SizedBox();
                 }
               }
-              var rfid = _assetRegistrationScanStore.itemRfidDataSet
+              var rfid = _transferOutScanStore.itemRfidDataSet
                   .elementAt(index - 3);
               var isLast = index - 3 ==
-                      _assetRegistrationScanStore.itemRfidDataSet.length - 1
+                      _transferOutScanStore.itemRfidDataSet.length - 1
                   ? true
                   : false;
               return _getAssetListItem(rfid, isLast);
@@ -568,7 +569,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             child: IconButton(
                 onPressed: () {
                   setState(() {
-                    _assetRegistrationScanStore.itemRfidDataSet.remove(rfid);
+                    _transferOutScanStore.itemRfidDataSet.remove(rfid);
                   });
                 },
                 icon: const Icon(Icons.close)),
@@ -591,7 +592,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
   }
 
   void _addMockAssetId() {
-    _assetRegistrationScanStore.updateDataSet(
+    _transferOutScanStore.updateDataSet(
         itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
@@ -610,20 +611,20 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
-    _assetRegistrationScanStore.updateDataSet(equList: list);
+    _transferOutScanStore.updateDataSet(equList: list);
   }
 
   void _addMockEquipmentIdCaseOne() {
     List<String> list = [];
     list.add(AscToText.getAscIIString("CATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000842"));
-    _assetRegistrationScanStore.updateDataSet(equList: list);
+    _transferOutScanStore.updateDataSet(equList: list);
   }
 
   void _addMockEquipmentIdCaseTwo() {
     List<String> list = [];
     list.add(AscToText.getAscIIString("CATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
-    _assetRegistrationScanStore.updateDataSet(equList: list);
+    _transferOutScanStore.updateDataSet(equList: list);
   }
 }

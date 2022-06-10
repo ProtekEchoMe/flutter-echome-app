@@ -99,7 +99,7 @@ class TransferOutApi {
   }
 
   Future<dynamic> registerToItem(
-      {String tiNum = "",
+      {String toNum = "",
         String containerAssetCode = "",
         List<String> itemRfid = const []}) async {
     try {
@@ -110,7 +110,7 @@ class TransferOutApi {
 
       str = str.substring(0, str.length - 1);
       Map<String, dynamic> query = {
-        "tiNum": tiNum,
+        "toNum": toNum,
         "containerAssetCode": containerAssetCode,
         "rfids": str
       };

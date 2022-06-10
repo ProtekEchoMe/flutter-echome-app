@@ -138,11 +138,11 @@ class Repository {
   }
 
   Future<void> registerToItem(
-      {String tiNum = "",
+      {String toNum = "",
         String containerAssetCode = "",
         List<String> itemRfid = const []}) async {
     await _transferOutApi.registerToItem(
-        tiNum: tiNum,
+        toNum: toNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid);
   }

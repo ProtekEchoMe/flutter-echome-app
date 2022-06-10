@@ -108,10 +108,10 @@ abstract class _TransferOutScanStore with Store {
   }
 
   @action
-  Future<void> complete({String tiNum = ""}) async {
+  Future<void> complete({String toNum = ""}) async {
     try {
       isFetching = true;
-      await repository.completeTiRegistration(tiNum: tiNum);
+      await repository.completeToRegistration(toNum: toNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
@@ -120,10 +120,20 @@ abstract class _TransferOutScanStore with Store {
   }
 
   @action
-  Future<void> checkInContainer(
+  void resetContainer(){
+    equipmentRfidDataSet.clear();
+    equipmentData.clear();
+    isFetchingEquData = false;
+    chosenEquipmentData.clear();
+    EasyDebounce.cancel('validateContainerRfid');
+  }
+
+
+  @action
+  Future<void> checkInTOContainer(
       {List<String> rfid = const [],
-      String toNum = "",
-      bool throwError = false}) async {
+        String toNum = "",
+        bool throwError = false}) async {
     try {
       isFetching = true;
       await repository.registerToContainer(rfid: rfid, toNum: toNum);
@@ -138,16 +148,19 @@ abstract class _TransferOutScanStore with Store {
     }
   }
 
+  //TODO:: [bugs]just using containerAssetCode got problem to verify --> multi containers
   @action
-  Future<void> checkInItem(
-      {String tiNum = "",
-      String containerAssetCode = "",
-      List<String> itemRfid = const [],
-      bool throwError = false}) async {
+  Future<void> checkInTOItem(
+      {String toNum = "",
+        String containerAssetCode = "",
+        List<String> itemRfid = const [],
+        bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerTiItem(
-          tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+      await repository.registerToItem(
+          toNum: toNum,
+          containerAssetCode: containerAssetCode,
+          itemRfid: itemRfid);
     } catch (e) {
       if (throwError == true) {
         rethrow;
