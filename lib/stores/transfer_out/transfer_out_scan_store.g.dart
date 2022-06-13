@@ -155,12 +155,14 @@ mixin _$TransferOutScanStore on _TransferOutScanStore, Store {
       {String toNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
-      bool throwError = false}) {
+      bool throwError = false,
+      bool directTO = false}) {
     return _$checkInTOItemAsyncAction.run(() => super.checkInTOItem(
         toNum: toNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
-        throwError: throwError));
+        throwError: throwError,
+        directTO: directTO));
   }
 
   final _$_TransferOutScanStoreActionController =

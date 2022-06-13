@@ -52,6 +52,7 @@ class Endpoints {
   static const String getRfidTagContainerMethod = "/rfid/getRfidTagContainer";
   static const String registerItemsMethod = "/reg/checkInItems";
   static const String registerToItemsMethod = "/to/checkInItems";
+  static const String registerToItemsDirectMethod = "/to/newTransferOutLine";
   static const String registerTiItemsMethod = "/ti/checkInItems";
   static const String registerContainerMethod = "/reg/checkInContainer";
   static const String registerToContainerMethod = "/to/checkInContainer";
@@ -88,6 +89,7 @@ class Endpoints {
   static String getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";
   static String registerItems = "$activeUrl$registerItemsMethod";
   static String registerToItems = "$activeUrl$registerToItemsMethod";
+  static String registerToItemsDirect = "$activeUrl$registerToItemsDirectMethod";
   static String registerTiItems = "$activeUrl$registerTiItemsMethod";
   static String registerContainer = "$activeUrl$registerContainerMethod";
   static String registerToContainer = "$activeUrl$registerToContainerMethod";

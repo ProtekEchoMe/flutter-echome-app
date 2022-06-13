@@ -103,11 +103,17 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       List<String> itemRfid = _transferOutScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
+
+      bool directTO = false;
+      if (args != null && args.toNum.startsWith('TO'))
+        directTO = true;
+
       await _transferOutScanStore.checkInTOItem(
           toNum: args?.toNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
-          throwError: true);
+          throwError: true,
+      directTO: directTO);
       _transferOutScanStore.reset();
     } catch (e) {
       _transferOutScanStore.errorStore.setErrorMessage(e.toString());

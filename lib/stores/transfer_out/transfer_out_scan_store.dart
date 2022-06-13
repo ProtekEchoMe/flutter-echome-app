@@ -154,13 +154,18 @@ abstract class _TransferOutScanStore with Store {
       {String toNum = "",
         String containerAssetCode = "",
         List<String> itemRfid = const [],
-        bool throwError = false}) async {
+        bool throwError = false,
+      bool directTO = false}) async {
     try {
       isFetching = true;
+
       await repository.registerToItem(
-          toNum: toNum,
-          containerAssetCode: containerAssetCode,
-          itemRfid: itemRfid);
+        toNum: toNum,
+        containerAssetCode: containerAssetCode,
+        itemRfid: itemRfid,
+      directTO: directTO);
+
+
     } catch (e) {
       if (throwError == true) {
         rethrow;

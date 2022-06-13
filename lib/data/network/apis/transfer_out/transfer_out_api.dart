@@ -10,20 +10,16 @@ class TransferOutApi {
 
   TransferOutApi(this._dioClient);
 
-  Future<TransferOutHeaderResponse> getTransferOutHeaderItem({int page = 0, int limit = 10, String toNum=""})async{
-      try {
+  Future<TransferOutHeaderResponse> getTransferOutHeaderItem(
+      {int page = 0, int limit = 10, String toNum = ""}) async {
+    try {
       print(page * limit);
       print(limit);
       print(toNum);
       List<dynamic> filter = [];
       Map sortInfo = {};
 
-      sortInfo = {
-        "id": 1,
-        "name": "modifiedDate",
-        "type": "",
-        "dir": -1
-      };
+      sortInfo = {"id": 1, "name": "modifiedDate", "type": "", "dir": -1};
 
       if (toNum.isNotEmpty) {
         filter = [
@@ -49,7 +45,8 @@ class TransferOutApi {
           "sortInfo": jsonEncode(sortInfo),
         };
       }
-      final res = await _dioClient.getRegistration(Endpoints.listTransferOutHeader,
+      final res = await _dioClient.getRegistration(
+          Endpoints.listTransferOutHeader,
           queryParameters: query);
       print("ok");
       print(res);
@@ -59,10 +56,11 @@ class TransferOutApi {
     }
   }
 
-  Future<TransferOutHeaderItem> createTransferOutHeaderItem({int? toSite})async{
-    try{
-      final res = await _dioClient.get(Endpoints.createDirectTo,
-          queryParameters: {"toSite": toSite});
+  Future<TransferOutHeaderItem> createTransferOutHeaderItem(
+      {int? toSite}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.createDirectTo, queryParameters: {"toSite": toSite});
       print("ok");
       print(res);
       return TransferOutHeaderItem.fromJson(res);
@@ -100,8 +98,9 @@ class TransferOutApi {
 
   Future<dynamic> registerToItem(
       {String toNum = "",
-        String containerAssetCode = "",
-        List<String> itemRfid = const []}) async {
+      String containerAssetCode = "",
+      List<String> itemRfid = const [],
+      bool directTO = false}) async {
     try {
       var str = "";
       for (var element in itemRfid) {
@@ -115,13 +114,18 @@ class TransferOutApi {
         "rfids": str
       };
 
-      await _dioClient.getRegistration(Endpoints.registerToItems,
-          queryParameters: query);
-
-      // final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
-      //     queryParameters: query);
-      // print(res1); // debug
-    } catch (e) {
+      if (!directTO) {
+        await _dioClient.getRegistration(Endpoints.registerToItems,
+            queryParameters: query);
+      } else {
+        await _dioClient.getRegistration(Endpoints.registerToItemsDirect,
+            queryParameters: query);
+      }
+    }
+    // final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
+    //     queryParameters: query);
+    // print(res1); // debug
+    catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {
           throw Exception("Internal Server Error");
@@ -139,7 +143,8 @@ class TransferOutApi {
 
   Future<void> completeToRegister({String toNum = ""}) async {
     try {
-      await _dioClient.get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
+      await _dioClient
+          .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
       // final res = await _dioClient
       //     .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
       // print(res); // debug
@@ -158,14 +163,13 @@ class TransferOutApi {
       rethrow;
     }
   }
-
 }
 
 class TransferOutHeaderResponse {
   List<TransferOutHeaderItem> itemList = [];
   int rowNumber = 0;
 
- TransferOutHeaderResponse(dynamic data, int? rowNum) {
+  TransferOutHeaderResponse(dynamic data, int? rowNum) {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => TransferOutHeaderItem.fromJson(e))
