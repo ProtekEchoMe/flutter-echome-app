@@ -20,6 +20,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobx/mobx.dart';
 import 'package:ota_update/ota_update.dart';
 
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
+
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
@@ -36,59 +38,19 @@ class _HomePageState extends State<HomePage> {
   final SiteCodeItemStore siteCodeStore = getIt<SiteCodeItemStore>();
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
 
-  Future<void> _showSiteSelectionDialog(BuildContext context, ObservableList<String?> siteNameList) async {
-    print("called");
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            title: const Text("Choose the site"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  // ...SiteCodeList.getList().map((e
-                  //...siteCodeStore.siteCodeNameList.map((e)
-                  ...siteNameList.map((e) {
-                    return GestureDetector(
-                      onTap: () async {
-                        if (e != loginFormStore.siteCode) {
-                          await loginFormStore.changeSite(siteCode: e!);
-                        }
-                        Navigator.of(context).pop();
-                      },
-                      child: ListTile(
-                        title: Text(e!),
-                      ),
-                    );
-                  }).toList()
-                ],
-              ),
-            ),
-            actions: <Widget>[],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
     loginFormStore.setupValidations();
+    void onClickFunction(e) async {
+        if (e != loginFormStore.siteCode) {
+          await loginFormStore.changeSite(siteCode: e!);
+        }
+  }
     siteCodeStore.fetchData().then(
-            (value) => _showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList));
-        // .then(
-        //     (value) => loginFormStore.changeSite(siteCode: siteCodeStore.siteCodeNameList[0]!));
-    
-    // loginFormStore.changeSite(siteCode: SiteCodeList.getList()[0]);
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //   _showMyDialog(context);
-    // });
-    // tryUpdate();
-    // print("");
+            (value) => DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+                accessControlStore.accessControlledSiteNameList, onClickFunction));
+
   }
 
   @override

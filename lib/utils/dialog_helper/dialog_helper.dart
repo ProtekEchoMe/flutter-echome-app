@@ -83,7 +83,7 @@ class DialogHelper {
     );
   }
 
-  static Future<void> listSelectionDialogWithAutoCompleteBar(BuildContext context, List<String?> inputList, Function onTapFunction, {bool willPop = false}) async {
+  static Future<void> listSelectionDialogWithAutoCompleteBar(BuildContext context, List<String?> inputList, Function onTapFunction, {bool willPop = false, text = "Choose the site"}) async {
     print("called");
     return showDialog<void>(
       context: context,
@@ -92,7 +92,7 @@ class DialogHelper {
         return WillPopScope(
           onWillPop: () async => willPop,
           child: AlertDialog(
-            title: const Text("Choose the site"),
+            title: Text(text),
             content:
             Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class DialogHelper {
                 children:[
                   AutocompleteBasicExample(inputList: List<String>.from(inputList), onClickFunction: onTapFunction,),
                   ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 100.0, maxHeight: 150.0),
+                      constraints: const BoxConstraints( maxHeight: 200.0),
                         child: SingleChildScrollView(
                           child: ListBody(
                             children: <Widget>[
@@ -120,7 +120,10 @@ class DialogHelper {
                             ],
                           ),
                         )),
-
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment : CrossAxisAlignment.center,
+                      textDirection: TextDirection.rtl,
+                      children: <Widget>[Text("Total: ${inputList.length}")])
                 ]
             ),
                         actions: <Widget>[],

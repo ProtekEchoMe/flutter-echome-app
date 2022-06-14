@@ -236,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(""),
                       Text("App Version: ${AppData.appVersion}"),
                       ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 100.0, maxHeight: 100.0),
+                          constraints: const BoxConstraints(maxHeight: 100.0),
                           child: TextButton(
                             onPressed: () {
                               void onClickFunction(String selectedDomainKey){
@@ -248,7 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               DialogHelper.listSelectionDialogWithAutoCompleteBar(
                                   context, List<String?>.from(Endpoints.domainMap.keys.toList()), onClickFunction,
-                                  willPop: false);
+                                  willPop: true);
                             },
                             child: const Text(''),
                           ))
