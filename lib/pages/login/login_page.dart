@@ -11,7 +11,6 @@ import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
-import 'package:echo_me_mobile/utils/dialog_helper/auto_complete_searchbar.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 

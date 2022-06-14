@@ -21,6 +21,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
+
 class TransferOutPage extends StatefulWidget {
   final String? toNum;
 
@@ -88,13 +90,40 @@ class _TransferOutPageState extends State<TransferOutPage> {
         width: 50,
         child: FittedBox(
             child: FloatingActionButton( //TODO: Direct Transfer Out Create API
-          onPressed: () {
-            showCupertinoModalPopup<void>(
-                context: context, builder: (BuildContext context){
-              return _buildBottomPicker2(
-                  _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
-            });
-          },
+          // onPressed: () {
+          //   showCupertinoModalPopup<void>(
+          //       context: context, builder: (BuildContext context){
+          //     return _buildBottomPicker2(
+          //         _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+          //   });
+          // },
+            onPressed: () {
+              void onClickFunction(String selectedDomainKey) {
+                _transferOutStore.createTransferOutHeaderItem(
+                    toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id).then((_) {
+                  Navigator.pushNamed(
+                      context, "/transfer_out_scan",
+                      arguments:
+                      TransferOutScanPageArguments(
+                          toNum:
+                          _transferOutStore.directTOResponse!.toNum ?? "",
+                          item: _transferOutStore.directTOResponse))
+                      .then((value) => {
+                    _transferOutStore.fetchData(
+                        toNum: widget.toNum ?? "")
+                  });
+                });
+              }
+              DialogHelper.listSelectionDialogWithAutoCompleteBar(
+                  context, List<String?>.from(_accessControlStore.getAccessControlledTOSiteNameList), onClickFunction,
+                  willPop: true);
+
+              // showCupertinoModalPopup<void>(
+              //     context: context, builder: (BuildContext context){
+              //   return _buildBottomPicker2(
+              //       _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+              // });
+            },
           child: const Icon(Icons.add),
               // foregroundColor:  Colors.orange[700]!.withOpacity(0.5),
             backgroundColor: Colors.orange[700]!.withOpacity(0.9),
