@@ -100,7 +100,8 @@ class _TransferOutPageState extends State<TransferOutPage> {
             onPressed: () {
               void onClickFunction(String selectedDomainKey) {
                 _transferOutStore.createTransferOutHeaderItem(
-                    toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id).then((_) {
+                    toSite: _siteCodeItemStore.siteCodeMap.containsKey(selectedDomainKey)?
+                    _siteCodeItemStore.siteCodeMap[selectedDomainKey]!.id: 0).then((_) {
                   Navigator.pushNamed(
                       context, "/transfer_out_scan",
                       arguments:
@@ -115,7 +116,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                 });
               }
               DialogHelper.listSelectionDialogWithAutoCompleteBar(
-                  context, List<String?>.from(_accessControlStore.getAccessControlledTOSiteNameList), onClickFunction,
+                  context, List<String?>.from([..._accessControlStore.getAccessControlledTOSiteNameList, "0"]), onClickFunction,
                   willPop: false);
 
               // showCupertinoModalPopup<void>(
