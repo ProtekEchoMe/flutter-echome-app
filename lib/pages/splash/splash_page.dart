@@ -69,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
             },
           ),
           TextButton(
-            onPressed: () => DialogHelper.listSelectionDialog(
+            onPressed: () => DialogHelper.listSelectionDialogWithAutoCompleteBar(
                 context, [...Endpoints.versionControlDomainMap.keys.toList()],
                 (key) async {
               String domainName = Endpoints.versionControlDomainMap[key];

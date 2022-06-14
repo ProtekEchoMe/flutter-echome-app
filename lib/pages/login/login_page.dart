@@ -11,6 +11,10 @@ import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
+import 'package:echo_me_mobile/utils/dialog_helper/auto_complete_searchbar.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
+import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -27,6 +31,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
 
+  final SharedPreferenceHelper sharePreferenceHelper = getIt<SharedPreferenceHelper>();
+
   ReactionDisposer? disposer;
 
   @override
@@ -34,6 +40,19 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     super.initState();
     loginFormStore.setupValidations();
+
+    // init sharePreference --> defaultDomainSite
+    String? defaultServierDomainName = sharePreferenceHelper.defaultServierDomainName;
+    if (defaultServierDomainName == null) {
+      sharePreferenceHelper.changeDefaulServicetDomainName(Endpoints.domainList[0]);
+    }
+    // update Selection
+    defaultServierDomainName = sharePreferenceHelper.defaultServierDomainName;
+    Endpoints.updateFunctionEndPoint(
+        Endpoints.domainMap[defaultServierDomainName]);
+    Endpoints.updateKeyCloakEndPoint(
+        Endpoints.keyClockDomainMap[defaultServierDomainName]);
+
     disposer = reaction((_) => loginFormStore.errorStore.errorMessage, (_) {
       if (loginFormStore.errorStore.errorMessage.isNotEmpty) {
         _showSnackBar(loginFormStore.errorStore.errorMessage);
@@ -46,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
     loginFormStore.dispose();
     loginFormStore.cancelLogin();
-    if(disposer !=null) disposer!();
+    if (disposer != null) disposer!();
   }
 
   void _showSnackBar(String msg) {
@@ -80,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('/build');    // var safeareaTop = MediaQuery.of(context).padding.top;
+    print('/build'); // var safeareaTop = MediaQuery.of(context).padding.top;
     const safeareaTop = 0.0;
     return WillPopScope(
       onWillPop: () {
@@ -127,9 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .headlineLarge
                                   ?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context)
-                                          .cardColor),
-
+                                      color: Theme.of(context).cardColor),
                             ),
                             Text(
                               "login".tr(gender: "description"),
@@ -140,56 +157,54 @@ class _LoginPageState extends State<LoginPage> {
                                   ?.copyWith(
                                       fontSize: 20,
                                       fontWeight: FontWeight.normal,
-                                      color: Theme.of(context)
-                                          .cardColor),
-
+                                      color: Theme.of(context).cardColor),
                             ),
-                          // TextButton(
-                          //   onPressed: () => showDialog<String>(
-                          //       context: context,
-                          //       barrierDismissible: false, // user must tap button!
-                          //       builder: (BuildContext context) {
-                          //         return WillPopScope(
-                          //           onWillPop: () async => false,
-                          //           child: AlertDialog(
-                          //             title: const Text("Choose the Server"),
-                          //             content: SingleChildScrollView(
-                          //               child: ListBody(
-                          //                 children: <Widget>[
-                          //                   ...Endpoints.domainMap.keys.toList().map((e) {
-                          //                     return GestureDetector(
-                          //                       onTap: () async {
-                          //                         print(e);
-                          //                         // Endpoints.printEndPoint();
-                          //                         // print(Preferences.defaultDomain);
-                          //                         Preferences.defaultDomain = e;
-                          //                         // print(Preferences.defaultDomain);
-                          //                         Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
-                          //                         Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
-                          //                         // Endpoints.printEndPoint();
-                          //                         // if (e != loginFormStore.siteCode) {
-                          //                         //   await loginFormStore.changeSite(siteCode: e);
-                          //                         // }
-                          //                         Navigator.of(context).pop();
-                          //                       },
-                          //                       child: ListTile(
-                          //                         title: Text(e),
-                          //                       ),
-                          //                     );
-                          //                   }).toList()
-                          //                 ],
-                          //               ),
-                          //             ),
-                          //             actions: <Widget>[],
-                          //           ),
-                          //         );
-                          //       },
-                          //   )
-                          //       ,
-                          //   child: const Text(''),
-                          //
-                          //
-                          // ),
+                            // TextButton(
+                            //   onPressed: () => showDialog<String>(
+                            //       context: context,
+                            //       barrierDismissible: false, // user must tap button!
+                            //       builder: (BuildContext context) {
+                            //         return WillPopScope(
+                            //           onWillPop: () async => false,
+                            //           child: AlertDialog(
+                            //             title: const Text("Choose the Server"),
+                            //             content: SingleChildScrollView(
+                            //               child: ListBody(
+                            //                 children: <Widget>[
+                            //                   ...Endpoints.domainMap.keys.toList().map((e) {
+                            //                     return GestureDetector(
+                            //                       onTap: () async {
+                            //                         print(e);
+                            //                         // Endpoints.printEndPoint();
+                            //                         // print(Preferences.defaultDomain);
+                            //                         Preferences.defaultDomain = e;
+                            //                         // print(Preferences.defaultDomain);
+                            //                         Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
+                            //                         Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
+                            //                         // Endpoints.printEndPoint();
+                            //                         // if (e != loginFormStore.siteCode) {
+                            //                         //   await loginFormStore.changeSite(siteCode: e);
+                            //                         // }
+                            //                         Navigator.of(context).pop();
+                            //                       },
+                            //                       child: ListTile(
+                            //                         title: Text(e),
+                            //                       ),
+                            //                     );
+                            //                   }).toList()
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //             actions: <Widget>[],
+                            //           ),
+                            //         );
+                            //       },
+                            //   )
+                            //       ,
+                            //   child: const Text(''),
+                            //
+                            //
+                            // ),
                           ],
                         ),
                       ),
@@ -202,7 +217,6 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         width: double.infinity,
                         height: 12,
-
                       ),
                       GestureDetector(
                         onTap: () =>
@@ -221,53 +235,23 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Text(""),
                       Text("App Version: ${AppData.appVersion}"),
-                      TextButton(
-                        onPressed: () => showDialog<String>(
-                          context: context,
-                          barrierDismissible: false, // user must tap button!
-                          builder: (BuildContext context) {
-                            return WillPopScope(
-                              onWillPop: () async => false,
-                              child: AlertDialog(
-                                title: const Text("Choose the Server"),
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      ...Endpoints.domainMap.keys.toList().map((e) {
-                                        return GestureDetector(
-                                          onTap: () async {
-                                            print(e);
-                                            // Endpoints.printEndPoint();
-                                            // print(Preferences.defaultDomain);
-                                            Preferences.defaultDomain = e;
-                                            // print(Preferences.defaultDomain);
-                                            Endpoints.updateFunctionEndPoint(Endpoints.domainMap[e]);
-                                            Endpoints.updateKeyCloakEndPoint(Endpoints.keyClockDomainMap[e]);
-                                            // Endpoints.printEndPoint();
-                                            // if (e != loginFormStore.siteCode) {
-                                            //   await loginFormStore.changeSite(siteCode: e);
-                                            // }
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: ListTile(
-                                            title: Text(e),
-                                          ),
-                                        );
-                                      }).toList()
-                                    ],
-                                  ),
-                                ),
-                                actions: <Widget>[],
-                              ),
-                            );
-                          },
-                        )
-                        ,
-                        child: const Text(''),
-
-
-                      )
-
+                      ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 100.0, maxHeight: 100.0),
+                          child: TextButton(
+                            onPressed: () {
+                              void onClickFunction(String selectedDomainKey){
+                                sharePreferenceHelper.changeDefaulServicetDomainName(selectedDomainKey);
+                                Endpoints.updateFunctionEndPoint(
+                                    Endpoints.domainMap[selectedDomainKey]);
+                                Endpoints.updateKeyCloakEndPoint(
+                                    Endpoints.keyClockDomainMap[selectedDomainKey]);
+                              }
+                              DialogHelper.listSelectionDialogWithAutoCompleteBar(
+                                  context, List<String?>.from(Endpoints.domainMap.keys.toList()), onClickFunction,
+                                  willPop: false);
+                            },
+                            child: const Text(''),
+                          ))
                     ],
                   ),
                 ),

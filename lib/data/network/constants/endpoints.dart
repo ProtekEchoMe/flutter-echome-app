@@ -134,13 +134,15 @@ class Endpoints {
   // static String getAppDownloadLink =
   //     "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app/api/v1/appDownload";
 
-  static updateVersionControlEndPointUrl(activeDomain){
+  static updateVersionControlEndPointUrl(String activeDomain){
+    print("update Version Control End Point: " + activeDomain);
     Endpoints.activeVersionControlDomain = activeDomain;
     Endpoints.getAppVersion = '$activeVersionControlDomain$getAppVersionMethod';
     Endpoints.getAppDownloadLink = '$activeVersionControlDomain$getAppDownloadLinkMethod';
   }
 
-  static updateKeyCloakEndPoint(activeDomain){
+  static updateKeyCloakEndPoint(String activeDomain){
+    print("update KeyCloak End Point: " + activeDomain);
     Endpoints.keyCloakActiveDomain = activeDomain;
     Endpoints.baseUrl = "$keyCloakActiveDomain$authMethod";
     Endpoints.forgetPassword = "$keyCloakActiveDomain$forgetPasswordMethod";
@@ -149,7 +151,8 @@ class Endpoints {
     Endpoints.logout = baseUrl + "/logout";
   }
 
-  static updateFunctionEndPoint(activeDomain){
+  static updateFunctionEndPoint(String activeDomain){
+    print("update Server End Point: " + activeDomain);
     Endpoints.activeDomain = activeDomain;
     Endpoints.activeUrl = "$activeDomain$appDir";
     Endpoints.assetInventory = "$activeUrl$assetInventoryMethod";
