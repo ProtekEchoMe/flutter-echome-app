@@ -116,7 +116,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
               }
               DialogHelper.listSelectionDialogWithAutoCompleteBar(
                   context, List<String?>.from(_accessControlStore.getAccessControlledTOSiteNameList), onClickFunction,
-                  willPop: true);
+                  willPop: false);
 
               // showCupertinoModalPopup<void>(
               //     context: context, builder: (BuildContext context){

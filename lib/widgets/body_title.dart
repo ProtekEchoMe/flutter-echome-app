@@ -44,7 +44,7 @@ class BodyTitle extends StatelessWidget {
                   }
                   siteCodeStore.fetchData().then(
                           (value) => DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
-                          accessControlStore.accessControlledSiteNameList, onClickFunction));
+                          accessControlStore.accessControlledSiteNameList, onClickFunction, willPop: true));
 
                   // _showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList);
                 }
