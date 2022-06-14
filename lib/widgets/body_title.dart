@@ -7,6 +7,7 @@ import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
 class BodyTitle extends StatelessWidget {
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
@@ -35,7 +36,19 @@ class BodyTitle extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: GestureDetector(
-                onTap: (){if(allowSwitchSite)_showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList);},
+                onTap: (){if(allowSwitchSite){
+                  void onClickFunction(e) async {
+                    if (e != loginFormStore.siteCode) {
+                      await loginFormStore.changeSite(siteCode: e!);
+                    }
+                  }
+                  siteCodeStore.fetchData().then(
+                          (value) => DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+                          accessControlStore.accessControlledSiteNameList, onClickFunction));
+
+                  // _showSiteSelectionDialog(context, accessControlStore.accessControlledSiteNameList);
+                }
+                },
                 child: Container(
                   width: 130,
                   height: 30,
