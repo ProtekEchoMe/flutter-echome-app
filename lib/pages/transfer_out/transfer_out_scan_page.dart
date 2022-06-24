@@ -621,7 +621,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
 
   Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: args?.toNum ?? "No TO Num",
+      title: (args?.toNum ?? "No TO Num") + "\n(${args!.item?.shipToLocation!})",
       clipTitle: "Hong Kong-DC",
     );
   }
