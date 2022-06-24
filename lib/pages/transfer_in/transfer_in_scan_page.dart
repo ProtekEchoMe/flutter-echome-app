@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_detail_page.dart';
@@ -31,6 +32,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   final TransferInScanStore _transferInScanStore = getIt<TransferInScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
+  final Repository repository = getIt<Repository>();
 
   bool isDialogShown = false;
 
@@ -122,6 +124,26 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     _transferInScanStore.complete(tiNum: args?.tiNum ?? "");
   }
 
+  Future<String> fetchData(TransferInScanPageArguments? args) async {
+
+    var result = await repository.fetchTiLineData(args);
+    var newTotalProduct = (result as List).length.toString();
+    int newTotalQuantity = 0;
+    int totalRegQuantity = 0;
+    (result).forEach((e) {
+      try{
+        newTotalQuantity += e["quantity"] as int ;
+        totalRegQuantity += e["checkinQty"] as int;
+      }catch(e){
+        print(e);
+      };
+    });
+
+    return "Total: $totalRegQuantity / $newTotalQuantity";
+
+  }
+
+
   Future<void> _onBottomBarItemTapped(TransferInScanPageArguments? args, int index) async {
     try {
       if (index == 0) {
@@ -131,8 +153,8 @@ class _AssetScanPageState extends State<TransferInScanPage> {
             trueOptionText: "Change",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _changeEquipment(args);
-          DialogHelper.showSnackBar(context, str: "Change Successfully");
+          _changeEquipment(args).then((value) =>
+              DialogHelper.showSnackBar(context, str: "Change Successfully"));
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
@@ -146,13 +168,14 @@ class _AssetScanPageState extends State<TransferInScanPage> {
         }
       } else if (index == 2) {
         if (!accessControlStore.hasTICompleteRight) throw "No Complete Right";
+        String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?",
+            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _complete(args);
-          DialogHelper.showSnackBar(context, str: "Complete Successfully");
+          _complete(args).then((value) =>
+              _showSnackBar("Complete Successfully"));
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) { // debug version

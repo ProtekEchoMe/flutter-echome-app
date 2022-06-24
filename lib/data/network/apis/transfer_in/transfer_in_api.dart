@@ -143,6 +143,63 @@ class TransferInApi {
       rethrow;
     }
   }
+
+  Future<dynamic> getTransferOutLine(
+      {int page = 0, int limit = 0, String tiNum = ""}) async {
+    try {
+      print(page * limit);
+      print(limit);
+      print(tiNum);
+      List<dynamic> filter = [];
+      Map sortInfo = {};
+
+      sortInfo = {
+        "id": 1,
+        "name": "checkinQty",
+        "type": "",
+        "dir": -1
+      };
+
+      if (tiNum.isNotEmpty) {
+        filter = [
+          {
+            "value": tiNum,
+            "name": "tiNum",
+            "operator": "eq",
+            "type": "string"
+          },
+          // {
+          //   "value": "COMPLETED",
+          //   "name": "status",
+          //   "operator": "eq",
+          //   "type": "string"
+          // }
+        ];
+      }
+
+      Map<String, dynamic> query = {
+        "skip": page * limit,
+        "limit": limit,
+        "sortInfo": jsonEncode(sortInfo)
+      };
+
+      if (filter.isNotEmpty) {
+        query = {
+          "skip": page * limit,
+          "limit": limit,
+          "filterBy": jsonEncode(filter),
+          "sortInfo": jsonEncode(sortInfo)
+        };
+      }
+      final res = await _dioClient.getRegistration(Endpoints.listTransferInLine,
+          queryParameters: query);
+      print("ok");
+      print(res);
+      return res["itemRow"];
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 class TransferInHeaderResponse {

@@ -159,6 +159,7 @@ class Endpoints {
     Endpoints.activeUrl = "$activeDomain$appDir";
     Endpoints.assetInventory = "$activeUrl$assetInventoryMethod";
     Endpoints.assetRegistration = "$activeUrl$assetRegistrationMethod";
+    Endpoints.assetRegistrationLine = "$activeUrl$assetRegistrationLineMethod";
     Endpoints.listRfidContainer = "$activeUrl$listRfidContainerMethod";
     Endpoints.getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";
     Endpoints.registerItems = "$activeUrl$registerItemsMethod";

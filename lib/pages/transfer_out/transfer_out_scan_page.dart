@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
@@ -31,6 +32,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       getIt<TransferOutScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
+  final Repository repository = getIt<Repository>();
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
@@ -58,7 +60,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         : "";
   }
 
-  Future<void> _changeEquipment(TransferOutScanPageArguments? args) async {
+  Future<bool> _changeEquipment(TransferOutScanPageArguments? args) async {
     print("change equ");
     try {
       if (args?.toNum == null) {
@@ -115,8 +117,10 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
           throwError: true,
       directTO: directTO);
       _transferOutScanStore.reset();
+      return true;
     } catch (e) {
       _transferOutScanStore.errorStore.setErrorMessage(e.toString());
+      return false;
     }
   }
 
@@ -128,8 +132,32 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     _transferOutScanStore.resetContainer();
   }
 
-  Future<void> _complete(TransferOutScanPageArguments? args) async {
-    _transferOutScanStore.complete(toNum: args?.toNum ?? "");
+  Future<bool> _complete(TransferOutScanPageArguments? args) async {
+    try{
+      _transferOutScanStore.complete(toNum: args?.toNum ?? "");
+      return true;
+    }catch(e) {
+      return false;
+    }
+  }
+
+  Future<String> fetchData(TransferOutScanPageArguments? args) async {
+
+    var result = await repository.fetchToLineData(args);
+    var newTotalProduct = (result as List).length.toString();
+    int newTotalQuantity = 0;
+    int totalRegQuantity = 0;
+    (result).forEach((e) {
+      try{
+        newTotalQuantity += e["quantity"] as int ;
+        totalRegQuantity += e["checkinQty"] as int;
+      }catch(e){
+        print(e);
+      };
+    });
+
+    return "Total: $totalRegQuantity / $newTotalQuantity";
+
   }
 
   Future<void> _onBottomBarItemTapped(
@@ -142,8 +170,8 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             trueOptionText: "Change",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _changeEquipment(args);
-          _showSnackBar("Change Successfully");
+          await _changeEquipment(args)? _showSnackBar("Change Successfully") : "";
+
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
@@ -157,13 +185,14 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         }
       } else if (index == 2) {
         if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?",
+            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _complete(args);
-          _showSnackBar("Complete Successfully");
+          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {

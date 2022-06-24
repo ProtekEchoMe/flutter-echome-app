@@ -61,7 +61,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
         : "";
   }
 
-  Future<void> _changeEquipment(AssetScanPageArguments? args) async {
+  Future<bool> _changeEquipment(AssetScanPageArguments? args) async {
     print("change equ");
     try {
       if (args?.regNum == null) {
@@ -112,8 +112,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
       _assetRegistrationScanStore.reset();
+      return true;
     } catch (e) {
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      return false;
     }
   }
 
@@ -125,25 +127,29 @@ class _AssetScanPageState extends State<AssetScanPage> {
     _assetRegistrationScanStore.resetContainer();
   }
 
-  Future<void> _complete(AssetScanPageArguments? args) async {
-    _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
+  Future<bool> _complete(AssetScanPageArguments? args) async {
+    try {
+      _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
+      return true;
+    }catch(e){
+      return false;
+    }
   }
 
   Future<String> fetchData(AssetScanPageArguments? args) async {
 
-    var result = await repository.fetchLineData(args);
+    var result = await repository.fetchArLineData(args);
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
-    var newDataList = (result as List).map((e) {
+    (result as List).forEach((e) {
       try{
         newTotalQuantity += e["quantity"] as int ;
         totalRegQuantity += e["checkinQty"] as int;
       }catch(e){
         print(e);
-      }
-      return ListDocumentLineItem.fromJson(e);
-    }).toList();
+      };
+    });
 
     return "Total: $totalRegQuantity / $newTotalQuantity";
 
@@ -159,8 +165,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
             trueOptionText: "Change",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _changeEquipment(args);
-          _showSnackBar("Change Successfully");
+          await _changeEquipment(args) ?_showSnackBar("Change Successfully") : "";
+
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
@@ -180,8 +186,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _complete(args).then((value) =>
-              _showSnackBar("Complete Successfully"));
+          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {

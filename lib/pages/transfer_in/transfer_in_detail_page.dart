@@ -79,8 +79,8 @@ class TransferInDetailPage extends HookWidget {
             Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),
             Text("Total Quantity : $totalQuantity"),
-            // const SizedBox(height: 5),
-            // Text("Total Tracker : $totalTracker")
+            const SizedBox(height: 5),
+            Text("Total Tracker : $totalTracker")
           ],
         ),
       ),
@@ -130,7 +130,7 @@ class TransferInDetailPage extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Transfer Out Details"),
+      appBar: EchoMeAppBar(titleText: "Transfer In Details"),
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(

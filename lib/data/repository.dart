@@ -12,6 +12,8 @@ import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 
 import 'network/apis/login/login_api.dart';
 
@@ -107,11 +109,25 @@ class Repository {
         page: page, limit: limit, regNum: regNum);
   }
 
-  Future<dynamic> fetchLineData(
+  Future<dynamic> fetchArLineData(
       AssetScanPageArguments? args) async {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: 0, limit: 0, regNum: regNum);
+  }
+
+  Future<dynamic> fetchTiLineData(
+      TransferInScanPageArguments? args) async {
+    String tiNum = args?.tiNum ?? "";
+    return await _transferInApi.getTransferOutLine(
+        page: 0, limit: 0, tiNum: tiNum);
+  }
+
+  Future<dynamic> fetchToLineData(
+      TransferOutScanPageArguments? args) async {
+    String toNum = args?.toNum ?? "";
+    return await _transferOutApi.getTransferOutLine(
+        page: 0, limit: 0, toNum: toNum);
   }
 
 
