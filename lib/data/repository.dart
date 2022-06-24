@@ -11,6 +11,7 @@ import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 
 import 'network/apis/login/login_api.dart';
 
@@ -97,6 +98,22 @@ class Repository {
     return await _assetRegistrationApi.getAssetRegistration(
         page: page, limit: limit, regNum: regNum);
   }
+
+
+
+  Future<AssetRegistrationResponse> getAssetRegistrationLine(
+      {int page = 0, int limit = 0, String regNum = ""}) async {
+    return await _assetRegistrationApi.getAssetRegistrationLine(
+        page: page, limit: limit, regNum: regNum);
+  }
+
+  Future<dynamic> fetchLineData(
+      AssetScanPageArguments? args) async {
+    String regNum = args?.regNum ?? "";
+    return await _assetRegistrationApi.getAssetRegistrationLine(
+        page: 0, limit: 0, regNum: regNum);
+  }
+
 
 
   Future<AssetReturnResponse> getAssetReturn(

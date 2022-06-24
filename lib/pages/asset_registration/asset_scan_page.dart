@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
@@ -31,6 +32,8 @@ class _AssetScanPageState extends State<AssetScanPage> {
       getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
+  final Repository repository = getIt<Repository>();
+
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
@@ -126,6 +129,26 @@ class _AssetScanPageState extends State<AssetScanPage> {
     _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
   }
 
+  Future<String> fetchData(AssetScanPageArguments? args) async {
+
+    var result = await repository.fetchLineData(args);
+    var newTotalProduct = (result as List).length.toString();
+    int newTotalQuantity = 0;
+    int totalRegQuantity = 0;
+    var newDataList = (result as List).map((e) {
+      try{
+        newTotalQuantity += e["quantity"] as int ;
+        totalRegQuantity += e["checkinQty"] as int;
+      }catch(e){
+        print(e);
+      }
+      return ListDocumentLineItem.fromJson(e);
+    }).toList();
+
+    return "Total: $totalRegQuantity / $newTotalQuantity";
+
+  }
+
   Future<void> _onBottomBarItemTapped(
       AssetScanPageArguments? args, int index) async {
     try{
@@ -151,13 +174,14 @@ class _AssetScanPageState extends State<AssetScanPage> {
         }
       } else if (index == 2) {
         if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?",
+            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _complete(args);
-          _showSnackBar("Complete Successfully");
+          _complete(args).then((value) =>
+              _showSnackBar("Complete Successfully"));
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {

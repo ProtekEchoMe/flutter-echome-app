@@ -48,6 +48,7 @@ class Endpoints {
   static const String assetInventoryMethod = "/inv/listInventory"; // depreciated
   static const String assetInventoryContainerMethod = "/inv/listInventoryContainer";
   static const String assetRegistrationMethod = "/reg/listRegisterHeader";
+  static const String assetRegistrationLineMethod = "/reg/listRegisterLine";
   static const String listRfidContainerMethod = "/rfid/listRfidContainer";
   static const String getRfidTagContainerMethod = "/rfid/getRfidTagContainer";
   static const String registerItemsMethod = "/reg/checkInItems";
@@ -85,6 +86,7 @@ class Endpoints {
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
+  static String assetRegistrationLine = "$activeUrl$assetRegistrationLineMethod";
   static String listRfidContainer = "$activeUrl$listRfidContainerMethod";
   static String getRfidTagContainer = "$activeUrl$getRfidTagContainerMethod";
   static String registerItems = "$activeUrl$registerItemsMethod";

@@ -70,6 +70,64 @@ class AssetRegistrationApi {
     }
   }
 
+  Future<dynamic> getAssetRegistrationLine(
+      {int page = 0, int limit = 0, String regNum = ""}) async {
+    try {
+      print(page * limit);
+      print(limit);
+      print(regNum);
+      List<dynamic> filter = [];
+      Map sortInfo = {};
+
+      sortInfo = {
+        "id": 1,
+        "name": "checkinQty",
+        "type": "",
+        "dir": -1
+      };
+
+      if (regNum.isNotEmpty) {
+        filter = [
+          {
+            "value": regNum,
+            "name": "regNum",
+            "operator": "eq",
+            "type": "string"
+          },
+          // {
+          //   "value": "COMPLETED",
+          //   "name": "status",
+          //   "operator": "eq",
+          //   "type": "string"
+          // }
+        ];
+      }
+
+      Map<String, dynamic> query = {
+        "skip": page * limit,
+        "limit": limit,
+        "sortInfo": jsonEncode(sortInfo)
+      };
+
+      if (filter.isNotEmpty) {
+        query = {
+          "skip": page * limit,
+          "limit": limit,
+          "filterBy": jsonEncode(filter),
+          "sortInfo": jsonEncode(sortInfo)
+        };
+      }
+      final res = await _dioClient.getRegistration(Endpoints.assetRegistrationLine,
+          queryParameters: query);
+      print("ok");
+      print(res);
+      return res["itemRow"];
+      return AssetRegistrationResponse(res["itemRow"], res["totalRow"]);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> getContainerDetails({List<String>? rfid}) async {
     try {
       var str = "";
