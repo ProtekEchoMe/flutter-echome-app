@@ -44,6 +44,13 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     );
   }
 
+  String _getContainerCode() {
+    return _transferInScanStore.chosenEquipmentData.isNotEmpty
+        ? (_transferInScanStore.chosenEquipmentData[0].containerCode ??
+        "")
+        : "";
+  }
+
   String _getcontainerAssetCode() {
     return _transferInScanStore.chosenEquipmentData.isNotEmpty
         ? (_transferInScanStore.chosenEquipmentData[0].containerAssetCode ?? "")
@@ -387,7 +394,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.blueAccent)),
                               child: Center(
-                                child: Text(_getcontainerAssetCode()),
+                                child: Text(_getContainerCode()),
                               ),
                             )),
                       ),

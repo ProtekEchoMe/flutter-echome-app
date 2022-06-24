@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
           await loginFormStore.changeSite(siteCode: e!);
         }
   }
-    siteCodeStore.fetchData().then(
+    siteCodeStore.fetchData(limit: 0).then( // limit:0 --> not restricted
             (value) => DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
                 accessControlStore.accessControlledSiteNameList, onClickFunction));
 

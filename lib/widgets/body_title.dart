@@ -42,7 +42,7 @@ class BodyTitle extends StatelessWidget {
                       await loginFormStore.changeSite(siteCode: e!);
                     }
                   }
-                  siteCodeStore.fetchData().then(
+                  siteCodeStore.fetchData(limit: 0).then(
                           (value) => DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
                           accessControlStore.accessControlledSiteNameList, onClickFunction, willPop: true));
 
