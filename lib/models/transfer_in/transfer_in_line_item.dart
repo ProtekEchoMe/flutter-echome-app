@@ -22,6 +22,11 @@ class ListTransferInLineItem {
   String? maker;
   int? createdDate;
   int? modifiedDate;
+  String? containerRfid;
+  String? itemRfid ;
+  String? containerAssetCode;
+  String? itemAssetCode;
+  String? remarks;
 
   ListTransferInLineItem(
       {this.id,
@@ -46,7 +51,12 @@ class ListTransferInLineItem {
       this.status,
       this.maker,
       this.createdDate,
-      this.modifiedDate});
+      this.modifiedDate,
+      this.containerRfid ,
+      this.itemRfid ,
+      this.containerAssetCode,
+      this.itemAssetCode ,
+      this.remarks});
 
   ListTransferInLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -72,6 +82,11 @@ class ListTransferInLineItem {
     maker = json['maker'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+    containerRfid = json['containerRfid'];
+    itemRfid = json['itemRfid'];
+    containerAssetCode = json['containerAssetCode'];
+    itemAssetCode = json['itemAssetCode'];
+    remarks = json['remarks'];
 
   }
 
@@ -100,6 +115,12 @@ class ListTransferInLineItem {
     data['maker'] = this.maker;
     data['createdDate'] = this.createdDate;
     data['modifiedDate'] = this.modifiedDate;
+    data['containerQty'] = this.containerQty;
+    data['containerRfid'] = this.containerRfid;
+    data['itemRfid'] = this.itemRfid;
+    data['containerAssetCode'] = this.containerAssetCode;
+    data['itemAssetCode'] = this.itemAssetCode;
+    data['remarks'] = this.remarks;
     return data;
   }
 }
