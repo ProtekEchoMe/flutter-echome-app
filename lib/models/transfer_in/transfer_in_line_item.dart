@@ -72,6 +72,7 @@ class ListTransferInLineItem {
     maker = json['maker'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+
   }
 
   Map<String, dynamic> toJson() {

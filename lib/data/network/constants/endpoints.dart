@@ -67,7 +67,8 @@ class Endpoints {
   static const String listTransferOutLineMethod = "/to/listTransferOutLine";
   static const String setSiteCodeMethod = "/site";
   static const String listTransferInHeaderMethod = "/ti/listTransferInHeader";
-  static const String listTransferInLineMethod = "/ti/listTransferInLine";
+  // static const String listTransferInLineMethod = "/ti/listTransferInLine";
+  static const String listTransferInLineMethod = "/ti/listTransferOutLine"; // updated from 4/7/22 -- added remark col
 
   // asset Return Method
   static const String assetReturnHeaderMethod = "/assetReturn/listAssetReturnHeader";
