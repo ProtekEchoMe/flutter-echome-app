@@ -84,6 +84,8 @@ abstract class _AssetRegistrationStore with Store {
     try{
       var targetPage = requestedPage ?? page;
       var data = await repository.getAssetRegistration(page: targetPage, limit: limit, regNum: regNum);
+      // filter Completed data
+      // data.itemList = data.itemList.where((item) => item.status == "COMPLETED").toList();
       int totalRow = data.rowNumber;
       List<AssetRegistrationItem> list = data.itemList.map((RegistrationItem e) =>AssetRegistrationItem(e)).toList();
       totalCount = totalRow;

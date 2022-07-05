@@ -1,3 +1,4 @@
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
@@ -28,8 +29,10 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
   List<ListDocumentLineItem> dataList = [];
 
   Future<void> fetchData() async {
+    // var result = await repository.get(
+    //     'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
     var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
+        ('${Endpoints.assetRegistrationLine}?regNum=${widget.arg.regNum}'));
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -194,28 +197,31 @@ class ListDocumentLineItem {
   String? maker;
   int? createdDate;
   int? modifiedDate;
+  String? expiryDate;
 
   ListDocumentLineItem(
-      {this.id,
-      this.site,
-      this.regNum,
-      this.regDate,
+      {this.id,//
+      this.site,//
+      this.regNum,//
+      this.regDate,//
       this.vendorCode,
-      this.productCode,
-      this.skuCode,
-      this.description,
-      this.style,
-      this.color,
-      this.size,
-      this.serial,
-      this.eanupc,
-      this.quantity,
-      this.checkinQty,
-      this.containerQty,
-      this.status,
-      this.maker,
-      this.createdDate,
-      this.modifiedDate});
+      this.productCode,//
+      this.skuCode,//
+      this.description,//
+      this.style,//
+      this.color,//
+      this.size,//
+      this.serial,//
+      this.eanupc,//
+      this.quantity,//
+      this.checkinQty,//
+      this.containerQty,//
+      this.status,//
+      this.maker,//
+      this.createdDate,//
+      this.modifiedDate,
+      this.expiryDate});//
+  //expiryDate
 
   ListDocumentLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -238,6 +244,7 @@ class ListDocumentLineItem {
     maker = json['maker'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+    expiryDate = json['expiryDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -262,6 +269,7 @@ class ListDocumentLineItem {
     data['maker'] = this.maker;
     data['createdDate'] = this.createdDate;
     data['modifiedDate'] = this.modifiedDate;
+    data['expiryDate'] = this.expiryDate;
     return data;
   }
 }

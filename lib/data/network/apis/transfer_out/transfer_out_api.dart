@@ -30,7 +30,17 @@ class TransferOutApi {
             "type": "string"
           }
         ];
+      }else{
+        // filter = [
+        //   {
+        //     "value": "RFID_TAG_PRINTED",
+        //     "name": "status",
+        //     "operator": "eq",
+        //     "type": "select"
+        //   }
+        // ];
       }
+
       Map<String, dynamic> query = {
         "skip": page * limit,
         "limit": limit,

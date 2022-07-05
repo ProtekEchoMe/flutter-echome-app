@@ -64,20 +64,20 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     print("change equ");
     try {
       if (args?.toNum == null) {
-        throw "Reg Number Not Found";
+        throw "TO Number Not Found";
       }
 
-      if (_getcontainerAssetCode().isEmpty) {
-        throw "Container Code not found";
-      }
+      // if (_getcontainerAssetCode().isEmpty) {
+      //   throw "Container Code not found";
+      // }
 
       if (_transferOutScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_transferOutScanStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_transferOutScanStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
@@ -90,16 +90,18 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         }
       }
 
-      try {
-        await _transferOutScanStore.checkInTOContainer(
-            rfid: rfidList, toNum: args?.toNum ?? "", throwError: true);
-      } catch (e) {
-        if (!e.toString().contains("Error 2109")) {
-          // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      if (_getcontainerAssetCode().isNotEmpty) {
+        try {
+          await _transferOutScanStore.checkInTOContainer(
+              rfid: rfidList, toNum: args?.toNum ?? "", throwError: true);
+        } catch (e) {
+          if (!e.toString().contains("Error 2109")) {
+            // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+            // rethrow;
+            print(e.toString());
+          }
           // rethrow;
-          print(e.toString());
         }
-        // rethrow;
       }
 
       List<String> itemRfid = _transferOutScanStore.itemRfidDataSet
@@ -208,9 +210,9 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             },
           ),
           TextButton(
-            child: const Text('SContainer'),
+            child: const Text('ITEMS'),
             onPressed: () {
-              _addMockEquipmentIdCaseTwo();
+              _addMockEquipmentIdCaseThree();
               Navigator.of(context).pop();
             },
           )
@@ -661,5 +663,14 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     list.add(AscToText.getAscIIString("CATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
     _transferOutScanStore.updateDataSet(equList: list);
+  }
+  void _addMockEquipmentIdCaseThree() {
+    List<String> list = [];
+    // list.add(AscToText.getAscIIString("CATL010000000808"));
+    // list.add(AscToText.getAscIIString("CATL010000000819"));
+    List<String> itemList = [];
+    itemList.add(AscToText.getAscIIString("SATL010000348207"));
+    itemList.add(AscToText.getAscIIString("SATL010000348195"));
+    _transferOutScanStore.updateDataSet(equList: list, itemList: itemList);
   }
 }

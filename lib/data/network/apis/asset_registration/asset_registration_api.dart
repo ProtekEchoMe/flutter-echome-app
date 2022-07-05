@@ -29,6 +29,13 @@ class AssetRegistrationApi {
         "dir": -1
       };
 
+      // sortInfo = {
+      //   "id": 1,
+      //   "name": "status",
+      //   "type": "",
+      //   "dir": 1
+      // };
+
       if (regNum.isNotEmpty) {
         filter = [
           {
@@ -38,12 +45,27 @@ class AssetRegistrationApi {
             "type": "string"
           },
           // {
-          //   "value": "COMPLETED",
+          //   "value": "RFID_TAG_PRINTED",
           //   "name": "status",
-          //   "operator": "eq",
+          //   "operator": "contains",
           //   "type": "string"
           // }
         ];
+      }else{
+        // filter = [
+        //   {
+        //     "value": "RFID_TAG_PRINTED",
+        //     "name": "status",
+        //     "operator": "eq",
+        //     "type": "select"
+        //   },
+        //   {
+        //     "value": "IMPORTED",
+        //     "name": "status",
+        //     "operator": "eq",
+        //     "type": "select"
+        //   }
+        // ];
       }
 
       Map<String, dynamic> query = {
