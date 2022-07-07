@@ -228,6 +228,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     var disposerReaction =
         reaction((_) => _transferInScanStore.errorStore.errorMessage, (_) {
       if (_transferInScanStore.errorStore.errorMessage.isNotEmpty) {
+        DialogHelper.showErrorDialogBox(context, errorMsg: _transferInScanStore.errorStore.errorMessage);
         _showSnackBar(_transferInScanStore.errorStore.errorMessage);
       }
     });
@@ -583,7 +584,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   Widget _getTitle(BuildContext ctx, TransferInScanPageArguments? args) {
     return BodyTitle(
-      title: args?.tiNum ?? "No tiNum",
+      title: (args?.tiNum ?? "No tiNum") + " [TI]" ,
       clipTitle: "Hong Kong-DC",
     );
   }

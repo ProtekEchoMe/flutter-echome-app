@@ -241,6 +241,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var disposerReaction = reaction(
         (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
       if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
+        DialogHelper.showErrorDialogBox(context, errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
         _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
@@ -615,7 +616,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
     return BodyTitle(
-      title: args?.regNum ?? "No RegNum",
+      title: (args?.regNum ?? "No RegNum") + " [Reg]" ,
       clipTitle: "Hong Kong-DC",
     );
   }

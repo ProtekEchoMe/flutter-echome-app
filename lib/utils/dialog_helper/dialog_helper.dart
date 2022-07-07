@@ -29,6 +29,39 @@ class DialogHelper {
     );
   }
 
+  static Future<bool?> showErrorDialogBox(BuildContext context,
+      {
+        String errorMsg = "",
+      }) async {
+    print("called");
+    return showDialog<bool?>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [Text(errorMsg),]
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  // _addMockEquipmentIdCaseOne();
+                  Navigator.of(context).pop();
+                },
+              )
+              ,
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static Future<bool?> showTwoOptionsDialog(BuildContext context,
       {
         String title = "",

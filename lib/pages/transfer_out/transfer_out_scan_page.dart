@@ -249,6 +249,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     var disposerReaction = reaction(
         (_) => _transferOutScanStore.errorStore.errorMessage, (_) {
       if (_transferOutScanStore.errorStore.errorMessage.isNotEmpty) {
+        DialogHelper.showErrorDialogBox(context, errorMsg: _transferOutScanStore.errorStore.errorMessage);
         _showSnackBar(_transferOutScanStore.errorStore.errorMessage);
       }
     });
@@ -623,7 +624,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
 
   Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.toNum ?? "No TO Num") + "\n(${args!.item?.shipToLocation!})",
+      title: (args?.toNum ?? "No TO Num") + " [TO]" + "\n(${args!.item?.shipToLocation!})",
       clipTitle: "Hong Kong-DC",
     );
   }
