@@ -1,3 +1,3 @@
 class AppData {
-  static String appVersion = "1.0.16(5)";
+  static String appVersion = "1.0.16(6)";
 }
