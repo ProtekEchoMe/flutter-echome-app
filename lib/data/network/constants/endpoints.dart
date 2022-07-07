@@ -84,6 +84,32 @@ class Endpoints {
   // Direct TransferOut Method
   static const String createDirectToMethod = "/to/newTransferOutHeader";
 
+  // StockTake Method
+
+  static const String listStockTakeHeaderMethod = "/stocktake/listStocktakeHeader";
+  static const String listStockTakeLineMethod = "/stocktake/listStocktakeLine";
+  static const String newStockTakeHeaderMethod = "/stocktake/newStocktakeHeader";
+  static const String updateStockTakeHeaderMethod = "/stocktake/updateStocktakeHeader";
+  static const String removeStockTakeHeaderMethod = "/stocktake/removeStocktakeHeader";
+  static const String stockTakeInitiateMethod = "/stocktake/stocktakeInitiate";
+  static const String stockTakeStartMethod = "/stocktake/stocktakeStart";
+  static const String stockTakeCheckInItemsMethod = "/stocktake/checkInItems";
+  static const String stockTakeCancelMethod = "/stocktake/stocktakeCancel";
+  static const String stockTakeCompleteMethod = "/stocktake/stocktakeComplete";
+
+
+  //Stock Take
+  static String listStockTakeHeader = "$activeUrl$listStockTakeHeaderMethod";
+  static String listStockTakeLine = "$activeUrl$listStockTakeLineMethod";
+  static String newStocktakeHeader = "$activeUrl$newStockTakeHeaderMethod";
+  static String updateStocktakeHeader = "$activeUrl$updateStockTakeHeaderMethod";
+  static String removeStocktakeHeader = "$activeUrl$removeStockTakeHeaderMethod";
+  static String stockTakeInitiate = "$activeUrl$stockTakeInitiateMethod";
+  static String stockTakeStart = "$activeUrl$stockTakeStartMethod";
+  static String stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
+  static String stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
+  static String stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
   static String assetRegistration = "$activeUrl$assetRegistrationMethod";
@@ -186,6 +212,18 @@ class Endpoints {
     Endpoints.assetReturnItemsValidation = "$activeUrl$assetReturnItemsValidationMethod";
     Endpoints.assetReturnRegisterItem = "$activeUrl$assetReturnRegisterItemsMethod";
     Endpoints.listLocSite = "$activeUrl$listLocSiteMethod";
+    //stock Take
+    Endpoints.listStockTakeHeader = "$activeUrl$listStockTakeHeaderMethod";
+    Endpoints.listStockTakeLine = "$activeUrl$listStockTakeLineMethod";
+    Endpoints.newStocktakeHeader = "$activeUrl$newStockTakeHeaderMethod";
+    Endpoints.updateStocktakeHeader = "$activeUrl$updateStockTakeHeaderMethod";
+    Endpoints.removeStocktakeHeader = "$activeUrl$removeStockTakeHeaderMethod";
+    Endpoints.stockTakeInitiate = "$activeUrl$stockTakeInitiateMethod";
+    Endpoints.stockTakeStart = "$activeUrl$stockTakeStartMethod";
+    Endpoints.stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
+    Endpoints.stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
+    Endpoints.stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+
   }
 
   // testing

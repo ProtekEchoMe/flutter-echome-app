@@ -21,14 +21,14 @@ import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'stock_take_scan_page_arguments.dart';
 
-class AssetScanPage extends StatefulWidget {
-  const AssetScanPage({Key? key}) : super(key: key);
+class StockTakeScanPage extends StatefulWidget {
+  const StockTakeScanPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanPage> createState() => _AssetScanPageState();
+  State<StockTakeScanPage> createState() => _StockTakeScanPageState();
 }
 
-class _AssetScanPageState extends State<AssetScanPage> {
+class _StockTakeScanPageState extends State<StockTakeScanPage> {
   final StockTakeScanStore _stockTakeScanStore =
       getIt<StockTakeScanStore>();
   List<dynamic> disposer = [];

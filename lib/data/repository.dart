@@ -266,8 +266,8 @@ class Repository {
   // Stock Take Api
   Future<StockTakeResponse> getStockTake(
       {int page = 0, int limit = 10, String regNum = ""}) async {
-    return await _stockTakeApi.getStockTakeHeader(
-        page: page, limit: limit, regNum: regNum);
+    return await _stockTakeApi.listStockTakeHeader(
+        page: page, limit: limit, stNum: regNum);
   }
 
   Future<void> completeStockTake({stNum}) async {}
