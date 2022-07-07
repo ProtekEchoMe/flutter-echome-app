@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_new, unnecessary_this, prefer_collection_literals
 
-class StakeTakeItem {
+class StockTakeItem {
   int? id;
   int? site;
   String? regNum;
@@ -11,7 +11,7 @@ class StakeTakeItem {
   int? createdDate;
   int? modifiedDate;
 
-  StakeTakeItem(
+  StockTakeItem(
       {this.id,
       this.site,
       this.regNum,
@@ -22,7 +22,7 @@ class StakeTakeItem {
       this.createdDate,
       this.modifiedDate});
 
-  StakeTakeItem.fromJson(Map<String, dynamic> json) {
+  StockTakeItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     site = json['site'];
     regNum = json['regNum'];

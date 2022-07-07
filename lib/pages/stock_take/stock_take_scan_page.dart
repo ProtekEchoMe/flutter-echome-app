@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
-import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
+import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_detail_page.dart';
+import 'package:echo_me_mobile/stores/stock_take/stock_take_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
@@ -28,10 +29,10 @@ class AssetScanPage extends StatefulWidget {
 }
 
 class _AssetScanPageState extends State<AssetScanPage> {
-  final StokeTakeScanStore _stockTakeScanStore =
-      getIt<StokeTakeScanStore>();
+  final StockTakeScanStore _stockTakeScanStore =
+      getIt<StockTakeScanStore>();
   List<dynamic> disposer = [];
-  final StokeTakeApi api = getIt<StokeTakeApi>();
+  final StockTakeApi api = getIt<StockTakeApi>();
   final Repository repository = getIt<Repository>();
 
   bool isDialogShown = false;
@@ -129,7 +130,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Future<bool> _complete(StockTakeScanPageArguments? args) async {
     try {
-      _stockTakeScanStore.complete(regNum: args?.regNum ?? "");
+      _stockTakeScanStore.complete(stNum: args?.regNum ?? "");
       return true;
     }catch(e){
       return false;
@@ -138,7 +139,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Future<String> fetchData(StockTakeScanPageArguments? args) async {
 
-    var result = await repository.fetchArLineData(args);
+    var result = await repository.fetchStLineData(args);
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -330,7 +331,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AssetScanDetailPage(
+                          builder: (_) => StockTakeScanDetailPage(
                                 arg: args,
                               )));
                 }

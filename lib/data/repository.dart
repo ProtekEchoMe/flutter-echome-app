@@ -5,6 +5,7 @@ import 'package:echo_me_mobile/data/network/apis/asset_inventory/asset_inventory
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
+import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
@@ -14,6 +15,7 @@ import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_page_arguments.dart';
 
 import 'network/apis/login/login_api.dart';
 
@@ -36,6 +38,8 @@ class Repository {
 
   final TransferInApi _transferInApi;
 
+  final StockTakeApi _stockTakeApi;
+
   final AppVersionControlApi _appVersionControlApi;
 
   final LocSiteApi _siteCodeApi;
@@ -53,6 +57,7 @@ class Repository {
       this._assetReturnApi,
       this._transferOutApi,
       this._transferInApi,
+      this._stockTakeApi,
       this._appVersionControlApi,
       this._siteCodeApi);
 
@@ -101,36 +106,36 @@ class Repository {
         page: page, limit: limit, regNum: regNum);
   }
 
-
-
   Future<AssetRegistrationResponse> getAssetRegistrationLine(
       {int page = 0, int limit = 0, String regNum = ""}) async {
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: page, limit: limit, regNum: regNum);
   }
 
-  Future<dynamic> fetchArLineData(
-      AssetScanPageArguments? args) async {
+  Future<dynamic> fetchArLineData(AssetScanPageArguments? args) async {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: 0, limit: 0, regNum: regNum);
   }
 
-  Future<dynamic> fetchTiLineData(
-      TransferInScanPageArguments? args) async {
+
+  Future<dynamic> fetchTiLineData(TransferInScanPageArguments? args) async {
     String tiNum = args?.tiNum ?? "";
     return await _transferInApi.getTransferOutLine(
         page: 0, limit: 0, tiNum: tiNum);
   }
 
-  Future<dynamic> fetchToLineData(
-      TransferOutScanPageArguments? args) async {
+  Future<dynamic> fetchToLineData(TransferOutScanPageArguments? args) async {
     String toNum = args?.toNum ?? "";
     return await _transferOutApi.getTransferOutLine(
         page: 0, limit: 0, toNum: toNum);
   }
 
-
+  Future<dynamic> fetchStLineData(StockTakeScanPageArguments? args) async {
+    String regNum = args?.regNum ?? "";
+    return await _assetRegistrationApi.getAssetRegistrationLine(
+        page: 0, limit: 0, regNum: regNum);
+  }
 
   Future<AssetReturnResponse> getAssetReturn(
       {int page = 0, int limit = 10, String rtnNum = ""}) async {
@@ -138,10 +143,12 @@ class Repository {
         page: page, limit: limit, rtnNum: rtnNum);
   }
 
-  Future<LocSiteResponse> listSiteCode({int page = 0, int limit = 10, String siteCode = ""}) async {
-    try{
-      return await _siteCodeApi.listLocSite(page:page, limit: limit, siteCode: siteCode);
-    }catch(e){
+  Future<LocSiteResponse> listSiteCode(
+      {int page = 0, int limit = 10, String siteCode = ""}) async {
+    try {
+      return await _siteCodeApi.listLocSite(
+          page: page, limit: limit, siteCode: siteCode);
+    } catch (e) {
       throw "Failed to get Loc Site";
     }
   }
@@ -156,8 +163,7 @@ class Repository {
 
   Future<TransferOutHeaderItem> createTransferOutHeaderItem(
       {required int? toSite}) async {
-    return await _transferOutApi.createTransferOutHeaderItem(
-        toSite: toSite);
+    return await _transferOutApi.createTransferOutHeaderItem(toSite: toSite);
   }
 
   Future<void> registerToContainer(
@@ -172,16 +178,15 @@ class Repository {
 
   Future<void> registerToItem(
       {String toNum = "",
-        String containerAssetCode = "",
-        List<String> itemRfid = const [],
+      String containerAssetCode = "",
+      List<String> itemRfid = const [],
       bool directTO = false}) async {
     await _transferOutApi.registerToItem(
         toNum: toNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
-    directTO: directTO);
+        directTO: directTO);
   }
-
 
   // get Equipment Detail e.g. RFID
   Future<dynamic> getEquipmentDetail({List<String> rfid = const []}) async {
@@ -239,7 +244,8 @@ class Repository {
 
   Future<void> registerArContainer(
       {List<String> rfid = const [], String rtnNum = ""}) async {
-    return await _assetReturnApi.registerArContainer(rfid: rfid, rtnNum: rtnNum);
+    return await _assetReturnApi.registerArContainer(
+        rfid: rfid, rtnNum: rtnNum);
   }
 
   // asset registration api
@@ -249,13 +255,22 @@ class Repository {
 
   Future<void> registerArItem(
       {String rtnNum = "",
-        String containerAssetCode = "",
-        List<String> itemRfid = const []}) async {
+      String containerAssetCode = "",
+      List<String> itemRfid = const []}) async {
     await _assetReturnApi.registerArItem(
         rtnNum: rtnNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid);
   }
+
+  // Stock Take Api
+  Future<StockTakeResponse> getStockTake(
+      {int page = 0, int limit = 10, String regNum = ""}) async {
+    return await _stockTakeApi.getStockTakeHeader(
+        page: page, limit: limit, regNum: regNum);
+  }
+
+  Future<void> completeStockTake({stNum}) async {}
 
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {
@@ -325,7 +340,6 @@ class Repository {
 
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
 
-
   // General Methods: ----------------------------------------------------------
   Future<bool> saveAuthToken(String authToken) =>
       _sharedPrefsHelper.saveAuthToken(authToken);
@@ -342,12 +356,10 @@ class Repository {
   }
 
   Future<String> getAppDownloadLink() async {
-     try{
+    try {
       return await _appVersionControlApi.getAppDownloadLink();
-    }catch(e){
+    } catch (e) {
       throw "Failed to get app download link";
     }
   }
-
-
 }

@@ -1,22 +1,24 @@
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 
+import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
+
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 
 
 part 'stock_take_store.g.dart';
 
-class StakeTakeStore = _StakeTakeStore with _$StakeTakeStore;
+class StockTakeStore = _StockTakeStore with _$StockTakeStore;
 
-abstract class _StakeTakeStore with Store {
+abstract class _StockTakeStore with Store {
   final String TAG = "_StakeTakeStore";
 
   final ErrorStore errorStore = ErrorStore();
 
   final Repository repository;
 
-  _StakeTakeStore(this.repository);
+  _StockTakeStore(this.repository);
 
   @observable
   int page = 0;
@@ -34,18 +36,18 @@ abstract class _StakeTakeStore with Store {
   int get totalPage => (totalCount/limit).ceil();
 
   @observable 
-  ObservableList<StakeTakeItem> itemList = ObservableList<StakeTakeItem>();
+  ObservableList<StockTakeItemHolder> itemList = ObservableList<StockTakeItemHolder>();
   
   @observable
   bool isFetching = false;
 
   @action
-  void addItem(StakeTakeItem item){
+  void addItem(StockTakeItemHolder item){
     itemList.add(item);
   }
 
   @action
-  void addAllItem(List<StakeTakeItem> list){
+  void addAllItem(List<StockTakeItemHolder> list){
     print("????????");
     print(list);
     print(itemList);
@@ -60,7 +62,7 @@ abstract class _StakeTakeStore with Store {
   }
 
   @action
-  void updateList(List<StakeTakeItem> newList){
+  void updateList(List<StockTakeItemHolder> newList){
     itemList = ObservableList.of(newList);
   }
 
@@ -83,9 +85,9 @@ abstract class _StakeTakeStore with Store {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getStakeTake(page: targetPage, limit: limit, regNum: regNum);
+      var data = await repository.getStockTake(page: targetPage, limit: limit, regNum: regNum);
       int totalRow = data.rowNumber;
-      List<StakeTakeItem> list = data.itemList.map((StakeTakeItem e) =>StakeTakeItem(e)).toList();
+      List<StockTakeItemHolder> list = data.itemList.map((StockTakeItem e) =>StockTakeItemHolder(e)).toList();
       totalCount = totalRow;
       page = targetPage;
       itemList.clear();

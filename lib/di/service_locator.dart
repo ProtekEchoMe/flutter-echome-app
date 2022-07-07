@@ -7,6 +7,7 @@ import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/apis/login/logout_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
+import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart';
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_base.dart';
@@ -30,6 +31,7 @@ import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_store.dart';
+import 'package:echo_me_mobile/stores/stock_take/stock_take_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +59,7 @@ Future<void> setupLocator() async {
   getIt.registerSingleton(AssetReturnApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferOutApi(getIt<DioClient>()));
   getIt.registerSingleton(TransferInApi(getIt<DioClient>()));
+  getIt.registerSingleton(StockTakeApi(getIt<DioClient>()));
   getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
   // getIt.registerSingleton(AppVersionControlApi(getIt<DioClient>()));
   getIt.registerSingleton(LocSiteApi(getIt<DioClient>()));
@@ -72,6 +75,7 @@ Future<void> setupLocator() async {
         getIt<AssetReturnApi>(),
         getIt<TransferOutApi>(),
         getIt<TransferInApi>(),
+        getIt<StockTakeApi>(),
         getIt<AppVersionControlApi>(),
         getIt<LocSiteApi>()),
   );
@@ -111,6 +115,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<StockTakeScanStore>(
+          () => StockTakeScanStore(getIt<Repository>()));
 
   getIt.registerSingleton<AppVersionControlStore>(AppVersionControlStore(getIt<Repository>()));
 

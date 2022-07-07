@@ -1,7 +1,7 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
+import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
@@ -13,6 +13,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
+import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
 import 'stock_take_scan_page_arguments.dart';
 
 class StockTakePage extends StatefulWidget {
@@ -158,7 +159,7 @@ class _StockTakePageState extends State<StockTakePage> {
     );
   }
 
-  Color _getColor(RegistrationItemStatus status) {
+  Color _getColor(StockTakeItemStatus status) {
     if (status.name == "draft") {
       return Colors.grey;
     }

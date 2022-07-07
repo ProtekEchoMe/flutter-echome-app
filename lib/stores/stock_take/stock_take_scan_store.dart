@@ -9,17 +9,17 @@ import 'package:mobx/mobx.dart';
 
 part 'stock_take_scan_store.g.dart';
 
-class StakeTakeScanStore = _StakeTakeScanStore
-    with _$StakeTakeScanStore;
+class StockTakeScanStore = _StockTakeScanStore
+    with _$StockTakeScanStore;
 
-abstract class _StakeTakeScanStore with Store {
+abstract class _StockTakeScanStore with Store {
   final String TAG = "_StakeTakeScanStore";
 
   final ErrorStore errorStore = ErrorStore();
 
   final Repository repository;
 
-  _StakeTakeScanStore(this.repository);
+  _StockTakeScanStore(this.repository);
 
   @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
@@ -125,10 +125,10 @@ abstract class _StakeTakeScanStore with Store {
   }
 
   @action
-  Future<void> complete({String regNum = ""}) async {
+  Future<void> complete({String stNum = ""}) async {
     try {
       isFetching = true;
-      await repository.completeStakeTake(regNum: regNum);
+      await repository.completeStockTake(stNum: stNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {

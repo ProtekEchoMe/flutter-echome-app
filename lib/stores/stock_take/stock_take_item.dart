@@ -6,7 +6,7 @@ import 'package:mobx/mobx.dart';
 
 part 'stock_take_item.g.dart';
 
-enum StakeTakeItemStatus {
+enum StockTakeItemStatus {
   draft,
   pending,
   processing,
@@ -14,27 +14,27 @@ enum StakeTakeItemStatus {
 }
 
 class AssetRegistrationHelper {
-  static StakeTakeItemStatus statusConvertor(String? status){
+  static StockTakeItemStatus statusConvertor(String? status){
     if(status == "draft"){
-      return StakeTakeItemStatus.draft;
+      return StockTakeItemStatus.draft;
     }
     if(status == "pending"){
-      return StakeTakeItemStatus.pending;
+      return StockTakeItemStatus.pending;
     }
     if(status == "processing"){
-      return StakeTakeItemStatus.processing;
+      return StockTakeItemStatus.processing;
     }
-    return StakeTakeItemStatus.completed;
+    return StockTakeItemStatus.completed;
   }
 }
 
-class AssetStakeTakeItem = _AssetStakeTakeItem with _$AssetStakeTakeItem;
+class StockTakeItemHolder = _StockTakeItemHolder with _$StockTakeItemHolder;
 
-abstract class _AssetStakeTakeItem with Store {
+abstract class _StockTakeItemHolder with Store {
   final String TAG = "_AssetStakeTakeItem";
-  final StakeTakeItem item;
+  final StockTakeItem item;
 
-  _AssetStakeTakeItem(this.item){
+  _StockTakeItemHolder(this.item){
     orderId = item.regNum.toString();
     status = item.status ?? "";
   }
