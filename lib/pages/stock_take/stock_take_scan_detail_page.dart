@@ -160,7 +160,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
             Text(
                 "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
+            // Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
             const SizedBox(height: 5),
             Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),

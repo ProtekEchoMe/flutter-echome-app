@@ -69,23 +69,23 @@ abstract class _StockTakeStore with Store {
   @action
   Future<void> nextPage({String docNum = ""}) async{
     if(totalCount >= limit* (page+1)){
-      fetchData(regNum: docNum, requestedPage: page+1, );
+      fetchData(stNum: docNum, requestedPage: page+1, );
     }
   }
 
   @action
   Future<void> prevPage({String docNum = ""}) async{
     if(page>=1){
-      fetchData(regNum: docNum, requestedPage: page-1);
+      fetchData(stNum: docNum, requestedPage: page-1);
     }
   }
 
   @action
-  Future<void> fetchData({String regNum = "", int? requestedPage}) async {
+  Future<void> fetchData({String stNum = "", int? requestedPage}) async {
     isFetching = true;
     try{
       var targetPage = requestedPage ?? page;
-      var data = await repository.getStockTake(page: targetPage, limit: limit, regNum: regNum);
+      var data = await repository.getStockTake(page: targetPage, limit: limit, stNum: stNum);
       int totalRow = data.rowNumber;
       List<StockTakeItemHolder> list = data.itemList.map((StockTakeItem e) =>StockTakeItemHolder(e)).toList();
       totalCount = totalRow;

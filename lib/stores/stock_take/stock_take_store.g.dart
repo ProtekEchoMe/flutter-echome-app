@@ -116,9 +116,9 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
   final _$fetchDataAsyncAction = AsyncAction('_StockTakeStore.fetchData');
 
   @override
-  Future<void> fetchData({String regNum = "", int? requestedPage}) {
+  Future<void> fetchData({String stNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction.run(
-        () => super.fetchData(regNum: regNum, requestedPage: requestedPage));
+        () => super.fetchData(stNum: stNum, requestedPage: requestedPage));
   }
 
   final _$_StockTakeStoreActionController =

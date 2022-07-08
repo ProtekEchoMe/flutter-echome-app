@@ -35,7 +35,7 @@ abstract class _StockTakeItemHolder with Store {
   final StockTakeItem item;
 
   _StockTakeItemHolder(this.item){
-    orderId = item.regNum.toString();
+    orderId = item.stNum.toString();
     status = item.status ?? "";
   }
 

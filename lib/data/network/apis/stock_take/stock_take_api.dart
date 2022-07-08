@@ -179,7 +179,7 @@ class StockTakeApi {
   }
 
 
-  Future<void> registerItem(
+  Future<void> registerStockTakeItem(
       {String stNum = "",
       String locCode = "",
       List<String> itemRfid = const []}) async {

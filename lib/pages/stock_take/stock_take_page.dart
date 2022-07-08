@@ -30,7 +30,7 @@ class _StockTakePageState extends State<StockTakePage> {
   @override
   void initState() {
     super.initState();
-    _store.fetchData(regNum: widget.searchRegNum ?? "");
+    _store.fetchData(stNum: widget.searchRegNum ?? "");
   }
 
   @override
@@ -128,8 +128,10 @@ class _StockTakePageState extends State<StockTakePage> {
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.orderId;
+                                      // var subtitle =
+                                      //     listItem.item.shipperCode.toString();
                                       var subtitle =
-                                          listItem.item.shipperCode.toString();
+                                      listItem.item.stNum.toString();
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
                                       var fx = () => Navigator.pushNamed(
@@ -137,7 +139,7 @@ class _StockTakePageState extends State<StockTakePage> {
                                           arguments: StockTakeScanPageArguments(
                                               listItem.orderId,
                                               item: listItem.item)).then((value) => {
-                                                 _store.fetchData(regNum: widget.searchRegNum ?? "")
+                                                 _store.fetchData(stNum: widget.searchRegNum ?? "")
                                               });
                                       return StatusListItem(
                                         title: title,
