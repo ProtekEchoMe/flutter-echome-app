@@ -131,7 +131,7 @@ class Repository {
         page: 0, limit: 0, toNum: toNum);
   }
 
-  Future<dynamic> fetchStLineData(StockTakeScanPageArguments? args) async {
+  Future<dynamic> fetchStLineData(StockTakeScanPageLineArguments? args) async {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: 0, limit: 0, regNum: regNum);
@@ -267,6 +267,12 @@ class Repository {
   Future<StockTakeResponse> getStockTake(
       {int page = 0, int limit = 10, String stNum = ""}) async {
     return await _stockTakeApi.listStockTakeHeader(
+        page: page, limit: limit, stNum: stNum);
+  }
+
+  Future<StockTakeLineResponse> getStockTakeLine(
+      {int page = 0, int limit = 10, String stNum = ""}) async {
+    return await _stockTakeApi.listStockTakeLine(
         page: page, limit: limit, stNum: stNum);
   }
 

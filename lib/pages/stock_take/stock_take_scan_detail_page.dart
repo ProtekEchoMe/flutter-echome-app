@@ -10,7 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 class StockTakeScanDetailPage extends StatefulWidget {
-  StockTakeScanPageArguments arg;
+  StockTakeScanPageLineArguments arg;
   StockTakeScanDetailPage({Key? key, required this.arg}) : super(key: key);
 
   @override

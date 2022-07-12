@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 
 class StockTakeApi {
   //stock Take
@@ -81,7 +82,7 @@ class StockTakeApi {
     }
   }
 
-  Future<dynamic> listStockTakeLine(
+  Future<StockTakeLineResponse> listStockTakeLine(
       {int page = 0, int limit = 0, String stNum = ""}) async {
     try {
       print(page * limit);
@@ -92,7 +93,7 @@ class StockTakeApi {
 
       sortInfo = {
         "id": 1,
-        "name": "checkinQty",
+        "name": "status",
         "type": "",
         "dir": -1
       };
@@ -132,8 +133,8 @@ class StockTakeApi {
           queryParameters: query);
       print("ok");
       print(res);
-      return res["itemRow"];
-      return StockTakeResponse(res["itemRow"], res["totalRow"]);
+      // return res["itemRow"];
+      return StockTakeLineResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
       rethrow;
     }
@@ -255,6 +256,23 @@ class StockTakeResponse {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => StockTakeItem.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class StockTakeLineResponse {
+  List<StockTakeLineItem> itemList = [];
+  int rowNumber = 0;
+
+  StockTakeLineResponse(dynamic data, int? rowNum) {
+    try {
+      itemList = (data as List<dynamic>)
+          .map((e) => StockTakeLineItem.fromJson(e))
           .toList();
     } catch (e) {
       print(e);

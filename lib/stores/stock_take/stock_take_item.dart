@@ -1,5 +1,6 @@
 
 // import 'package:echo_me_mobile/models/asset_registration/registration_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:mobx/mobx.dart';
 
@@ -44,5 +45,28 @@ abstract class _StockTakeItemHolder with Store {
 
   @observable
   String status = "";
+
+}
+
+class StockTakeLineItemHolder = _StockTakeLineItemHolder with _$StockTakeLineItemHolder;
+
+abstract class _StockTakeLineItemHolder with Store {
+  final String TAG = "_AssetStakeTakeItem";
+  final StockTakeLineItem item;
+
+  _StockTakeLineItemHolder(this.item){
+    orderId = item.stNum.toString();
+    status = item.status ?? "";
+    locCode = item.locCode.toString();
+  }
+
+  @observable
+  String orderId = "";
+
+  @observable
+  String status = "";
+
+  @observable
+  String locCode = "";
 
 }

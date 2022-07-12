@@ -65,6 +65,7 @@ abstract class _AccessControlStore with Store {
   @computed
   ObservableList<String?> get accessControlledSiteNameList {
     final ObservableList<String?> siteCodeNameList = siteCodeItemStore.siteCodeNameList;
+    // siteCodeNameList.add("0");
     return (isSiteSuperuser || isEchoMeSuperuser) ? 
       siteCodeNameList : 
       ObservableList<String?>.of(roleSiteNameList.where((roleSiteName) => siteCodeNameList.contains(roleSiteName)));

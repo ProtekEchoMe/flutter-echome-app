@@ -23,6 +23,15 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
       (_$totalPageComputed ??= Computed<int>(() => super.totalPage,
               name: '_StockTakeStore.totalPage'))
           .value;
+  Computed<ObservableList<Map<String, dynamic>>>? _$itemLineUniLocListComputed;
+
+  @override
+  ObservableList<Map<String, dynamic>> get itemLineUniLocList =>
+      (_$itemLineUniLocListComputed ??=
+              Computed<ObservableList<Map<String, dynamic>>>(
+                  () => super.itemLineUniLocList,
+                  name: '_StockTakeStore.itemLineUniLocList'))
+          .value;
 
   final _$pageAtom = Atom(name: '_StockTakeStore.page');
 
@@ -84,6 +93,21 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
     });
   }
 
+  final _$itemLineListAtom = Atom(name: '_StockTakeStore.itemLineList');
+
+  @override
+  ObservableList<StockTakeLineItemHolder> get itemLineList {
+    _$itemLineListAtom.reportRead();
+    return super.itemLineList;
+  }
+
+  @override
+  set itemLineList(ObservableList<StockTakeLineItemHolder> value) {
+    _$itemLineListAtom.reportWrite(value, super.itemLineList, () {
+      super.itemLineList = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_StockTakeStore.isFetching');
 
   @override
@@ -117,8 +141,8 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
 
   @override
   Future<void> fetchData({String stNum = "", int? requestedPage}) {
-    return _$fetchDataAsyncAction.run(
-        () => super.fetchData(stNum: stNum, requestedPage: requestedPage));
+    return _$fetchDataAsyncAction
+        .run(() => super.fetchData(stNum: stNum, requestedPage: requestedPage));
   }
 
   final _$_StockTakeStoreActionController =
@@ -141,6 +165,17 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
         name: '_StockTakeStore.addAllItem');
     try {
       return super.addAllItem(list);
+    } finally {
+      _$_StockTakeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addAllLineItem(List<StockTakeLineItemHolder> list) {
+    final _$actionInfo = _$_StockTakeStoreActionController.startAction(
+        name: '_StockTakeStore.addAllLineItem');
+    try {
+      return super.addAllLineItem(list);
     } finally {
       _$_StockTakeStoreActionController.endAction(_$actionInfo);
     }
@@ -175,9 +210,11 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
+itemLineList: ${itemLineList},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
-totalPage: ${totalPage}
+totalPage: ${totalPage},
+itemLineUniLocList: ${itemLineUniLocList}
     ''';
   }
 }

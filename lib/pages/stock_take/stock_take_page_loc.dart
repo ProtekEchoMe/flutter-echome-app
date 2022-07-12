@@ -16,21 +16,21 @@ import 'package:outline_search_bar/outline_search_bar.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
 import 'stock_take_scan_page_arguments.dart';
 
-class StockTakePage extends StatefulWidget {
+class StockTakeLocPage extends StatefulWidget {
   final String? searchRegNum;
-  StockTakePage({Key? key, this.searchRegNum}) : super(key: key);
+  StockTakeLocPage({Key? key, this.searchRegNum}) : super(key: key);
 
   @override
-  State<StockTakePage> createState() => _StockTakePageState();
+  State<StockTakeLocPage> createState() => _StockTakeLocPageState();
 }
 
-class _StockTakePageState extends State<StockTakePage> {
+class _StockTakeLocPageState extends State<StockTakeLocPage> {
   final StockTakeStore _store = getIt<StockTakeStore>();
 
   @override
   void initState() {
     super.initState();
-    _store.fetchData(stNum: widget.searchRegNum ?? "");
+    _store.fetchLineData(stNum: widget.searchRegNum ?? "");
   }
 
   @override
@@ -48,7 +48,7 @@ class _StockTakePageState extends State<StockTakePage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Stock Take",
+      title: "Stock Take Line",
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -61,7 +61,7 @@ class _StockTakePageState extends State<StockTakePage> {
           return AppContentBox(
             child: isFetching
                 ? const AppLoader()
-                : _store.itemList.isEmpty
+                : _store.itemLineUniObjLocList.isEmpty
                     ? const Center(child: Text("No Data"))
                     : Stack(
                         children: [
@@ -122,12 +122,12 @@ class _StockTakePageState extends State<StockTakePage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemList.length,
+                                itemCount: _store.itemLineUniObjLocList.length,
                                 itemBuilder: ((context, index) {
-                                  final listItem = _store.itemList[index];
+                                  final listItem = _store.itemLineUniObjLocList[index];
                                   return Observer(
                                     builder: (context) {
-                                      var title = listItem.orderId;
+                                      var title = listItem.locCode;
                                       // var subtitle =
                                       //     listItem.item.shipperCode.toString();
                                       var subtitle =
@@ -135,8 +135,8 @@ class _StockTakePageState extends State<StockTakePage> {
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
                                       var fx = () => Navigator.pushNamed(
-                                          context, "/stock_take_loc",
-                                          arguments: StockTakeScanPageArguments(
+                                          context, "/stock_take_scan",
+                                          arguments: StockTakeScanPageLineArguments(
                                               listItem.orderId,
                                               item: listItem.item)).then((value) => {
                                                  _store.fetchData(stNum: widget.searchRegNum ?? "")
@@ -210,7 +210,7 @@ class _StockTakePageState extends State<StockTakePage> {
                 context,
                 MaterialPageRoute(
                     builder: (_) =>
-                        StockTakePage(searchRegNum: str.trim())));
+                        StockTakeLocPage(searchRegNum: str.trim())));
           }
         },
       ),

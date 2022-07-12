@@ -47,3 +47,59 @@ status: ${status}
     ''';
   }
 }
+
+mixin _$StockTakeLineItemHolder on _StockTakeLineItemHolder, Store {
+  final _$orderIdAtom = Atom(name: '_StockTakeLineItemHolder.orderId');
+
+  @override
+  String get orderId {
+    _$orderIdAtom.reportRead();
+    return super.orderId;
+  }
+
+  @override
+  set orderId(String value) {
+    _$orderIdAtom.reportWrite(value, super.orderId, () {
+      super.orderId = value;
+    });
+  }
+
+  final _$statusAtom = Atom(name: '_StockTakeLineItemHolder.status');
+
+  @override
+  String get status {
+    _$statusAtom.reportRead();
+    return super.status;
+  }
+
+  @override
+  set status(String value) {
+    _$statusAtom.reportWrite(value, super.status, () {
+      super.status = value;
+    });
+  }
+
+  final _$locCodeAtom = Atom(name: '_StockTakeLineItemHolder.locCode');
+
+  @override
+  String get locCode {
+    _$locCodeAtom.reportRead();
+    return super.locCode;
+  }
+
+  @override
+  set locCode(String value) {
+    _$locCodeAtom.reportWrite(value, super.locCode, () {
+      super.locCode = value;
+    });
+  }
+
+  @override
+  String toString() {
+    return '''
+orderId: ${orderId},
+status: ${status},
+locCode: ${locCode}
+    ''';
+  }
+}

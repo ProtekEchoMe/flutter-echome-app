@@ -21,6 +21,7 @@ import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'stock_take_scan_page_arguments.dart';
 
+
 class StockTakeScanPage extends StatefulWidget {
   const StockTakeScanPage({Key? key}) : super(key: key);
 
@@ -62,7 +63,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         : "";
   }
 
-  Future<bool> _changeEquipment(StockTakeScanPageArguments? args) async {
+  Future<bool> _changeEquipment(StockTakeScanPageLineArguments? args) async {
     print("change equ");
     try {
       if (args?.regNum == null) {
@@ -128,7 +129,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     _stockTakeScanStore.resetContainer();
   }
 
-  Future<bool> _complete(StockTakeScanPageArguments? args) async {
+  Future<bool> _complete(StockTakeScanPageLineArguments? args) async {
     try {
       _stockTakeScanStore.complete(stNum: args?.regNum ?? "");
       return true;
@@ -137,7 +138,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     }
   }
 
-  Future<String> fetchData(StockTakeScanPageArguments? args) async {
+  Future<String> fetchData(StockTakeScanPageLineArguments? args) async {
 
     var result = await repository.fetchStLineData(args);
     var newTotalProduct = (result as List).length.toString();
@@ -157,7 +158,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   }
 
   Future<void> _onBottomBarItemTapped(
-      StockTakeScanPageArguments? args, int index) async {
+      StockTakeScanPageLineArguments? args, int index) async {
     try{
       if (index == 0) {
         if (!accessControlStore.hasARChangeRight) throw "No Change Right";
@@ -296,8 +297,8 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final StockTakeScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as StockTakeScanPageArguments?;
+    final StockTakeScanPageLineArguments? args =
+        ModalRoute.of(context)!.settings.arguments as StockTakeScanPageLineArguments?;
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
@@ -328,15 +329,22 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           IconButton(
               onPressed: () {
                 if (args != null) {
+                  print("start");
+                }
+              },
+              icon: const Icon(MdiIcons.clockStart)),
+          IconButton(
+              onPressed: () {
+                if (args != null) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (_) => StockTakeScanDetailPage(
-                                arg: args,
-                              )));
+                            arg: args,
+                          )));
                 }
               },
-              icon: const Icon(MdiIcons.clipboardList)),
+              icon: const Icon(MdiIcons.clipboardList))
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -463,7 +471,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     );
   }
 
-  Widget _getBody(BuildContext ctx, StockTakeScanPageArguments? args) {
+  Widget _getBody(BuildContext ctx, StockTakeScanPageLineArguments? args) {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
@@ -614,9 +622,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         child: _assetListContainer(isLast, child));
   }
 
-  Widget _getTitle(BuildContext ctx, StockTakeScanPageArguments? args) {
+  Widget _getTitle(BuildContext ctx, StockTakeScanPageLineArguments? args) {
     return BodyTitle(
-      title: args?.regNum ?? "No RegNum",
+      title: (args?.regNum ?? "No RegNum") + " (ST)",
       clipTitle: "Hong Kong-DC",
     );
   }
