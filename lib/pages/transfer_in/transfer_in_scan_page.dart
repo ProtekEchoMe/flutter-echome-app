@@ -21,6 +21,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
+import 'package:echo_me_mobile/data/network/dio_client.dart';
+
 class TransferInScanPage extends StatefulWidget {
   const TransferInScanPage({Key? key}) : super(key: key);
 
@@ -33,6 +36,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   final Repository repository = getIt<Repository>();
+  final dioClient = getIt<DioClient>();
 
   bool isDialogShown = false;
 
@@ -126,7 +130,10 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   Future<String> fetchData(TransferInScanPageArguments? args) async {
 
-    var result = await repository.fetchTiLineData(args);
+    // var result = await repository.fetchTiLineData(args);
+    String tiNum = args?.tiNum ?? "";
+    var result = await dioClient
+        .get('${Endpoints.listTransferInLine}?tiNum=${tiNum}');
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
