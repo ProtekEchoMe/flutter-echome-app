@@ -64,7 +64,9 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         }
         //TODO: Update Serach Bar Input wheen having input from scanner gun
         _assetInventoryScanStore.updateDataSet(equList: equ, itemList: item);
-        skuSearchBarTextController.text = AscToText.getString(item[0]);
+        if(item.isNotEmpty) {
+          skuSearchBarTextController.text = AscToText.getString(item[0]);
+        }
         print("");
       }
     });

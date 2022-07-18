@@ -3,6 +3,9 @@ import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+
+import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
 class AssetInventoryDetailPage extends StatefulWidget {
   AssetInventoryItem? item;
@@ -16,6 +19,76 @@ class AssetInventoryDetailPage extends StatefulWidget {
 }
 
 class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
+  String disStr = "";
+  List<dynamic> disposer = [];
+  TextEditingController itemSearchTextController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
+      print("event: " + event.toString());
+      print("event.type: " + event.type.toString());
+      if (event.type == ScannerEventType.locatingEvent) {
+        for (var element in (event.data as List<String>)) {
+          print("element: " + element);
+          // updateLocatingDis(element);
+          setState((){
+            updateLocatingDis(element);
+          });
+        }
+        // _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+        print("");
+      }
+    });
+    // var disposerReaction = reaction(
+    //         (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
+    //   if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
+    //     DialogHelper.showErrorDialogBox(context, errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
+    //     _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
+    //   }
+    // });
+
+    disposer.add(() => eventSubscription.cancel());
+    // disposer.add(disposerReaction);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (var i = 0; i < disposer.length; i++) {
+      disposer[i]();
+    }
+  }
+
+  void updateLocatingDis(String disStr){
+    this.disStr = disStr;
+  }
+
+  Future<void> _onBottomBarItemTapped(int index) async {
+    try{
+      if (index == 0) {
+        print("Start Clicked");
+        // ZebraRfd8500.getAvailableRFIDReaderList().then((value) {
+        //   setState(() {
+        //     readerList = value;
+        //   });
+        String rfid = widget.item?.rfid ?? "";
+        String rfidHexCode = AscToText.getAscIIString(rfid);
+        var test = await ZebraRfd8500.performTagLocating(rfidHexCode);
+        print(test.toString());
+      } else if (index == 1) {
+
+        print("Stop Clicked");
+        var test = await ZebraRfd8500.stopTagLocating();
+        print(test.toString());
+      }
+    }catch (e){
+      // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      print(e.toString());
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.item);
@@ -59,6 +132,58 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
           ],
         ),
       ),
+        bottomNavigationBar: BottomNavigationBar(
+          selectedFontSize: 12,
+          selectedItemColor: Colors.black54,
+          unselectedItemColor: Colors.black54,
+          selectedIconTheme:
+          const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+          unselectedIconTheme:
+          const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.change_circle),
+              label: 'Start',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.signal_cellular_alt),
+              label: 'Stop',
+            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.eleven_mp),
+            //   label: 'Debug',
+            // ),
+          ],
+          onTap: (int index) => _onBottomBarItemTapped(index),
+        ),
+        floatingActionButton:
+        Container(
+            height: 50,
+            width: 50,
+            child: FittedBox(
+                child: FloatingActionButton( //TODO: Direct Transfer Out Create API
+                  // onPressed: () {
+                  //   showCupertinoModalPopup<void>(
+                  //       context: context, builder: (BuildContext context){
+                  //     return _buildBottomPicker2(
+                  //         _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+                  //   });
+                  // },
+                  onPressed: () {
+                    print("disStr: " + disStr);
+                    setState((){
+                      updateLocatingDis(disStr);
+                    });
+                  },
+                  // child: const Icon(Icons.add),
+                  // child: itemSearchTextController,
+                  child: Text(disStr.toString()),
+                  // foregroundColor:  Colors.orange[700]!.withOpacity(0.5),
+                  backgroundColor: Colors.orange[700]!.withOpacity(0.9),
+                ))),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat
     );
   }
+
+
 }

@@ -4,7 +4,8 @@ class ChannelConstant {
   static const String READER_CONNECTION_STATUS_CHANNEL =
       "com.protek/zebrarfd8500plugin/READER_CONNECTION_STATUS_CHANNEL"; // send read connection activity -> flutter
   static const String READER_RFID_DATA_CHANNEL =
-      "com.protek/zebrarfd8500plugin/READER_RFID_DATA_CHANNEL ";
-
+      "com.protek/zebrarfd8500plugin/READER_RFID_DATA_CHANNEL";
+  static const String READER_RFID_LOCATING_DATA_CHANNEL =
+      "com.protek/zebrarfd8500plugin/READER_RFID_LOCATING_DATA_CHANNEL";
   
 }

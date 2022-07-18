@@ -58,6 +58,33 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         Log.d(TAG, "Attach set");
     }
 
+//    public void getConnectedScannerInfo (Result result) {
+//        Log.d(TAG, "getConnectedScannerInfo");
+////        if( reader.isConnected() == false){
+////            result.error("error", "No connected Device", "");
+////            return;
+////        }
+////        RFIDReader reader = this.reader;
+////        ScannerData scannerData = new ScannerData(reader);
+////        result.success(scannerData.toHashMap());
+//////
+////////
+////        System.out.println("\nBlockEraseSupport: " + reader.ReaderCapabilities.isBlockEraseSupported());
+////        System.out.println("\nBlockWriteSupport: " + reader.ReaderCapabilities.isBlockWriteSupported());
+////        System.out.println("\nBlockPermalockSupport: " + reader.ReaderCapabilities.isBlockPermalockSupported());
+////        System.out.println("\nRecommisionSupport: " + reader.ReaderCapabilities.isRecommisionSupported());
+////        System.out.println("\nWriteWMISupport: " + reader.ReaderCapabilities.isWriteUMISupported());
+////        System.out.println("\nRadioPowerControlSupport: " + reader.ReaderCapabilities.isRadioPowerControlSupported());System.out.println("\nHoppingEn abled: " + reader.ReaderCapabilities.isHoppingEnabled());
+////        System.out.println("\nStateAwareSingulationCapable: " + reader.ReaderCapabilities.isTagInventoryStateAwareSingulationSupported());
+////        System.out.println("\nUTCClockCapable: " + reader.ReaderCapabilities.isUTCClockSupported());System.out.println("\nNumOperationsInAcc essSequence: " + reader.ReaderCapabilities.getMaxNumOperationsInAccessSequence());
+////        System.out.println("\nNumPreFilters: " + reader.ReaderCapabilities.getMaxNumPreFilters());
+////        System.out.println("\nNumAntennaSupported: " + reader.ReaderCapabilities.getNumAntennaSupported());
+////
+////        result.success("ok");
+////        Log.d(TAG, "sent");
+////        return;
+//    }
+
     ArrayList<String> getAvailableRFIDReaderList() throws InvalidUsageException {
 
         if (reader != null && reader.isConnected()) {
@@ -77,6 +104,22 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         }
         return result;
     }
+
+    String performTagLocating(String rfid){
+        Log.d(TAG, "performTagLocating is called");
+        rfidHandleTagData.performTagLocating(rfid);
+//        rfidHandleTagData.performTagLocating("4341544C303130303030303637343330");
+//        readers.Actions.TagLocationing.Perform("123", null, null);
+        return "Success";
+    }
+
+    String stopTagLocating(){
+        Log.d(TAG, "String stopTagLocating is called");
+        rfidHandleTagData.stopTagLocating();
+//        readers.Actions.TagLocationing.Perform("123", null, null);
+        return "Success";
+    }
+
 
     public boolean isReaderConnected() {
         if (reader != null && reader.isConnected())
@@ -199,6 +242,7 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
     private synchronized boolean connect() {
         if (reader != null) {
             Log.d(TAG, "1");
+            Log.d(TAG, "MIXSON");
             Log.d(TAG, "connect " + reader.getHostName());
             try {
                 if (!reader.isConnected()) {
@@ -338,10 +382,16 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
             // large tag population
             TagData[] myTags = reader.Actions.getReadTags(100);
             ArrayList<String> rfidList = new ArrayList<String>();
+            ArrayList<String> relativeDistanceList = new ArrayList<String>();
+
             if (myTags != null) {
                 for (int index = 0; index < myTags.length; index++) {
-                    rfidList.add(myTags[index].getTagID());
+//                    Log.d(TAG, "Tag ID class " + myTags[index].getTagID().getClass().getSimpleName());
+                    if(myTags[index].getTagID() != null) {
+                        rfidList.add(myTags[index].getTagID());
+                    }
                     Log.d(TAG, "Tag ID " + myTags[index].getTagID());
+                    Log.d(TAG, "Tag RSSI " + myTags[index].getPeakRSSI());
                     if (myTags[index].getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &&
                             myTags[index].getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
                         if (myTags[index].getMemoryBankData().length() > 0) {
@@ -350,6 +400,7 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
                     }
                     if (myTags[index].isContainsLocationInfo()) {
                         short dist = myTags[index].LocationInfo.getRelativeDistance();
+                        relativeDistanceList.add(String.valueOf(dist));
                         Log.d(TAG, "Tag relative distance " + dist);
                     }
                 }
@@ -357,7 +408,15 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        plugin.notifyRfidData(rfidList);
+//                        plugin.notifyRfidData(rfidList);
+                        if(rfidList != null && !rfidList.isEmpty()){
+                            Log.d(TAG, "rfidList:  " + rfidList);
+                            plugin.notifyRfidData(rfidList);
+                        }
+                        if(relativeDistanceList != null && !relativeDistanceList.isEmpty()){
+                            Log.d(TAG, "relativeDistanceList:  " + relativeDistanceList);
+                            plugin.notifyRfidLocatingData(relativeDistanceList);
+                        }
                     }
                 });
             }
@@ -418,5 +477,6 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         void handleTriggerPress(boolean pressed);
         // void handleStatusEvents(Events.StatusEventData eventData);
     }
+
 
 }

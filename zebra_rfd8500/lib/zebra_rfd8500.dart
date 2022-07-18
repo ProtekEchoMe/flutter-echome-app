@@ -9,7 +9,7 @@ import 'package:zebra_rfd8500/reader_list_change_event.dart';
 
 enum ReaderStatus { connected, disconnected }
 
-enum ScannerEventType { read, test, readEvent }
+enum ScannerEventType { read, test, readEvent, locatingEvent }
 
 enum ErrorStatus {
   // ignore: constant_identifier_names
@@ -63,6 +63,8 @@ class ZebraRfd8500 {
       EventChannel(ChannelConstant.READER_CONNECTION_STATUS_CHANNEL);
   static const EventChannel _readerRfidDataChannel =
       EventChannel(ChannelConstant.READER_RFID_DATA_CHANNEL);
+  static const EventChannel _readerRfidLocatingDataChannel =
+    EventChannel(ChannelConstant.READER_RFID_LOCATING_DATA_CHANNEL);
 
   static final StreamController<ReaderListChangeEvent>
       _readerListChannelStreamController = StreamController.broadcast();
@@ -93,6 +95,11 @@ class ZebraRfd8500 {
   static bool isInit = false;
 
   static Future<String?> get platformVersion async {
+    final String? version = await _channel.invokeMethod('getPlatformVersion');
+    return version;
+  }
+
+  static Future<String?> getPlatformVersion() async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
@@ -139,6 +146,33 @@ class ZebraRfd8500 {
     }
   }
 
+  static Future<String> performTagLocating(String? rfid) async {
+    try {
+      print("performTagLocating Called !");
+      String result = await _channel.invokeMethod('performTagLocating', {"rfid": rfid});
+      print("Get Success");
+      return result;
+    } on PlatformException catch (_, e) {
+      print("Error!!");
+      print(e);
+      rethrow;
+    }
+  }
+
+  static Future<String> stopTagLocating() async {
+    try {
+      print("stopTagLocating Called !");
+      String result = await _channel.invokeMethod('stopTagLocating');
+      print("Get Success");
+      return result;
+    } on PlatformException catch (_, e) {
+      print("Error!!");
+      print(e);
+      rethrow;
+    }
+  }
+
+
   static void initSDK() {
     addEventChannelHandler();
   }
@@ -180,7 +214,21 @@ class ZebraRfd8500 {
         return;
       }
     });
-    sinkDispose.addAll([_sink1, _sink2, _sink3, _sink4]);
+
+    var _sink5 =
+    _readerRfidLocatingDataChannel.receiveBroadcastStream().listen((event) {
+      print("_readerRfidLocatingDataChannel in flutter is being called");
+      print(event);
+      print(event.runtimeType);
+      if (event is List) {
+        var list = List<String>.from(event);
+        _eventController.sink
+            .add(ScannerEvent(ScannerEventType.locatingEvent, list));
+        return;
+      }
+    });
+
+    sinkDispose.addAll([_sink1, _sink2, _sink3, _sink4, _sink5]);
   }
 
   static void dispose() {

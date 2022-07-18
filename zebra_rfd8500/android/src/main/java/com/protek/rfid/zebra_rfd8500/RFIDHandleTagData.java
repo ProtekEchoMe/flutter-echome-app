@@ -57,4 +57,43 @@ public class RFIDHandleTagData implements RFIDHandlerHelper.ResponseHandlerInter
             e.printStackTrace();
         }
     }
+
+    synchronized void performTagLocating(String locateTag) {
+        // check reader connection
+        if (!rfidHandlerHelper.isReaderConnected())
+            return;
+        try {
+            rfidHandlerHelper.reader.Actions.TagLocationing.Perform(locateTag, null, null);
+        } catch (InvalidUsageException e) {
+            e.printStackTrace();
+        } catch (OperationFailureException e) {
+            e.printStackTrace();
+        }
+    }
+
+    synchronized void stopTagLocating(String locateTag) {
+        // check reader connection
+        if (!rfidHandlerHelper.isReaderConnected())
+            return;
+        try {
+            rfidHandlerHelper.reader.Actions.TagLocationing.Stop();
+        } catch (InvalidUsageException e) {
+            e.printStackTrace();
+        } catch (OperationFailureException e) {
+            e.printStackTrace();
+        }
+    }
+
+    synchronized void stopTagLocating() {
+        // check reader connection
+        if (!rfidHandlerHelper.isReaderConnected())
+            return;
+        try {
+            rfidHandlerHelper.reader.Actions.Inventory.stop();
+        } catch (InvalidUsageException e) {
+            e.printStackTrace();
+        } catch (OperationFailureException e) {
+            e.printStackTrace();
+        }
+    }
 }

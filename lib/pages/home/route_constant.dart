@@ -30,6 +30,10 @@ class RouteConstant {
       MdiIcons.trashCan,),
     "ST": RouteObject("Stock Take", "Count your asset", "/stock_take",
         MdiIcons.fileDocumentMultipleOutline),
+    "SS": RouteObject("Sensor Setting", "Configure your scanner", "/sensor_settings",
+    MdiIcons.fileDocumentMultipleOutline),
+
+
 
     // RouteObject("Senser Setting", "For Debug", "/debug", MdiIcons.deathStar)
   };

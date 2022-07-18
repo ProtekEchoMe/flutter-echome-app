@@ -62,8 +62,11 @@ task useAar {
             String md5 = getFileMD5(item)
             println("aar: " + aarInfo + " file sha1:" + sha1 + " md5:" + md5)
             String fromStr = item.path
+            println("item Path(fromStr): " + item.path)
             String intoStr = aarPath + "/" + aarInfo[0].replace(".", "/") + "/" + aarInfo[1] + "/" + aarInfo[2]
+            println("item Path(intoStr): " + intoStr)
             String newName = aarInfo[1] + "-" + aarInfo[2] + ".aar"
+            println("new Name: " + newName)
 
             project.copy {
                 from fromStr

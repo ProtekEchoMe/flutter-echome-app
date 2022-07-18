@@ -33,23 +33,30 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
    */
   private static final String READER_LIST_CHANNEL_NAME = "com.protek/zebrarfd8500plugin/READER_LIST_CHANNEL_NAME"; // send available read list -> flutter
   private static final String READER_CONNECTION_STATUS_CHANNEL = "com.protek/zebrarfd8500plugin/READER_CONNECTION_STATUS_CHANNEL"; // send read connection activity -> flutter
-  private static final String READER_RFID_DATA_CHANNEL = "com.protek/zebrarfd8500plugin/READER_RFID_DATA_CHANNEL "; // send rfid data -> flutter
+  private static final String READER_RFID_DATA_CHANNEL = "com.protek/zebrarfd8500plugin/READER_RFID_DATA_CHANNEL"; // send rfid data -> flutter
+
+  private static final String READER_RFID_LOCATING_DATA_CHANNEL = "com.protek/zebrarfd8500plugin/READER_RFID_LOCATING_DATA_CHANNEL"; // send rfid locating data -> flutter
+
 
 
   private EventChannel readerListChannel;
   private EventChannel readerConnectionStatusChannel;
   private EventChannel readerRfidDataChannel;
 
+  private EventChannel readerRfidLocatingDataChannel;
+
   private StreamHandlerImpl readerListChannelHandler = null;
   private StreamHandlerImpl readerConnectionStatusHandler = null;
   private StreamHandlerImpl readerRfidDataChannelHandler = null;
+
+  private StreamHandlerImpl readerRfidLocatingDataChannelHandler = null;
 
   private MethodChannel channel;
   private EventChannel eventChannel;
   private static Readers readers;
   private Context context;
   private Lifecycle lifecycle;
-//  private RFIDHandler rfidHandler;
+  private RFIDHandler rfidHandler;
   private RFIDHandlerHelper rfidHandlerHelper;
   private PluginLifecycleObserver pluginLifecycleObserver;
   private EventChannel.EventSink sink = null;
@@ -67,14 +74,18 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
     readerListChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_LIST_CHANNEL_NAME);
     readerConnectionStatusChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_CONNECTION_STATUS_CHANNEL);
     readerRfidDataChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_RFID_DATA_CHANNEL);
+    readerRfidLocatingDataChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_RFID_LOCATING_DATA_CHANNEL);
+
 
     readerListChannelHandler = new StreamHandlerImpl(READER_LIST_CHANNEL_NAME);
     readerConnectionStatusHandler = new StreamHandlerImpl(READER_CONNECTION_STATUS_CHANNEL);
     readerRfidDataChannelHandler = new StreamHandlerImpl(READER_RFID_DATA_CHANNEL);
+    readerRfidLocatingDataChannelHandler = new StreamHandlerImpl(READER_RFID_LOCATING_DATA_CHANNEL);
 
     readerListChannel.setStreamHandler(readerListChannelHandler);
     readerConnectionStatusChannel.setStreamHandler(readerConnectionStatusHandler);
     readerRfidDataChannel.setStreamHandler(readerRfidDataChannelHandler);
+    readerRfidLocatingDataChannel.setStreamHandler(readerRfidLocatingDataChannelHandler);
     // old one
     rfidHandlerHelper = new RFIDHandlerHelper(context, this);
   }
@@ -103,6 +114,12 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
     }
   }
 
+  public void notifyRfidLocatingData(ArrayList<String> arrayList){
+    if(readerRfidLocatingDataChannelHandler.sink != null){
+      readerRfidLocatingDataChannelHandler.sink.success(arrayList);
+    }
+  }
+
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     Log.d(TAG, "OnMethodCall");
@@ -114,6 +131,17 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
     switch (call.method){
       case "getPlatformVersion":
         result.success("Android " + android.os.Build.VERSION.RELEASE);
+        break;
+      case "performTagLocating":
+
+        String rfid = call.argument("rfid");
+        Log.d(TAG, "performTagLocating rfid Param: " + rfid);
+        String world = rfidHandlerHelper.performTagLocating(rfid);
+        result.success("Hello " + world);
+        break;
+      case "stopTagLocating":
+        String stopworld = rfidHandlerHelper.stopTagLocating();
+        result.success("stop Hello " + stopworld);
         break;
       case "getAvailableRFIDReaderList":
         try{
@@ -147,7 +175,8 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
 //        }
         break;
       case "getConnectedScannerInfo":
-        Log.d(TAG, "getConnectedScannerInfo");
+        Log.d(TAG, "getConnectedScannerInfoMixson");
+        rfidHandler.getConnectedScannerInfo(result);
 //        try {
 ////          rfidHandler.getConnectedScannerInfo(result);
 //        } catch (InvalidUsageException e) {

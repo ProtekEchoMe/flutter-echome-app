@@ -57,8 +57,9 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
         reader.Config.Antennas.setAntennaRfConfig(1,antennaRfConfig);
     }
 
-    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
-//        Log.d(TAG, "getConnectedScannerInfo");
+//    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
+    void getConnectedScannerInfo (Result result){
+        Log.d(TAG, "getConnectedScannerInfo");
         if(mConnectedReaderDevice == null || reader.isConnected() == false){
             result.error("error", "No connected Device", "");
             return;
