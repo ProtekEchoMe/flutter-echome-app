@@ -4,17 +4,17 @@ import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 
 class StockTakeScanPageArguments {
-  final String regNum;
+  final String stNum;
   StockTakeItem? item;
-  StockTakeScanPageArguments(this.regNum, {StockTakeItem? item}){
+  StockTakeScanPageArguments(this.stNum, {StockTakeItem? item}){
     this.item = item;
   }
 }
 
 class StockTakeScanPageLineArguments {
-  final String regNum;
+  final String stNum;
   StockTakeLineItem? item;
-  StockTakeScanPageLineArguments(this.regNum, {StockTakeLineItem? item}){
+  StockTakeScanPageLineArguments(this.stNum, {StockTakeLineItem? item}){
     this.item = item;
   }
 }

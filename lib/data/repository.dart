@@ -132,9 +132,15 @@ class Repository {
   }
 
   Future<dynamic> fetchStLineData(StockTakeScanPageLineArguments? args) async {
-    String regNum = args?.regNum ?? "";
+    String regNum = args?.stNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: 0, limit: 0, regNum: regNum);
+  }
+
+  Future<dynamic> fetchStLineData2(StockTakeScanPageArguments? args) async {
+    String stNum = args?.stNum ?? "";
+    // return await _assetRegistrationApi.getStockTakeLine(
+    //     page: 0, limit: 0, stNum: stNum);
   }
 
   Future<AssetReturnResponse> getAssetReturn(
@@ -272,11 +278,32 @@ class Repository {
 
   Future<StockTakeLineResponse> getStockTakeLine(
       {int page = 0, int limit = 10, String stNum = ""}) async {
-    return await _stockTakeApi.listStockTakeLine(
+    var result = await _stockTakeApi.listStockTakeLine(
         page: page, limit: limit, stNum: stNum);
+    return result;
   }
 
-  Future<void> completeStockTake({stNum}) async {}
+  Future<void> startStockTake(
+      {String stNum = ""}) async {
+    return await _stockTakeApi.startStockTake(
+         stNum: stNum);
+  }
+
+  Future<void> completeStockTake(
+      { String stNum = ""}) async {
+    return await _stockTakeApi.completeStockTake(
+         stNum: stNum);
+  }
+
+  Future<void> registerStockTakeItem(
+      {String stNum = "",
+        String locCode = "",
+        List<String> itemRfid = const []}) async {
+    return await _stockTakeApi.registerStockTakeItem(
+         stNum: stNum, locCode: locCode, itemRfid: itemRfid);
+  }
+
+  // Future<void> completeStockTake({stNum}) async {}
 
   // Post: ---------------------------------------------------------------------
   // Future<PostList> getPosts() async {

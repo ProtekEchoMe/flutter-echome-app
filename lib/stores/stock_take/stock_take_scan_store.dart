@@ -111,17 +111,17 @@ abstract class _StockTakeScanStore with Store {
   @action
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    var initIndex = equipmentRfidDataSet.length;
+    // var initIndex = equipmentRfidDataSet.length;
     itemRfidDataSet.addAll(itemList);
-    equipmentRfidDataSet.addAll(equList);
-    var finalIndex = equipmentRfidDataSet.length;
-    if (initIndex != finalIndex) {
-      isFetchingEquData = true;
-      EasyDebounce.debounce(
-          'validateContainerRfid', const Duration(milliseconds: 500), () {
-        validateEquipmentRfid();
-      });
-    }
+    // equipmentRfidDataSet.addAll(equList);
+    // var finalIndex = equipmentRfidDataSet.length;
+    // if (initIndex != finalIndex) {
+    //   isFetchingEquData = true;
+    //   EasyDebounce.debounce(
+    //       'validateContainerRfid', const Duration(milliseconds: 500), () {
+    //     validateEquipmentRfid();
+    //   });
+    // }
   }
 
   @action
@@ -168,6 +168,47 @@ abstract class _StockTakeScanStore with Store {
           regNum: regNum,
           containerAssetCode: containerAssetCode,
           itemRfid: itemRfid);
+    } catch (e) {
+      if (throwError == true) {
+        rethrow;
+      } else {
+        errorStore.setErrorMessage(e.toString());
+      }
+    } finally {
+      isFetching = false;
+    }
+  }
+  @action
+  Future<void> registerStockTakeItem(
+      {String stNum = "",
+        String locCode = "",
+        List<String> itemRfid = const [],
+        bool throwError = false}) async {
+    try {
+      isFetching = true;
+      await repository.registerStockTakeItem(
+          stNum: stNum,
+          locCode: locCode,
+          itemRfid: itemRfid);
+    } catch (e) {
+      if (throwError == true) {
+        rethrow;
+      } else {
+        errorStore.setErrorMessage(e.toString());
+      }
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  @action
+  Future<void> startStockTake(
+      {String stNum = "",
+        bool throwError = false}) async {
+    try {
+      isFetching = true;
+      await repository.startStockTake(
+          stNum: stNum,);
     } catch (e) {
       if (throwError == true) {
         rethrow;

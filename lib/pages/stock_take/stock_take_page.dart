@@ -18,6 +18,7 @@ import 'stock_take_scan_page_arguments.dart';
 
 class StockTakePage extends StatefulWidget {
   final String? searchRegNum;
+
   StockTakePage({Key? key, this.searchRegNum}) : super(key: key);
 
   @override
@@ -78,9 +79,10 @@ class _StockTakePageState extends State<StockTakePage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage(docNum: widget.searchRegNum ?? "");
+                                        _store.prevPage(
+                                            docNum: widget.searchRegNum ?? "");
                                       },
-                                      child:const SizedBox(
+                                      child: const SizedBox(
                                         width: 40,
                                         child: Center(
                                           child: Icon(Icons.arrow_back),
@@ -103,7 +105,8 @@ class _StockTakePageState extends State<StockTakePage> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage(docNum: widget.searchRegNum ?? "");
+                                        _store.nextPage(
+                                            docNum: widget.searchRegNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -123,23 +126,38 @@ class _StockTakePageState extends State<StockTakePage> {
                             child: Observer(
                               builder: (context) => ListView.builder(
                                 itemCount: _store.itemList.length,
+                                // itemCount: _store.itemLineUniObjLocList.length,
                                 itemBuilder: ((context, index) {
                                   final listItem = _store.itemList[index];
+                                  // final listItem =
+                                  //     _store.itemLineUniObjLocList[index];
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.orderId;
                                       // var subtitle =
                                       //     listItem.item.shipperCode.toString();
                                       var subtitle =
-                                      listItem.item.stNum.toString();
+                                          listItem.item.ranges.toString();
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
+                                      // var fx = () => Navigator.pushNamed(
+                                      //     context, "/stock_take_loc",
+                                      //     arguments: StockTakeScanPageArguments(
+                                      //         listItem.orderId,
+                                      //         item: listItem.item)).then((value) => {
+                                      //            _store.fetchData(stNum: widget.searchRegNum ?? "")
+                                      //         });
                                       var fx = () => Navigator.pushNamed(
-                                          context, "/stock_take_loc",
-                                          arguments: StockTakeScanPageArguments(
-                                              listItem.orderId,
-                                              item: listItem.item)).then((value) => {
-                                                 _store.fetchData(stNum: widget.searchRegNum ?? "")
+                                              context, "/stock_take_scan",
+                                              arguments:
+                                                  StockTakeScanPageArguments(
+                                                      listItem.orderId,
+                                                      item: listItem.item))
+                                          .then((value) => {
+                                                _store.fetchData(
+                                                    stNum:
+                                                        widget.searchRegNum ??
+                                                            "")
                                               });
                                       return StatusListItem(
                                         title: title,
@@ -209,12 +227,10 @@ class _StockTakePageState extends State<StockTakePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) =>
-                        StockTakePage(searchRegNum: str.trim())));
+                    builder: (_) => StockTakePage(searchRegNum: str.trim())));
           }
         },
       ),
     );
   }
-
 }

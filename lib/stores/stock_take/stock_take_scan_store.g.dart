@@ -163,6 +163,32 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         throwError: throwError));
   }
 
+  final _$registerStockTakeItemAsyncAction =
+      AsyncAction('_StockTakeScanStore.registerStockTakeItem');
+
+  @override
+  Future<void> registerStockTakeItem(
+      {String stNum = "",
+      String locCode = "",
+      List<String> itemRfid = const [],
+      bool throwError = false}) {
+    return _$registerStockTakeItemAsyncAction.run(() => super
+        .registerStockTakeItem(
+            stNum: stNum,
+            locCode: locCode,
+            itemRfid: itemRfid,
+            throwError: throwError));
+  }
+
+  final _$startStockTakeAsyncAction =
+      AsyncAction('_StockTakeScanStore.startStockTake');
+
+  @override
+  Future<void> startStockTake({String stNum = "", bool throwError = false}) {
+    return _$startStockTakeAsyncAction
+        .run(() => super.startStockTake(stNum: stNum, throwError: throwError));
+  }
+
   final _$_StockTakeScanStoreActionController =
       ActionController(name: '_StockTakeScanStore');
 

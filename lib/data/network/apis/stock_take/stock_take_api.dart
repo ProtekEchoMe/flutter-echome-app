@@ -215,6 +215,26 @@ class StockTakeApi {
     }
   }
 
+  Future<void> startStockTake({String stNum = ""}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.stockTakeStart, queryParameters: {"stNum": stNum});
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
 
 
 

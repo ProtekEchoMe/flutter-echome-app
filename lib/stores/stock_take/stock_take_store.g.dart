@@ -32,6 +32,16 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
                   () => super.itemLineUniLocList,
                   name: '_StockTakeStore.itemLineUniLocList'))
           .value;
+  Computed<ObservableList<StockTakeLineItemHolder>>?
+      _$itemLineUniObjLocListComputed;
+
+  @override
+  ObservableList<StockTakeLineItemHolder> get itemLineUniObjLocList =>
+      (_$itemLineUniObjLocListComputed ??=
+              Computed<ObservableList<StockTakeLineItemHolder>>(
+                  () => super.itemLineUniObjLocList,
+                  name: '_StockTakeStore.itemLineUniObjLocList'))
+          .value;
 
   final _$pageAtom = Atom(name: '_StockTakeStore.page');
 
@@ -214,7 +224,8 @@ itemLineList: ${itemLineList},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage},
-itemLineUniLocList: ${itemLineUniLocList}
+itemLineUniLocList: ${itemLineUniLocList},
+itemLineUniObjLocList: ${itemLineUniObjLocList}
     ''';
   }
 }

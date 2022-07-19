@@ -11,13 +11,14 @@ class StockTakeLineItem {
   String? skuCode;
   String? containerCode;
   String? locCode;
-  String? stocktakeLocCode;
+  Null? stocktakeLocCode;
   String? status;
   String? invStatus;
-  String? reason;
-  int? stocktakeDate;
+  Null? reason;
+  Null? stocktakeDate;
   int? createdDate;
   int? modifiedDate;
+  int? version;
 
   StockTakeLineItem(
       {this.id,
@@ -36,7 +37,8 @@ class StockTakeLineItem {
         this.reason,
         this.stocktakeDate,
         this.createdDate,
-        this.modifiedDate});
+        this.modifiedDate,
+        this.version});
 
   StockTakeLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -56,6 +58,7 @@ class StockTakeLineItem {
     stocktakeDate = json['stocktakeDate'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+    version = json['version'];
   }
 
   Map<String, dynamic> toJson() {
@@ -77,7 +80,9 @@ class StockTakeLineItem {
     data['stocktakeDate'] = this.stocktakeDate;
     data['createdDate'] = this.createdDate;
     data['modifiedDate'] = this.modifiedDate;
+    data['version'] = this.version;
     return data;
   }
 }
+
 

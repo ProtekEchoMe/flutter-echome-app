@@ -8,6 +8,7 @@ import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_scan_store.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
@@ -63,24 +64,24 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         : "";
   }
 
-  Future<bool> _changeEquipment(StockTakeScanPageLineArguments? args) async {
+  Future<bool> _changeEquipment(StockTakeScanPageArguments? args) async {
     print("change equ");
     try {
-      if (args?.regNum == null) {
+      if (args?.stNum == null) {
         throw "Reg Number Not Found";
       }
 
-      if (_getcontainerAssetCode().isEmpty) {
-        throw "Container Code not found";
-      }
+      // if (_getcontainerAssetCode().isEmpty) {
+      //   throw "Container Code not found";
+      // }
 
       if (_stockTakeScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_stockTakeScanStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_stockTakeScanStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
@@ -93,26 +94,34 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         }
       }
 
-      try {
-        await _stockTakeScanStore.registerContainer(
-            rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
-      } catch (e) {
-        if (!e.toString().contains("Error 2109")) {
-          // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
-          // rethrow;
-          print(e.toString());
-        }
-        // rethrow;
-      }
+      // try {
+      //   await _stockTakeScanStore.registerContainer(
+      //       rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
+      // } catch (e) {
+      //   if (!e.toString().contains("Error 2109")) {
+      //     // _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      //     // rethrow;
+      //     print(e.toString());
+      //   }
+      //   // rethrow;
+      // }
 
       List<String> itemRfid = _stockTakeScanStore.itemRfidDataSet
           .map((e) => AscToText.getString(e))
           .toList();
-      await _stockTakeScanStore.registerItem(
-          regNum: args?.regNum ?? "",
+      // await _stockTakeScanStore.registerItem(
+      //     regNum: args?.regNum ?? "",
+      //     itemRfid: itemRfid,
+      //     containerAssetCode: targetcontainerAssetCode,
+      //     throwError: true);
+
+      await _stockTakeScanStore.registerStockTakeItem(
+          stNum: args?.stNum ?? "",
           itemRfid: itemRfid,
-          containerAssetCode: targetcontainerAssetCode,
+          locCode: args?.item?.ranges ?? "",
           throwError: true);
+
+
       _stockTakeScanStore.reset();
       return true;
     } catch (e) {
@@ -129,36 +138,51 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     _stockTakeScanStore.resetContainer();
   }
 
-  Future<bool> _complete(StockTakeScanPageLineArguments? args) async {
+  Future<bool> _complete(StockTakeScanPageArguments? args) async {
     try {
-      _stockTakeScanStore.complete(stNum: args?.regNum ?? "");
+      _stockTakeScanStore.complete(stNum: args?.stNum ?? "");
       return true;
     }catch(e){
       return false;
     }
   }
 
-  Future<String> fetchData(StockTakeScanPageLineArguments? args) async {
-
-    var result = await repository.fetchStLineData(args);
-    var newTotalProduct = (result as List).length.toString();
-    int newTotalQuantity = 0;
-    int totalRegQuantity = 0;
-    (result as List).forEach((e) {
-      try{
-        newTotalQuantity += e["quantity"] as int ;
-        totalRegQuantity += e["checkinQty"] as int;
-      }catch(e){
-        print(e);
-      };
+  Future<String> fetchData(StockTakeScanPageArguments? args) async {
+    String stNum = args?.stNum ?? "";
+    var result = await repository.getStockTakeLine(
+        page: 0, limit: 0, stNum: stNum);
+    // var result = await repository.fetchStLineData2(args);
+    // var newTotalProduct = (result as List).length.toString();
+    // int newTotalQuantity = 0;
+    // int totalRegQuantity = 0;
+    // (result as List).forEach((e) {
+    //   try{
+    //     newTotalQuantity += e["quantity"] as int ;
+    //     totalRegQuantity += e["checkinQty"] as int;
+    //   }catch(e){
+    //     print(e);
+    //   };
+    // });
+    //
+    // return "Total: $totalRegQuantity / $newTotalQuantity";
+    var totalQty = result.rowNumber;
+    List<StockTakeLineItem> lineList = result.itemList;
+    Map<String, int> countMap = new Map<String, int>();
+    lineList.forEach((element) {
+      String status = element.status ?? "";
+      if (countMap.containsKey(status)){
+        if (countMap[status] != null) {
+          countMap[status] = countMap[status]! + 1;
+        }
+      }else{
+        countMap[status] = 0;
+      }
     });
-
-    return "Total: $totalRegQuantity / $newTotalQuantity";
-
+    return countMap.toString();
   }
 
   Future<void> _onBottomBarItemTapped(
-      StockTakeScanPageLineArguments? args, int index) async {
+      StockTakeScanPageArguments? args, int index) async {
     try{
       if (index == 0) {
         if (!accessControlStore.hasARChangeRight) throw "No Change Right";
@@ -204,9 +228,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             },
           ),
           TextButton(
-            child: const Text('SContainer'),
+            child: const Text('mockScan1'),
             onPressed: () {
-              _addMockEquipmentIdCaseTwo();
+              _mockscan1();
               Navigator.of(context).pop();
             },
           )
@@ -228,13 +252,14 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         List<String> item = [];
         List<String> equ = [];
         for (var element in (event.data as List<String>)) {
-          if (element.substring(0, 2) == "63" ||
-              element.substring(0, 2) == "43") {
-            equ.add(element);
-          } else if (element.substring(0, 2) == "53" ||
-              element.substring(0, 2) == "73") {
-            item.add(element);
-          }
+          // if (element.substring(0, 2) == "63" ||
+          //     element.substring(0, 2) == "43") {
+          //   equ.add(element);
+          // } else if (element.substring(0, 2) == "53" ||
+          //     element.substring(0, 2) == "73") {
+          //   item.add(element);
+          // }
+          item.add(element);
         }
         _stockTakeScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
@@ -297,8 +322,8 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final StockTakeScanPageLineArguments? args =
-        ModalRoute.of(context)!.settings.arguments as StockTakeScanPageLineArguments?;
+    final StockTakeScanPageArguments? args =
+        ModalRoute.of(context)!.settings.arguments as StockTakeScanPageArguments?;
     return Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
@@ -323,13 +348,14 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       // ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.regNum : "EchoMe")],
+          children: [Text(args != null ? args.stNum : "EchoMe")],
         ),
         actions: [
           IconButton(
               onPressed: () {
                 if (args != null) {
-                  print("start");
+                  print("startStockTake");
+                  _stockTakeScanStore.startStockTake(stNum: args.stNum);
                 }
               },
               icon: const Icon(MdiIcons.clockStart)),
@@ -368,10 +394,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.eleven_mp),
-          //   label: 'Debug',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eleven_mp),
+            label: 'Debug',
+          ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -471,7 +497,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     );
   }
 
-  Widget _getBody(BuildContext ctx, StockTakeScanPageLineArguments? args) {
+  Widget _getBody(BuildContext ctx, StockTakeScanPageArguments? args) {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
@@ -622,9 +648,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         child: _assetListContainer(isLast, child));
   }
 
-  Widget _getTitle(BuildContext ctx, StockTakeScanPageLineArguments? args) {
+  Widget _getTitle(BuildContext ctx, StockTakeScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.regNum ?? "No RegNum") + " (ST)",
+      title: (args?.stNum ?? "No RegNum") + " (ST)",
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -671,8 +697,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     list1.add(AscToText.getAscIIString("CATL010000000808"));
     list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
-    list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("CATL010000000819"));
+    // list2.add(AscToText.getAscIIString("SATL010000000808"));
+    // list2.add(AscToText.getAscIIString("SATL010000000819"));
+    // list2.add(AscToText.getAscIIString("CATL010000000808"));
+    list2.add(AscToText.getAscIIString("SATL010000033703"));
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

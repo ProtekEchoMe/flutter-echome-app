@@ -3,6 +3,7 @@ import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_page_arguments.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
 class StockTakeScanDetailPage extends StatefulWidget {
-  StockTakeScanPageLineArguments arg;
+  StockTakeScanPageArguments arg;
   StockTakeScanDetailPage({Key? key, required this.arg}) : super(key: key);
 
   @override
@@ -19,35 +20,63 @@ class StockTakeScanDetailPage extends StatefulWidget {
 
 class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   final inputFormat = DateFormat('dd/MM/yyyy');
+  List<String> statusList = ["OUTSTANDING", "SCANNED", "IN_RANGE_EXCEPTIONAL", "OUT_RANGE_EXCEPTIONAL", "CANCEL"];
+  Map<String, int> statusMap = {"OUTSTANDING": 0, "SCANNED": 0, "IN_RANGE_EXCEPTIONAL": 0, "OUT_RANGE_EXCEPTIONAL": 0, "CANCEL": 0};
+  List<Widget> statusTextList = [];
   String totalProduct = "";
   String totalQuantity = "";
   String totalTracker = "";
 
   bool isFetching = false;
-  DioClient repository = getIt<DioClient>();
-  List<ListDocumentLineItem> dataList = [];
+  // DioClient repository = getIt<DioClient>();
+  final Repository repository = getIt<Repository>();
+  List<StockTakeLineItem> dataList = [];
 
   Future<void> fetchData() async {
-    var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
-    var newTotalProduct = (result as List).length.toString();
-    int newTotalQuantity = 0;
-    int totalRegQuantity = 0;
-    var newDataList = (result as List).map((e) {
-      try{
-        newTotalQuantity += e["quantity"] as int ;
-        totalRegQuantity += e["checkinQty"] as int;
-      }catch(e){
-        print(e);
+    String stNum = widget.arg.stNum;
+    var result = await repository.getStockTakeLine(
+        page: 0, limit: 0, stNum: stNum);
+    // var result = await repository.get(
+    //     'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.stNum}');
+    // var newTotalProduct = (result as List).length.toString();
+    // int newTotalQuantity = 0;
+    // int totalRegQuantity = 0;
+    // var newDataList = (result as List).map((e) {
+    //   try{
+    //     newTotalQuantity += e["quantity"] as int ;
+    //     totalRegQuantity += e["checkinQty"] as int;
+    //   }catch(e){
+    //     print(e);
+    //   }
+    //   return ListDocumentLineItem.fromJson(e);
+    // }).toList();
+
+    List<StockTakeLineItem> lineList = result.itemList;
+    // Map<String, int> countMap = new Map<String, int>();
+    lineList.forEach((element) {
+      String status = element.status ?? "";
+      if (statusMap.containsKey(status)){
+        if (statusMap[status] != null) {
+          statusMap[status] = statusMap[status]! + 1;
+        }
+      }else{
+        statusMap[status] = 0;
       }
-      return ListDocumentLineItem.fromJson(e);
-    }).toList();
+    });
+
+    // var tempList = [];
+    statusTextList.add(const SizedBox(height: 5));
+    statusMap.forEach((key, value) {
+      statusTextList.add(Text("Total $key : $value"));
+      statusTextList.add(const SizedBox(height: 5));
+    }
+    );
 
     setState(() {
-      dataList = newDataList;
-      totalProduct = newTotalProduct;
-      totalQuantity = newTotalQuantity.toString();
-      totalTracker = "$totalRegQuantity/$newTotalQuantity";
+      dataList = lineList;
+      totalProduct = result.rowNumber.toString();
+      totalQuantity = "0";
+      totalTracker = "";
     });
   }
 
@@ -92,35 +121,31 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
             builder: (context) => ListView.builder(
                 itemCount: dataList.length,
                 itemBuilder: ((context, index) {
-                  final listItem = dataList[index];
-                  return Builder(builder: (context) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                            Text("Product Code : ${listItem.skuCode}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Description : ${listItem.description}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Quantity : ${listItem.quantity}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("Check In Quantity : ${listItem.checkinQty}")
-                        ],
-                      ),
-                          )),
-                    );
-                  });
-                }))),
+                  final listItemJson = dataList[index].toJson();
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: listItemJson.keys.map((e) {
+                              var data = listItemJson[e];
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${e}: ${data}"),
+                                  const SizedBox(
+                                    width: double.maxFinite,
+                                    height: 5,
+                                  )
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        )),
+                  );
+                })),),
       ),
     );
   }
@@ -154,19 +179,20 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Reg number : " + widget.arg.regNum),
+            Text("Reg number : " + widget.arg.stNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
                 "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
             // Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
-            const SizedBox(height: 5),
-            Text("Total Product : $totalProduct"),
-            const SizedBox(height: 5),
-            Text("Total Quantity : $totalQuantity"),
-            const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            // const SizedBox(height: 5),
+            // Text("Total Product : $totalProduct"),
+            // const SizedBox(height: 5),
+            // Text("Total Quantity : $totalQuantity"),
+            // const SizedBox(height: 5),
+            // Text("Total Tracker : $totalTracker"),
+            ...statusTextList
           ],
         ),
       ),
