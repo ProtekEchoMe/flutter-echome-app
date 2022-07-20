@@ -355,7 +355,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
               onPressed: () {
                 if (args != null) {
                   print("startStockTake");
-                  _stockTakeScanStore.startStockTake(stNum: args.stNum);
+                  _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("Stock take start"));
                 }
               },
               icon: const Icon(MdiIcons.clockStart)),
