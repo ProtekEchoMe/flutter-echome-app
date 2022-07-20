@@ -42,6 +42,9 @@ abstract class _AssetInventoryScanStore with Store {
   @observable
   bool isFetching = false;
 
+  @observable
+  String disStr = "";
+
   @action
   void reset() {
     itemRfidDataSet.clear();
@@ -52,7 +55,7 @@ abstract class _AssetInventoryScanStore with Store {
     chosenEquipmentData.clear();
     EasyDebounce.cancel('validateContainerRfid');
   }
-  
+
   @action
   void resetContainer(){
     equipmentRfidDataSet.clear();
@@ -60,6 +63,11 @@ abstract class _AssetInventoryScanStore with Store {
     isFetchingEquData = false;
     chosenEquipmentData.clear();
     EasyDebounce.cancel('validateContainerRfid');
+  }
+
+  @action
+  void updateDisStr(String disStr){
+    this.disStr = disStr;
   }
 
   @action

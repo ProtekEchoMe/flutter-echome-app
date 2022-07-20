@@ -1,9 +1,13 @@
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_item.dart';
+import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+import 'package:echo_me_mobile/di/service_locator.dart';
 
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
@@ -22,19 +26,21 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
   String disStr = "";
   List<dynamic> disposer = [];
   TextEditingController itemSearchTextController = TextEditingController();
+  final AssetInventoryScanStore _assetInventoryScanStore = getIt<AssetInventoryScanStore>();
 
   void initState() {
     super.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
-      print("event: " + event.toString());
-      print("event.type: " + event.type.toString());
+      // print("event: " + event.toString());
+      // print("event.type: " + event.type.toString());
       if (event.type == ScannerEventType.locatingEvent) {
-        for (var element in (event.data as List<String>)) {
-          print("element: " + element);
+        for (var disStr in (event.data as List<String>)) {
+          print("element: " + disStr);
           // updateLocatingDis(element);
-          setState((){
-            updateLocatingDis(element);
-          });
+          _assetInventoryScanStore.updateDisStr(disStr);
+          // setState((){
+          //   updateLocatingDis(element);
+          // });
         }
         // _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
@@ -63,6 +69,7 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
   void updateLocatingDis(String disStr){
     this.disStr = disStr;
   }
+
 
   Future<void> _onBottomBarItemTapped(int index) async {
     try{
@@ -171,15 +178,32 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
                   // },
                   onPressed: () {
                     print("disStr: " + disStr);
-                    setState((){
-                      updateLocatingDis(disStr);
-                    });
+                    //testing
+                    // if (_assetInventoryScanStore.disStr == ""){
+                    //   _assetInventoryScanStore.updateDisStr("0");
+                    // }
+                    // int num = int.parse(_assetInventoryScanStore.disStr) + 1;
+                    // _assetInventoryScanStore.updateDisStr(num.toString());
+                    // setState((){
+                    //   updateLocatingDis(disStr);
+                    // });
                   },
                   // child: const Icon(Icons.add),
                   // child: itemSearchTextController,
-                  child: Text(disStr.toString()),
+                  // child: Text(disStr.toString()),
+                  child: Observer(
+                    builder: (context) => Container(
+                      child: Center(
+                        child: Text(
+                          _assetInventoryScanStore
+                              .disStr
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Text(disStr.toString()),
                   // foregroundColor:  Colors.orange[700]!.withOpacity(0.5),
-                  backgroundColor: Colors.orange[700]!.withOpacity(0.9),
+                  // backgroundColor: Colors.orange[700]!.withOpacity(0.9),
                 ))),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat
     );
