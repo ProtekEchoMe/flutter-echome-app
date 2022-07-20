@@ -12,6 +12,7 @@ import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
@@ -233,6 +234,11 @@ class Repository {
     return await _transferInApi.registerTiContainer(rfid: rfid, tiNum: tiNum);
   }
 
+  Future<TransferInHeaderItem> createTransferInHeaderItem(
+      {required int? tiSite}) async {
+    return await _transferInApi.createTransferInHeaderItem(tiSite: tiSite);
+  }
+
   // asset registration api
   Future<void> completeTiRegistration({String tiNum = ""}) async {
     await _transferInApi.completeTiRegister(tiNum: tiNum);
@@ -241,11 +247,13 @@ class Repository {
   Future<void> registerTiItem(
       {String tiNum = "",
       String containerAssetCode = "",
-      List<String> itemRfid = const []}) async {
+      List<String> itemRfid = const [],
+        directTI = false}) async {
     await _transferInApi.registerTiItem(
         tiNum: tiNum,
         containerAssetCode: containerAssetCode,
-        itemRfid: itemRfid);
+        itemRfid: itemRfid,
+        directTI: directTI);
   }
 
   Future<void> registerArContainer(

@@ -55,6 +55,7 @@ class Endpoints {
   static const String registerToItemsMethod = "/to/checkInItems";
   static const String registerToItemsDirectMethod = "/to/newTransferOutLine";
   static const String registerTiItemsMethod = "/ti/checkInItems";
+  static const String registerTiItemsDirectMethod = "/to/newTransferInLine";
   static const String registerContainerMethod = "/reg/checkInContainer";
   static const String registerToContainerMethod = "/to/checkInContainer";
   static const String registerTiContainerMethod = "/ti/checkInContainer";
@@ -83,6 +84,9 @@ class Endpoints {
 
   // Direct TransferOut Method
   static const String createDirectToMethod = "/to/newTransferOutHeader";
+
+  // Direct TransferIn Method
+  static const String createDirectTiMethod = "/to/newTransferOutHeader";
 
   // StockTake Method
 
@@ -120,6 +124,7 @@ class Endpoints {
   static String registerToItems = "$activeUrl$registerToItemsMethod";
   static String registerToItemsDirect = "$activeUrl$registerToItemsDirectMethod";
   static String registerTiItems = "$activeUrl$registerTiItemsMethod";
+  static String registerTiItemsDirect = "$activeUrl$registerTiItemsDirectMethod";
   static String registerContainer = "$activeUrl$registerContainerMethod";
   static String registerToContainer = "$activeUrl$registerToContainerMethod";
   static String registerTiContainer = "$activeUrl$registerTiContainerMethod";
@@ -146,6 +151,9 @@ class Endpoints {
 
   // Direct Transfer Out
   static String createDirectTo = "$activeUrl$createDirectToMethod";
+
+  // Direct Transfer In
+  static String createDirectTi = "$activeUrl$createDirectTiMethod";
 
 
   static String activeVersionControlDomain = versionControlDomainMap["vercal"];

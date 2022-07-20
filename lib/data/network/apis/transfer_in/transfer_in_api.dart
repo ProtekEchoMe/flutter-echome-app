@@ -67,6 +67,21 @@ class TransferInApi {
     }
   }
 
+
+
+  Future<TransferInHeaderItem> createTransferInHeaderItem(
+      {int? tiSite}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite});
+      print("ok");
+      print(res);
+      return TransferInHeaderItem.fromJson(res);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
     Future<dynamic> registerTiContainer(
       {List<String> rfid = const [], String tiNum = ""}) async {
     try {
@@ -98,7 +113,8 @@ class TransferInApi {
     Future<dynamic> registerTiItem(
       {String tiNum = "",
       String containerAssetCode = "",
-      List<String> itemRfid = const []}) async {
+      List<String> itemRfid = const [],
+        directTI = false}) async {
     try {
       var str = "";
       if (itemRfid != null) {
@@ -115,8 +131,16 @@ class TransferInApi {
       // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
       //     queryParameters: query);
       // print(res);
-      final res1 = await _dioClient.getRegistration(Endpoints.registerTiItems,
-          queryParameters: query);
+      // final res1 = await _dioClient.getRegistration(Endpoints.registerTiItems,
+      //     queryParameters: query);
+
+      if (!directTI) {
+        await _dioClient.getRegistration(Endpoints.registerTiItems,
+            queryParameters: query);
+      } else {
+        await _dioClient.getRegistration(Endpoints.registerTiItemsDirect,
+            queryParameters: query);
+      }
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {

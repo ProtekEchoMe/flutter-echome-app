@@ -109,11 +109,16 @@ class _AssetScanPageState extends State<TransferInScanPage> {
           .map((e) => AscToText.getString(e))
           .toList();
 
+      bool directTI = false;
+      if (args != null && args.tiNum.startsWith('TI'))
+        directTI = true;
+
       await _transferInScanStore.checkInItem(
           tiNum: args?.tiNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
-          throwError: true);
+          throwError: true,
+          directTI: directTI);
       _transferInScanStore.reset();
     } catch (e) {
       _transferInScanStore.errorStore.setErrorMessage(e.toString());

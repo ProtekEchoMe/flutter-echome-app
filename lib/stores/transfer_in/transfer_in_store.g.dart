@@ -84,6 +84,22 @@ mixin _$TransferInStore on _TransferOutStore, Store {
     });
   }
 
+  final _$directTIResponseAtom =
+      Atom(name: '_TransferOutStore.directTIResponse');
+
+  @override
+  TransferInHeaderItem? get directTIResponse {
+    _$directTIResponseAtom.reportRead();
+    return super.directTIResponse;
+  }
+
+  @override
+  set directTIResponse(TransferInHeaderItem? value) {
+    _$directTIResponseAtom.reportWrite(value, super.directTIResponse, () {
+      super.directTIResponse = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_TransferOutStore.isFetching');
 
   @override
@@ -119,6 +135,16 @@ mixin _$TransferInStore on _TransferOutStore, Store {
   Future<void> fetchData({String tiNum = "", int? requestedPage}) {
     return _$fetchDataAsyncAction
         .run(() => super.fetchData(tiNum: tiNum, requestedPage: requestedPage));
+  }
+
+  final _$createTransferOutHeaderItemAsyncAction =
+      AsyncAction('_TransferOutStore.createTransferOutHeaderItem');
+
+  @override
+  Future<void> createTransferOutHeaderItem(
+      {required int? tiSite, bool throwError = false}) {
+    return _$createTransferOutHeaderItemAsyncAction.run(() => super
+        .createTransferOutHeaderItem(tiSite: tiSite, throwError: throwError));
   }
 
   final _$_TransferOutStoreActionController =
@@ -175,6 +201,7 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
+directTIResponse: ${directTIResponse},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage}

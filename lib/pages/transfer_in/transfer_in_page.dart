@@ -1,8 +1,10 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
-import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
+// import 'package:echo_me_mobile/pages/transfer_out/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
+import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
+import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
@@ -11,6 +13,7 @@ import 'package:echo_me_mobile/widgets/status_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
 class TransferInPage extends StatefulWidget {
   final String? tiNum;
@@ -21,13 +24,15 @@ class TransferInPage extends StatefulWidget {
 }
 
 class _TransferInPageState extends State<TransferInPage> {
-  final TransferInStore _store = getIt<TransferInStore>();
+  final TransferInStore _transferInStore = getIt<TransferInStore>();
+  final AccessControlStore _accessControlStore = getIt<AccessControlStore>();
+  final SiteCodeItemStore _siteCodeItemStore = getIt<SiteCodeItemStore>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _store.fetchData(tiNum: widget.tiNum ?? "");
+    _transferInStore.fetchData(tiNum: widget.tiNum ?? "");
   }
 
   @override
@@ -40,7 +45,54 @@ class _TransferInPageState extends State<TransferInPage> {
             _getSearchBar(context),
             _getListBox(context),
           ]),
-        ));
+        ),
+        floatingActionButton:
+        Container(
+            height: 50,
+            width: 50,
+            child: FittedBox(
+                child: FloatingActionButton( //TODO: Direct Transfer Out Create API
+                  // onPressed: () {
+                  //   showCupertinoModalPopup<void>(
+                  //       context: context, builder: (BuildContext context){
+                  //     return _buildBottomPicker2(
+                  //         _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+                  //   });
+                  // },
+                  onPressed: () {
+                    void onClickFunction(String selectedDomainKey) {
+                      _transferInStore.createTransferOutHeaderItem(
+                          tiSite: _siteCodeItemStore.siteCodeMap.containsKey(selectedDomainKey)?
+                          _siteCodeItemStore.siteCodeMap[selectedDomainKey]!.id: 0).then((_) {
+                        Navigator.pushNamed(
+                            context, "/transfer_in_scan",
+                            arguments:
+                            TransferInScanPageArguments(
+                                tiNum:
+                                _transferInStore.directTIResponse!.tiNum ?? "",
+                                item: _transferInStore.directTIResponse))
+                            .then((value) => {
+                          _transferInStore.fetchData(
+                              tiNum: widget.tiNum ?? "")
+                        });
+                      });
+                    }
+                    DialogHelper.listSelectionDialogWithAutoCompleteBar(
+                        context, List<String?>.from([..._accessControlStore.getAccessControlledTOSiteNameList, "0"]), onClickFunction,
+                        willPop: false);
+
+                    // showCupertinoModalPopup<void>(
+                    //     context: context, builder: (BuildContext context){
+                    //   return _buildBottomPicker2(
+                    //       _buildCupertinoPicker(_accessControlStore.getAccessControlledTOSiteNameList));
+                    // });
+                  },
+                  child: const Icon(Icons.add),
+                  // foregroundColor:  Colors.orange[700]!.withOpacity(0.5),
+                  backgroundColor: Colors.orange[700]!.withOpacity(0.9),
+                ))),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat
+    );
   }
 
   Widget _getTitle(BuildContext ctx) {
@@ -54,11 +106,11 @@ class _TransferInPageState extends State<TransferInPage> {
     return Expanded(
       child: Observer(
         builder: (context) {
-          var isFetching = _store.isFetching;
+          var isFetching = _transferInStore.isFetching;
           return AppContentBox(
             child: isFetching
                 ? const AppLoader()
-                : _store.itemList.isEmpty
+                : _transferInStore.itemList.isEmpty
                     ? const Center(child: Text("No Data"))
                     : Stack(
                         children: [
@@ -75,7 +127,7 @@ class _TransferInPageState extends State<TransferInPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage(tiNum: widget.tiNum ?? "");
+                                        _transferInStore.prevPage(tiNum: widget.tiNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -86,21 +138,21 @@ class _TransferInPageState extends State<TransferInPage> {
                                     ),
                                     Expanded(
                                       child: Observer(builder: (context) {
-                                        var total = _store.totalCount;
+                                        var total = _transferInStore.totalCount;
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Text("Total: ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "          Page: ${_transferInStore.currentPage}/${_transferInStore.totalPage} ")
                                           ],
                                         );
                                       }),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage(tiNum: widget.tiNum ?? "");
+                                        _transferInStore.nextPage(tiNum: widget.tiNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -119,9 +171,9 @@ class _TransferInPageState extends State<TransferInPage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemList.length,
+                                itemCount: _transferInStore.itemList.length,
                                 itemBuilder: ((context, index) {
-                                  final listItem = _store.itemList[index];
+                                  final listItem = _transferInStore.itemList[index];
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.tiNum;
@@ -136,7 +188,7 @@ class _TransferInPageState extends State<TransferInPage> {
                                                           listItem.tiNum ?? "",
                                                       item: listItem))
                                           .then((value) => {
-                                                _store.fetchData(
+                                                _transferInStore.fetchData(
                                                     tiNum: widget.tiNum ?? "")
                                               });
                                       return StatusListItem(
