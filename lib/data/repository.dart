@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart'
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
@@ -399,6 +400,14 @@ class Repository {
   Future<String> getAppDownloadLink() async {
     try {
       return await _appVersionControlApi.getAppDownloadLink();
+    } catch (e) {
+      throw "Failed to get app download link";
+    }
+  }
+
+  String getAppDownloadLink2() {
+    try {
+      return Endpoints.getAppDownloadLink;
     } catch (e) {
       throw "Failed to get app download link";
     }

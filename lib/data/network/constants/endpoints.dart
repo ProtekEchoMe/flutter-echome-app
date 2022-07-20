@@ -12,8 +12,12 @@ class Endpoints {
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
                                   "DFS": "https://atlrfid.dfs.com"};
 
-  static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
-                                        "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app"};
+  static Map versionControlDomainMap = {"DFS": "http://echome.dfs.com",
+                                        "AWS": "http://qa-echome.ddns.net",};
+
+  // static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
+  //   "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
+  //   "AWS": "https://qa-proteksso.ddns.net"};
 
   // base url
   static String authMethod = "/auth/realms/Protek/protocol/openid-connect";
@@ -157,8 +161,12 @@ class Endpoints {
 
 
   static String activeVersionControlDomain = versionControlDomainMap["vercal"];
-  static String getAppVersionMethod = "/api/v1/appVersion";
-  static String getAppDownloadLinkMethod = "/api/v1/appDownload";
+  // static String getAppVersionMethod = "/api/v1/appVersion";
+  // static String getAppDownloadLinkMethod = "/api/v1/appDownload";
+
+  static String getAppVersionMethod = "/echoMe/apk/version";
+  static String getAppDownloadLinkMethod = "/echoMe/apk/download?version=";
+
   static String getAppVersion =
       '$activeVersionControlDomain$getAppVersionMethod';
   static String getAppDownloadLink =

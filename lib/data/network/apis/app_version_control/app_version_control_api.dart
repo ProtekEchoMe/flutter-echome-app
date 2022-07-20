@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
+import 'dart:convert';
 
 class AppVersionControlApi {
    // dio instance
@@ -13,7 +14,8 @@ class AppVersionControlApi {
 
   Future<String> getLatestAppVersion() async{
      final res = await _dioClient.get(Endpoints.getAppVersion);
-     return res["version"];
+     Map resMap = json.decode(res);
+     return resMap["version"];
   }
 
   Future<String> getAppDownloadLink() async{
