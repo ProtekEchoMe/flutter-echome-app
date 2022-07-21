@@ -41,9 +41,16 @@ abstract class _StockTakeStore with Store {
       ObservableList<StockTakeItemHolder>();
 
   @observable
-  ObservableList<StockTakeLineItemHolder> itemLineList =
+  ObservableList<StockTakeLineItemHolder> itemLineHolderList =
       ObservableList<StockTakeLineItemHolder>();
 
+  @observable
+  ObservableList<StockTakeLineItem> itemLineList =
+  ObservableList<StockTakeLineItem>();
+
+  @observable
+  ObservableList<StockTakeLineItem> filtereditemLineList =
+  ObservableList<StockTakeLineItem>();
   // @computed
   // ObservableList<StockTakeLineItemHolder> itemLineUniLocList = ObservableList<StockTakeLineItemHolder>();
 
@@ -51,14 +58,14 @@ abstract class _StockTakeStore with Store {
   ObservableList<Map<String, dynamic>> get itemLineUniLocList {
     final ObservableList<Map<String, dynamic>> result =
         ObservableList<Map<String, dynamic>>();
-    if (itemLineList.isEmpty) {
+    if (itemLineHolderList.isEmpty) {
       return result;
     }
 
-    StockTakeLineItemHolder firstLineItem = itemLineList.first;
+    StockTakeLineItemHolder firstLineItem = itemLineHolderList.first;
     result.add(
         {"locCode": firstLineItem.locCode, "status": firstLineItem.status});
-    itemLineList.forEach((element) {
+    itemLineHolderList.forEach((element) {
       var tempLoop = [...result];
       bool unique = true;
 
@@ -83,13 +90,13 @@ abstract class _StockTakeStore with Store {
   ObservableList<StockTakeLineItemHolder> get itemLineUniObjLocList {
     final ObservableList<StockTakeLineItemHolder> result =
     ObservableList<StockTakeLineItemHolder>();
-    if (itemLineList.isEmpty) {
+    if (itemLineHolderList.isEmpty) {
       return result;
     }
 
-    StockTakeLineItemHolder firstLineItem = itemLineList.first;
+    StockTakeLineItemHolder firstLineItem = itemLineHolderList.first;
     result.add(firstLineItem);
-    itemLineList.forEach((element) {
+    itemLineHolderList.forEach((element) {
       var tempLoop = [...result];
       bool unique = true;
 
@@ -130,7 +137,7 @@ abstract class _StockTakeStore with Store {
     print("????????");
     print(list);
     print(itemList);
-    itemLineList.addAll(list);
+    itemLineHolderList.addAll(list);
     print(itemList.length);
     print("????????");
   }
@@ -193,6 +200,8 @@ abstract class _StockTakeStore with Store {
       var data = await repository.getStockTakeLine(
           page: targetPage, limit: limit, stNum: stNum);
       int totalRow = data.rowNumber;
+      itemLineList = ObservableList.of(data.itemList);
+      filtereditemLineList = itemLineList;
       List<StockTakeLineItemHolder> list = data.itemList
           .map((StockTakeLineItem e) => StockTakeLineItemHolder(e))
           .toList();

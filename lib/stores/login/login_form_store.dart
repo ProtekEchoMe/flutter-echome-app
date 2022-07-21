@@ -89,6 +89,7 @@ abstract class _LoginFormStore with Store {
       repository.logout(refreshToken: refreshToken ?? "");
     } catch(e){
       print("Some error occur when logout $e");
+      print("nothing");
     } finally{
       isLoggedIn = false;
       accessToken = "";

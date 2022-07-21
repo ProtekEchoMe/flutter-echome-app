@@ -78,7 +78,7 @@ class _SplashPageState extends State<SplashPage> {
               await _appVersionControlStore.updateIfNeed();
             }),
             child: const Text(''),
-          )
+          ),
         ],
       )),
     );

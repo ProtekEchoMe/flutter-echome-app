@@ -160,7 +160,7 @@ class Endpoints {
   static String createDirectTi = "$activeUrl$createDirectTiMethod";
 
 
-  static String activeVersionControlDomain = versionControlDomainMap["vercal"];
+  static String activeVersionControlDomain = versionControlDomainMap["AWS"];
   // static String getAppVersionMethod = "/api/v1/appVersion";
   // static String getAppDownloadLinkMethod = "/api/v1/appDownload";
 

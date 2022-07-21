@@ -145,6 +145,7 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
         break;
       case "getAvailableRFIDReaderList":
         try{
+          Log.d(TAG, "getAvailableRFIDReaderList");
           ArrayList<String> readerList = rfidHandlerHelper.getAvailableRFIDReaderList();
           Log.d(TAG, "getListSuccess");
           result.success(readerList);

@@ -106,15 +106,15 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
   final _$itemLineListAtom = Atom(name: '_StockTakeStore.itemLineList');
 
   @override
-  ObservableList<StockTakeLineItemHolder> get itemLineList {
+  ObservableList<StockTakeLineItemHolder> get itemLineHolderList {
     _$itemLineListAtom.reportRead();
-    return super.itemLineList;
+    return super.itemLineHolderList;
   }
 
   @override
-  set itemLineList(ObservableList<StockTakeLineItemHolder> value) {
-    _$itemLineListAtom.reportWrite(value, super.itemLineList, () {
-      super.itemLineList = value;
+  set itemLineHolderList(ObservableList<StockTakeLineItemHolder> value) {
+    _$itemLineListAtom.reportWrite(value, super.itemLineHolderList, () {
+      super.itemLineHolderList = value;
     });
   }
 
@@ -220,7 +220,7 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
-itemLineList: ${itemLineList},
+itemLineList: ${itemLineHolderList},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage},

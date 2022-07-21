@@ -25,12 +25,12 @@ class StockTakeLocPage extends StatefulWidget {
 }
 
 class _StockTakeLocPageState extends State<StockTakeLocPage> {
-  final StockTakeStore _store = getIt<StockTakeStore>();
+  final StockTakeStore _stockTakeStore = getIt<StockTakeStore>();
 
   @override
   void initState() {
     super.initState();
-    _store.fetchLineData(stNum: widget.searchRegNum ?? "");
+    _stockTakeStore.fetchLineData(stNum: widget.searchRegNum ?? "");
   }
 
   @override
@@ -57,11 +57,11 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
     return Expanded(
       child: Observer(
         builder: (context) {
-          var isFetching = _store.isFetching;
+          var isFetching = _stockTakeStore.isFetching;
           return AppContentBox(
             child: isFetching
                 ? const AppLoader()
-                : _store.itemLineUniObjLocList.isEmpty
+                : _stockTakeStore.itemLineUniObjLocList.isEmpty
                     ? const Center(child: Text("No Data"))
                     : Stack(
                         children: [
@@ -78,7 +78,7 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        _store.prevPage(docNum: widget.searchRegNum ?? "");
+                                        _stockTakeStore.prevPage(docNum: widget.searchRegNum ?? "");
                                       },
                                       child:const SizedBox(
                                         width: 40,
@@ -89,21 +89,21 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
                                     ),
                                     Expanded(
                                       child: Observer(builder: (context) {
-                                        var total = _store.totalCount;
+                                        var total = _stockTakeStore.totalCount;
                                         return Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Text("Total: ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "Page: ${_stockTakeStore.currentPage}/${_stockTakeStore.totalPage} ")
                                           ],
                                         );
                                       }),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _store.nextPage(docNum: widget.searchRegNum ?? "");
+                                        _stockTakeStore.nextPage(docNum: widget.searchRegNum ?? "");
                                       },
                                       child: const SizedBox(
                                         width: 40,
@@ -122,9 +122,9 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
                             bottom: kTextTabBarHeight,
                             child: Observer(
                               builder: (context) => ListView.builder(
-                                itemCount: _store.itemLineUniObjLocList.length,
+                                itemCount: _stockTakeStore.itemLineUniObjLocList.length,
                                 itemBuilder: ((context, index) {
-                                  final listItem = _store.itemLineUniObjLocList[index];
+                                  final listItem = _stockTakeStore.itemLineUniObjLocList[index];
                                   return Observer(
                                     builder: (context) {
                                       var title = listItem.locCode;
@@ -139,7 +139,7 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
                                           arguments: StockTakeScanPageLineArguments(
                                               listItem.orderId,
                                               item: listItem.item)).then((value) => {
-                                                 _store.fetchData(stNum: widget.searchRegNum ?? "")
+                                                 _stockTakeStore.fetchData(stNum: widget.searchRegNum ?? "")
                                               });
                                       return StatusListItem(
                                         title: title,

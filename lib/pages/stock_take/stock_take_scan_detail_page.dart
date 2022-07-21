@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
+import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';
+
 class StockTakeScanDetailPage extends StatefulWidget {
   StockTakeScanPageArguments arg;
   StockTakeScanDetailPage({Key? key, required this.arg}) : super(key: key);
@@ -27,15 +29,19 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   String totalQuantity = "";
   String totalTracker = "";
 
+  final StockTakeStore _stockTakeStore = getIt<StockTakeStore>();
+
   bool isFetching = false;
   // DioClient repository = getIt<DioClient>();
   final Repository repository = getIt<Repository>();
-  List<StockTakeLineItem> dataList = [];
+  // List<StockTakeLineItem> dataList = [];
 
   Future<void> fetchData() async {
     String stNum = widget.arg.stNum;
     var result = await repository.getStockTakeLine(
         page: 0, limit: 0, stNum: stNum);
+
+    await _stockTakeStore.fetchLineData(stNum: stNum);
     // var result = await repository.get(
     //     'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.stNum}');
     // var newTotalProduct = (result as List).length.toString();
@@ -51,7 +57,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
     //   return ListDocumentLineItem.fromJson(e);
     // }).toList();
 
-    List<StockTakeLineItem> lineList = result.itemList;
+    List<StockTakeLineItem> lineList = _stockTakeStore.filtereditemLineList;
     // Map<String, int> countMap = new Map<String, int>();
     lineList.forEach((element) {
       String status = element.status ?? "";
@@ -73,7 +79,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
     );
 
     setState(() {
-      dataList = lineList;
+      // dataList = lineList;
       totalProduct = result.rowNumber.toString();
       totalQuantity = "0";
       totalTracker = "";
@@ -95,6 +101,34 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
         child:
             Column(children: [_getDocumentInfo(context), _getListBox(context)]),
       ),
+        bottomNavigationBar: BottomNavigationBar(
+          selectedFontSize: 12,
+          selectedItemColor: Colors.black54,
+          unselectedItemColor: Colors.black54,
+          selectedIconTheme:
+          const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+          unselectedIconTheme:
+          const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.change_circle),
+              label: 'Change Equipment',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.signal_cellular_alt),
+              label: 'Re-Scan',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Complete',
+            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.eleven_mp),
+            //   label: 'Debug',
+            // ),
+          ],
+          // onTap: (int index) => _onBottomBarItemTapped(args, index),
+        )
     );
   }
 
@@ -119,9 +153,9 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
         padding: const EdgeInsets.all(10.0),
         child: Builder(
             builder: (context) => ListView.builder(
-                itemCount: dataList.length,
+                itemCount: _stockTakeStore.filtereditemLineList.length,
                 itemBuilder: ((context, index) {
-                  final listItemJson = dataList[index].toJson();
+                  final listItemJson = _stockTakeStore.filtereditemLineList[index].toJson();
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Card(
@@ -169,9 +203,13 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   }
 
   Widget _getDocumentInfo(BuildContext ctx) {
-    String dataString = widget.arg.item?.createdDate != String
-        ? widget.arg.item!.createdDate!.toString()
-        : "";
+    int dataInt = widget.arg.item?.createdDate ?? 0;
+    String dataString = "";
+    if (dataInt != 0) {dataString = dataInt.toString();};
+    // dataString = dataString.toString();
+    // String dataString = widget.arg.item?.createdDate != String
+    //     ? widget.arg.item!.createdDate!.toString()
+    //     : "";
         print(widget.arg.item);
     return AppContentBox(
       child: Padding(
@@ -183,7 +221,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
-                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "Document Date : ${(dataString as String).isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
             // Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
             // const SizedBox(height: 5),
