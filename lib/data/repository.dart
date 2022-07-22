@@ -92,13 +92,13 @@ class Repository {
       {int page = 0,
       int limit = 10,
       String assetCode = "",
-      String skuCode = "",
+      String productCode = "",
       String siteCode = ""}) async {
     return await _assetInventoryApi.getAssetInventory(
         page: page,
         limit: limit,
         assetCode: assetCode,
-        skuCode: skuCode,
+        productCode: productCode,
         siteCode: siteCode);
   }
 

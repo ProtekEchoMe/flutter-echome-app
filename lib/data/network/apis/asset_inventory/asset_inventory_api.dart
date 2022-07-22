@@ -13,7 +13,7 @@ class AssetInventoryApi {
   
 
   /// Returns list of post in response
-  Future<AssetInventoryResponse> getAssetInventory({int page = 0, int limit = 10, String assetCode = "", String skuCode = "", String siteCode = ""}) async {
+  Future<AssetInventoryResponse> getAssetInventory({int page = 0, int limit = 10, String assetCode = "", String productCode = "", String siteCode = ""}) async {
     try {
       print(page*limit);
       print(limit);
@@ -38,11 +38,11 @@ class AssetInventoryApi {
           }
         ];
       }
-      if (skuCode.isNotEmpty) {
+      if (productCode.isNotEmpty) {
         filter = [
           {
-            "value": skuCode,
-            "name": "skuCode",
+            "value": productCode,
+            "name": "productCode",
             "operator": "contains",
             "type": "string"
           }
