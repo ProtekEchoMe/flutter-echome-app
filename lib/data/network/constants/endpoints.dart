@@ -103,7 +103,8 @@ class Endpoints {
   static const String stockTakeStartMethod = "/stocktake/stocktakeStart";
   static const String stockTakeCheckInItemsMethod = "/stocktake/checkInItems";
   static const String stockTakeCancelMethod = "/stocktake/stocktakeCancel";
-  static const String stockTakeCompleteMethod = "/stocktake/stocktakeComplete";
+  static const String stockTakeHeaderCompleteMethod = "/stocktake/stocktakeComplete";
+  static const String stockTakeLineCompleteMethod = "/stocktake/stockTakeLineCompleteMethod";
 
 
   //Stock Take
@@ -116,7 +117,8 @@ class Endpoints {
   static String stockTakeStart = "$activeUrl$stockTakeStartMethod";
   static String stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
   static String stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
-  static String stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+  static String stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
+  static String stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
@@ -238,7 +240,8 @@ class Endpoints {
     Endpoints.stockTakeStart = "$activeUrl$stockTakeStartMethod";
     Endpoints.stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
     Endpoints.stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
-    Endpoints.stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+    Endpoints.stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
+    Endpoints.stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
 
   }
 

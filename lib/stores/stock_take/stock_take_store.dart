@@ -41,6 +41,10 @@ abstract class _StockTakeStore with Store {
       ObservableList<StockTakeItemHolder>();
 
   @observable
+  ObservableList<StockTakeLocItemHolder> locList =
+  ObservableList<StockTakeLocItemHolder>();
+
+  @observable
   ObservableList<StockTakeLineItemHolder> itemLineHolderList =
       ObservableList<StockTakeLineItemHolder>();
 
@@ -51,6 +55,9 @@ abstract class _StockTakeStore with Store {
   @observable
   ObservableList<StockTakeLineItem> filtereditemLineList =
   ObservableList<StockTakeLineItem>();
+
+  @observable
+  ObservableMap<String, dynamic> statusMap = ObservableMap<String, dynamic>();
   // @computed
   // ObservableList<StockTakeLineItemHolder> itemLineUniLocList = ObservableList<StockTakeLineItemHolder>();
 
@@ -143,6 +150,17 @@ abstract class _StockTakeStore with Store {
   }
 
   @action
+  void addAllLocItem(List<StockTakeLocItemHolder> list) {
+    print("????????");
+    print(list);
+    // print(itemList);
+    locList.addAll(list);
+    // print(itemList.length);
+    totalCount = locList.length;
+    print("????????");
+  }
+
+  @action
   void removeItem(String orderId) {
     itemList.removeWhere((element) => element.orderId == orderId);
   }
@@ -151,6 +169,32 @@ abstract class _StockTakeStore with Store {
   void updateList(List<StockTakeItemHolder> newList) {
     itemList = ObservableList.of(newList);
   }
+
+  @action
+  void updateStatusList(){
+    List<StockTakeLineItem> lineList = filtereditemLineList;
+    // Map<String, int> countMap = new Map<String, int>();
+    lineList.forEach((element) {
+      String status = element.status ?? "";
+      if (statusMap.containsKey(status)){
+        if (statusMap[status] != null) {
+          statusMap[status]["count"] += 1;
+          statusMap[status]["stockTakeLineList"].add(element);
+        }
+      }else{
+        statusMap[status] = {"count": 1, "checkBoxController": true, "stockTakeLineList": [element]};
+      }
+    });
+  }
+
+  @action
+  void updateFilteredList(){
+    filtereditemLineList.clear();
+    statusMap.forEach((status, statusDict) {
+      statusDict["checkBoxController"] == true ? filtereditemLineList.addAll(statusDict["stockTakeLineList"]) : null;
+    });
+  }
+
 
   @action
   Future<void> nextPage({String docNum = ""}) async {
@@ -215,6 +259,18 @@ abstract class _StockTakeStore with Store {
     } finally {
       isFetching = false;
       print("finally");
+    }
+  }
+
+  @action
+  Future<void> completeStockTakeHeader({String stNum = ""}) async {
+    try {
+      isFetching = true;
+      await repository.completeStockTakeHeader(stNum: stNum);
+    } catch (e) {
+      errorStore.setErrorMessage(e.toString());
+    } finally {
+      isFetching = false;
     }
   }
 }

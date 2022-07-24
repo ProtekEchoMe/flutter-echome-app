@@ -138,9 +138,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     _stockTakeScanStore.resetContainer();
   }
 
-  Future<bool> _complete(StockTakeScanPageArguments? args) async {
+  Future<bool> _completeStockTakeLine(StockTakeScanPageArguments? args) async {
     try {
-      _stockTakeScanStore.complete(stNum: args?.stNum ?? "");
+      _stockTakeScanStore.completeStockTakeLine(stNum: args?.stNum ?? "", locCode: args?.stockTakeLineItem?.locCode ?? "No Loc");
       return true;
     }catch(e){
       return false;
@@ -212,7 +212,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          await _completeStockTakeLine(args) ? _showSnackBar("Complete Successfully") : "";
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {
@@ -384,7 +384,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: 'Check-In RFIDs',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
@@ -394,10 +394,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -650,7 +650,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   Widget _getTitle(BuildContext ctx, StockTakeScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.stNum ?? "No RegNum") + " (ST)",
+      title: (args?.stNum ?? "No RegNum") + "\n" + "[" + (args?.stockTakeLineItem?.locCode ?? "No Loc") + "]" + "" +" (ST)",
       clipTitle: "Hong Kong-DC",
     );
   }

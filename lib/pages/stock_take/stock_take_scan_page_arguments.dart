@@ -2,12 +2,15 @@
 
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_item.dart';
 
 class StockTakeScanPageArguments {
   final String stNum;
   StockTakeItem? item;
-  StockTakeScanPageArguments(this.stNum, {StockTakeItem? item}){
+  StockTakeLocItem? stockTakeLineItem;
+  StockTakeScanPageArguments(this.stNum, {StockTakeItem? item, StockTakeLocItem? stockTakeLineItem}){
     this.item = item;
+    this.stockTakeLineItem = stockTakeLineItem;
   }
 }
 

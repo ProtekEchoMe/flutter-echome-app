@@ -103,18 +103,66 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
     });
   }
 
-  final _$itemLineListAtom = Atom(name: '_StockTakeStore.itemLineList');
+  final _$locListAtom = Atom(name: '_StockTakeStore.locList');
+
+  @override
+  ObservableList<StockTakeLocItemHolder> get locList {
+    _$locListAtom.reportRead();
+    return super.locList;
+  }
+
+  @override
+  set locList(ObservableList<StockTakeLocItemHolder> value) {
+    _$locListAtom.reportWrite(value, super.locList, () {
+      super.locList = value;
+    });
+  }
+
+  final _$itemLineHolderListAtom =
+      Atom(name: '_StockTakeStore.itemLineHolderList');
 
   @override
   ObservableList<StockTakeLineItemHolder> get itemLineHolderList {
-    _$itemLineListAtom.reportRead();
+    _$itemLineHolderListAtom.reportRead();
     return super.itemLineHolderList;
   }
 
   @override
   set itemLineHolderList(ObservableList<StockTakeLineItemHolder> value) {
-    _$itemLineListAtom.reportWrite(value, super.itemLineHolderList, () {
+    _$itemLineHolderListAtom.reportWrite(value, super.itemLineHolderList, () {
       super.itemLineHolderList = value;
+    });
+  }
+
+  final _$itemLineListAtom = Atom(name: '_StockTakeStore.itemLineList');
+
+  @override
+  ObservableList<StockTakeLineItem> get itemLineList {
+    _$itemLineListAtom.reportRead();
+    return super.itemLineList;
+  }
+
+  @override
+  set itemLineList(ObservableList<StockTakeLineItem> value) {
+    _$itemLineListAtom.reportWrite(value, super.itemLineList, () {
+      super.itemLineList = value;
+    });
+  }
+
+  final _$filtereditemLineListAtom =
+      Atom(name: '_StockTakeStore.filtereditemLineList');
+
+  @override
+  ObservableList<StockTakeLineItem> get filtereditemLineList {
+    _$filtereditemLineListAtom.reportRead();
+    return super.filtereditemLineList;
+  }
+
+  @override
+  set filtereditemLineList(ObservableList<StockTakeLineItem> value) {
+    _$filtereditemLineListAtom.reportWrite(value, super.filtereditemLineList,
+        () {
+      super.filtereditemLineList = value;
     });
   }
 
@@ -155,6 +203,15 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
         .run(() => super.fetchData(stNum: stNum, requestedPage: requestedPage));
   }
 
+  final _$completeStockTakeHeaderAsyncAction =
+      AsyncAction('_StockTakeStore.completeStockTakeHeader');
+
+  @override
+  Future<void> completeStockTakeHeader({String stNum = ""}) {
+    return _$completeStockTakeHeaderAsyncAction
+        .run(() => super.completeStockTakeHeader(stNum: stNum));
+  }
+
   final _$_StockTakeStoreActionController =
       ActionController(name: '_StockTakeStore');
 
@@ -192,6 +249,17 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
   }
 
   @override
+  void addAllLocItem(List<StockTakeLocItemHolder> list) {
+    final _$actionInfo = _$_StockTakeStoreActionController.startAction(
+        name: '_StockTakeStore.addAllLocItem');
+    try {
+      return super.addAllLocItem(list);
+    } finally {
+      _$_StockTakeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void removeItem(String orderId) {
     final _$actionInfo = _$_StockTakeStoreActionController.startAction(
         name: '_StockTakeStore.removeItem');
@@ -220,7 +288,10 @@ page: ${page},
 limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
-itemLineList: ${itemLineHolderList},
+locList: ${locList},
+itemLineHolderList: ${itemLineHolderList},
+itemLineList: ${itemLineList},
+filtereditemLineList: ${filtereditemLineList},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage},

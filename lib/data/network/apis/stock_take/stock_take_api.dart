@@ -159,10 +159,30 @@ class StockTakeApi {
 // Endpoints.stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
   // Endpoints.stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
   // Endpoints.stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
-  Future<void> completeStockTake({String stNum = ""}) async {
+  Future<void> completeStockTakeHeader({String stNum = ""}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.stockTakeComplete, queryParameters: {"stNum": stNum});
+          .get(Endpoints.stockTakeHeaderComplete, queryParameters: {"stNum": stNum});
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> completeStockTakeLine({String stNum = "", String locCode = ""}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.stockTakeLineComplete, queryParameters: {"stNum": stNum, "locCode": locCode});
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {

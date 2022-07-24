@@ -128,11 +128,13 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeAsyncAction = AsyncAction('_StockTakeScanStore.complete');
+  final _$completeStockTakeLineAsyncAction =
+      AsyncAction('_StockTakeScanStore.completeStockTakeLine');
 
   @override
-  Future<void> complete({String stNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(stNum: stNum));
+  Future<void> completeStockTakeLine({String stNum = "", String locCode = ""}) {
+    return _$completeStockTakeLineAsyncAction
+        .run(() => super.completeStockTakeLine(stNum: stNum, locCode: locCode));
   }
 
   final _$registerContainerAsyncAction =

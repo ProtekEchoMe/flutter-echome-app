@@ -104,8 +104,8 @@ mixin _$AssetInventoryStore on _AssetInventoryStore, Store {
   @override
   Future<void> nextPage(
       {String assetCode = "", String productCode = "", String siteCode = ""}) {
-    return _$nextPageAsyncAction.run(() => super
-        .nextPage(assetCode: assetCode, productCode: productCode, siteCode: siteCode));
+    return _$nextPageAsyncAction.run(() => super.nextPage(
+        assetCode: assetCode, productCode: productCode, siteCode: siteCode));
   }
 
   final _$prevPageAsyncAction = AsyncAction('_AssetInventoryStore.prevPage');
@@ -113,8 +113,8 @@ mixin _$AssetInventoryStore on _AssetInventoryStore, Store {
   @override
   Future<void> prevPage(
       {String assetCode = "", String productCode = "", String siteCode = ""}) {
-    return _$prevPageAsyncAction.run(() => super
-        .prevPage(assetCode: assetCode, productCode: productCode, siteCode: siteCode));
+    return _$prevPageAsyncAction.run(() => super.prevPage(
+        assetCode: assetCode, productCode: productCode, siteCode: siteCode));
   }
 
   final _$fetchDataAsyncAction = AsyncAction('_AssetInventoryStore.fetchData');

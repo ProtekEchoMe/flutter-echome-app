@@ -298,10 +298,16 @@ class Repository {
          stNum: stNum);
   }
 
-  Future<void> completeStockTake(
+  Future<void> completeStockTakeHeader(
       { String stNum = ""}) async {
-    return await _stockTakeApi.completeStockTake(
+    return await _stockTakeApi.completeStockTakeHeader(
          stNum: stNum);
+  }
+
+  Future<void> completeStockTakeLine(
+      { String stNum = "", String locCode = ""}) async {
+    return await _stockTakeApi.completeStockTakeLine(
+        stNum: stNum, locCode: locCode);
   }
 
   Future<void> registerStockTakeItem(

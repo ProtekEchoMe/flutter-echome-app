@@ -125,10 +125,10 @@ abstract class _StockTakeScanStore with Store {
   }
 
   @action
-  Future<void> complete({String stNum = ""}) async {
+  Future<void> completeStockTakeLine({String stNum = "", String locCode = ""}) async {
     try {
       isFetching = true;
-      await repository.completeStockTake(stNum: stNum);
+      await repository.completeStockTakeLine(stNum: stNum, locCode: locCode);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
