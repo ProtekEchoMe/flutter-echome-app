@@ -83,7 +83,7 @@ class StockTakeApi {
   }
 
   Future<StockTakeLineResponse> listStockTakeLine(
-      {int page = 0, int limit = 0, String stNum = ""}) async {
+      {int page = 0, int limit = 0, String stNum = "", String locCode = ""}) async {
     try {
       print(page * limit);
       print(limit);
@@ -99,20 +99,49 @@ class StockTakeApi {
       };
 
       if (stNum.isNotEmpty) {
-        filter = [
-          {
-            "value": stNum,
-            "name": "stNum",
-            "operator": "eq",
-            "type": "string"
-          },
-          // {
-          //   "value": "COMPLETED",
-          //   "name": "status",
-          //   "operator": "eq",
-          //   "type": "string"
-          // }
-        ];
+        filter.add({
+          "value": stNum,
+          "name": "stNum",
+          "operator": "eq",
+          "type": "string"
+        });
+        // filter = [
+        //   {
+        //     "value": stNum,
+        //     "name": "stNum",
+        //     "operator": "eq",
+        //     "type": "string"
+        //   },
+        //   // {
+        //   //   "value": "COMPLETED",
+        //   //   "name": "status",
+        //   //   "operator": "eq",
+        //   //   "type": "string"
+        //   // }
+        // ];
+      }
+
+      if (locCode.isNotEmpty) {
+        filter.add({
+          "value": locCode,
+          "name": "locCode",
+          "operator": "eq",
+          "type": "string"
+        });
+        // filter = [
+        //   {
+        //     "value": stNum,
+        //     "name": "stNum",
+        //     "operator": "eq",
+        //     "type": "string"
+        //   },
+        //   // {
+        //   //   "value": "COMPLETED",
+        //   //   "name": "status",
+        //   //   "operator": "eq",
+        //   //   "type": "string"
+        //   // }
+        // ];
       }
 
       Map<String, dynamic> query = {

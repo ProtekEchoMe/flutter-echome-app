@@ -118,7 +118,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       await _stockTakeScanStore.registerStockTakeItem(
           stNum: args?.stNum ?? "",
           itemRfid: itemRfid,
-          locCode: args?.item?.ranges ?? "",
+          locCode: args?.stockTakeLineItem?.locCode ?? "",
           throwError: true);
 
 
@@ -149,8 +149,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   Future<String> fetchData(StockTakeScanPageArguments? args) async {
     String stNum = args?.stNum ?? "";
+    String locCode = args?.stockTakeLineItem?.locCode ?? "";
     var result = await repository.getStockTakeLine(
-        page: 0, limit: 0, stNum: stNum);
+        page: 0, limit: 0, stNum: stNum, locCode: locCode);
     // var result = await repository.fetchStLineData2(args);
     // var newTotalProduct = (result as List).length.toString();
     // int newTotalQuantity = 0;
@@ -394,10 +395,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.eleven_mp),
-          //   label: 'Debug',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eleven_mp),
+            label: 'Debug',
+          ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -694,13 +695,13 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   void _mockscan1() {
     List<String> list1 = [];
-    list1.add(AscToText.getAscIIString("CATL010000000808"));
-    list1.add(AscToText.getAscIIString("CATL010000000819"));
+    // list1.add(AscToText.getAscIIString("CATL010000000808"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("SATL010000033703"));
+    list2.add(AscToText.getAscIIString("SATL010000030003"));
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

@@ -286,9 +286,9 @@ class Repository {
   }
 
   Future<StockTakeLineResponse> getStockTakeLine(
-      {int page = 0, int limit = 10, String stNum = ""}) async {
+      {int page = 0, int limit = 10, String stNum = "", String locCode = ""}) async {
     var result = await _stockTakeApi.listStockTakeLine(
-        page: page, limit: limit, stNum: stNum);
+        page: page, limit: limit, stNum: stNum, locCode: locCode);
     return result;
   }
 

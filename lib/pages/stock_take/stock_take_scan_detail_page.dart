@@ -14,6 +14,9 @@ import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:mobx/mobx.dart';
 
+// import 'package:flutter_checkbox_dialog/flutter_checkbox_dialog.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
+
 class StockTakeScanDetailPage extends StatefulWidget {
   StockTakeScanPageArguments arg;
 
@@ -33,6 +36,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
     "OUT_RANGE_EXCEPTIONAL",
     "CANCEL"
   ];
+  List<dynamic> disposer = [];
 
   // Map<String, int> statusMap = {"OUTSTANDING": 0, "SCANNED": 0, "IN_RANGE_EXCEPTIONAL": 0, "OUT_RANGE_EXCEPTIONAL": 0, "CANCEL": 0};
   ObservableMap<String, dynamic> statusMap = ObservableMap<String, dynamic>();
@@ -58,10 +62,12 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
 
   Future<void> fetchData() async {
     String stNum = widget.arg.stNum;
+    // String? locCode = widget.arg.stockTakeLineItem.locCode;
+    String locCode = widget.arg.stockTakeLineItem?.locCode ?? "";
     // var result = await repository.getStockTakeLine(
     //     page: 0, limit: 0, stNum: stNum);
 
-    await _stockTakeStore.fetchLineData(stNum: stNum).then((value) {
+    await _stockTakeStore.fetchLineData(stNum: stNum, locCode: locCode).then((value) {
       _stockTakeStore.updateStatusList();
       setState(() {
         statusMap = _stockTakeStore.statusMap;
@@ -82,9 +88,33 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   @override
   void initState() {
     super.initState();
+    var disposerReaction = reaction(
+            (_) => _stockTakeStore.errorStore.errorMessage, (_) {
+      if (_stockTakeStore.errorStore.errorMessage.isNotEmpty) {
+        _showSnackBar(_stockTakeStore.errorStore.errorMessage);
+      }
+    });
+    disposer.add(disposerReaction);
     fetchData();
 
+
     // statusList.forEach((element) {statusMap[element] = {"count": 0, "checkBoxController": true, "stockTakeLineList": []};});
+  }
+
+  void _showSnackBar(String? str) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(str ?? ""),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (var i = 0; i < disposer.length; i++) {
+      disposer[i]();
+    }
   }
 
   void updateStatusList() {
@@ -107,6 +137,14 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
     });
   }
 
+  void _onChanged(bool value) {
+    setState(() {
+      var checkboxValue = false;
+      checkboxValue = value;
+      print("_onChanged");
+    });
+  }
+
   List<Widget> getTextCheckBoxWigetList() {
     List<Widget> tempList = [];
     statusMap.forEach((status, statusDict) {
@@ -116,12 +154,52 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
           Checkbox(
             value: statusDict["checkBoxController"],
             activeColor: Colors.red, //选中时的颜色
-            onChanged: (value) {
-              setState(() {
-                statusDict["checkBoxController"] = value;
-                print("controller status: ");
-                print(statusDict["checkBoxController"]);
-              });
+            onChanged: (value) async {
+              // await FlutterCheckboxDialog().showCheckboxDialog(
+              //   context,
+              //   statusDict["checkBoxController"],
+              //   const Text('item1'),
+              //   _onChanged,
+              //   title: const Text('Main Title'),
+              //   // content: const Text('Sub Title'),
+              //   actions: [
+              //     TextButton(
+              //       onPressed: () {
+              //         Navigator.of(context).pop();
+              //       },
+              //       child: const Text('OK'),
+              //     ),
+              //     TextButton(
+              //       onPressed: () {
+              //         Navigator.of(context).pop();
+              //       },
+              //       child: const Text('cancel'),
+              //     ),
+              //   ],
+              // );
+              //
+
+              // statusDict["checkBoxController"] = value;
+              // print("controller status: ");
+              // print(statusDict["checkBoxController"]);
+              // Navigator.of(context).pop();
+              // DialogHelper.showTwoOptionsFilterDialog(
+              //     context, _onTrueFunction,
+              //     widgetList: widgetList,
+              //     trueOptionText: "filter",
+              //     falseOptionText: "cancel");
+              // setState(() {
+              //
+              //   statusDict["checkBoxController"] = value;
+              //   print("controller status: ");
+              //   print(statusDict["checkBoxController"]);
+              //   Navigator.of(context).pop();
+              //   DialogHelper.showTwoOptionsFilterDialog(
+              //       context, _onTrueFunction,
+              //       widgetList: widgetList,
+              //       trueOptionText: "filter",
+              //       falseOptionText: "cancel");
+              // });
             },
           )
         ],
@@ -155,6 +233,17 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
     return tempWidgetList;
   }
 
+  dynamic getStatusNameDictList() {
+    var tempDictList = [];
+    // tempWidgetList.add(SizedBox(height: 5));
+    if (statusMap != null) {
+      statusMap.forEach((key, value) {
+        tempDictList.add({"status": key, "value": key});
+      });
+    }
+    return tempDictList;
+  }
+
   @override
   Widget build(BuildContext context) {
     // print(widget.arg.item!.createdDate);
@@ -163,6 +252,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(context),
+          // getMultForm(),
           _getFilterBar(context),
           _getListBox(context)
         ]),
@@ -273,6 +363,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   Widget _getDocumentInfo(BuildContext ctx) {
     int dataInt = widget.arg.item?.createdDate ?? 0;
     String dataString = "";
+    String locCode = widget.arg.stockTakeLineItem?.locCode ?? "";
     if (dataInt != 0) {
       dataString = dataInt.toString();
     }
@@ -293,6 +384,9 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
             // ignore: unnecessary_String_comparison
             Text(
                 "Document Date : ${(dataString as String).isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+            const SizedBox(height: 5),
+            Text(
+                "Location : ${(locCode as String).isNotEmpty ? locCode : ""}"),
             const SizedBox(height: 5),
             // Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
             // const SizedBox(height: 5),
@@ -321,8 +415,98 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
 
   }
 
+  List? _myActivities;
+
+  Widget getMultForm(){
+    return MultiSelectFormField(
+      autovalidate: AutovalidateMode.disabled,
+      chipBackGroundColor: Colors.blue,
+      chipLabelStyle: TextStyle(
+          fontWeight: FontWeight.bold, color: Colors.white),
+      dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      checkBoxActiveColor: Colors.blue,
+      checkBoxCheckColor: Colors.white,
+      dialogShapeBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0))),
+      title: Text(
+        "Filter:",
+        style: TextStyle(fontSize: 16),
+      ),
+      validator: (value) {
+        if (value == null || value.length == 0) {
+          return 'Please select one or more options';
+        }
+        return null;
+      },
+      // dataSource: [
+      //   {
+      //     "status": "Running",
+      //     "value": "Running",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Climbing",
+      //     "value": "Climbing",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Walking",
+      //     "value": "Walking",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Swimming",
+      //     "value": "Swimming",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Soccer Practice",
+      //     "value": "Soccer Practice",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Baseball Practice",
+      //     "value": "Baseball Practice",
+      //     "value2": "Running",
+      //   },
+      //   {
+      //     "status": "Football Practice",
+      //     "value": "Football Practice",
+      //     "value2": "Running",
+      //   },
+      // ],
+      dataSource: getStatusNameDictList(),
+      textField: 'status',
+      valueField: 'value',
+      okButtonLabel: 'OK',
+      cancelButtonLabel: 'CANCEL',
+      hintWidget: Text('Please choose one or more'),
+      initialValue: statusMap.keys.toList(),
+      onSaved: (value) {
+        if (value == null || value.isEmpty) {
+          setState(() {
+            statusMap.forEach((key, value) {value["checkBoxController"] = true;});
+          });
+          return;
+        }
+        setState(() {
+          // _myActivities = value;
+          statusMap.forEach((key, value) {value["checkBoxController"] = false;});
+          (value as List).forEach((element) {
+            String statusStr = element;
+            statusMap[statusStr]["checkBoxController"] = true;
+          });
+          _stockTakeStore.updateFilteredList();
+        });
+      },
+    );
+  }
+
+
+
   Widget _getFilterBar(BuildContext ctx) {
-    widgetList = getTextCheckBoxWigetList();
+    // widgetList = getTextCheckBoxWigetList();
+    // widgetList = [getMultForm()];
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -331,16 +515,17 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
           children: [
             // Row(children: [widgetList[0], widgetList[1], widgetList[2], widgetList[3]],),
             // Row(children: [widgetList[4], widgetList[5], widgetList[6], widgetList[7]],),
-            IconButton(
-                onPressed: () {
-                  print("Hello");
-                  DialogHelper.showTwoOptionsFilterDialog(
-                      context, _onTrueFunction,
-                      widgetList: widgetList,
-                      trueOptionText: "filter",
-                      falseOptionText: "cancel");
-                },
-                icon: Icon(Icons.more_vert))
+            // IconButton(
+            //     onPressed: () {
+            //       print("Hello");
+            //       DialogHelper.showTwoOptionsFilterDialog(
+            //           context, _onTrueFunction,
+            //           widgetList: widgetList,
+            //           trueOptionText: "filter",
+            //           falseOptionText: "cancel");
+            //     },
+            //     icon: Icon(Icons.more_vert))
+            getMultForm()
           ],
         ),
       ),

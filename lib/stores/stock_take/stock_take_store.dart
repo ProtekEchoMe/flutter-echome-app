@@ -237,12 +237,14 @@ abstract class _StockTakeStore with Store {
     }
   }
 
-  Future<void> fetchLineData({String stNum = "", int? requestedPage}) async {
+  Future<void> fetchLineData({String stNum = "", int? requestedPage, String? locCode = ""}) async {
     isFetching = true;
     try {
       var targetPage = requestedPage ?? page;
+      // var data = await repository.getStockTakeLine(
+      //     page: targetPage, limit: limit, stNum: stNum);
       var data = await repository.getStockTakeLine(
-          page: targetPage, limit: limit, stNum: stNum);
+          page: targetPage, limit: 0, stNum: stNum, locCode: locCode ?? "");
       int totalRow = data.rowNumber;
       itemLineList = ObservableList.of(data.itemList);
       filtereditemLineList = itemLineList;

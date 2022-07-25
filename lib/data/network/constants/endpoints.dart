@@ -104,7 +104,7 @@ class Endpoints {
   static const String stockTakeCheckInItemsMethod = "/stocktake/checkInItems";
   static const String stockTakeCancelMethod = "/stocktake/stocktakeCancel";
   static const String stockTakeHeaderCompleteMethod = "/stocktake/stocktakeComplete";
-  static const String stockTakeLineCompleteMethod = "/stocktake/stockTakeLineCompleteMethod";
+  static const String stockTakeLineCompleteMethod = "/stocktake/stocktakeLineComplete";
 
 
   //Stock Take
