@@ -19,6 +19,7 @@ class DebugPage extends StatefulWidget {
 class _DebugPageState extends State<DebugPage> {
   ReaderConnectionStore readerConnectionStore = getIt<ReaderConnectionStore>();
   ReactionDisposer? disposer;
+  double _currentSliderValue = 20;
 
   void _showSnackBar(String msg) {
     var snackBar = SnackBar(
@@ -33,10 +34,10 @@ class _DebugPageState extends State<DebugPage> {
     super.initState();
     disposer =
         reaction((_) => readerConnectionStore.errorStore.errorMessage, (_) {
-      if (readerConnectionStore.errorStore.errorMessage.isNotEmpty) {
-        _showSnackBar(readerConnectionStore.errorStore.errorMessage);
-      }
-    });
+          if (readerConnectionStore.errorStore.errorMessage.isNotEmpty) {
+            _showSnackBar(readerConnectionStore.errorStore.errorMessage);
+          }
+        });
     readerConnectionStore
         .getRfidList()
         .then((value) => null)
@@ -53,26 +54,34 @@ class _DebugPageState extends State<DebugPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Scanner Settings"), actions: [
-        IconButton(onPressed: (){
-          readerConnectionStore.refreshRfidList();
-        }, icon: Icon(Icons.refresh))
-      ],),
+      appBar: AppBar(
+        title: Text("Scanner Settings"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                readerConnectionStore.refreshRfidList();
+              },
+              icon: Icon(Icons.refresh))
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Text(
               "Current Reader In Use",
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleLarge,
             ),
             Observer(builder: (context) {
               return GestureDetector(
                 onTap: () {},
                 child: Card(
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                   child: ListTile(
                     title: Text(readerConnectionStore.currentReader ??
                         "Didn't Connect To Any Scanner"),
@@ -82,10 +91,74 @@ class _DebugPageState extends State<DebugPage> {
             }),
             Text(
               "Available Readers List:",
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleLarge,
             ),
             _getReaderList(context),
-          ]),
+            const SizedBox(height: 100),
+
+            Text(
+              "Power Setting",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleLarge,
+            ),
+            // Center(
+            //
+            //   child: Observer(builder: (context) {
+            //     return Text("Current Power: " + (readerConnectionStore.antennaPower ?? "No data"));
+            //   }),
+            // ),
+            Observer(builder: (context) {
+              return GestureDetector(
+                  onTap: ()
+              {
+                print("hello");
+                readerConnectionStore.getAntennaPower();
+              },
+              child: Observer(builder: (context){ return Card(
+              margin:
+              const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+              child: ListTile(
+              title: Text("Current Power: " + (readerConnectionStore.antennaPower ?? "No data")),
+              ),
+              );},
+              ));
+            }),
+            Slider(
+              value: _currentSliderValue,
+              max: 300,
+              divisions: 10,
+              label: _currentSliderValue.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _currentSliderValue = value;
+                });
+              },
+            ),
+            Center(
+
+              child: Observer(builder: (context) {
+                return Text(_currentSliderValue.toString());
+              }),
+            ),
+            Center(
+              child: RaisedButton(
+                onPressed: () async {
+                  await ZebraRfd8500.setAntennaPower(_currentSliderValue.toInt());
+
+                  setState(() {
+                    readerConnectionStore.getAntennaPower();
+                  });
+                },
+                child: Text("Set Power"),
+              ),
+            ),
+          ]
+          ),
         ),
       ),
     );
@@ -104,31 +177,42 @@ class _DebugPageState extends State<DebugPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: readerConnectionStore.readerList
-            .map((e) => GestureDetector(
-                  onTap: () {
-                     readerConnectionStore.connectScannerWithName(e);
-                    DialogHelper.showCustomDialog(context, widgetList: [
-                      Text("Connecting to Scanner", style: Theme.of(context).textTheme.titleLarge,),
-                      Container(height: 10,),
-                      Text(e),
-                      Observer(builder: (_){
-                        print("builder");
-                        print(readerConnectionStore.isConnecting);
-                        if(readerConnectionStore.isConnecting == false){
-                          Timer(Duration(milliseconds: 800),(){Navigator.pop(context);});
-                        }
-                        return SizedBox();
-                      })
-                    ]);
-                  },
-                  child: Card(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                    child: ListTile(
-                      title: Text(e),
-                    ),
+            .map((e) =>
+            GestureDetector(
+              onTap: () {
+                readerConnectionStore.connectScannerWithName(e);
+                DialogHelper.showCustomDialog(context, widgetList: [
+                  Text(
+                    "Connecting to Scanner",
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleLarge,
                   ),
-                ))
+                  Container(
+                    height: 10,
+                  ),
+                  Text(e),
+                  Observer(builder: (_) {
+                    print("builder");
+                    print(readerConnectionStore.isConnecting);
+                    if (readerConnectionStore.isConnecting == false) {
+                      Timer(Duration(milliseconds: 800), () {
+                        Navigator.pop(context);
+                      });
+                    }
+                    return SizedBox();
+                  })
+                ]);
+              },
+              child: Card(
+                margin:
+                const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                child: ListTile(
+                  title: Text(e),
+                ),
+              ),
+            ))
             .toList(),
       );
     });

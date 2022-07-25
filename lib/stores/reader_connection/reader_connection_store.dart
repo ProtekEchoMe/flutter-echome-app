@@ -74,6 +74,9 @@ abstract class _ReaderConnectionStore with Store {
   @observable
   String? currentReader;
 
+  @observable
+  String? antennaPower;
+
   @computed
   bool get isConnectedToScanner => currentReader != null;
 
@@ -145,4 +148,17 @@ abstract class _ReaderConnectionStore with Store {
       errorStore.setErrorMessage(errorMsg);
     }
   }
+
+  void setAntennaPower(int power){
+    print("flutter setAntennaPower: $power");
+    ZebraRfd8500.setAntennaPower(power);
+  }
+
+  Future<String?> getAntennaPower() async {
+    print("flutter getAntennaPower:");
+    ModelInfo modelInfo = await ZebraRfd8500.getConnectedScannerInfo();
+    antennaPower = modelInfo.antennaPower;
+    return modelInfo.antennaPower;
+  }
+
 }

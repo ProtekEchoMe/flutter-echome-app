@@ -120,6 +120,26 @@ class ZebraRfd8500 {
     } catch (e) {}
   }
 
+  static Future<List<String>> getAntennaPower() async {
+    try {
+      List list = await _channel.invokeMethod('getAntennaPower');
+      print("getAntennaPower");
+
+      List<String> result = [];
+      for (var i = 0; i < list.length; i++) {
+        String str = list[i].toString();
+        result.add(str);
+      }
+      print(result);
+      return result;
+
+    } on PlatformException catch (_, e) {
+      print("Error!!");
+      print(e);
+      rethrow;
+    }
+  }
+
   static Future<ModelInfo> getConnectedScannerInfo() async {
     var map = await _channel.invokeMethod('getConnectedScannerInfo');
     print(map.runtimeType);

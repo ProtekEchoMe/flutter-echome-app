@@ -51,10 +51,35 @@ public class RFIDHandler implements Readers.RFIDReaderEventHandler  {
     }
 
     void setAntennaPower (Integer power) throws InvalidUsageException, OperationFailureException {
+        Log.d(TAG, "setAntennaPower Java is called");
         RFIDReader reader = this.reader;
+        Log.d(TAG, "setAntennaPower Java is called");
+//        Log.d(TAG, power);
+
         Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
         antennaRfConfig.setTransmitPowerIndex(power);
         reader.Config.Antennas.setAntennaRfConfig(1,antennaRfConfig);
+    }
+
+    ArrayList<String> getAntennaPower(){
+        int[] powerLevels;
+        Log.d(TAG, "getAntennaPower Java is called");
+
+        powerLevels = reader.ReaderCapabilities.getTransmitPowerLevelValues();
+
+        ArrayList<String> result = new ArrayList<String>();
+        ;
+        if (readers == null) {
+            Log.d(TAG, "Reader is null");
+        }
+
+        Log.d(TAG, "GET Power LIST SUCCESS");
+//        Log.d(TAG, powerLevels);
+        for (int i = 0; i < powerLevels.length; i++) {
+            String power = Integer.toString(powerLevels[i]);
+            result.add(power);
+        }
+        return result;
     }
 
 //    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
