@@ -237,7 +237,7 @@ class Repository {
 
   Future<TransferInHeaderItem> createTransferInHeaderItem(
       {required int? tiSite}) async {
-    return await _transferInApi.createTransferInHeaderItem(tiSite: tiSite);
+    return await _transferInApi.createTransferInHeader(tiSite: tiSite);
   }
 
   // asset registration api

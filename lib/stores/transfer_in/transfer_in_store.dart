@@ -98,7 +98,7 @@ abstract class _TransferOutStore with Store {
 
 
   @action
-  Future<void> createTransferOutHeaderItem(
+  Future<void> createTransferInHeaderItem(
       {required int? tiSite,
         bool throwError = false}) async {
     try {

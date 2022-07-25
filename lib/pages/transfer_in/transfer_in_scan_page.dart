@@ -70,17 +70,17 @@ class _AssetScanPageState extends State<TransferInScanPage> {
         throw "Ti Number Not Found";
       }
 
-      if (_getcontainerAssetCode().isEmpty) {
-        throw "Container Code not found";
-      }
+      // if (_getcontainerAssetCode().isEmpty) {
+      //   throw "Container Code not found";
+      // }
 
       if (_transferInScanStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_transferInScanStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_transferInScanStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
@@ -206,6 +206,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
             child: const Text('SContainer'),
             onPressed: () {
               // _addMockEquipmentIdCaseTwo();
+              _mockscan1();
               Navigator.of(context).pop();
             },
           )
@@ -344,6 +345,10 @@ class _AssetScanPageState extends State<TransferInScanPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Complete',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eleven_mp),
+            label: 'Debug',
           ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
@@ -621,5 +626,17 @@ class _AssetScanPageState extends State<TransferInScanPage> {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
     _transferInScanStore.updateDataSet(equList: list);
+  }
+
+  void _mockscan1() {
+    List<String> list1 = [];
+    list1.add(AscToText.getAscIIString("CATL010000000808"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
+    List<String> list2 = [];
+    // list2.add(AscToText.getAscIIString("SATL010000000808"));
+    // list2.add(AscToText.getAscIIString("SATL010000000819"));
+    // list2.add(AscToText.getAscIIString("CATL010000000808"));
+    list2.add(AscToText.getAscIIString("SATL010000030003"));
+    _transferInScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

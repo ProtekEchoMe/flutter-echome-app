@@ -59,7 +59,7 @@ class Endpoints {
   static const String registerToItemsMethod = "/to/checkInItems";
   static const String registerToItemsDirectMethod = "/to/newTransferOutLine";
   static const String registerTiItemsMethod = "/ti/checkInItems";
-  static const String registerTiItemsDirectMethod = "/to/newTransferInLine";
+  static const String registerTiItemsDirectMethod = "/ti/newTransferInLine";
   static const String registerContainerMethod = "/reg/checkInContainer";
   static const String registerToContainerMethod = "/to/checkInContainer";
   static const String registerTiContainerMethod = "/ti/checkInContainer";
@@ -90,7 +90,7 @@ class Endpoints {
   static const String createDirectToMethod = "/to/newTransferOutHeader";
 
   // Direct TransferIn Method
-  static const String createDirectTiMethod = "/to/newTransferOutHeader";
+  static const String createDirectTiMethod = "/ti/newTransferInHeader";
 
   // StockTake Method
 

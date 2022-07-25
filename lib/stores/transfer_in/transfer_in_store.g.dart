@@ -141,10 +141,10 @@ mixin _$TransferInStore on _TransferOutStore, Store {
       AsyncAction('_TransferOutStore.createTransferOutHeaderItem');
 
   @override
-  Future<void> createTransferOutHeaderItem(
+  Future<void> createTransferInHeaderItem(
       {required int? tiSite, bool throwError = false}) {
     return _$createTransferOutHeaderItemAsyncAction.run(() => super
-        .createTransferOutHeaderItem(tiSite: tiSite, throwError: throwError));
+        .createTransferInHeaderItem(tiSite: tiSite, throwError: throwError));
   }
 
   final _$_TransferOutStoreActionController =

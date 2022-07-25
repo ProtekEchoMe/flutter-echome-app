@@ -69,11 +69,13 @@ class TransferInApi {
 
 
 
-  Future<TransferInHeaderItem> createTransferInHeaderItem(
+  Future<TransferInHeaderItem> createTransferInHeader(
       {int? tiSite}) async {
     try {
       final res = await _dioClient
-          .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite});
+          .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite, "userName": "temp"});
+      // final res = await _dioClient
+      //     .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite});
       print("ok");
       print(res);
       return TransferInHeaderItem.fromJson(res);

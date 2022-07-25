@@ -61,7 +61,7 @@ class _TransferInPageState extends State<TransferInPage> {
                   // },
                   onPressed: () {
                     void onClickFunction(String selectedDomainKey) {
-                      _transferInStore.createTransferOutHeaderItem(
+                      _transferInStore.createTransferInHeaderItem(
                           tiSite: _siteCodeItemStore.siteCodeMap.containsKey(selectedDomainKey)?
                           _siteCodeItemStore.siteCodeMap[selectedDomainKey]!.id: 0).then((_) {
                         Navigator.pushNamed(
