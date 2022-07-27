@@ -166,6 +166,21 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
     });
   }
 
+  final _$statusMapAtom = Atom(name: '_StockTakeStore.statusMap');
+
+  @override
+  ObservableMap<String, dynamic> get statusMap {
+    _$statusMapAtom.reportRead();
+    return super.statusMap;
+  }
+
+  @override
+  set statusMap(ObservableMap<String, dynamic> value) {
+    _$statusMapAtom.reportWrite(value, super.statusMap, () {
+      super.statusMap = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_StockTakeStore.isFetching');
 
   @override
@@ -282,6 +297,28 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
   }
 
   @override
+  void updateStatusList() {
+    final _$actionInfo = _$_StockTakeStoreActionController.startAction(
+        name: '_StockTakeStore.updateStatusList');
+    try {
+      return super.updateStatusList();
+    } finally {
+      _$_StockTakeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void updateFilteredList() {
+    final _$actionInfo = _$_StockTakeStoreActionController.startAction(
+        name: '_StockTakeStore.updateFilteredList');
+    try {
+      return super.updateFilteredList();
+    } finally {
+      _$_StockTakeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 page: ${page},
@@ -292,6 +329,7 @@ locList: ${locList},
 itemLineHolderList: ${itemLineHolderList},
 itemLineList: ${itemLineList},
 filtereditemLineList: ${filtereditemLineList},
+statusMap: ${statusMap},
 isFetching: ${isFetching},
 currentPage: ${currentPage},
 totalPage: ${totalPage},

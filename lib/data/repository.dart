@@ -318,6 +318,14 @@ class Repository {
          stNum: stNum, locCode: locCode, itemRfid: itemRfid);
   }
 
+  Future<void> stocktakeRecountByLoc(
+      {String stNum = "",
+        String locCode = ""}) async {
+    return await _stockTakeApi.stocktakeRecountByLoc(
+        stNum: stNum, locCode: locCode);
+  }
+
+
   // Future<void> completeStockTake({stNum}) async {}
 
   // Post: ---------------------------------------------------------------------

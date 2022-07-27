@@ -630,13 +630,13 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   void _mockscan1() {
     List<String> list1 = [];
-    list1.add(AscToText.getAscIIString("CATL010000000808"));
+    // list1.add(AscToText.getAscIIString("CATL010000000808"));
     // list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("SATL010000030003"));
+    list2.add(AscToText.getAscIIString("SATL"));
     _transferInScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

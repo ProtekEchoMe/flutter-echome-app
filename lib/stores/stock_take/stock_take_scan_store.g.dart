@@ -191,6 +191,17 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         .run(() => super.startStockTake(stNum: stNum, throwError: throwError));
   }
 
+  final _$stocktakeRecountByLocAsyncAction =
+      AsyncAction('_StockTakeScanStore.stocktakeRecountByLoc');
+
+  @override
+  Future<void> stocktakeRecountByLoc(
+      {String stNum = "", String locCode = "", bool throwError = false}) {
+    return _$stocktakeRecountByLocAsyncAction.run(() => super
+        .stocktakeRecountByLoc(
+            stNum: stNum, locCode: locCode, throwError: throwError));
+  }
+
   final _$_StockTakeScanStoreActionController =
       ActionController(name: '_StockTakeScanStore');
 

@@ -22,6 +22,17 @@ class AssetReturnApi {
       List<dynamic> filter = [];
       Map sortInfo = {};
 
+      // public enum STATUS {
+      //   IMPORTED, RFID_TAG_PRINTED, REGISTERING, COMPLETED, ONHOLD, CANCELLED
+    // }
+
+      filter.add({
+        "value": ['IMPORTED', 'RFID_TAG_PRINTED', 'REGISTERING', 'ONHOLD'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       sortInfo = {
         "id": 1,
         "name": "modifiedDate",
@@ -30,14 +41,14 @@ class AssetReturnApi {
       };
 
       if (rtnNum.isNotEmpty) {
-        filter = [
+        filter.add(
           {
             "value": rtnNum,
             "name": "rtnNum",
             "operator": "contains",
             "type": "string"
           }
-        ];
+          );
       }
       Map<String, dynamic> query = {
         "skip": page * limit,

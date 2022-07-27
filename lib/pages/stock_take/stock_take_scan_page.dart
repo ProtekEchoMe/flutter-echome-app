@@ -134,6 +134,16 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     _stockTakeScanStore.reset();
   }
 
+  Future<bool> _reCount(StockTakeScanPageArguments? args) async{
+    try {
+      _stockTakeScanStore.stocktakeRecountByLoc(stNum: args?.stNum ?? "", locCode: args?.stockTakeLineItem?.locCode ?? "No Loc");
+      _rescan();
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
   void _rescanContainer() {
     _stockTakeScanStore.resetContainer();
   }
@@ -198,11 +208,11 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
+            title: "Confirm to ReCount?",
+            trueOptionText: "ReCounrt",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _rescan();
+          await _reCount(args) ? _showSnackBar("Complete Successfully") : "";
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
@@ -389,16 +399,16 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: 'Re-Count',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -701,7 +711,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("SATL010000030003"));
+    list2.add(AscToText.getAscIIString("SATL010000032555"));
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

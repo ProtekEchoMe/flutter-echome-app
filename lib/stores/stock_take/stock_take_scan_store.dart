@@ -219,4 +219,24 @@ abstract class _StockTakeScanStore with Store {
       isFetching = false;
     }
   }
+
+  @action
+  Future<void> stocktakeRecountByLoc(
+      {String stNum = "", String locCode = "",
+        bool throwError = false}) async {
+    try {
+      isFetching = true;
+      await repository.stocktakeRecountByLoc(
+        stNum: stNum, locCode: locCode);
+    } catch (e) {
+      if (throwError == true) {
+        rethrow;
+      } else {
+        errorStore.setErrorMessage(e.toString());
+      }
+    } finally {
+      isFetching = false;
+    }
+  }
+
 }

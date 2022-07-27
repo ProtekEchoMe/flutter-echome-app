@@ -34,6 +34,16 @@ class StockTakeApi {
       List<dynamic> filter = [];
       Map sortInfo = {};
 
+      // public enum STATUS {
+      //   DRAFT, INITIATED, STOCKTAKING, CANCEL, COMPLETE
+    // }
+      filter.add({
+        "value": ['DRAFT', 'INITIATED', 'STOCKTAKING', 'CANCEL', 'COMPLETE'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       sortInfo = {
         "id": 1,
         "name": "modifiedDate",
@@ -42,21 +52,32 @@ class StockTakeApi {
       };
 
       if (stNum.isNotEmpty) {
-        filter = [
-          {
-            "value": stNum,
-            "name": "stNum",
-            "operator": "contains",
-            "type": "string"
-          },
-          // {
-          //   "value": "COMPLETED",
-          //   "name": "status",
-          //   "operator": "eq",
-          //   "type": "string"
-          // }
-        ];
+        filter.add({
+          "value": stNum,
+          "name": "stNum",
+          "operator": "contains",
+          "type": "string"
+        });
+
       }
+
+
+      // if (stNum.isNotEmpty) {
+      //   filter = [
+      //     {
+      //       "value": stNum,
+      //       "name": "stNum",
+      //       "operator": "contains",
+      //       "type": "string"
+      //     },
+      //     {
+      //       "value": ["COMPLETE"],
+      //       "name": "status",
+      //       "operator": "in",
+      //       "type": "select"
+      //     }
+      //   ];
+      // }
 
       Map<String, dynamic> query = {
         "skip": page * limit,
@@ -283,6 +304,27 @@ class StockTakeApi {
       rethrow;
     }
   }
+
+  Future<void> stocktakeRecountByLoc({String stNum = "", String locCode = ""}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.stocktakeRecountByLoc, queryParameters: {"stNum": stNum, "locCode": locCode});
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
 
 
 

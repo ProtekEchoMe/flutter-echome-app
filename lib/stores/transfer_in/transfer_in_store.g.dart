@@ -137,13 +137,13 @@ mixin _$TransferInStore on _TransferOutStore, Store {
         .run(() => super.fetchData(tiNum: tiNum, requestedPage: requestedPage));
   }
 
-  final _$createTransferOutHeaderItemAsyncAction =
-      AsyncAction('_TransferOutStore.createTransferOutHeaderItem');
+  final _$createTransferInHeaderItemAsyncAction =
+      AsyncAction('_TransferOutStore.createTransferInHeaderItem');
 
   @override
   Future<void> createTransferInHeaderItem(
       {required int? tiSite, bool throwError = false}) {
-    return _$createTransferOutHeaderItemAsyncAction.run(() => super
+    return _$createTransferInHeaderItemAsyncAction.run(() => super
         .createTransferInHeaderItem(tiSite: tiSite, throwError: throwError));
   }
 

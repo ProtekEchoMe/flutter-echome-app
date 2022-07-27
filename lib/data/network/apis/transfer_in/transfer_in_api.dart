@@ -21,6 +21,17 @@ class TransferInApi {
       List<dynamic> filter = [];
       Map sortInfo = {};
 
+    //   public enum STATUS {
+    //     IMPORTED, RFID_TAG_PRINTED, TRANSFER_IN_WIP, COMPLETED, ONHOLD, CANCELLED
+    // }
+
+      filter.add({
+        "value": ['IMPORTED', 'RFID_TAG_PRINTED', 'TRANSFER_IN_WIP', 'ONHOLD'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       sortInfo = {
         "id": 1,
         "name": "modifiedDate",
@@ -29,9 +40,9 @@ class TransferInApi {
       };
 
       if (tiNum.isNotEmpty) {
-        filter = [
+        filter.add(
           {"value": tiNum, "name": "tiNum", "operator": "contains", "type": "string"}
-        ];
+        );
       }else{
         // filter = [
         //   {
