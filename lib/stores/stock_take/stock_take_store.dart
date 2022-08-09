@@ -2,6 +2,7 @@ import 'package:echo_me_mobile/data/repository.dart';
 
 import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_header.dart';
 
 import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
 
@@ -43,6 +44,10 @@ abstract class _StockTakeStore with Store {
   @observable
   ObservableList<StockTakeLocItemHolder> locList =
   ObservableList<StockTakeLocItemHolder>();
+
+  @observable
+  ObservableList<StockTakeLocHeaderHolder> locHeaderList =
+  ObservableList<StockTakeLocHeaderHolder>();
 
   @observable
   ObservableList<StockTakeLineItemHolder> itemLineHolderList =
@@ -161,6 +166,17 @@ abstract class _StockTakeStore with Store {
   }
 
   @action
+  void addAllLocHeader(List<StockTakeLocHeaderHolder> list) {
+    print("????????");
+    print(list);
+    // print(itemList);
+    locHeaderList.addAll(list);
+    // print(itemList.length);
+    totalCount = locHeaderList.length;
+    print("????????");
+  }
+
+  @action
   void removeItem(String orderId) {
     itemList.removeWhere((element) => element.orderId == orderId);
   }
@@ -255,6 +271,32 @@ abstract class _StockTakeStore with Store {
       page = targetPage;
       itemList.clear();
       addAllLineItem(list);
+    } catch (e) {
+      print(e);
+      errorStore.setErrorMessage("error in fetching data");
+    } finally {
+      isFetching = false;
+      print("finally");
+    }
+  }
+
+  Future<void> fetchHeaderLocData({String stNum = "", int? requestedPage, String? locCode = ""}) async {
+    isFetching = true;
+    try {
+      var targetPage = requestedPage ?? page;
+      // var data = await repository.getStockTakeLine(
+      //     page: targetPage, limit: limit, stNum: stNum);
+      var data = await repository.getStockTakeLocHeader(
+          page: targetPage, limit: 0, stNum: stNum, locCode: locCode ?? "");
+      int totalRow = data.rowNumber;
+
+      List<StockTakeLocHeaderHolder> list = data.locHeaderList
+          .map((StockTakeLocHeader e) => StockTakeLocHeaderHolder(e))
+          .toList();
+      totalCount = totalRow;
+      page = targetPage;
+      locHeaderList.clear();
+      addAllLocHeader(list);
     } catch (e) {
       print(e);
       errorStore.setErrorMessage("error in fetching data");

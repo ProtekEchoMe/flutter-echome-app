@@ -159,3 +159,75 @@ locCode: ${locCode}
     ''';
   }
 }
+
+mixin _$StockTakeLocHeaderHolder on _StockTakeLocHeaderHolder, Store {
+  final _$orderIdAtom = Atom(name: '_StockTakeLocHeaderHolder.orderId');
+
+  @override
+  String get orderId {
+    _$orderIdAtom.reportRead();
+    return super.orderId;
+  }
+
+  @override
+  set orderId(String value) {
+    _$orderIdAtom.reportWrite(value, super.orderId, () {
+      super.orderId = value;
+    });
+  }
+
+  final _$statusAtom = Atom(name: '_StockTakeLocHeaderHolder.status');
+
+  @override
+  String get status {
+    _$statusAtom.reportRead();
+    return super.status;
+  }
+
+  @override
+  set status(String value) {
+    _$statusAtom.reportWrite(value, super.status, () {
+      super.status = value;
+    });
+  }
+
+  final _$locCodeAtom = Atom(name: '_StockTakeLocHeaderHolder.locCode');
+
+  @override
+  String get locCode {
+    _$locCodeAtom.reportRead();
+    return super.locCode;
+  }
+
+  @override
+  set locCode(String value) {
+    _$locCodeAtom.reportWrite(value, super.locCode, () {
+      super.locCode = value;
+    });
+  }
+
+  final _$versionAtom = Atom(name: '_StockTakeLocHeaderHolder.version');
+
+  @override
+  int get version {
+    _$versionAtom.reportRead();
+    return super.version;
+  }
+
+  @override
+  set version(int value) {
+    _$versionAtom.reportWrite(value, super.version, () {
+      super.version = value;
+    });
+  }
+
+  @override
+  String toString() {
+    return '''
+orderId: ${orderId},
+status: ${status},
+locCode: ${locCode},
+version: ${version}
+    ''';
+  }
+}

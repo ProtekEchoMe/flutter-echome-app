@@ -12,6 +12,7 @@ import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_header.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
@@ -288,6 +289,13 @@ class Repository {
   Future<StockTakeLineResponse> getStockTakeLine(
       {int page = 0, int limit = 10, String stNum = "", String locCode = ""}) async {
     var result = await _stockTakeApi.listStockTakeLine(
+        page: page, limit: limit, stNum: stNum, locCode: locCode);
+    return result;
+  }
+
+  Future<StockTakeLocHeaderResponse> getStockTakeLocHeader(
+      {int page = 0, int limit = 10, String stNum = "", String locCode = ""}) async {
+    var result = await _stockTakeApi.listStocktakeLocHeader(
         page: page, limit: limit, stNum: stNum, locCode: locCode);
     return result;
   }

@@ -5,6 +5,7 @@ import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_header.dart';
 
 class StockTakeApi {
   //stock Take
@@ -185,6 +186,25 @@ class StockTakeApi {
       print(res);
       // return res["itemRow"];
       return StockTakeLineResponse(res["itemRow"], res["totalRow"]);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<StockTakeLocHeaderResponse> listStocktakeLocHeader(
+      {int page = 0, int limit = 0, String stNum = "", String locCode = ""}) async {
+    try {
+
+      Map<String, dynamic> query = {
+        "stNum": stNum
+      };
+
+      final res = await _dioClient.getRegistration(Endpoints.listStocktakeLocHeader,
+          queryParameters: query);
+      print("ok");
+      print(res);
+      // return res["itemRow"];
+      return StockTakeLocHeaderResponse(res["itemRow"], res["totalRow"]);
     } catch (e) {
       rethrow;
     }
@@ -384,6 +404,23 @@ class StockTakeLineResponse {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => StockTakeLineItem.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class StockTakeLocHeaderResponse {
+  List<StockTakeLocHeader> locHeaderList = [];
+  int rowNumber = 0;
+
+  StockTakeLocHeaderResponse(dynamic data, int? rowNum) {
+    try {
+      locHeaderList = (data as List<dynamic>)
+          .map((e) => StockTakeLocHeader.fromJson(e))
           .toList();
     } catch (e) {
       print(e);

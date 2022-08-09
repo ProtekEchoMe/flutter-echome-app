@@ -14,7 +14,8 @@ import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_page.dart';
-import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNew.dart';
+// import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNew.dart';
+import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNewFetch.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_page.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +38,7 @@ class AppRoutes {
       "/transfer_in_scan":(_)=> TransferInScanPage(),
       "/stock_take": (_) =>StockTakePage(),
       "/stock_take_loc": (_) =>StockTakeLocNewPage(),
+      // "/stock_take_loc_fetch": (_) =>StockTakeLocNew(),
       "/stock_take_scan": (_) =>StockTakeScanPage(),
       "/splash":(_)=>SplashPage(),
       "/debug":(_)=>DebugPage(),

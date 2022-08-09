@@ -88,7 +88,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.arg.item!.createdDate);
+    // print(widget.arg.item!.createdDate);
     return Scaffold(
       appBar: EchoMeAppBar(titleText: "Document Details"),
       body: SizedBox.expand(

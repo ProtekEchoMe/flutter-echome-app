@@ -3,6 +3,7 @@
 import 'package:echo_me_mobile/models/stock_take/stock_take_line_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_loc_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_header.dart';
 import 'package:mobx/mobx.dart';
 
 
@@ -92,5 +93,32 @@ abstract class _StockTakeLocItemHolder with Store {
 
   @observable
   String locCode = "";
+
+}
+
+class StockTakeLocHeaderHolder = _StockTakeLocHeaderHolder with _$StockTakeLocHeaderHolder;
+
+abstract class _StockTakeLocHeaderHolder with Store {
+  final String TAG = "_StockTakeLocItem";
+  final StockTakeLocHeader header;
+
+  _StockTakeLocHeaderHolder(this.header){
+    orderId = header.stNum.toString();
+    status = header.status ?? "";
+    locCode = header.locCode.toString();
+    version = header.version ?? 0;
+  }
+
+  @observable
+  String orderId = "";
+
+  @observable
+  String status = "";
+
+  @observable
+  String locCode = "";
+
+  @observable
+  int version = 0;
 
 }

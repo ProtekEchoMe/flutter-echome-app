@@ -106,7 +106,7 @@ class Endpoints {
   static const String stockTakeHeaderCompleteMethod = "/stocktake/stocktakeComplete";
   static const String stockTakeLineCompleteMethod = "/stocktake/stocktakeLineComplete";
   static const String stocktakeRecountByLocMethod = "/stocktake/stocktakeRecountByLoc";
-
+  static const String listStocktakeLocHeaderMethod = "/stocktake/listStocktakeLocHeader";
 
   //Stock Take
   static String listStockTakeHeader = "$activeUrl$listStockTakeHeaderMethod";
@@ -121,6 +121,7 @@ class Endpoints {
   static String stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
   static String stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
   static String stocktakeRecountByLoc = "$activeUrl$stocktakeRecountByLocMethod";
+  static String listStocktakeLocHeader = "$activeUrl$listStocktakeLocHeaderMethod";
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
@@ -245,6 +246,7 @@ class Endpoints {
     Endpoints.stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
     Endpoints.stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
     Endpoints.stocktakeRecountByLoc = "$activeUrl$stocktakeRecountByLocMethod";
+    Endpoints.listStocktakeLocHeader = "$activeUrl$listStocktakeLocHeaderMethod";
 
   }
 

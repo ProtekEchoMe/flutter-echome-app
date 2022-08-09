@@ -347,10 +347,10 @@ class _AssetScanPageState extends State<TransferInScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
