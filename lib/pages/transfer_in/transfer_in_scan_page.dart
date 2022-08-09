@@ -180,11 +180,12 @@ class _AssetScanPageState extends State<TransferInScanPage> {
         }
       } else if (index == 2) {
         if (!accessControlStore.hasTICompleteRight) throw "No Complete Right";
-        String regLineStr = await fetchData(args);
-        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+        // String regLineStr = await fetchData(args);
+        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
+        //     trueOptionText: "Complete",
+        //     falseOptionText: "Cancel");
+        bool flag = true;
         if (flag == true) {
           _complete(args).then((value) =>
               _showSnackBar("Complete Successfully"));

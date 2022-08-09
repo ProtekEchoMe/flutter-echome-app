@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
 import 'stock_take_scan_page_arguments.dart';
@@ -36,7 +37,9 @@ class _StockTakeLocPageState extends State<StockTakeLocPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: EchoMeAppBar(),
+        appBar: EchoMeAppBar(actionList: [
+          IconButton(onPressed: (){}, icon: const Icon(MdiIcons.clipboardList))
+        ],),
         body: SizedBox.expand(
           child: Column(children: [
             _getTitle(context),
