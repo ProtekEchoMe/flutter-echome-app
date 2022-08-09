@@ -77,7 +77,7 @@ abstract class _AppVersionControlStore with Store {
         return;
       }
       message = "New Version Found, Starting to download";
-      var link = await _repository.getAppDownloadLink();
+      var link = _repository.getAppDownloadLink2();
       OtaUpdate()
           .execute(
         link,

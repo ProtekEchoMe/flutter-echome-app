@@ -19,17 +19,29 @@ class TransferOutApi {
       List<dynamic> filter = [];
       Map sortInfo = {};
 
+      // public enum STATUS {
+      //   IMPORTED, RFID_TAG_PRINTED, TRANSFER_OUT_WIP, COMPLETED, ONHOLD, CANCELLED
+    // }
+
+
+    filter.add({
+        "value": ['IMPORTED', 'RFID_TAG_PRINTED', 'TRANSFER_OUT_WIP', 'ONHOLD'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       sortInfo = {"id": 1, "name": "modifiedDate", "type": "", "dir": -1};
 
       if (toNum.isNotEmpty) {
-        filter = [
+        filter.add(
           {
             "value": toNum,
             "name": "toNum",
             "operator": "contains",
             "type": "string"
           }
-        ];
+        );
       }else{
         // filter = [
         //   {

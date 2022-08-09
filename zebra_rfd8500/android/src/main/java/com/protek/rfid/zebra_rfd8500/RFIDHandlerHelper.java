@@ -26,11 +26,15 @@ import com.zebra.rfid.api3.STATUS_EVENT_TYPE;
 import com.zebra.rfid.api3.STOP_TRIGGER_TYPE;
 import com.zebra.rfid.api3.TagData;
 import com.zebra.rfid.api3.TriggerInfo;
+//import com.zebra.rfid.api3.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import io.flutter.plugin.common.MethodChannel.Result;
+import com.protek.rfid.zebra_rfd8500.data.ScannerData;
 
 class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
     private static RFIDHandleTagData rfidHandleTagData;
@@ -128,6 +132,65 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
             Log.d(TAG, "reader is not connected");
             return false;
         }
+    }
+
+    void setAntennaPower (Integer power) throws InvalidUsageException, OperationFailureException {
+        Log.d(TAG, "setAntennaPower Java is called");
+        RFIDReader reader = this.reader;
+        Log.d(TAG, "setAntennaPower Java is called");
+//        Log.d(TAG, power);
+
+        Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
+        antennaRfConfig.setTransmitPowerIndex(power);
+        reader.Config.Antennas.setAntennaRfConfig(1,antennaRfConfig);
+    }
+    ArrayList<String> getAntennaPower(){
+        int[] powerLevels;
+        Log.d(TAG, "getAntennaPower Java is called");
+
+        powerLevels = reader.ReaderCapabilities.getTransmitPowerLevelValues();
+
+        ArrayList<String> result = new ArrayList<String>();
+        ;
+        if (readers == null) {
+            Log.d(TAG, "Reader is null");
+        }
+
+        Log.d(TAG, "GET Power LIST SUCCESS");
+//        Log.d(TAG, powerLevels);
+        for (int i = 0; i < powerLevels.length; i++) {
+            String power = Integer.toString(powerLevels[i]);
+            result.add(power);
+        }
+        return result;
+    }
+
+    //    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
+    void getConnectedScannerInfo (Result result){
+        Log.d(TAG, "getConnectedScannerInfo");
+        if(reader.isConnected() == false){
+            result.error("error", "No connected Device", "");
+            return;
+        }
+        RFIDReader reader = this.reader;
+        ScannerData scannerData = new ScannerData(reader);
+        result.success(scannerData.toHashMap());
+//
+////
+////        System.out.println("\nBlockEraseSupport: " + reader.ReaderCapabilities.isBlockEraseSupported());
+////        System.out.println("\nBlockWriteSupport: " + reader.ReaderCapabilities.isBlockWriteSupported());
+////        System.out.println("\nBlockPermalockSupport: " + reader.ReaderCapabilities.isBlockPermalockSupported());
+////        System.out.println("\nRecommisionSupport: " + reader.ReaderCapabilities.isRecommisionSupported());
+////        System.out.println("\nWriteWMISupport: " + reader.ReaderCapabilities.isWriteUMISupported());
+////        System.out.println("\nRadioPowerControlSupport: " + reader.ReaderCapabilities.isRadioPowerControlSupported());System.out.println("\nHoppingEn abled: " + reader.ReaderCapabilities.isHoppingEnabled());
+////        System.out.println("\nStateAwareSingulationCapable: " + reader.ReaderCapabilities.isTagInventoryStateAwareSingulationSupported());
+////        System.out.println("\nUTCClockCapable: " + reader.ReaderCapabilities.isUTCClockSupported());System.out.println("\nNumOperationsInAcc essSequence: " + reader.ReaderCapabilities.getMaxNumOperationsInAccessSequence());
+////        System.out.println("\nNumPreFilters: " + reader.ReaderCapabilities.getMaxNumPreFilters());
+////        System.out.println("\nNumAntennaSupported: " + reader.ReaderCapabilities.getNumAntennaSupported());
+//
+//        result.success("ok");
+//        Log.d(TAG, "sent");
+//        return;
     }
 
     //

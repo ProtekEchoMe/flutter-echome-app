@@ -120,6 +120,21 @@ mixin _$AssetInventoryScanStore on _AssetInventoryScanStore, Store {
     });
   }
 
+  final _$disStrAtom = Atom(name: '_AssetInventoryScanStore.disStr');
+
+  @override
+  String get disStr {
+    _$disStrAtom.reportRead();
+    return super.disStr;
+  }
+
+  @override
+  set disStr(String value) {
+    _$disStrAtom.reportWrite(value, super.disStr, () {
+      super.disStr = value;
+    });
+  }
+
   final _$validateEquipmentRfidAsyncAction =
       AsyncAction('_AssetInventoryScanStore.validateEquipmentRfid');
 
@@ -155,6 +170,17 @@ mixin _$AssetInventoryScanStore on _AssetInventoryScanStore, Store {
   }
 
   @override
+  void updateDisStr(String disStr) {
+    final _$actionInfo = _$_AssetInventoryScanStoreActionController.startAction(
+        name: '_AssetInventoryScanStore.updateDisStr');
+    try {
+      return super.updateDisStr(disStr);
+    } finally {
+      _$_AssetInventoryScanStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
     final _$actionInfo = _$_AssetInventoryScanStoreActionController.startAction(
@@ -175,7 +201,8 @@ equipmentData: ${equipmentData},
 isFetchingEquData: ${isFetchingEquData},
 checkedItem: ${checkedItem},
 chosenEquipmentData: ${chosenEquipmentData},
-isFetching: ${isFetching}
+isFetching: ${isFetching},
+disStr: ${disStr}
     ''';
   }
 }

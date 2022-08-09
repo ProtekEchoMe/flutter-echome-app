@@ -125,6 +125,14 @@ class _SensorSettingsState extends State<SensorSettings> {
           },
           child: Text("Set Power to 100"),
         ),
+      ),
+      Center(
+        child: RaisedButton(
+          onPressed: () {
+            ZebraRfd8500.getAntennaPower();
+          },
+          child: Text("Get Power"),
+        ),
       )
     ];
   }

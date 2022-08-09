@@ -145,6 +145,7 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
         break;
       case "getAvailableRFIDReaderList":
         try{
+          Log.d(TAG, "getAvailableRFIDReaderList");
           ArrayList<String> readerList = rfidHandlerHelper.getAvailableRFIDReaderList();
           Log.d(TAG, "getListSuccess");
           result.success(readerList);
@@ -162,21 +163,28 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
         break;
       case "setAntennaPower":
         Integer power = Integer.parseInt(call.arguments.toString());
+        Log.d(TAG, "setAntennaPower is called and its params");
         Log.d(TAG, power.toString());
-//        try {
-//          rfidHandler.setAntennaPower(power);
-//          result.success("");
-//        } catch (InvalidUsageException e) {
-//          e.printStackTrace();
-//          result.error("","","");
-//        } catch (OperationFailureException e) {
-//          e.printStackTrace();
-//          result.error("","","");
-//        }
+        try {
+          rfidHandlerHelper.setAntennaPower(power);
+          result.success("");
+        } catch (InvalidUsageException e) {
+          e.printStackTrace();
+          result.error("","","");
+        } catch (OperationFailureException e) {
+          e.printStackTrace();
+          result.error("","","");
+        }
+        break;
+      case "getAntennaPower":
+        Log.d(TAG, "getAntennaPower Java Plugin is called");
+        ArrayList<String> antennaPowerList = rfidHandlerHelper.getAntennaPower();
+        Log.d(TAG, "getAntennaPowerListSuccess");
+        result.success(antennaPowerList);
         break;
       case "getConnectedScannerInfo":
         Log.d(TAG, "getConnectedScannerInfoMixson");
-        rfidHandler.getConnectedScannerInfo(result);
+        rfidHandlerHelper.getConnectedScannerInfo(result);
 //        try {
 ////          rfidHandler.getConnectedScannerInfo(result);
 //        } catch (InvalidUsageException e) {

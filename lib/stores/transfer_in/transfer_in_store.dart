@@ -34,7 +34,10 @@ abstract class _TransferOutStore with Store {
 
   @observable 
   ObservableList<TransferInHeaderItem> itemList = ObservableList<TransferInHeaderItem>();
-  
+
+  @observable
+  TransferInHeaderItem? directTIResponse;
+
   @observable
   bool isFetching = false;
 
@@ -90,6 +93,23 @@ abstract class _TransferOutStore with Store {
     }finally{
       isFetching = false;
       print("finally");
+    }
+  }
+
+
+  @action
+  Future<void> createTransferInHeaderItem(
+      {required int? tiSite,
+        bool throwError = false}) async {
+    try {
+      directTIResponse = await repository.createTransferInHeaderItem(
+          tiSite: tiSite);
+    } catch (e) {
+      if (throwError == true) {
+        rethrow;
+      } else {
+        errorStore.setErrorMessage(e.toString());
+      }
     }
   }
 

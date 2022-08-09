@@ -143,11 +143,12 @@ abstract class _TransferInScanStore with Store {
       {String tiNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
-      bool throwError = false}) async {
+      bool throwError = false,
+        bool directTI = false}) async {
     try {
       isFetching = true;
       await repository.registerTiItem(
-          tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid);
+          tiNum: tiNum, containerAssetCode: containerAssetCode, itemRfid: itemRfid, directTI: directTI);
     } catch (e) {
       if (throwError == true) {
         rethrow;

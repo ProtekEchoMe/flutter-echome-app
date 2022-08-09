@@ -21,6 +21,17 @@ class TransferInApi {
       List<dynamic> filter = [];
       Map sortInfo = {};
 
+    //   public enum STATUS {
+    //     IMPORTED, RFID_TAG_PRINTED, TRANSFER_IN_WIP, COMPLETED, ONHOLD, CANCELLED
+    // }
+
+      filter.add({
+        "value": ['IMPORTED', 'RFID_TAG_PRINTED', 'TRANSFER_IN_WIP', 'ONHOLD'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       sortInfo = {
         "id": 1,
         "name": "modifiedDate",
@@ -29,9 +40,9 @@ class TransferInApi {
       };
 
       if (tiNum.isNotEmpty) {
-        filter = [
+        filter.add(
           {"value": tiNum, "name": "tiNum", "operator": "contains", "type": "string"}
-        ];
+        );
       }else{
         // filter = [
         //   {
@@ -62,6 +73,23 @@ class TransferInApi {
       print("ok");
       print(res);
       return TransferInHeaderResponse(res["itemRow"], res["totalRow"]);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+  Future<TransferInHeaderItem> createTransferInHeader(
+      {int? tiSite}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite, "userName": "temp"});
+      // final res = await _dioClient
+      //     .get(Endpoints.createDirectTi, queryParameters: {"tiSite": tiSite});
+      print("ok");
+      print(res);
+      return TransferInHeaderItem.fromJson(res);
     } catch (e) {
       rethrow;
     }
@@ -98,7 +126,8 @@ class TransferInApi {
     Future<dynamic> registerTiItem(
       {String tiNum = "",
       String containerAssetCode = "",
-      List<String> itemRfid = const []}) async {
+      List<String> itemRfid = const [],
+        directTI = false}) async {
     try {
       var str = "";
       if (itemRfid != null) {
@@ -115,8 +144,16 @@ class TransferInApi {
       // final res = await _dioClient.getRegistration(Endpoints.registerItemsValidation,
       //     queryParameters: query);
       // print(res);
-      final res1 = await _dioClient.getRegistration(Endpoints.registerTiItems,
-          queryParameters: query);
+      // final res1 = await _dioClient.getRegistration(Endpoints.registerTiItems,
+      //     queryParameters: query);
+
+      if (!directTI) {
+        await _dioClient.getRegistration(Endpoints.registerTiItems,
+            queryParameters: query);
+      } else {
+        await _dioClient.getRegistration(Endpoints.registerTiItemsDirect,
+            queryParameters: query);
+      }
     } catch (e) {
       if (e is DioError) {
         if (e.response?.statusCode == 500) {

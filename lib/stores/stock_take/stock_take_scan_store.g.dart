@@ -128,11 +128,13 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeAsyncAction = AsyncAction('_StockTakeScanStore.complete');
+  final _$completeStockTakeLineAsyncAction =
+      AsyncAction('_StockTakeScanStore.completeStockTakeLine');
 
   @override
-  Future<void> complete({String stNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(stNum: stNum));
+  Future<void> completeStockTakeLine({String stNum = "", String locCode = ""}) {
+    return _$completeStockTakeLineAsyncAction
+        .run(() => super.completeStockTakeLine(stNum: stNum, locCode: locCode));
   }
 
   final _$registerContainerAsyncAction =
@@ -187,6 +189,17 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
   Future<void> startStockTake({String stNum = "", bool throwError = false}) {
     return _$startStockTakeAsyncAction
         .run(() => super.startStockTake(stNum: stNum, throwError: throwError));
+  }
+
+  final _$stocktakeRecountByLocAsyncAction =
+      AsyncAction('_StockTakeScanStore.stocktakeRecountByLoc');
+
+  @override
+  Future<void> stocktakeRecountByLoc(
+      {String stNum = "", String locCode = "", bool throwError = false}) {
+    return _$stocktakeRecountByLocAsyncAction.run(() => super
+        .stocktakeRecountByLoc(
+            stNum: stNum, locCode: locCode, throwError: throwError));
   }
 
   final _$_StockTakeScanStoreActionController =

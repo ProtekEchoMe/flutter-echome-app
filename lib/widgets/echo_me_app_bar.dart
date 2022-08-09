@@ -5,8 +5,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
   String? titleText;
+  List<Widget>? actionList;
 
-  EchoMeAppBar({Key? key, this.titleText}) : super(key: key);
+  EchoMeAppBar({Key? key, this.titleText, this.actionList}) : super(key: key);
 
   ReaderConnectionStore _readerConnectionStore = getIt<ReaderConnectionStore>();
 
@@ -24,7 +25,7 @@ class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
             return Text(str, style: TextStyle(fontSize: 14));
           },) ),
         ),
-        IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))
+        ...actionList?? [IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))]
       ],
     );
   }

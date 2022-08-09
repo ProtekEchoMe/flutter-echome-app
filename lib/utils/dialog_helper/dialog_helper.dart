@@ -105,6 +105,50 @@ class DialogHelper {
     );
   }
 
+  static Future<bool?> showTwoOptionsFilterDialog(BuildContext context, Function onTrueFunction,
+      {
+        List<Widget> widgetList = const [],
+        String trueOptionText = "",
+        String falseOptionText = "",
+      }) async {
+    print("called");
+    // List<Widget> widgetList = inputWidgetList;
+    List<Widget> actionList = [
+      TextButton(
+        child: Text(trueOptionText),
+        onPressed: () {
+          onTrueFunction();
+          Navigator.of(context).pop(true);
+        },
+      )
+      ,
+      TextButton(
+        child: Text(falseOptionText),
+        onPressed: () {
+          Navigator.of(context).pop(false);
+        },
+      )
+    ];
+
+    return showDialog<bool?>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: widgetList,
+              ),
+            ),
+            actions: actionList,
+          ),
+        );
+      },
+    );
+  }
+
   static Future<bool?> showTwoOptionsCompleteWarningDialog(BuildContext context,
       {
         String title = "",

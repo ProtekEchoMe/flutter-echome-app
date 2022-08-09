@@ -2,18 +2,19 @@ import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:echo_me_mobile/widgets/status_list_item.dart';
+import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNew.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
 
 import 'package:echo_me_mobile/stores/stock_take/stock_take_item.dart';
+import 'package:echo_me_mobile/models/stock_take/stock_take_loc_item.dart';
 import 'stock_take_scan_page_arguments.dart';
 
 class StockTakePage extends StatefulWidget {
@@ -137,7 +138,7 @@ class _StockTakePageState extends State<StockTakePage> {
                                       // var subtitle =
                                       //     listItem.item.shipperCode.toString();
                                       var subtitle =
-                                          listItem.item.ranges.toString();
+                                          listItem.item.ranges;
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
                                       // var fx = () => Navigator.pushNamed(
@@ -147,18 +148,35 @@ class _StockTakePageState extends State<StockTakePage> {
                                       //         item: listItem.item)).then((value) => {
                                       //            _store.fetchData(stNum: widget.searchRegNum ?? "")
                                       //         });
-                                      var fx = () => Navigator.pushNamed(
-                                              context, "/stock_take_scan",
-                                              arguments:
-                                                  StockTakeScanPageArguments(
-                                                      listItem.orderId,
-                                                      item: listItem.item))
+                                      // var fx = () => Navigator.pushNamed(
+                                      //         context, "/stock_take_loc",
+                                      //         arguments:
+                                      //             StockTakeScanPageArguments(
+                                      //                 listItem.orderId,
+                                      //                 item: listItem.item))
+                                      //     .then((value) => {
+                                      //           _store.fetchData(
+                                      //               stNum:
+                                      //                   widget.searchRegNum ??
+                                      //                       "")
+                                      //         });
+
+                                      var fx = () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => StockTakeLocNewPage(stockTakeLocItem:
+                                              StockTakeLocItem(
+                                                stNum: listItem.orderId,
+                                                locCode: listItem.item.ranges.toString(),
+                                                status: "Status"
+                                              ))))
                                           .then((value) => {
-                                                _store.fetchData(
-                                                    stNum:
-                                                        widget.searchRegNum ??
-                                                            "")
-                                              });
+                                        _store.fetchData(
+                                            stNum:
+                                            widget.searchRegNum ??
+                                                "")
+                                      });
+
                                       return StatusListItem(
                                         title: title,
                                         subtitle: subtitle,

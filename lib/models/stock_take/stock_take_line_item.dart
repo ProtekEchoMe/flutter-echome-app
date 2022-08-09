@@ -11,11 +11,11 @@ class StockTakeLineItem {
   String? skuCode;
   String? containerCode;
   String? locCode;
-  Null? stocktakeLocCode;
+  String? stocktakeLocCode;
   String? status;
   String? invStatus;
-  Null? reason;
-  Null? stocktakeDate;
+  String? reason;
+  int? stocktakeDate;
   int? createdDate;
   int? modifiedDate;
   int? version;

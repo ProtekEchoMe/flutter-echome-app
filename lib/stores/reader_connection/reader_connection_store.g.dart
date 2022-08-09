@@ -86,6 +86,21 @@ mixin _$ReaderConnectionStore on _ReaderConnectionStore, Store {
     });
   }
 
+  final _$antennaPowerAtom = Atom(name: '_ReaderConnectionStore.antennaPower');
+
+  @override
+  String? get antennaPower {
+    _$antennaPowerAtom.reportRead();
+    return super.antennaPower;
+  }
+
+  @override
+  set antennaPower(String? value) {
+    _$antennaPowerAtom.reportWrite(value, super.antennaPower, () {
+      super.antennaPower = value;
+    });
+  }
+
   final _$_ReaderConnectionStoreActionController =
       ActionController(name: '_ReaderConnectionStore');
 
@@ -129,6 +144,7 @@ isConnecting: ${isConnecting},
 readerList: ${readerList},
 currentReaderData: ${currentReaderData},
 currentReader: ${currentReader},
+antennaPower: ${antennaPower},
 isConnectedToScanner: ${isConnectedToScanner},
 currentScanner: ${currentScanner}
     ''';

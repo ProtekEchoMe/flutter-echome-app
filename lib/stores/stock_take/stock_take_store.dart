@@ -41,9 +41,23 @@ abstract class _StockTakeStore with Store {
       ObservableList<StockTakeItemHolder>();
 
   @observable
-  ObservableList<StockTakeLineItemHolder> itemLineList =
+  ObservableList<StockTakeLocItemHolder> locList =
+  ObservableList<StockTakeLocItemHolder>();
+
+  @observable
+  ObservableList<StockTakeLineItemHolder> itemLineHolderList =
       ObservableList<StockTakeLineItemHolder>();
 
+  @observable
+  ObservableList<StockTakeLineItem> itemLineList =
+  ObservableList<StockTakeLineItem>();
+
+  @observable
+  ObservableList<StockTakeLineItem> filtereditemLineList =
+  ObservableList<StockTakeLineItem>();
+
+  @observable
+  ObservableMap<String, dynamic> statusMap = ObservableMap<String, dynamic>();
   // @computed
   // ObservableList<StockTakeLineItemHolder> itemLineUniLocList = ObservableList<StockTakeLineItemHolder>();
 
@@ -51,14 +65,14 @@ abstract class _StockTakeStore with Store {
   ObservableList<Map<String, dynamic>> get itemLineUniLocList {
     final ObservableList<Map<String, dynamic>> result =
         ObservableList<Map<String, dynamic>>();
-    if (itemLineList.isEmpty) {
+    if (itemLineHolderList.isEmpty) {
       return result;
     }
 
-    StockTakeLineItemHolder firstLineItem = itemLineList.first;
+    StockTakeLineItemHolder firstLineItem = itemLineHolderList.first;
     result.add(
         {"locCode": firstLineItem.locCode, "status": firstLineItem.status});
-    itemLineList.forEach((element) {
+    itemLineHolderList.forEach((element) {
       var tempLoop = [...result];
       bool unique = true;
 
@@ -83,13 +97,13 @@ abstract class _StockTakeStore with Store {
   ObservableList<StockTakeLineItemHolder> get itemLineUniObjLocList {
     final ObservableList<StockTakeLineItemHolder> result =
     ObservableList<StockTakeLineItemHolder>();
-    if (itemLineList.isEmpty) {
+    if (itemLineHolderList.isEmpty) {
       return result;
     }
 
-    StockTakeLineItemHolder firstLineItem = itemLineList.first;
+    StockTakeLineItemHolder firstLineItem = itemLineHolderList.first;
     result.add(firstLineItem);
-    itemLineList.forEach((element) {
+    itemLineHolderList.forEach((element) {
       var tempLoop = [...result];
       bool unique = true;
 
@@ -130,8 +144,19 @@ abstract class _StockTakeStore with Store {
     print("????????");
     print(list);
     print(itemList);
-    itemLineList.addAll(list);
+    itemLineHolderList.addAll(list);
     print(itemList.length);
+    print("????????");
+  }
+
+  @action
+  void addAllLocItem(List<StockTakeLocItemHolder> list) {
+    print("????????");
+    print(list);
+    // print(itemList);
+    locList.addAll(list);
+    // print(itemList.length);
+    totalCount = locList.length;
     print("????????");
   }
 
@@ -144,6 +169,32 @@ abstract class _StockTakeStore with Store {
   void updateList(List<StockTakeItemHolder> newList) {
     itemList = ObservableList.of(newList);
   }
+
+  @action
+  void updateStatusList(){
+    List<StockTakeLineItem> lineList = filtereditemLineList;
+    // Map<String, int> countMap = new Map<String, int>();
+    lineList.forEach((element) {
+      String status = element.status ?? "";
+      if (statusMap.containsKey(status)){
+        if (statusMap[status] != null) {
+          statusMap[status]["count"] += 1;
+          statusMap[status]["stockTakeLineList"].add(element);
+        }
+      }else{
+        statusMap[status] = {"count": 1, "checkBoxController": true, "stockTakeLineList": [element]};
+      }
+    });
+  }
+
+  @action
+  void updateFilteredList(){
+    filtereditemLineList.clear();
+    statusMap.forEach((status, statusDict) {
+      statusDict["checkBoxController"] == true ? filtereditemLineList.addAll(statusDict["stockTakeLineList"]) : null;
+    });
+  }
+
 
   @action
   Future<void> nextPage({String docNum = ""}) async {
@@ -186,13 +237,17 @@ abstract class _StockTakeStore with Store {
     }
   }
 
-  Future<void> fetchLineData({String stNum = "", int? requestedPage}) async {
+  Future<void> fetchLineData({String stNum = "", int? requestedPage, String? locCode = ""}) async {
     isFetching = true;
     try {
       var targetPage = requestedPage ?? page;
+      // var data = await repository.getStockTakeLine(
+      //     page: targetPage, limit: limit, stNum: stNum);
       var data = await repository.getStockTakeLine(
-          page: targetPage, limit: limit, stNum: stNum);
+          page: targetPage, limit: 0, stNum: stNum, locCode: locCode ?? "");
       int totalRow = data.rowNumber;
+      itemLineList = ObservableList.of(data.itemList);
+      filtereditemLineList = itemLineList;
       List<StockTakeLineItemHolder> list = data.itemList
           .map((StockTakeLineItem e) => StockTakeLineItemHolder(e))
           .toList();
@@ -206,6 +261,18 @@ abstract class _StockTakeStore with Store {
     } finally {
       isFetching = false;
       print("finally");
+    }
+  }
+
+  @action
+  Future<void> completeStockTakeHeader({String stNum = ""}) async {
+    try {
+      isFetching = true;
+      await repository.completeStockTakeHeader(stNum: stNum);
+    } catch (e) {
+      errorStore.setErrorMessage(e.toString());
+    } finally {
+      isFetching = false;
     }
   }
 }

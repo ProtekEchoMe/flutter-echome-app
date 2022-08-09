@@ -130,7 +130,7 @@ class TransferInDetailPage extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Transfer In Details"),
+      appBar: EchoMeAppBar(titleText: "Transfer In Detail"),
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(

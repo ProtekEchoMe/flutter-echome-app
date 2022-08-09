@@ -12,8 +12,12 @@ class Endpoints {
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
                                   "DFS": "https://atlrfid.dfs.com"};
 
-  static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
-                                        "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app"};
+  static Map versionControlDomainMap = {"DFS": "http://echome.dfs.com",
+                                        "AWS": "http://qa-echome.ddns.net",};
+
+  // static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
+  //   "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
+  //   "AWS": "https://qa-proteksso.ddns.net"};
 
   // base url
   static String authMethod = "/auth/realms/Protek/protocol/openid-connect";
@@ -55,6 +59,7 @@ class Endpoints {
   static const String registerToItemsMethod = "/to/checkInItems";
   static const String registerToItemsDirectMethod = "/to/newTransferOutLine";
   static const String registerTiItemsMethod = "/ti/checkInItems";
+  static const String registerTiItemsDirectMethod = "/ti/newTransferInLine";
   static const String registerContainerMethod = "/reg/checkInContainer";
   static const String registerToContainerMethod = "/to/checkInContainer";
   static const String registerTiContainerMethod = "/ti/checkInContainer";
@@ -84,6 +89,9 @@ class Endpoints {
   // Direct TransferOut Method
   static const String createDirectToMethod = "/to/newTransferOutHeader";
 
+  // Direct TransferIn Method
+  static const String createDirectTiMethod = "/ti/newTransferInHeader";
+
   // StockTake Method
 
   static const String listStockTakeHeaderMethod = "/stocktake/listStocktakeHeader";
@@ -95,7 +103,9 @@ class Endpoints {
   static const String stockTakeStartMethod = "/stocktake/stocktakeStart";
   static const String stockTakeCheckInItemsMethod = "/stocktake/checkInItems";
   static const String stockTakeCancelMethod = "/stocktake/stocktakeCancel";
-  static const String stockTakeCompleteMethod = "/stocktake/stocktakeComplete";
+  static const String stockTakeHeaderCompleteMethod = "/stocktake/stocktakeComplete";
+  static const String stockTakeLineCompleteMethod = "/stocktake/stocktakeLineComplete";
+  static const String stocktakeRecountByLocMethod = "/stocktake/stocktakeRecountByLoc";
 
 
   //Stock Take
@@ -108,7 +118,9 @@ class Endpoints {
   static String stockTakeStart = "$activeUrl$stockTakeStartMethod";
   static String stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
   static String stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
-  static String stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+  static String stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
+  static String stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
+  static String stocktakeRecountByLoc = "$activeUrl$stocktakeRecountByLocMethod";
 
   static String assetInventory = "$activeUrl$assetInventoryMethod";
   static String assetInventoryContainer = "$activeUrl$assetInventoryContainerMethod";
@@ -120,6 +132,7 @@ class Endpoints {
   static String registerToItems = "$activeUrl$registerToItemsMethod";
   static String registerToItemsDirect = "$activeUrl$registerToItemsDirectMethod";
   static String registerTiItems = "$activeUrl$registerTiItemsMethod";
+  static String registerTiItemsDirect = "$activeUrl$registerTiItemsDirectMethod";
   static String registerContainer = "$activeUrl$registerContainerMethod";
   static String registerToContainer = "$activeUrl$registerToContainerMethod";
   static String registerTiContainer = "$activeUrl$registerTiContainerMethod";
@@ -147,10 +160,17 @@ class Endpoints {
   // Direct Transfer Out
   static String createDirectTo = "$activeUrl$createDirectToMethod";
 
+  // Direct Transfer In
+  static String createDirectTi = "$activeUrl$createDirectTiMethod";
 
-  static String activeVersionControlDomain = versionControlDomainMap["vercal"];
-  static String getAppVersionMethod = "/api/v1/appVersion";
-  static String getAppDownloadLinkMethod = "/api/v1/appDownload";
+
+  static String activeVersionControlDomain = versionControlDomainMap["AWS"];
+  // static String getAppVersionMethod = "/api/v1/appVersion";
+  // static String getAppDownloadLinkMethod = "/api/v1/appDownload";
+
+  static String getAppVersionMethod = "/echoMe/apk/version";
+  static String getAppDownloadLinkMethod = "/echoMe/apk/download?version=";
+
   static String getAppVersion =
       '$activeVersionControlDomain$getAppVersionMethod';
   static String getAppDownloadLink =
@@ -222,7 +242,9 @@ class Endpoints {
     Endpoints.stockTakeStart = "$activeUrl$stockTakeStartMethod";
     Endpoints.stockTakeCheckInItems = "$activeUrl$stockTakeCheckInItemsMethod";
     Endpoints.stockTakeCancel = "$activeUrl$stockTakeCancelMethod";
-    Endpoints.stockTakeComplete  = "$activeUrl$stockTakeCompleteMethod";
+    Endpoints.stockTakeHeaderComplete  = "$activeUrl$stockTakeHeaderCompleteMethod";
+    Endpoints.stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
+    Endpoints.stocktakeRecountByLoc = "$activeUrl$stocktakeRecountByLocMethod";
 
   }
 

@@ -118,7 +118,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       await _stockTakeScanStore.registerStockTakeItem(
           stNum: args?.stNum ?? "",
           itemRfid: itemRfid,
-          locCode: args?.item?.ranges ?? "",
+          locCode: args?.stockTakeLineItem?.locCode ?? "",
           throwError: true);
 
 
@@ -134,13 +134,23 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     _stockTakeScanStore.reset();
   }
 
+  Future<bool> _reCount(StockTakeScanPageArguments? args) async{
+    try {
+      _stockTakeScanStore.stocktakeRecountByLoc(stNum: args?.stNum ?? "", locCode: args?.stockTakeLineItem?.locCode ?? "No Loc");
+      _rescan();
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
   void _rescanContainer() {
     _stockTakeScanStore.resetContainer();
   }
 
-  Future<bool> _complete(StockTakeScanPageArguments? args) async {
+  Future<bool> _completeStockTakeLine(StockTakeScanPageArguments? args) async {
     try {
-      _stockTakeScanStore.complete(stNum: args?.stNum ?? "");
+      _stockTakeScanStore.completeStockTakeLine(stNum: args?.stNum ?? "", locCode: args?.stockTakeLineItem?.locCode ?? "No Loc");
       return true;
     }catch(e){
       return false;
@@ -149,8 +159,9 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   Future<String> fetchData(StockTakeScanPageArguments? args) async {
     String stNum = args?.stNum ?? "";
+    String locCode = args?.stockTakeLineItem?.locCode ?? "";
     var result = await repository.getStockTakeLine(
-        page: 0, limit: 0, stNum: stNum);
+        page: 0, limit: 0, stNum: stNum, locCode: locCode);
     // var result = await repository.fetchStLineData2(args);
     // var newTotalProduct = (result as List).length.toString();
     // int newTotalQuantity = 0;
@@ -197,11 +208,11 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
+            title: "Confirm to ReCount?",
+            trueOptionText: "ReCounrt",
             falseOptionText: "Cancel");
         if (flag == true) {
-          _rescan();
+          await _reCount(args) ? _showSnackBar("Complete Successfully") : "";
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
@@ -212,7 +223,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             trueOptionText: "Complete",
             falseOptionText: "Cancel");
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          await _completeStockTakeLine(args) ? _showSnackBar("Complete Successfully") : "";
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {
@@ -384,20 +395,20 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: 'Check-In RFIDs',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: 'Re-Count',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -650,7 +661,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   Widget _getTitle(BuildContext ctx, StockTakeScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.stNum ?? "No RegNum") + " (ST)",
+      title: (args?.stNum ?? "No RegNum") + "\n" + "[" + (args?.stockTakeLineItem?.locCode ?? "No Loc") + "]" + "" +" (ST)",
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -694,13 +705,13 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
 
   void _mockscan1() {
     List<String> list1 = [];
-    list1.add(AscToText.getAscIIString("CATL010000000808"));
-    list1.add(AscToText.getAscIIString("CATL010000000819"));
+    // list1.add(AscToText.getAscIIString("CATL010000000808"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("SATL010000033703"));
+    list2.add(AscToText.getAscIIString("SATL010000032555"));
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

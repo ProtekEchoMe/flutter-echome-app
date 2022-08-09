@@ -36,21 +36,25 @@ class AssetRegistrationApi {
       //   "dir": 1
       // };
 
+      // public enum STATUS {
+      //   IMPORTED, RFID_TAG_PRINTED, REGISTERING, COMPLETED, ONHOLD, CANCELLED, RFID_TAG_PARTIAL_PRINTED
+    // }
+
+      filter.add({
+        "value": ['IMPORTED', 'RFID_TAG_PRINTED', 'REGISTERING', 'ONHOLD', 'RFID_TAG_PARTIAL_PRINTED'],
+        "name": "status",
+        "operator": "in",
+        "type": "select"
+      });
+
       if (regNum.isNotEmpty) {
-        filter = [
-          {
+        filter.add({
             "value": regNum,
             "name": "regNum",
             "operator": "contains",
             "type": "string"
-          },
-          // {
-          //   "value": "RFID_TAG_PRINTED",
-          //   "name": "status",
-          //   "operator": "contains",
-          //   "type": "string"
-          // }
-        ];
+          });
+
       }else{
         // filter = [
         //   {

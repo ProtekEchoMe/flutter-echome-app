@@ -9,9 +9,11 @@ import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart'
 import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/data/network/apis/transfer_out/transfer_out_api.dart';
 import 'package:echo_me_mobile/data/network/apis/site_code/loc_site_api.dart';
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/models/login/auth_response.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
@@ -90,13 +92,13 @@ class Repository {
       {int page = 0,
       int limit = 10,
       String assetCode = "",
-      String skuCode = "",
+      String productCode = "",
       String siteCode = ""}) async {
     return await _assetInventoryApi.getAssetInventory(
         page: page,
         limit: limit,
         assetCode: assetCode,
-        skuCode: skuCode,
+        productCode: productCode,
         siteCode: siteCode);
   }
 
@@ -233,6 +235,11 @@ class Repository {
     return await _transferInApi.registerTiContainer(rfid: rfid, tiNum: tiNum);
   }
 
+  Future<TransferInHeaderItem> createTransferInHeaderItem(
+      {required int? tiSite}) async {
+    return await _transferInApi.createTransferInHeader(tiSite: tiSite);
+  }
+
   // asset registration api
   Future<void> completeTiRegistration({String tiNum = ""}) async {
     await _transferInApi.completeTiRegister(tiNum: tiNum);
@@ -241,11 +248,13 @@ class Repository {
   Future<void> registerTiItem(
       {String tiNum = "",
       String containerAssetCode = "",
-      List<String> itemRfid = const []}) async {
+      List<String> itemRfid = const [],
+        directTI = false}) async {
     await _transferInApi.registerTiItem(
         tiNum: tiNum,
         containerAssetCode: containerAssetCode,
-        itemRfid: itemRfid);
+        itemRfid: itemRfid,
+        directTI: directTI);
   }
 
   Future<void> registerArContainer(
@@ -277,9 +286,9 @@ class Repository {
   }
 
   Future<StockTakeLineResponse> getStockTakeLine(
-      {int page = 0, int limit = 10, String stNum = ""}) async {
+      {int page = 0, int limit = 10, String stNum = "", String locCode = ""}) async {
     var result = await _stockTakeApi.listStockTakeLine(
-        page: page, limit: limit, stNum: stNum);
+        page: page, limit: limit, stNum: stNum, locCode: locCode);
     return result;
   }
 
@@ -289,10 +298,16 @@ class Repository {
          stNum: stNum);
   }
 
-  Future<void> completeStockTake(
+  Future<void> completeStockTakeHeader(
       { String stNum = ""}) async {
-    return await _stockTakeApi.completeStockTake(
+    return await _stockTakeApi.completeStockTakeHeader(
          stNum: stNum);
+  }
+
+  Future<void> completeStockTakeLine(
+      { String stNum = "", String locCode = ""}) async {
+    return await _stockTakeApi.completeStockTakeLine(
+        stNum: stNum, locCode: locCode);
   }
 
   Future<void> registerStockTakeItem(
@@ -302,6 +317,14 @@ class Repository {
     return await _stockTakeApi.registerStockTakeItem(
          stNum: stNum, locCode: locCode, itemRfid: itemRfid);
   }
+
+  Future<void> stocktakeRecountByLoc(
+      {String stNum = "",
+        String locCode = ""}) async {
+    return await _stockTakeApi.stocktakeRecountByLoc(
+        stNum: stNum, locCode: locCode);
+  }
+
 
   // Future<void> completeStockTake({stNum}) async {}
 
@@ -391,6 +414,14 @@ class Repository {
   Future<String> getAppDownloadLink() async {
     try {
       return await _appVersionControlApi.getAppDownloadLink();
+    } catch (e) {
+      throw "Failed to get app download link";
+    }
+  }
+
+  String getAppDownloadLink2() {
+    try {
+      return Endpoints.getAppDownloadLink;
     } catch (e) {
       throw "Failed to get app download link";
     }

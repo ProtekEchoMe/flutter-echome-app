@@ -21,9 +21,9 @@ import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 
 class AssetInventoryPage extends StatefulWidget {
   final String? assetCode;
-  final String? skuCode;
+  final String? productCode;
 
-  AssetInventoryPage({Key? key, this.assetCode, this.skuCode}) : super(key: key);
+  AssetInventoryPage({Key? key, this.assetCode, this.productCode}) : super(key: key);
 
   @override
   State<AssetInventoryPage> createState() => _AssetInventoryPageState();
@@ -45,7 +45,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
   void initState() {
     super.initState();
     _assetInventoryStore.fetchData(
-        assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
+        assetCode: widget.assetCode ?? "", productCode: widget.productCode ?? "", siteCode: _loginFormStore.siteCode ?? "");
 
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
@@ -121,7 +121,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     GestureDetector(
                                       onTap: () {
                                         _assetInventoryStore.prevPage(
-                                          assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                          assetCode: widget.assetCode ?? "", productCode: widget.productCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
                                       child: const SizedBox(
@@ -148,7 +148,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                     GestureDetector(
                                       onTap: () {
                                         _assetInventoryStore.nextPage(
-                                          assetCode: widget.assetCode ?? "", skuCode: widget.skuCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
+                                          assetCode: widget.assetCode ?? "", productCode: widget.productCode ?? "", siteCode: _loginFormStore.siteCode ?? ""
                                         );
                                       },
                                       child: const SizedBox(
@@ -173,14 +173,14 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                   return Observer(
                                     builder: (context) {
                                       final listItem = _assetInventoryStore.itemList[index];
-                                      var skuCode = listItem.skuCode;
+                                      var productCode = listItem.productCode;
                                       var regNum = listItem.regNum;
                                       var tiNum = listItem.tiNum;
                                       var toNum = listItem.toNum;
                                       var rfid = listItem.rfid;
 
                                       var subtitle = "";
-                                      (skuCode != null) ? subtitle += "SKU: $skuCode" : "";
+                                      (productCode != null) ? subtitle += "productCode: $productCode" : "";
                                       (tiNum != null) ? subtitle += "\nTi: $tiNum" : "";
                                       (toNum != null) ? subtitle += "\nTo :$toNum" : "";
                                       (regNum != null) ? subtitle += "\nReg: $regNum" : "";
@@ -287,7 +287,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for SKU  = " + widget.skuCode!,
+                    "Searching for SKU  = " + widget.productCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -312,7 +312,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => AssetInventoryPage(skuCode: skuSearchBarTextController.text.trim())));
+                    builder: (_) => AssetInventoryPage(productCode: skuSearchBarTextController.text.trim())));
           }
         },
       ),
@@ -330,7 +330,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for SKU/RFID  = " + widget.skuCode! + widget.assetCode!,
+                    "Searching for SKU/RFID  = " + widget.productCode! + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -349,7 +349,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         // initText: "INIT TEXT",
         textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by SKU/Rfid",
+        hintText: "Search by productCode/Rfid",
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             String skuCode = "";
@@ -358,7 +358,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => AssetInventoryPage(skuCode: skuCode, assetCode: assetCode)));
+                    builder: (_) => AssetInventoryPage(productCode: skuCode, assetCode: assetCode)));
           }
         },
       ),

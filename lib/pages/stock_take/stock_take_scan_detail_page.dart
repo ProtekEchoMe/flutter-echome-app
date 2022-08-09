@@ -169,15 +169,18 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   }
 
   Widget _getDocumentInfo(BuildContext ctx) {
+    int dataInt = widget.arg.item?.createdDate ?? 0;
     String dataString = "";
-    if(widget.arg.item?.createdDate != null){
-      dataString = widget.arg.item?.createdDate.toString() ?? "";
+    String locCode = widget.arg.stockTakeLineItem?.locCode ?? "";
+    if (dataInt != 0) {
+      dataString = dataInt.toString();
     }
-    // String dataString = widget.arg.item?.createdDate ?? "";
+    ;
+    // dataString = dataString.toString();
     // String dataString = widget.arg.item?.createdDate != String
     //     ? widget.arg.item!.createdDate!.toString()
     //     : "";
-        print(widget.arg.item);
+    print(widget.arg.item);
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
