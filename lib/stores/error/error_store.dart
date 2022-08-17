@@ -23,6 +23,9 @@ abstract class _ErrorStore with Store {
   @action
   void setErrorMessage(String message) {
     this.errorMessage = message;
+    if (message.contains(new RegExp(r"connectTimeout"))){
+        this.errorMessage = "Network Problem: \nConnection Timeout \nPlease Contact Network administrator";
+    }
   }
 
   @action

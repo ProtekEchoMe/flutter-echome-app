@@ -39,7 +39,7 @@ class StockTakeApi {
       //   DRAFT, INITIATED, STOCKTAKING, CANCEL, COMPLETE
     // }
       filter.add({
-        "value": ['DRAFT', 'INITIATED', 'STOCKTAKING', 'CANCEL', 'COMPLETE'],
+        "value": ['INITIATED', 'STOCKTAKING'],
         "name": "status",
         "operator": "in",
         "type": "select"
