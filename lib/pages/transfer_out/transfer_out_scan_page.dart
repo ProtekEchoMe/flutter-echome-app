@@ -186,17 +186,18 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
-        String regLineStr = await fetchData(args);
-        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
-        if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
-
-          // _assetRegistrationScanStore.reset();
-        }
+        // if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        // String regLineStr = await fetchData(args);
+        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
+        //     trueOptionText: "Complete",
+        //     falseOptionText: "Cancel");
+        // if (flag == true) {
+        //   await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+        //
+        //   // _assetRegistrationScanStore.reset();
+        // }
+        _mockscan1();
       } else if (index == 3) {
         // debug version
         DialogHelper.showCustomDialog(context, widgetList: [
@@ -674,4 +675,17 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     itemList.add(AscToText.getAscIIString("SATL010000348195"));
     _transferOutScanStore.updateDataSet(equList: list, itemList: itemList);
   }
+
+  void _mockscan1() {
+    List<String> list1 = [];
+    list1.add(AscToText.getAscIIString("CATL010000071468"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
+    List<String> list2 = [];
+    list2.add(AscToText.getAscIIString("SATL010000049373"));
+    list2.add(AscToText.getAscIIString("SATL010000049362"));
+    list2.add(AscToText.getAscIIString("SATL010000049384"));
+    list2.add(AscToText.getAscIIString("SATL010000049395"));
+    _transferOutScanStore.updateDataSet(equList: list1, itemList: list2);
+  }
+
 }

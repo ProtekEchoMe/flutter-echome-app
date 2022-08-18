@@ -16,5 +16,15 @@
       "forget_password":"忘記密碼",
       "forget_password_description":"請輸入您的電子郵箱，我們將向您發送一封電子郵件以設置新密碼",
       "forget_password_submit":"忘記密碼"
+    },
+    "assetRegistration": {
+      "asset_register": "物件登記",
+      "search_bar_hint": "Search by document Number",
+      "bottom_bar_total": "Total",
+      "bottom_bar_page": "Page",
+      "scan_page_equipmnet_title": "儲存工具",
+      "scan_page_equipment_container_code_text": "儲存工具編號",
+      "scan_page_asset_title": "物件清單",
+      "scan_page_no_data": "沒有數據"
     }
   }

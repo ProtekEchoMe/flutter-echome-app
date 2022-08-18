@@ -179,36 +179,38 @@ class _AssetScanPageState extends State<AssetScanPage> {
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
-        String regLineStr = await fetchData(args);
-        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
-        if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
-          // _assetRegistrationScanStore.reset();
-        }
+        // if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        // String regLineStr = await fetchData(args);
+        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
+        //     trueOptionText: "Complete",
+        //     falseOptionText: "Cancel");
+        // if (flag == true) {
+        //   await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+        //   // _assetRegistrationScanStore.reset();
+        // }
+        _mockscan1();
       } else if (index == 3) {
         // debug version
-        DialogHelper.showCustomDialog(context, widgetList: [
-          Text("More than one container code detected, please rescan")
-        ], actionList: [
-          TextButton(
-            child: const Text('DContainesrs'),
-            onPressed: () {
-              _addMockEquipmentIdCaseOne();
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('SContainer'),
-            onPressed: () {
-              _addMockEquipmentIdCaseTwo();
-              Navigator.of(context).pop();
-            },
-          )
-        ]);
+        // DialogHelper.showCustomDialog(context, widgetList: [
+        //   Text("More than one container code detected, please rescan")
+        // ], actionList: [
+        //   TextButton(
+        //     child: const Text('DContainesrs'),
+        //     onPressed: () {
+        //       _addMockEquipmentIdCaseOne();
+        //       Navigator.of(context).pop();
+        //     },
+        //   ),
+        //   TextButton(
+        //     child: const Text('SContainer'),
+        //     onPressed: () {
+        //       _mockscan1();
+        //       Navigator.of(context).pop();
+        //     },
+        //   )
+        // ]);
+        _mockscan1();
       }
     }catch (e){
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
@@ -653,18 +655,20 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   void _addMockEquipmentIdCaseTwo() {
     List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("SATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
   }
 
   void _mockscan1() {
     List<String> list1 = [];
-    list1.add(AscToText.getAscIIString("CATL010000000808"));
-    list1.add(AscToText.getAscIIString("CATL010000000819"));
+    list1.add(AscToText.getAscIIString("CATL010000071468"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
-    list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("CATL010000000819"));
+    list2.add(AscToText.getAscIIString("SATL010000049373"));
+    list2.add(AscToText.getAscIIString("SATL010000049362"));
+    list2.add(AscToText.getAscIIString("SATL010000049384"));
+    list2.add(AscToText.getAscIIString("SATL010000049395"));
     _assetRegistrationScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

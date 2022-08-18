@@ -16,5 +16,15 @@
         "forget_password":"Forget password",
         "forget_password_description":"Please enter your email, a email will be sent to you for setting up a new password",
         "forget_password_submit":"Forget password"
+    },
+    "assetRegistration": {
+        "asset_register": "Asset Register",
+        "search_bar_hint": "Search by document Number",
+        "bottom_bar_total": "Total",
+        "bottom_bar_page": "Page",
+        "scan_page_equipmnet_title": "Equipment",
+        "scan_page_equipment_container_code_text": "Container Code",
+        "scan_page_asset_title": "Asset List",
+        "scan_page_no_data": "No Data"
     }
 }
