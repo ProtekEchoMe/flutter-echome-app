@@ -14,6 +14,8 @@ import 'package:mobx/mobx.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 
+import 'package:echo_me_mobile/constants/supported_locale.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -109,7 +111,16 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
           elevation: 0,
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.language))
+            IconButton(onPressed: () {
+              void onClickFunction(String selectedDomainKey){
+                // sharePreferenceHelper.changeDefaulServicetDomainName(selectedDomainKey);
+                context.setLocale(SupportedLocale.supportedLocale[selectedDomainKey] ?? Locale("en"));
+              }
+              DialogHelper.listSelectionDialogWithAutoCompleteBar(
+                  context, List<String?>.from(SupportedLocale.supportedLocale.keys), onClickFunction,
+                  willPop: true);
+
+            }, icon: const Icon(Icons.language))
           ],
         ),
         backgroundColor: Theme.of(context).cardColor,

@@ -20,11 +20,23 @@
     "assetRegistration": {
         "asset_register": "Asset Register",
         "search_bar_hint": "Search by document Number",
+        "search_result_text": "Searching for Reg Num",
         "bottom_bar_total": "Total",
         "bottom_bar_page": "Page",
+
         "scan_page_equipmnet_title": "Equipment",
         "scan_page_equipment_container_code_text": "Container Code",
         "scan_page_asset_title": "Asset List",
-        "scan_page_no_data": "No Data"
+        "scan_page_no_data": "No Data",
+        "scan_page_checkIn": "Change Equipement",
+        "scan_page_rescan": "Re-scan",
+        "scan_page_complete": "Complete",
+
+        "detail_page_title": "Document Details",
+        "detail_page_reg_num": "Reg number",
+        "detail_page_document_date": "Shipper Code",
+        "detail_page_total_product": "Total Products",
+        "detail_page_total_quantity": "Total Quantities",
+        "detail_page_tracker": "Total Tracker"
     }
 }

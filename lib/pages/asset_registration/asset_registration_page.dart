@@ -37,7 +37,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     // context.setLocale(Locale('zh', 'TW'));
-    context.setLocale(Locale('en'));
+    // context.setLocale(Locale('en'));
 
     return Scaffold(
         appBar: EchoMeAppBar(),
@@ -102,9 +102,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("assetRegistration".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "assetRegistration".tr(gender: "bottom_bar_page") + ": ${_store.currentPage}/${_store.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -191,7 +191,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Reg Number = " + widget.searchRegNum!,
+                    "assetRegistration".tr(gender: "search_result_text") + "= " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -209,7 +209,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Document Number",
+        hintText: "assetRegistration".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

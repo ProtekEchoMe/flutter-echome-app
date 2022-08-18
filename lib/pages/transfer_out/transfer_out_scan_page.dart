@@ -186,18 +186,18 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
-        // if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
-        // String regLineStr = await fetchData(args);
-        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-        //     trueOptionText: "Complete",
-        //     falseOptionText: "Cancel");
-        // if (flag == true) {
-        //   await _complete(args) ? _showSnackBar("Complete Successfully") : "";
-        //
-        //   // _assetRegistrationScanStore.reset();
-        // }
-        _mockscan1();
+        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        String regLineStr = await fetchData(args);
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
+            trueOptionText: "Complete",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+
+          // _assetRegistrationScanStore.reset();
+        }
+        // _mockscan1();
       } else if (index == 3) {
         // debug version
         DialogHelper.showCustomDialog(context, widgetList: [

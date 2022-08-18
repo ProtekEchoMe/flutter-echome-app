@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -179,38 +180,38 @@ class _AssetScanPageState extends State<AssetScanPage> {
           _showSnackBar("Data Cleaned");
         }
       } else if (index == 2) {
-        // if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
-        // String regLineStr = await fetchData(args);
-        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-        //     trueOptionText: "Complete",
-        //     falseOptionText: "Cancel");
-        // if (flag == true) {
-        //   await _complete(args) ? _showSnackBar("Complete Successfully") : "";
-        //   // _assetRegistrationScanStore.reset();
-        // }
-        _mockscan1();
+        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        String regLineStr = await fetchData(args);
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
+            trueOptionText: "Complete",
+            falseOptionText: "Cancel");
+        if (flag == true) {
+          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          // _assetRegistrationScanStore.reset();
+        }
+        // _mockscan1();
       } else if (index == 3) {
         // debug version
-        // DialogHelper.showCustomDialog(context, widgetList: [
-        //   Text("More than one container code detected, please rescan")
-        // ], actionList: [
-        //   TextButton(
-        //     child: const Text('DContainesrs'),
-        //     onPressed: () {
-        //       _addMockEquipmentIdCaseOne();
-        //       Navigator.of(context).pop();
-        //     },
-        //   ),
-        //   TextButton(
-        //     child: const Text('SContainer'),
-        //     onPressed: () {
-        //       _mockscan1();
-        //       Navigator.of(context).pop();
-        //     },
-        //   )
-        // ]);
-        _mockscan1();
+        DialogHelper.showCustomDialog(context, widgetList: [
+          Text("More than one container code detected, please rescan")
+        ], actionList: [
+          TextButton(
+            child: const Text('DContainesrs'),
+            onPressed: () {
+              _addMockEquipmentIdCaseOne();
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('SContainer'),
+            onPressed: () {
+              _mockscan1();
+              Navigator.of(context).pop();
+            },
+          )
+        ]);
+        // _mockscan1();
       }
     }catch (e){
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
@@ -349,18 +350,20 @@ class _AssetScanPageState extends State<AssetScanPage> {
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+        items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "assetRegistration".tr(gender: "scan_page_checkIn"),
+            // label: "Change Equipement",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "assetRegistration.scan_page_rescan".tr(),
+            // label: "assetRegistration".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "assetRegistration".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -394,7 +397,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                              "assetRegistration".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -436,7 +439,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "assetRegistration".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -499,7 +502,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "assetRegistration".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -541,7 +544,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("assetRegistration".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!

@@ -1,5 +1,6 @@
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -157,19 +158,19 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Reg number : " + widget.arg.regNum),
+            Text("assetRegistration.detail_page_title".tr() + ": " + widget.arg.regNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
-                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "assetRegistration.detail_page_reg_num".tr() + " : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
+            Text("assetRegistration.detail_page_document_date".tr() + ": ${widget.arg.item?.shipperCode.toString()}"),
             const SizedBox(height: 5),
-            Text("Total Product : $totalProduct"),
+            Text("assetRegistration.detail_page_total_product".tr() + " : $totalProduct"),
             const SizedBox(height: 5),
-            Text("Total Quantity : $totalQuantity"),
+            Text("assetRegistration.detail_page_total_quantity".tr() + " : $totalQuantity"),
             const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            Text("assetRegistration.detail_page_tracker".tr() +" : $totalTracker")
           ],
         ),
       ),

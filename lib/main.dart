@@ -15,6 +15,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import 'package:echo_me_mobile/constants/supported_locale.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides(); // remove in final
@@ -24,7 +26,7 @@ void main() async {
   runZonedGuarded(() async {
     // ignore: prefer_const_constructors
     runApp(EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('zh', 'TW')],
+        supportedLocales: SupportedLocale.supportedLocale.values.toList(),
         path: 'assets/translations',
         fallbackLocale: const Locale('en'),
         child: MyApp()));
