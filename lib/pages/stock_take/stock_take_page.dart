@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';

@@ -58,8 +58,8 @@
     "detail_item_info_RFID": "RFID"
 
   },
-  "assetRegistration": {
-    "asset_register": "物件登記",
+  "transferIn": {
+    "transfer_in": "物件轉入",
     "search_bar_hint": "訂單查詢",
     "search_result_text": "搜尋任務目標",
     "page_no_data": "沒有數據",
@@ -74,8 +74,9 @@
     "scan_page_complete": "完成",
 
     "detail_page_title": "訂單細節",
-    "detail_page_reg_num": "訂單號碼",
-    "detail_page_document_date": "訂單日期",
+    "detail_page_ti_num": "訂單號碼r",
+    "detail_page_ti_date": "訂單日期",
+    "detail_ship_type": "轉入類型",
     "detail_page_total_product": "物件數量",
     "detail_page_total_quantity": "總數量",
     "detail_page_tracker": "總RFID數量"

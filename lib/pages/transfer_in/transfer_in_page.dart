@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 // import 'package:echo_me_mobile/pages/transfer_out/transfer_in_scan_page_arguments.dart';
@@ -97,7 +98,7 @@ class _TransferInPageState extends State<TransferInPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Transfer In",
+      title: "transferIn".tr(gender: "transfer_in"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -111,7 +112,7 @@ class _TransferInPageState extends State<TransferInPage> {
             child: isFetching
                 ? const AppLoader()
                 : _transferInStore.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("transferIn".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
@@ -143,9 +144,10 @@ class _TransferInPageState extends State<TransferInPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("transferIn".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "          Page: ${_transferInStore.currentPage}/${_transferInStore.totalPage} ")
+                                                "          " + "transferIn".tr(gender: "bottom_bar_page")
+                                                    + ": ${_transferInStore.currentPage}/${_transferInStore.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -222,7 +224,8 @@ class _TransferInPageState extends State<TransferInPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Transfer In Number = " + widget.tiNum!,
+                    "transferIn".tr(gender: "search_bar_hint") +
+                        "= " + widget.tiNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -240,7 +243,7 @@ class _TransferInPageState extends State<TransferInPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Transfer In Number",
+        hintText: "transferIn".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str.isNotEmpty) {
             Navigator.push(

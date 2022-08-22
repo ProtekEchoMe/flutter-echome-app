@@ -69,18 +69,24 @@ class TransferInDetailPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Transfer In Number: " + arg.tiNum.toString()),
+            Text( "transferIn".tr(gender: "detail_page_ti_num")
+                + ": " + arg.tiNum.toString()),
             const SizedBox(height: 5),
             Text(
-                "Transfer In Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "transferIn".tr(gender: "detail_page_ti_date")
+                    +": ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("Ship Type: ${arg.shipType.toString()}"),
+            Text("transferIn".tr(gender: "detail_ship_type")
+                +": ${arg.shipType.toString()}"),
             const SizedBox(height: 5),
-            Text("Total Product : $totalProduct"),
+            Text("transferIn".tr(gender: "detail_page_total_product")
+                +" : $totalProduct"),
             const SizedBox(height: 5),
-            Text("Total Quantity : $totalQuantity"),
+            Text("transferIn".tr(gender: "detail_page_total_quantity")
+                +" : $totalQuantity"),
             const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            Text("transferIn".tr(gender: "detail_page_tracker")
+                +" : $totalTracker")
           ],
         ),
       ),
@@ -130,7 +136,7 @@ class TransferInDetailPage extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Transfer In Detail"),
+      appBar: EchoMeAppBar(titleText: "transferIn".tr(gender: "detail_page_title")),
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(

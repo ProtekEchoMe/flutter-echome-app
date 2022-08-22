@@ -1,5 +1,5 @@
 // ignore_for_file: unnecessary_new, prefer_collection_literals
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';

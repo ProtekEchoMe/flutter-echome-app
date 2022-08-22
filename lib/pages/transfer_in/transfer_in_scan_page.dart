@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -334,18 +335,18 @@ class _AssetScanPageState extends State<TransferInScanPage> {
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "transferIn".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "transferIn.scan_page_rescan".tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "transferIn".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -379,7 +380,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                              "transferIn".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -420,7 +421,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "transferIn".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -483,7 +484,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "transferIn".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -525,7 +526,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("transferIn".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!

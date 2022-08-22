@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';

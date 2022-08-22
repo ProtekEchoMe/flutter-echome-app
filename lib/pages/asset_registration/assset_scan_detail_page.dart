@@ -65,7 +65,7 @@ class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
   Widget build(BuildContext context) {
     print(widget.arg.item!.createdDate);
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Document Details"),
+      appBar: EchoMeAppBar(titleText: "assetRegistration.detail_page_title".tr()),
       body: SizedBox.expand(
         child:
             Column(children: [_getDocumentInfo(context), _getListBox(context)]),
