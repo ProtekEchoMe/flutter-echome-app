@@ -21,6 +21,7 @@
       "asset_register": "物件登記",
       "search_bar_hint": "訂單查詢",
       "search_result_text": "搜尋任務目標",
+      "page_no_data": "沒有數據",
       "bottom_bar_total": "總數量",
       "bottom_bar_page": "頁數",
       "scan_page_equipmnet_title": "儲存工具",
@@ -37,5 +38,46 @@
       "detail_page_total_product": "物件數量",
       "detail_page_total_quantity": "總數量",
       "detail_page_tracker": "總RFID數量"
-    }
+    },
+  "assetInventory": {
+    "asset_inverntory": "物件登記",
+    "search_bar_hint": "庫存查詢",
+    "page_no_data": "沒有數據",
+    "search_result_text": "搜尋任務目標",
+    "bottom_bar_total": "總數量",
+    "bottom_bar_page": "頁數",
+
+
+    "detail_page_title": "庫存細節",
+    "detail_page_start_scan": "掃描",
+    "detail_page_stop_scan": "停止",
+    "detail_item_info_productCode": "庫存編碼",
+    "detail_item_info_Ti": "物件轉入編號",
+    "detail_item_info_To": "物件轉出編號",
+    "detail_item_info_Reg": "物件登記編號",
+    "detail_item_info_RFID": "RFID"
+
+  },
+  "assetRegistration": {
+    "asset_register": "物件登記",
+    "search_bar_hint": "訂單查詢",
+    "search_result_text": "搜尋任務目標",
+    "page_no_data": "沒有數據",
+    "bottom_bar_total": "總數量",
+    "bottom_bar_page": "頁數",
+    "scan_page_equipmnet_title": "儲存工具",
+    "scan_page_equipment_container_code_text": "儲存工具編號",
+    "scan_page_asset_title": "物件清單",
+    "scan_page_no_data": "沒有數據",
+    "scan_page_checkIn": "登記",
+    "scan_page_rescan": "重掃",
+    "scan_page_complete": "完成",
+
+    "detail_page_title": "訂單細節",
+    "detail_page_reg_num": "訂單號碼",
+    "detail_page_document_date": "訂單日期",
+    "detail_page_total_product": "物件數量",
+    "detail_page_total_quantity": "總數量",
+    "detail_page_tracker": "總RFID數量"
   }
+}

@@ -38,5 +38,45 @@
         "detail_page_total_product": "Total Products",
         "detail_page_total_quantity": "Total Quantities",
         "detail_page_tracker": "Total Tracker"
+    },
+    "assetInventory": {
+        "asset_inverntory": "Asset Inventory",
+        "search_bar_hint": "Search By productCode/RFID",
+        "page_no_data": "No Data",
+        "search_result_text": "Searching for productCode/RFID",
+        "bottom_bar_total": "Total",
+        "bottom_bar_page": "Page",
+
+
+        "detail_page_title": "Inventory Details",
+        "detail_page_start_scan": "Start",
+        "detail_page_stop_scan": "Stop",
+        "detail_item_info_productCode": "productCode",
+        "detail_item_info_Ti": "Ti",
+        "detail_item_info_To": "To",
+        "detail_item_info_Reg": "Reg",
+        "detail_item_info_RFID": "RFID"
+    },
+    "assetRegistration": {
+        "asset_register": "物件轉入",
+        "search_bar_hint": "訂單查詢",
+        "search_result_text": "搜尋任務目標",
+        "page_no_data": "沒有數據",
+        "bottom_bar_total": "總數量",
+        "bottom_bar_page": "頁數",
+        "scan_page_equipmnet_title": "儲存工具",
+        "scan_page_equipment_container_code_text": "儲存工具編號",
+        "scan_page_asset_title": "物件清單",
+        "scan_page_no_data": "沒有數據",
+        "scan_page_checkIn": "登記",
+        "scan_page_rescan": "重掃",
+        "scan_page_complete": "完成",
+
+        "detail_page_title": "訂單細節",
+        "detail_page_reg_num": "訂單號碼",
+        "detail_page_document_date": "訂單日期",
+        "detail_page_total_product": "物件數量",
+        "detail_page_total_quantity": "總數量",
+        "detail_page_tracker": "總RFID數量"
     }
 }

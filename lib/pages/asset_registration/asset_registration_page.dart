@@ -70,7 +70,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
             child: isFetching
                 ? const AppLoader()
                 : _store.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("assetRegistration".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
