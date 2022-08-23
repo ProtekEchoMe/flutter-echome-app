@@ -141,7 +141,10 @@ class _HomePageState extends State<HomePage> {
             children: [
               ..._getRouteButtonList(context),
               GestureDetector(
-                onTap: () => loginFormStore.logout(),
+                onTap: () {
+                  loginFormStore.logout();
+                  accessControlStore.cleanData();
+                },
                 child: SizedBox(
                   height: 75,
                   child: ListItem(

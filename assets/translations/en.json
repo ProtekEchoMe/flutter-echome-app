@@ -55,6 +55,7 @@
         "asset_register": "Asset Register",
         "search_bar_hint": "Search by Document Number",
         "search_result_text": "Searching for Reg Num",
+        "page_no_data": "No Data",
         "bottom_bar_total": "Total",
         "bottom_bar_page": "Page",
 

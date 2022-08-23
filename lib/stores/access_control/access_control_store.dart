@@ -86,7 +86,7 @@ abstract class _AccessControlStore with Store {
   @computed
   ObservableList<RouteObject> get modulesObjectViewList {
     ObservableList<RouteObject> tempList = ObservableList<RouteObject>();
-    final Map<String, RouteObject>routeMap = RouteConstant.getRouteMap;
+    final Map<String, RouteObject>routeMap = RouteConstant.getRouteMap();
     if (isEchoMeSuperuser || isEchoMeAdmin){
       routeMap.forEach((_, routeOb) {tempList.add(routeOb);});
     }else{
@@ -188,6 +188,10 @@ abstract class _AccessControlStore with Store {
   ObservableList<String?> getRoleList(String roleIdStr) => ObservableList<String?>.of(appModulesAccessRoleList.where((accessRole) => accessRole!.contains(roleIdStr)));
 
   bool checkRight(ObservableList<String?> moduleRoleList, String? rightIdStr)=> moduleRoleList.any((role) => role!.contains(RegExp(rightIdStr!)));
+
+  void cleanData(){
+
+  }
 }
 
 class AccessControlErrorState = _AccessControlErrorState with _$AccessControlErrorState;
