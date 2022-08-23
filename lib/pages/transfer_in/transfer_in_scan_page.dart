@@ -160,36 +160,36 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   Future<void> _onBottomBarItemTapped(TransferInScanPageArguments? args, int index) async {
     try {
       if (index == 0) {
-        if (!accessControlStore.hasTIChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasTIChangeRight) throw "transferIn".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "transferIn".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "transferIn".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "transferIn".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
           _changeEquipment(args).then((value) =>
-              DialogHelper.showSnackBar(context, str: "Change Successfully"));
+              DialogHelper.showSnackBar(context, str: "transferIn".tr(gender: "scan_page_change_success")));
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
-            falseOptionText: "Cancel");
+            title: "transferIn".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "transferIn".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "transferIn".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
-          DialogHelper.showSnackBar(context, str: "Rescan Successfully");
+          DialogHelper.showSnackBar(context, str: "transferIn".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasTICompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasTICompleteRight) throw "transferIn".tr(gender: "scan_page_no_right_complete");
         // String regLineStr = await fetchData(args);
-        // bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-        //     title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-        //     trueOptionText: "Complete",
-        //     falseOptionText: "Cancel");
-        bool flag = true;
+        bool? flag = await DialogHelper.showTwoOptionsDialog(context,
+            title: "transferIn".tr(gender: "scan_page_confirm_to_complete"),
+            trueOptionText: "transferIn".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "transferIn".tr(gender: "scan_page_complete_cancel_option"));
+        // bool flag = true;
         if (flag == true) {
           _complete(args).then((value) =>
-              _showSnackBar("Complete Successfully"));
+              _showSnackBar("transferIn".tr(gender: "scan_page_complete_success")));
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) { // debug version
@@ -249,16 +249,16 @@ class _AssetScanPageState extends State<TransferInScanPage> {
     });
      var disposerReaction1 =
         reaction((_) => _transferInScanStore.equipmentData, (_) {
-          if (!accessControlStore.hasTIScanRight) throw "No Scan Right";
+          if (!accessControlStore.hasTIScanRight) throw "transferIn".tr(gender: "scan_page_complete_cancel_option");
           print("TRIGGER");
           if (_transferInScanStore.chosenEquipmentData.length > 1 &&
               !isDialogShown) {
             isDialogShown = true;
             DialogHelper.showCustomDialog(context, widgetList: [
-              Text("More than one container code detected, please rescan")
+              Text("transferIn".tr(gender: "scan_page_more_than_one_container"))
             ], actionList: [
               TextButton(
-                child: const Text('Rescan'),
+                child: Text("transferIn".tr(gender: "scan_page_rescan_confirm_option")),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _rescan();

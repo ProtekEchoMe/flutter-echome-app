@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       Text(""),
-                      Text("App Version: ${AppData.appVersion}"),
+                      Text("login".tr(gender: "app_version") + ": ${AppData.appVersion}"),
                       ConstrainedBox(
                           constraints: const BoxConstraints(maxHeight: 100.0),
                           child: TextButton(

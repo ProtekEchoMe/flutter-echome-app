@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/auto_complete_searchbar.dart';
 
+
 class DialogHelper {
   static Future<bool?> showCustomDialog(BuildContext context,
       {
@@ -203,7 +204,7 @@ class DialogHelper {
     );
   }
 
-  static Future<void> listSelectionDialogWithAutoCompleteBar(BuildContext context, List<String?> inputList, Function onTapFunction, {bool willPop = false, text = "Choose the site"}) async {
+  static Future<void> listSelectionDialogWithAutoCompleteBar(BuildContext context, List<String?> inputList, Function onTapFunction, {bool willPop = false, text = "Choose the site", String totalText = "Total"}) async {
     print("called");
     return showDialog<void>(
       context: context,
@@ -243,7 +244,7 @@ class DialogHelper {
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment : CrossAxisAlignment.center,
                       textDirection: TextDirection.rtl,
-                      children: <Widget>[Text("Total: ${inputList.length}")])
+                      children: <Widget>[Text(totalText + ": ${inputList.length}")])
                 ]
             ),
                         actions: <Widget>[],

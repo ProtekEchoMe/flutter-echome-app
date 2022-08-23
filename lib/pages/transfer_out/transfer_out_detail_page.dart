@@ -74,18 +74,24 @@ class TransferOutDetailPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Transfer Out Number: " + arg.toNum.toString()),
+            Text( "transferOut".tr(gender: "detail_page_ti_num")
+                + ": " + arg.toNum.toString()),
             const SizedBox(height: 5),
             Text(
-                "Transfer Out Date : ${dataString!.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "transferOut".tr(gender: "detail_page_ti_date")
+                    +": ${dataString!.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("Ship Type: ${arg.item?.shipType.toString()}"),
+            Text("transferOut".tr(gender: "detail_ship_type")
+                +": ${arg.item?.shipType.toString()}"),
             const SizedBox(height: 5),
-            Text("Total Product : $totalProduct"),
+            Text("transferOut".tr(gender: "detail_page_total_product")
+                +" : $totalProduct"),
             const SizedBox(height: 5),
-            Text("Total Quantity : $totalQuantity"),
+            Text("transferOut".tr(gender: "detail_page_total_quantity")
+                +" : $totalQuantity"),
             const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            Text("transferOut".tr(gender: "detail_page_tracker")
+                +" : $totalTracker")
           ],
         ),
       ),
@@ -135,7 +141,7 @@ class TransferOutDetailPage extends HookWidget {
     }, []);
 
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Transfer Out Details"),
+      appBar: EchoMeAppBar(titleText: "transferOut".tr(gender: "detail_page_title")),
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(

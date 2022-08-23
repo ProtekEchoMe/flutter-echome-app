@@ -15,7 +15,8 @@
         "incorrect_account_info":"Incorrect email or password",
         "forget_password":"Forget password",
         "forget_password_description":"Please enter your email, a email will be sent to you for setting up a new password",
-        "forget_password_submit":"Forget password"
+        "forget_password_submit":"Forget password",
+        "app_version": "App Version"
     },
     "assetRegistration": {
         "asset_register": "Asset Register",
@@ -31,6 +32,22 @@
         "scan_page_checkIn": "Change Equipement",
         "scan_page_rescan": "Re-scan",
         "scan_page_complete": "Complete",
+        "scan_page_no_right_change": "No Change Right",
+        "scan_page_confirm_to_change": "Confirm to Change Equipment(s)?",
+        "scan_page_change_confirm_option": "Change",
+        "scan_page_change_cancel_option": "Cancel",
+        "scan_page_change_success": "Change Successfully",
+        "scan_page_confirm_to_rescan": "Confirm to Rescan?",
+        "scan_page_rescan_confirm_option": "Rescan",
+        "scan_page_rescan_cancel_option": "Cancel",
+        "scan_page_rescan_success": "Rescan Successfully",
+        "scan_page_no_right_rescan": "No Complete Right",
+        "scan_page_confirm_to_complete": "Confirm to Complete Equipment(s)?",
+        "scan_page_complete_confirm_option": "Complete",
+        "scan_page_complete_cancel_option": "Cancel",
+        "scan_page_complete_success": "Complete Successfully",
+        "scan_page_no_right_scan": "No Scan Right",
+        "scan_page_more_than_one_container": "More than one container code detected, please rescan",
 
         "detail_page_title": "Document Details",
         "detail_page_reg_num": "Reg number",
@@ -47,7 +64,6 @@
         "bottom_bar_total": "Total",
         "bottom_bar_page": "Page",
 
-
         "detail_page_title": "Inventory Details",
         "detail_page_start_scan": "Start",
         "detail_page_stop_scan": "Stop",
@@ -58,9 +74,51 @@
         "detail_item_info_RFID": "RFID"
     },
     "transferIn": {
-        "transfer_in": "Asset Register",
+        "transfer_in": "Transfer In",
         "search_bar_hint": "Search By Transfer In Number",
         "search_result_text": "Searching for TI Num",
+        "bottom_bar_total": "Total",
+        "bottom_bar_page": "Page",
+        "direct_ti_choose_site_text": "Choose the Site",
+
+        "scan_page_equipmnet_title": "Equipment",
+        "scan_page_equipment_container_code_text": "Container Code",
+        "scan_page_asset_title": "Asset List",
+        "scan_page_no_data": "No Data",
+        "scan_page_checkIn": "Change Equipement",
+        "scan_page_rescan": "Re-scan",
+        "scan_page_complete": "Complete",
+        "scan_page_no_right_change": "No Change Right",
+        "scan_page_confirm_to_change": "Confirm to Change Equipment(s)?",
+        "scan_page_change_confirm_option": "Change",
+        "scan_page_change_cancel_option": "Cancel",
+        "scan_page_change_success": "Change Successfully",
+        "scan_page_confirm_to_rescan": "Confirm to Rescan?",
+        "scan_page_rescan_confirm_option": "Rescan",
+        "scan_page_rescan_cancel_option": "Cancel",
+        "scan_page_rescan_success": "Rescan Successfully",
+        "scan_page_no_right_rescan": "No Complete Right",
+        "scan_page_confirm_to_complete": "Confirm to Complete Equipment(s)?",
+        "scan_page_complete_confirm_option": "Complete",
+        "scan_page_complete_cancel_option": "Cancel",
+        "scan_page_complete_success": "Complete Successfully",
+        "scan_page_no_right_scan": "No Scan Right",
+        "scan_page_more_than_one_container": "More than one container code detected, please rescan",
+        "scan_page_rescan_container_option": "Rescan Container Only",
+
+
+        "detail_page_title": "TI Details",
+        "detail_page_ti_num": "Order Number",
+        "detail_page_ti_date": "Transfer In Date",
+        "detail_ship_type": "Ship Type",
+        "detail_page_total_product": "Total Products",
+        "detail_page_total_quantity": "Total Quantities",
+        "detail_page_tracker": "Total Tracker"
+    },
+    "transferOut": {
+        "transfer_out": "Transfer Out",
+        "search_bar_hint": "Search By Transfer Out Number",
+        "search_result_text": "Searching for TO Num",
         "bottom_bar_total": "Total",
         "bottom_bar_page": "Page",
 
@@ -71,13 +129,37 @@
         "scan_page_checkIn": "Change Equipement",
         "scan_page_rescan": "Re-scan",
         "scan_page_complete": "Complete",
+        "scan_page_no_right_change": "No Change Right",
+        "scan_page_confirm_to_change": "Confirm to Change Equipment(s)?",
+        "scan_page_change_confirm_option": "Change",
+        "scan_page_change_cancel_option": "Cancel",
+        "scan_page_change_success": "Change Successfully",
+        "scan_page_confirm_to_rescan": "Confirm to Rescan?",
+        "scan_page_rescan_confirm_option": "Rescan",
+        "scan_page_rescan_cancel_option": "Cancel",
+        "scan_page_rescan_success": "Rescan Successfully",
+        "scan_page_no_right_rescan": "No Complete Right",
+        "scan_page_confirm_to_complete": "Confirm to Complete Equipment(s)?",
+        "scan_page_complete_confirm_option": "Complete",
+        "scan_page_complete_cancel_option": "Cancel",
+        "scan_page_complete_success": "Complete Successfully",
+        "scan_page_no_right_scan": "No Scan Right",
+        "scan_page_more_than_one_container": "More than one container code detected, please rescan",
+        "scan_page_rescan_container_option": "Rescan Container Only",
 
-        "detail_page_title": "Transfer In Details",
-        "detail_page_ti_num": "Transfer In Number",
+
+        "detail_page_title": "TI Details",
+        "detail_page_ti_num": "Order Number",
         "detail_page_ti_date": "Transfer In Date",
         "detail_ship_type": "Ship Type",
         "detail_page_total_product": "Total Products",
         "detail_page_total_quantity": "Total Quantities",
         "detail_page_tracker": "Total Tracker"
+    },
+
+
+
+    "utilDialog": {
+        "total": "total"
     }
 }

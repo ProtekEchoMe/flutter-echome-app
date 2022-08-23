@@ -80,7 +80,9 @@ class _TransferInPageState extends State<TransferInPage> {
                     }
                     DialogHelper.listSelectionDialogWithAutoCompleteBar(
                         context, List<String?>.from([..._accessControlStore.getAccessControlledTOSiteNameList, "0"]), onClickFunction,
-                        willPop: false);
+                        willPop: true,
+                        text: "transferIn".tr(gender: "direct_choose_site_text"),
+                        totalText: "utilDialog".tr(gender: "total"));
 
                     // showCupertinoModalPopup<void>(
                     //     context: context, builder: (BuildContext context){
