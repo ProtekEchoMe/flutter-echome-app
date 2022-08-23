@@ -64,7 +64,7 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
     print(this.runtimeType);
     print(widget.arg.item!.createdDate);
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Document Details"),
+      appBar: EchoMeAppBar(titleText: "assetReturn.detail_page_title".tr()),
       body: SizedBox.expand(
         child:
             Column(children: [_getDocumentInfo(context), _getListBox(context)]),
@@ -157,19 +157,21 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Reg number : " + widget.arg.rtnNum),
+            Text("assetReturn.detail_page_title".tr() + ": " + widget.arg.rtnNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
-                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "assetReturn.detail_page_reg_num".tr() + " : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
+            Text("assetReturn.detail_page_document_date".tr() + ": ${widget.arg.item?.shipperCode.toString()}"),
             const SizedBox(height: 5),
-            Text("Total Product : $totalProduct"),
+            Text("assetReturn.detail_page_total_product".tr() + " : $totalProduct"),
             const SizedBox(height: 5),
-            Text("Total Quantity : $totalQuantity"),
+            Text("assetReturn.detail_page_total_quantity".tr() + " : $totalQuantity"),
             const SizedBox(height: 5),
-            Text("Total Tracker : $totalTracker")
+            Text("assetReturn.detail_page_tracker".tr() +" : $totalTracker")
+
+
           ],
         ),
       ),

@@ -49,7 +49,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Asset Return",
+      title: "assetReturn".tr(gender: "asset_return"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -63,7 +63,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
             child: isFetching
                 ? const AppLoader()
                 : _store.itemList.isEmpty
-                ? const Center(child: Text("No Data"))
+                ? Center(child: Text("assetReturn".tr(gender: "page_no_data")))
                 : Stack(
               children: [
                 Positioned(
@@ -95,9 +95,9 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text("Total: ${total}"),
+                                  Text("assetReturn".tr(gender: "bottom_bar_total") + ": ${total}"),
                                   Text(
-                                      "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                      "assetReturn".tr(gender: "bottom_bar_page") + ": ${_store.currentPage}/${_store.totalPage} ")
                                 ],
                               );
                             }),
@@ -185,7 +185,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Reg Number = " + widget.searchRegNum!,
+                    "assetReturn".tr(gender: "search_result_text") + "= " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -203,7 +203,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Document Number",
+        hintText: "assetReturn".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

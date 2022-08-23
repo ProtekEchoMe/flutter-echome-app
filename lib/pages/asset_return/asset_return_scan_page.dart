@@ -133,34 +133,34 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
   Future<void> _onBottomBarItemTapped(AssetReturnScanPageArguments? args, int index) async {
     try {
       if (index == 0) {
-        if (!accessControlStore.hasARtnChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARtnChangeRight) throw "assetReturn".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "assetReturn".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "assetReturn".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "assetReturn".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
           _changeEquipment(args);
-          _showSnackBar("Change Successfully");
+          _showSnackBar("assetReturn".tr(gender: "scan_page_change_success"));
           // _assetReturnScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
-            falseOptionText: "Cancel");
+            title: "assetReturn".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "assetReturn".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "assetReturn".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("assetReturn".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARtnCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARtnCompleteRight) throw "assetReturn".tr(gender: "scan_page_no_right_complete");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?",
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "assetReturn".tr(gender: "scan_page_confirm_to_complete"),
+            trueOptionText: "assetReturn".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "assetReturn".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
           _complete(args);
-          _showSnackBar("Complete Successfully");
+          _showSnackBar("assetReturn".tr(gender: "scan_page_complete_success"));
           // _assetReturnScanStore.reset();
         }
       } else if (index == 3) { // debug version
@@ -220,7 +220,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
     });
     var disposerReaction1 =
     reaction((_) => _assetReturnScanStore.equipmentData, (_) {
-      if (!accessControlStore.hasARtnScanRight) throw "No Scan Right";
+      if (!accessControlStore.hasARtnScanRight) throw "assetReturn".tr(gender: "scan_page_no_right_scan");
       Set<String?> containerAssetCodeSet = Set<String?>();
       // print("disposer1 called");
       _assetReturnScanStore.chosenEquipmentData.forEach((element) => containerAssetCodeSet.add(element.containerAssetCode));
@@ -231,7 +231,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
           Text("More than one container code detected, please rescan")
         ], actionList: [
           TextButton(
-            child: const Text('Rescan Container'),
+            child: Text("assetReturn".tr(gender: "scan_page_more_than_one_container")),
             onPressed: () {
               Navigator.of(context).pop();
               _rescanContainer();
@@ -240,7 +240,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
           )
           ,
           TextButton(
-            child: const Text('Rescan'),
+            child:  Text("assetReturn".tr(gender: "scan_page_rescan_container_option")),
             onPressed: () {
               Navigator.of(context).pop();
               _rescan();
@@ -316,18 +316,18 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
         const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "assetReturn".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "assetReturn".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "assetReturn".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -361,7 +361,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                              "assetReturn".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -403,7 +403,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "assetReturn".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -466,7 +466,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "assetReturn".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -508,7 +508,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
                           padding:
                           const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("assetReturn".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!

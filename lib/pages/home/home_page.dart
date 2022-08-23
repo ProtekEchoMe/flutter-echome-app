@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/login/login_api.dart';
 import 'package:echo_me_mobile/data/network/dio_base.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
@@ -74,14 +75,14 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: EchoMeAppBar(),
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: "home".tr(gender: "bottom_home"),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
-              label: 'Settings',
+              label: "home".tr(gender: "bottom_settings"),
             ),
           ],
           currentIndex: _selectedIndex,
@@ -91,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             BodyTitle(
-              title: "EchoMe Main Page",
+              title: "home".tr(gender: "echoMeTitle"),
               clipTitle: "Hong Kong-DC",
               allowSwitchSite: true,
             ),
@@ -149,8 +150,8 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black,
                       size: 50,
                     ),
-                    title: "Logout",
-                    description: "Logout your account",
+                    title: "home".tr(gender: "logout_title"),
+                    description: "home".tr(gender: "logout_subtitle"),
                     trailing: const Icon(
                       Icons.arrow_forward,
                       color: Colors.black,

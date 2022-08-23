@@ -152,7 +152,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
       };
     });
 
-    return "Total: $totalRegQuantity / $newTotalQuantity";
+    return "assetRegistration".tr(gender: "bottom_bar_total") + ": $totalRegQuantity / $newTotalQuantity";
 
   }
 
@@ -160,34 +160,34 @@ class _AssetScanPageState extends State<AssetScanPage> {
       AssetScanPageArguments? args, int index) async {
     try{
       if (index == 0) {
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "assetRegistration".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
-          await _changeEquipment(args) ?_showSnackBar("Change Successfully") : "";
+          await _changeEquipment(args) ?_showSnackBar("assetRegistration".tr(gender: "scan_page_change_success") ): "";
 
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw  "assetRegistration".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          await _complete(args) ? _showSnackBar("assetRegistration".tr(gender: "scan_page_complete_success")) : "";
           // _assetRegistrationScanStore.reset();
         }
         // _mockscan1();
@@ -251,7 +251,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var scanDisposeReaction =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
           try{
-            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            if (!accessControlStore.hasARScanRight) throw "assetRegistration".tr(gender: "scan_page_no_right_scan");
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
             _assetRegistrationScanStore.chosenEquipmentData.forEach(
@@ -259,10 +259,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
             if (containerAssetCodeSet.length > 1 && !isDialogShown) {
               isDialogShown = true;
               DialogHelper.showCustomDialog(context, widgetList: [
-                Text("More than one container code detected, please rescan")
+                Text("assetRegistration".tr(gender: "scan_page_more_than_one_container"))
               ], actionList: [
                 TextButton(
-                  child: const Text('Rescan Container'),
+                  child: Text("assetRegistration".tr(gender: "scan_page_rescan_container_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescanContainer();
@@ -270,7 +270,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   },
                 ),
                 TextButton(
-                  child: const Text('Rescan'),
+                  child: Text("assetRegistration".tr(gender: "scan_page_rescan_confirm_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescan();

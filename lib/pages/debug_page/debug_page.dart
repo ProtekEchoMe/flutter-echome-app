@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/sensor_settings/sensor_settings.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
@@ -55,7 +55,7 @@ class _DebugPageState extends State<DebugPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scanner Settings"),
+        title: Text("setting".tr(gender: "setting_page_title")),
         actions: [
           IconButton(
               onPressed: () {
@@ -70,7 +70,7 @@ class _DebugPageState extends State<DebugPage> {
           child:
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Text(
-              "Current Reader In Use",
+              "setting".tr(gender: "setting_reader_in_use_text"),
               style: Theme
                   .of(context)
                   .textTheme
@@ -84,13 +84,13 @@ class _DebugPageState extends State<DebugPage> {
                   const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                   child: ListTile(
                     title: Text(readerConnectionStore.currentReader ??
-                        "Didn't Connect To Any Scanner"),
+                        "setting".tr(gender: "setting_no_connected_reader_msg")),
                   ),
                 ),
               );
             }),
             Text(
-              "Available Readers List:",
+              "setting".tr(gender: "setting_available_reader_text"),
               style: Theme
                   .of(context)
                   .textTheme
@@ -100,7 +100,7 @@ class _DebugPageState extends State<DebugPage> {
             const SizedBox(height: 100),
 
             Text(
-              "Power Setting",
+              "setting".tr(gender: "setting_power_setting_text"),
               style: Theme
                   .of(context)
                   .textTheme
@@ -123,7 +123,7 @@ class _DebugPageState extends State<DebugPage> {
               margin:
               const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
               child: ListTile(
-              title: Text("Current Power: " + (readerConnectionStore.antennaPower ?? "No data")),
+              title: Text("setting".tr(gender: "setting_current_power") + ": " + (readerConnectionStore.antennaPower ?? "No data")),
               ),
               );},
               ));
@@ -154,7 +154,7 @@ class _DebugPageState extends State<DebugPage> {
                     readerConnectionStore.getAntennaPower();
                   });
                 },
-                child: Text("Set Power"),
+                child: Text("setting".tr(gender: "setting_set_power")),
               ),
             ),
           ]
@@ -167,10 +167,10 @@ class _DebugPageState extends State<DebugPage> {
   Widget _getReaderList(BuildContext context) {
     return Observer(builder: (context) {
       if (readerConnectionStore.readerList.isEmpty) {
-        return const Card(
+        return Card(
           margin: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
           child: ListTile(
-            title: Text("No Data"),
+            title: Text("setting".tr(gender: "setting_power_no_data")),
           ),
         );
       }
@@ -183,7 +183,7 @@ class _DebugPageState extends State<DebugPage> {
                 readerConnectionStore.connectScannerWithName(e);
                 DialogHelper.showCustomDialog(context, widgetList: [
                   Text(
-                    "Connecting to Scanner",
+                    "setting".tr(gender: "setting_reader_connecting"),
                     style: Theme
                         .of(context)
                         .textTheme

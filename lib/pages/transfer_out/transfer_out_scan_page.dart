@@ -159,7 +159,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       };
     });
 
-    return "Total: $totalRegQuantity / $newTotalQuantity";
+    return "transferOut".tr(gender: "bottom_bar_total") + ": $totalRegQuantity / $newTotalQuantity";
 
   }
 
@@ -187,14 +187,14 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
           _showSnackBar("transferOut".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw "transferOut".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "transferOut".tr(gender: "scan_page_confirm_to_complete") + "\n\nChecked-In Items:\n" + regLineStr,
+            title: "transferOut".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
             trueOptionText: "transferOut".tr(gender: "scan_page_complete_confirm_option"),
             falseOptionText: "transferOut".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("scan_page_complete_success") : "";
+          await _complete(args) ? _showSnackBar("transferOut".tr(gender: "scan_page_complete_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
@@ -258,7 +258,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     var disposerReaction1 =
         reaction((_) => _transferOutScanStore.equipmentData, (_) {
           try{
-            if (!accessControlStore.hasARScanRight) throw "transferOut".tr(gender: "scan_page_complete_cancel_option");
+            if (!accessControlStore.hasARScanRight) throw "transferOut".tr(gender: "scan_page_no_right_scan");
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
             _transferOutScanStore.chosenEquipmentData.forEach(
@@ -359,15 +359,15 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: "transferIn".tr(gender: "scan_page_checkIn"),
+            label: "transferOut".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: "transferIn.scan_page_rescan".tr(),
+            label: "transferOut".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: "transferIn".tr(gender: "scan_page_complete"),
+            label: "transferOut".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -401,7 +401,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "transferIn".tr(gender: "scan_page_equipmnet_title"),
+                              "transferOut".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -443,7 +443,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "transferIn".tr(gender: "scan_page_equipment_container_code_text") + ":",
+                      "transferOut".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -506,7 +506,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "transferIn".tr(gender: "scan_page_asset_title"),
+                                "transferOut".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -548,7 +548,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("transferIn".tr(gender: "scan_page_no_data"),
+                              child: Text("transferOut".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!

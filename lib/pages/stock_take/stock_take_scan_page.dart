@@ -197,32 +197,32 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       StockTakeScanPageArguments? args, int index) async {
     try{
       if (index == 0) {
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "stockTake".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "stockTake".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
-          await _changeEquipment(args) ?_showSnackBar("Change Successfully") : "";
+          await _changeEquipment(args) ?_showSnackBar("stockTake".tr(gender: "scan_page_change_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to ReCount?",
-            trueOptionText: "ReCounrt",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "stockTake".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           await _reCount(args) ? _showSnackBar("Complete Successfully") : "";
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("stockTake".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw "stockTake".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
+            trueOptionText: "stockTake".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
           await _completeStockTakeLine(args) ? _showSnackBar("Complete Successfully") : "";
           // _assetRegistrationScanStore.reset();
@@ -286,7 +286,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     var scanDisposeReaction =
         reaction((_) => _stockTakeScanStore.equipmentData, (_) {
           try{
-            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            if (!accessControlStore.hasARScanRight) throw "stockTake".tr(gender: "scan_page_no_right_scan");
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
             _stockTakeScanStore.chosenEquipmentData.forEach(
@@ -294,10 +294,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             if (containerAssetCodeSet.length > 1 && !isDialogShown) {
               isDialogShown = true;
               DialogHelper.showCustomDialog(context, widgetList: [
-                Text("More than one container code detected, please rescan")
+                Text("stockTake".tr(gender: "scan_page_more_than_one_container"))
               ], actionList: [
                 TextButton(
-                  child: const Text('Rescan Container'),
+                  child: Text("stockTake".tr(gender: "scan_page_rescan_container_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescanContainer();
@@ -305,7 +305,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                   },
                 ),
                 TextButton(
-                  child: const Text('Rescan'),
+                  child: Text("stockTake".tr(gender: "scan_page_rescan_confirm_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescan();
@@ -367,7 +367,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
               onPressed: () {
                 if (args != null) {
                   print("startStockTake");
-                  _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("Stock take start"));
+                  _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("stockTake".tr(gender: "scan_page_stock_take_start_text")));
                 }
               },
               icon: const Icon(MdiIcons.clockStart)),
@@ -393,18 +393,18 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Check-In RFIDs',
+            label: "stockTake".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Count',
+            label: "stockTake".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "stockTake".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -480,7 +480,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "stockTake".tr(gender: "scan_page_equipmnet_title"),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -543,7 +543,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "stockTake".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -585,7 +585,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("stockTake".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
