@@ -83,6 +83,7 @@
       "scan_page_complete_success": "完成成功",
       "scan_page_no_right_scan": "沒有掃描權限",
       "scan_page_more_than_one_container": "掃描到多於一個容器",
+      "scan_page_rescan_container_option": "只重掃儲存工具",
 
       "detail_page_title": "訂單細節",
       "detail_page_reg_num": "訂單號碼",
@@ -142,6 +143,7 @@
     "scan_page_complete_success": "完成成功",
     "scan_page_no_right_scan": "沒有掃描權限",
     "scan_page_more_than_one_container": "掃描到多於一個容器",
+    "scan_page_rescan_container_option": "只重掃儲存工具",
 
     "detail_page_title": "訂單細節",
     "detail_page_ti_num": "訂單號碼",
@@ -183,6 +185,7 @@
     "scan_page_complete_success": "完成成功",
     "scan_page_no_right_scan": "沒有掃描權限",
     "scan_page_more_than_one_container": "掃描到多於一個容器",
+    "scan_page_rescan_container_option": "只重掃儲存工具",
 
     "detail_page_title": "訂單細節",
     "detail_page_ti_num": "訂單號碼",
@@ -223,6 +226,7 @@
     "scan_page_complete_success": "完成成功",
     "scan_page_no_right_scan": "沒有掃描權限",
     "scan_page_more_than_one_container": "掃描到多於一個容器",
+    "scan_page_rescan_container_option": "只重掃儲存工具",
 
     "detail_page_title": "訂單細節",
     "detail_page_reg_num": "訂單號碼",
@@ -275,6 +279,7 @@
     "scan_page_complete_success": "完成成功",
     "scan_page_no_right_scan": "沒有掃描權限",
     "scan_page_more_than_one_container": "掃描到多於一個容器",
+    "scan_page_rescan_container_option": "只重掃儲存工具",
     "scan_page_stock_take_start_text": "盤點開始",
 
 

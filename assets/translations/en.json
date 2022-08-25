@@ -30,7 +30,7 @@
         "to_subtitle": "Send to other site",
         "artn_titile": "Asset Return",
         "artn_subtitle": "Return to Inventory",
-        "adis_titile": "Assets Disposa",
+        "adis_titile": "Assets Disposal",
         "adis_subtitle": "Disposal and write-off",
         "st_titile": "Stock Take",
         "st_subtitle": "Count your asset",
@@ -48,7 +48,8 @@
         "setting_power_setting_text": "Power Setting",
         "setting_current_power": "Current Power",
         "setting_power_no_data": "No Data",
-        "setting_set_power": "Set Power"
+        "setting_set_power": "Set Power",
+        "setting_reader_connecting": "Connecting"
     },
 
     "assetRegistration": {
@@ -82,6 +83,7 @@
         "scan_page_complete_success": "Complete Successfully",
         "scan_page_no_right_scan": "No Scan Right",
         "scan_page_more_than_one_container": "More than one container code detected, please rescan",
+        "scan_page_rescan_container_option": "Rescan Container Only",
 
         "detail_page_title": "Document Details",
         "detail_page_reg_num": "Reg number",
@@ -194,6 +196,7 @@
         "asset_return": "Asset Return",
         "search_bar_hint": "Search by Document Number",
         "search_result_text": "Searching for Reg Num",
+        "page_no_data": "No Data",
         "bottom_bar_total": "Total",
         "bottom_bar_page": "Page",
 
@@ -220,6 +223,7 @@
         "scan_page_complete_success": "Complete Successfully",
         "scan_page_no_right_scan": "No Scan Right",
         "scan_page_more_than_one_container": "More than one container code detected, please rescan",
+        "scan_page_rescan_container_option": "Rescan Container Only",
 
         "detail_page_title": "ARtn Details",
         "detail_page_reg_num": "Reg number",
@@ -228,7 +232,7 @@
         "detail_page_total_quantity": "Total Quantities",
         "detail_page_tracker": "Total Tracker"
     },
-    "stocktake": {
+    "stockTake": {
         "stock_take": "Stock Take",
         "search_bar_hint": "Search by Document Number",
         "search_result_text": "Searching for Reg Num",
@@ -269,6 +273,7 @@
         "scan_page_complete_success": "Complete Successfully",
         "scan_page_no_right_scan": "No Scan Right",
         "scan_page_more_than_one_container": "More than one container code detected, please rescan",
+        "scan_page_rescan_container_option": "Rescan Container Only",
         "scan_page_stock_take_start_text": "Start Stock Take ",
 
         "detail_page_title": "ST Details",

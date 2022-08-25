@@ -271,7 +271,12 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           //     element.substring(0, 2) == "73") {
           //   item.add(element);
           // }
-          item.add(element);
+
+          if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
+            item.add(element);
+          }
+          // item.add(element);
         }
         _stockTakeScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
@@ -280,6 +285,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     var disposerReaction = reaction(
         (_) => _stockTakeScanStore.errorStore.errorMessage, (_) {
       if (_stockTakeScanStore.errorStore.errorMessage.isNotEmpty) {
+        DialogHelper.showErrorDialogBox(context, errorMsg: _stockTakeScanStore.errorStore.errorMessage);
         _showSnackBar(_stockTakeScanStore.errorStore.errorMessage);
       }
     });
@@ -438,7 +444,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                        "stockTake".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -480,7 +486,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "stockTake".tr(gender: "scan_page_equipmnet_title"),
+                      "stockTake".tr(gender: "scan_page_equipment_container_code_text"),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
