@@ -410,31 +410,31 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         }
     }
 
-    // synchronized void performInventory() {
-    // // check reader connection
-    // if (!isReaderConnected())
-    // return;
-    // try {
-    // reader.Actions.Inventory.perform();
-    // } catch (InvalidUsageException e) {
-    // e.printStackTrace();
-    // } catch (OperationFailureException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    //
-    // synchronized void stopInventory() {
-    // // check reader connection
-    // if (!isReaderConnected())
-    // return;
-    // try {
-    // reader.Actions.Inventory.stop();
-    // } catch (InvalidUsageException e) {
-    // e.printStackTrace();
-    // } catch (OperationFailureException e) {
-    // e.printStackTrace();
-    // }
-    // }
+//     synchronized void performInventory() {
+//     // check reader connection
+//     if (!isReaderConnected())
+//     return;
+//     try {
+//     reader.Actions.Inventory.perform();
+//     } catch (InvalidUsageException e) {
+//     e.printStackTrace();
+//     } catch (OperationFailureException e) {
+//     e.printStackTrace();
+//     }
+//     }
+//
+//     synchronized void stopInventory() {
+//     // check reader connection
+//     if (!isReaderConnected())
+//     return;
+//     try {
+//     reader.Actions.Inventory.stop();
+//     } catch (InvalidUsageException e) {
+//     e.printStackTrace();
+//     } catch (OperationFailureException e) {
+//     e.printStackTrace();
+//     }
+//     }
 
     // Read/Status Notify handler
     // Implement the RfidEventsLister class to receive event notifications
