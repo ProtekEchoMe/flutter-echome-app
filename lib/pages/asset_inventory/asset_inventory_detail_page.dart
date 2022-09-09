@@ -11,6 +11,9 @@ import 'package:echo_me_mobile/di/service_locator.dart';
 
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
+import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
+final SoundPoolUtil soundPoolUtil = SoundPoolUtil();
+
 class AssetInventoryDetailPage extends StatefulWidget {
   AssetInventoryItem? item;
   AssetInventoryDetailPage({Key? key, AssetInventoryItem? item})
@@ -30,6 +33,7 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
 
   void initState() {
     super.initState();
+    soundPoolUtil.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       // print("event: " + event.toString());
       // print("event.type: " + event.type.toString());
@@ -38,6 +42,9 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
           print("element: " + disStr);
           // updateLocatingDis(element);
           _assetInventoryScanStore.updateDisStr(disStr);
+          double volume = double.parse(disStr).abs() / 100 ;
+          soundPoolUtil.updateVolume(volume);
+          soundPoolUtil.playCheering();
           // setState((){
           //   updateLocatingDis(element);
           // });
@@ -81,6 +88,7 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
         //   });
         String rfid = widget.item?.rfid ?? "";
         String rfidHexCode = AscToText.getAscIIString(rfid);
+        rfidHexCode = "5341544C303130303030303031363431";
         var test = await ZebraRfd8500.performTagLocating(rfidHexCode);
         print(test.toString());
       } else if (index == 1) {

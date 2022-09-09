@@ -78,6 +78,7 @@ class SoundPoolUtil {
     _cheeringStreamId = await _soundpool.play(
       _sound,
       rate: _rate,
+
     );
   }
 

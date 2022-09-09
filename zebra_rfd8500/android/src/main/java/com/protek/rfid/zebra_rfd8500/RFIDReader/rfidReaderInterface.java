@@ -15,7 +15,7 @@ public interface rfidReaderInterface {
 
     public boolean setPower(int power);
     public int getPower();
-    public boolean performTagLocating();
+    public String performTagLocating(String rfid);
     public boolean stopTagLocating();
 
 

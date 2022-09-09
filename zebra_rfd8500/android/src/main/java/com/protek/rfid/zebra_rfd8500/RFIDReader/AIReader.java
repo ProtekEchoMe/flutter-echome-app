@@ -8,6 +8,7 @@ import android.util.Log;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
 import com.rscja.deviceapi.exception.ConfigurationException;
+import com.rscja.deviceapi.interfaces.IUHFLocationCallback;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class AIReader extends rfidReader{
 
     private RFIDWithUHFUART mReader;
     private ZebraRfd8500Plugin plugin;
+
+    private IUHFLocationCallback locationCallback;
 
     public AIReader(RFIDWithUHFUART reader, ZebraRfd8500Plugin plugin) throws ConfigurationException {
         super();
@@ -133,13 +136,19 @@ public class AIReader extends rfidReader{
     }
 
     @Override
-    public boolean performTagLocating() {
-        return false;
+    public String performTagLocating(String rfid){
+        Log.d(TAG, "aiReader performTagLocating");
+        int filterBank = 1; // EPC
+        int ptr = 32; //start with (tested)
+
+        mReader.startLocation(plugin.context, rfid, filterBank, ptr, locationCallback);
+        return "";
     }
 
     @Override
     public boolean stopTagLocating() {
-        return false;
+        mReader.stopLocation();
+        return true;
     }
 
     public void toastMessage(String msg) {
@@ -277,5 +286,13 @@ public class AIReader extends rfidReader{
             }
         }
         return existFlag;
+    }
+
+    public void setLocationCallback(IUHFLocationCallback locationCallback){
+        this.locationCallback = locationCallback;
+    }
+
+    public IUHFLocationCallback getLocationCallback(){
+        return locationCallback;
     }
 }

@@ -66,9 +66,7 @@ public class rfidReader implements rfidReaderInterface{
     }
 
     @Override
-    public boolean performTagLocating() {
-        return false;
-    }
+    public String performTagLocating(String rfid){return "";}
 
     @Override
     public boolean stopTagLocating() {

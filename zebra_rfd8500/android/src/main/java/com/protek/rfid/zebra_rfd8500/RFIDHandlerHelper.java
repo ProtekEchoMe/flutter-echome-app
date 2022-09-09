@@ -118,7 +118,12 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler, RFIDControlle
 
     public String performTagLocating(String rfid){
         Log.d(TAG, "performTagLocating is called");
-        rfidHandleTagData.performTagLocating(rfid);
+//        rfidHandleTagData.performTagLocating(rfid);
+        try {
+            reader.Actions.TagLocationing.Perform(rfid, null, null);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
 //        rfidHandleTagData.performTagLocating("4341544C303130303030303637343330");
 //        readers.Actions.TagLocationing.Perform("123", null, null);
         return "Success";
@@ -126,8 +131,12 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler, RFIDControlle
 
     public String stopTagLocating(){
         Log.d(TAG, "String stopTagLocating is called");
-        rfidHandleTagData.stopTagLocating();
-//        readers.Actions.TagLocationing.Perform("123", null, null);
+        try {
+            reader.Actions.TagLocationing.Stop();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+//        rfidHandleTagData.stopTagLocating();
         return "Success";
     }
 

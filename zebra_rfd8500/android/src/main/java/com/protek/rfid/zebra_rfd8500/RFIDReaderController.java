@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.exception.ConfigurationException;
+import com.rscja.deviceapi.interfaces.IUHFLocationCallback;
 import com.zebra.rfid.api3.*;
 import io.flutter.plugin.common.MethodChannel.Result;
 import com.protek.rfid.zebra_rfd8500.RFIDReader.*;
@@ -24,7 +25,7 @@ class RFIDReaderController implements RFIDControllerInterface{
     private AIReader aiReader;
     private RFIDReader rfidReader;
 
-    final static String TAG = "RFID_SAMPLE";
+    final static String TAG = "RFIDReaderController_AI";
     // RFID Reader
     public static rfidReader reader;
     // Context
@@ -128,9 +129,23 @@ class RFIDReaderController implements RFIDControllerInterface{
     }
 
 
+    @Override
     public String performTagLocating(String rfid){
-        Log.d(TAG, "performTagLocating is called");
-        reader.performTagLocating();
+        Log.d(TAG, "ai performTagLocating is called");
+        IUHFLocationCallback locationCallback = new IUHFLocationCallback() {
+            @Override
+            public void getLocationValue(int i) {
+                Log.d("locationValue", String.valueOf(i));
+                ArrayList<String> relativeDistanceList = new ArrayList<String>();
+                relativeDistanceList.add(String.valueOf(i));
+
+                Log.d(TAG, "Tag relative distance " + i);
+                plugin.notifyRfidLocatingData(relativeDistanceList);
+            }
+        };
+
+        aiReader.setLocationCallback(locationCallback);
+        reader.performTagLocating(rfid);
 //        rfidHandleTagData.performTagLocating(rfid);
 //        rfidHandleTagData.performTagLocating("4341544C303130303030303637343330");
 //        readers.Actions.TagLocationing.Perform("123", null, null);

@@ -43,7 +43,7 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
   private MethodChannel channel;
   private EventChannel eventChannel;
   private static Readers readers;
-  private Context context;
+  public Context context;
   private Lifecycle lifecycle;
   private RFIDHandler rfidHandler;
   private RFIDHandlerHelper rfidHandlerHelper;
