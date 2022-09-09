@@ -32,11 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 import io.flutter.plugin.common.MethodChannel.Result;
 import com.protek.rfid.zebra_rfd8500.data.ScannerData;
 
-class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
+class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler, RFIDControllerInterface {
     private static RFIDHandleTagData rfidHandleTagData;
     final static String TAG = "RFID_SAMPLE";
     // RFID Reader
@@ -89,27 +90,33 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
 ////        return;
 //    }
 
-    ArrayList<String> getAvailableRFIDReaderList() throws InvalidUsageException {
-
-        if (reader != null && reader.isConnected()) {
-            disconnect(true);
-        }
-
+    public ArrayList<String> getAvailableRFIDReaderList() {
         ArrayList<String> result = new ArrayList<String>();
-        ;
-        if (readers == null) {
-            Log.d(TAG, "Reader is null");
+        try{
+
+            if (reader != null && reader.isConnected()) {
+                disconnect(true);
+            }
+
+
+            ;
+            if (readers == null) {
+                Log.d(TAG, "Reader is null");
+            }
+            ArrayList<ReaderDevice> list = readers.GetAvailableRFIDReaderList();
+            Log.d(TAG, "GET LIST SUCCESS");
+            for (int i = 0; i < list.size(); i++) {
+                String hostName = list.get(i).getRFIDReader().getHostName();
+                result.add(hostName);
+            }
+            return result;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return result;
         }
-        ArrayList<ReaderDevice> list = readers.GetAvailableRFIDReaderList();
-        Log.d(TAG, "GET LIST SUCCESS");
-        for (int i = 0; i < list.size(); i++) {
-            String hostName = list.get(i).getRFIDReader().getHostName();
-            result.add(hostName);
-        }
-        return result;
     }
 
-    String performTagLocating(String rfid){
+    public String performTagLocating(String rfid){
         Log.d(TAG, "performTagLocating is called");
         rfidHandleTagData.performTagLocating(rfid);
 //        rfidHandleTagData.performTagLocating("4341544C303130303030303637343330");
@@ -117,7 +124,7 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         return "Success";
     }
 
-    String stopTagLocating(){
+    public String stopTagLocating(){
         Log.d(TAG, "String stopTagLocating is called");
         rfidHandleTagData.stopTagLocating();
 //        readers.Actions.TagLocationing.Perform("123", null, null);
@@ -134,47 +141,66 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         }
     }
 
-    void setAntennaPower (Integer power) throws InvalidUsageException, OperationFailureException {
-        Log.d(TAG, "setAntennaPower Java is called");
-        RFIDReader reader = this.reader;
-        Log.d(TAG, "setAntennaPower Java is called");
+    public void setAntennaPower (Integer power){
+        try {
+            Log.d(TAG, "setAntennaPower Java is called");
+            RFIDReader reader = this.reader;
+            Log.d(TAG, "setAntennaPower Java is called");
 //        Log.d(TAG, power);
 
-        Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
-        antennaRfConfig.setTransmitPowerIndex(power);
-        reader.Config.Antennas.setAntennaRfConfig(1,antennaRfConfig);
-    }
-    ArrayList<String> getAntennaPower(){
-        int[] powerLevels;
-        Log.d(TAG, "getAntennaPower Java is called");
-
-        powerLevels = reader.ReaderCapabilities.getTransmitPowerLevelValues();
-
-        ArrayList<String> result = new ArrayList<String>();
-        ;
-        if (readers == null) {
-            Log.d(TAG, "Reader is null");
+            Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
+            antennaRfConfig.setTransmitPowerIndex(power);
+            reader.Config.Antennas.setAntennaRfConfig(1,antennaRfConfig);
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
 
-        Log.d(TAG, "GET Power LIST SUCCESS");
-//        Log.d(TAG, powerLevels);
-        for (int i = 0; i < powerLevels.length; i++) {
-            String power = Integer.toString(powerLevels[i]);
-            result.add(power);
-        }
-        return result;
     }
-
-    //    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
-    void getConnectedScannerInfo (Result result){
+    public int getAntennaPower(){
+        HashMap<String, String> resultHashMap = new HashMap<String, String>();
         Log.d(TAG, "getConnectedScannerInfo");
         if(reader.isConnected() == false){
-            result.error("error", "No connected Device", "");
-            return;
+//            result.error("error", "No connected Device", "");
+            return 0;
         }
         RFIDReader reader = this.reader;
         ScannerData scannerData = new ScannerData(reader);
-        result.success(scannerData.toHashMap());
+        return Integer.parseInt(scannerData.getAntennaPower());
+
+//        int[] powerLevels;
+//        Log.d(TAG, "getAntennaPower Java is called");
+//
+//        powerLevels = reader.ReaderCapabilities.getTransmitPowerLevelValues();
+//
+//        ArrayList<String> result = new ArrayList<String>();
+//        ;
+//        if (readers == null) {
+//            Log.d(TAG, "Reader is null");
+//        }
+//
+//        Log.d(TAG, "GET Power LIST SUCCESS");
+////        Log.d(TAG, powerLevels);
+//        for (int i = 0; i < powerLevels.length; i++) {
+//            String power = Integer.toString(powerLevels[i]);
+//            result.add(power);
+//        }
+//        return result;
+
+
+    }
+
+    //    void getConnectedScannerInfo (Result result) throws InvalidUsageException, OperationFailureException {
+    public HashMap<String, String> getConnectedScannerInfo (){
+        HashMap<String, String> resultHashMap = new HashMap<String, String>();
+        Log.d(TAG, "getConnectedScannerInfo");
+        if(reader.isConnected() == false){
+//            result.error("error", "No connected Device", "");
+            return resultHashMap;
+        }
+        RFIDReader reader = this.reader;
+        ScannerData scannerData = new ScannerData(reader);
+        return scannerData.toHashMap();
+//        result.success(scannerData.toHashMap());
 //
 ////
 ////        System.out.println("\nBlockEraseSupport: " + reader.ReaderCapabilities.isBlockEraseSupported());
@@ -213,12 +239,22 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
     // RFID SDK
     //
 
-    void connectToScanner(String scannerName) {
+    public boolean connectToScanner() {
+        Log.d(TAG, "connectToScanner");
+        return true;
+//        if (reader != null && reader.isConnected()) {
+//            disconnect(true);
+//        }
+//        new ConnectionTask(scannerName).execute();
+    }
+
+    public boolean connectToScanner(String scannerName) {
         Log.d(TAG, "connectToScanner");
         if (reader != null && reader.isConnected()) {
             disconnect(true);
         }
         new ConnectionTask(scannerName).execute();
+        return true;
     }
 
     private class ConnectionTask extends AsyncTask<Void, Void, String> {
@@ -234,7 +270,7 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
             Log.d(TAG, "ConnectionTask");
             try {
                 GetAvailableReader(scannerName);
-            } catch (InvalidUsageException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return "fail";
             }
@@ -258,28 +294,34 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
         }
     }
 
-    private synchronized void GetAvailableReader(String scannerName) throws InvalidUsageException {
+    private synchronized void GetAvailableReader(String scannerName) {
         Log.d(TAG, "GetAvailableReader");
-        if (readers != null) {
-            readers.attach(this);
-            if (readers.GetAvailableRFIDReaderList() != null) {
-                availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
 
-                if (availableRFIDReaderList.size() != 0) {
-                    if (availableRFIDReaderList.size() == 1 || scannerName == null) {
-                        readerDevice = availableRFIDReaderList.get(0);
-                        reader = readerDevice.getRFIDReader();
-                    } else {
-                        for (ReaderDevice device : availableRFIDReaderList) {
-                            if (device.getName().equals(scannerName)) {
-                                readerDevice = device;
-                                reader = readerDevice.getRFIDReader();
+        try{
+            if (readers != null) {
+                readers.attach(this);
+                if (readers.GetAvailableRFIDReaderList() != null) {
+                    availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+
+                    if (availableRFIDReaderList.size() != 0) {
+                        if (availableRFIDReaderList.size() == 1 || scannerName == null) {
+                            readerDevice = availableRFIDReaderList.get(0);
+                            reader = readerDevice.getRFIDReader();
+                        } else {
+                            for (ReaderDevice device : availableRFIDReaderList) {
+                                if (device.getName().equals(scannerName)) {
+                                    readerDevice = device;
+                                    reader = readerDevice.getRFIDReader();
+                                }
                             }
                         }
                     }
                 }
             }
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
+
     }
 
     // handler for receiving reader appearance events
@@ -521,6 +563,22 @@ class RFIDHandlerHelper implements Readers.RFIDReaderEventHandler {
             }
         }
     }
+
+    public boolean disconnectToScanner(){
+
+        return true;
+    }
+
+    public boolean startInventory() {
+//        reader.startInventory();
+        return true;
+    }
+
+    public boolean stopInventory() {
+//        reader.stopInventroy();
+        return true;
+    }
+
 
     // private class AsyncDataUpdate extends AsyncTask<ArrayList<String>, Void,
     // Void> {

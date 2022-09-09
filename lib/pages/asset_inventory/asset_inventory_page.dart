@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/widgets/app_loader.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:echo_me_mobile/widgets/status_list_item.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
@@ -17,6 +18,7 @@ import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
+import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
 
 
 class AssetInventoryPage extends StatefulWidget {
@@ -35,6 +37,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
   final LoginFormStore _loginFormStore = getIt<LoginFormStore>();
 
   TextEditingController skuSearchBarTextController = TextEditingController();
+  final SoundPoolUtil soundPoolUtil = SoundPoolUtil();
 
   //test
   int i = 0;
@@ -50,6 +53,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
       print(event.type);
+      soundPoolUtil.initState();
       if (event.type == ScannerEventType.readEvent) {
         List<String> item = [];
         List<String> equ = [];
@@ -61,6 +65,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
               element.substring(0, 2) == "73") {
             item.add(element);
           }
+          soundPoolUtil.playCheering();
         }
         //TODO: Update Serach Bar Input wheen having input from scanner gun
         _assetInventoryScanStore.updateDataSet(equList: equ, itemList: item);
@@ -77,7 +82,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    Widget scaffold = Scaffold(
         appBar: EchoMeAppBar(),
         body: SizedBox.expand(
           child: Column(children: [
@@ -86,6 +91,31 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             _getListBox(context),
           ]),
         ));
+
+
+  Widget keyboardListenerScaffoldWidget = RawKeyboardListener(
+    autofocus: true,
+    focusNode: FocusNode(),
+    onKey: (key) {
+      // print(key);
+      // // print(key.toString());
+      // print(key.repeat);
+      // // print(key.data);
+      // print(key is RawKeyUpEvent);
+
+      if (key is RawKeyUpEvent && !key.repeat) {
+        print("keyup");
+        ZebraRfd8500.stopInventory();
+      }
+
+      if (key is RawKeyDownEvent && !key.repeat) {
+        print("keydown");
+        ZebraRfd8500.startInventory();
+      }
+    },
+    child: scaffold,
+  );
+    return keyboardListenerScaffoldWidget;
   }
 
   Widget _getTitle(BuildContext ctx) {

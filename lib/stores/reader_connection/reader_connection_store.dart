@@ -77,6 +77,15 @@ abstract class _ReaderConnectionStore with Store {
   @observable
   String? antennaPower;
 
+  @observable
+  String? currentConnectedReader;
+
+  @observable
+  bool? isAIReaderConnected;
+
+  @observable
+  double maxPower = 300;
+
   @computed
   bool get isConnectedToScanner => currentReader != null;
 
@@ -106,6 +115,8 @@ abstract class _ReaderConnectionStore with Store {
      print("after");
      print(isConnecting);
     Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.connectScannerWithName(name));
+    currentConnectedReader = name;
+    maxPower = 300;
   }
   
   @action
@@ -156,9 +167,66 @@ abstract class _ReaderConnectionStore with Store {
 
   Future<String?> getAntennaPower() async {
     print("flutter getAntennaPower:");
-    ModelInfo modelInfo = await ZebraRfd8500.getConnectedScannerInfo();
-    antennaPower = modelInfo.antennaPower;
-    return modelInfo.antennaPower;
+    // ModelInfo modelInfo = await ZebraRfd8500.getConnectedScannerInfo();
+    // antennaPower = modelInfo.antennaPower;
+
+    // return modelInfo.antennaPower;
+    int power = await ZebraRfd8500.getAntennaPower2();
+    antennaPower = "$power";
+    return antennaPower;
+
+  }
+
+  Future<List<String>> debug() async {
+    print("flutter getAntennaPower:");
+    var result = await ZebraRfd8500.debug();
+    return result;
+  }
+
+  @action
+  void connectAIReader(){
+    String name = "aiReader";
+    connectingReaderName = name;
+    print("connectScannerWithName");
+    print(isConnecting);
+    isConnecting = true;
+    print("after");
+    print(isConnecting);
+    Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.connectAIReader());
+    currentConnectedReader = name;
+    isAIReaderConnected = true;
+    maxPower = 35;
+  }
+
+  @action
+  void startAIInventory(){
+    if (isAIReaderConnected!){
+      return;
+    }
+    Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.startInventory());
+
+  }
+
+  @action
+  void stopAIInventory(){
+    if (isAIReaderConnected!){
+      return;
+    }
+    Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.stopInventory());
+  }
+
+  @action
+  void disconnectAIReader(){
+    String name = "";
+    connectingReaderName = name;
+    print("connectScannerWithName");
+    print(isConnecting);
+    isConnecting = true;
+    print("after");
+    print(isConnecting);
+    Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.disconnectAIReader());
+    currentConnectedReader = name;
+    isAIReaderConnected = false;
   }
 
 }

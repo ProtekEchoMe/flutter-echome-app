@@ -63,7 +63,9 @@ dependencies:
   auto_complete_search: ^0.0.4
   flutter_checkbox_dialog: ^0.0.1
   multiselect_formfield: ^0.1.7
-
+#  audio_manager: ^0.8.2
+#  flutter_beep: ^1.0.0
+  soundpool: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +79,7 @@ flutter:
   assets:
     - assets/images/
     - assets/translations/
+    - assets/sounds/barcodebeep.ogg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

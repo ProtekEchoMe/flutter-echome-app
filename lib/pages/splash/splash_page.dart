@@ -4,6 +4,7 @@ import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/sharedpref/constants/preferences.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/stores/app_version_control/app_version_control_store.dart';
+import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/utils/permission_helper/permission_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -29,11 +30,14 @@ class _SplashPageState extends State<SplashPage> {
   final SharedPreferenceHelper _sharedPreferenceHelper =
       getIt<SharedPreferenceHelper>();
 
+  final ReaderConnectionStore readerConnectionStore = getIt<ReaderConnectionStore>();
+
   @override
   void initState() {
     super.initState();
 
     init();
+    readerConnectionStore.connectAIReader();
   }
 
   void initVersionControlServer() {}

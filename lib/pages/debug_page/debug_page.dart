@@ -130,7 +130,7 @@ class _DebugPageState extends State<DebugPage> {
             }),
             Slider(
               value: _currentSliderValue,
-              max: 300,
+              max: readerConnectionStore.maxPower,
               divisions: 10,
               label: _currentSliderValue.round().toString(),
               onChanged: (double value) {

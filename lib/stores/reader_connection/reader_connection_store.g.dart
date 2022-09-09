@@ -101,6 +101,54 @@ mixin _$ReaderConnectionStore on _ReaderConnectionStore, Store {
     });
   }
 
+  final _$currentConnectedReaderAtom =
+      Atom(name: '_ReaderConnectionStore.currentConnectedReader');
+
+  @override
+  String? get currentConnectedReader {
+    _$currentConnectedReaderAtom.reportRead();
+    return super.currentConnectedReader;
+  }
+
+  @override
+  set currentConnectedReader(String? value) {
+    _$currentConnectedReaderAtom
+        .reportWrite(value, super.currentConnectedReader, () {
+      super.currentConnectedReader = value;
+    });
+  }
+
+  final _$isAIReaderConnectedAtom =
+      Atom(name: '_ReaderConnectionStore.isAIReaderConnected');
+
+  @override
+  bool? get isAIReaderConnected {
+    _$isAIReaderConnectedAtom.reportRead();
+    return super.isAIReaderConnected;
+  }
+
+  @override
+  set isAIReaderConnected(bool? value) {
+    _$isAIReaderConnectedAtom.reportWrite(value, super.isAIReaderConnected, () {
+      super.isAIReaderConnected = value;
+    });
+  }
+
+  final _$maxPowerAtom = Atom(name: '_ReaderConnectionStore.maxPower');
+
+  @override
+  double get maxPower {
+    _$maxPowerAtom.reportRead();
+    return super.maxPower;
+  }
+
+  @override
+  set maxPower(double value) {
+    _$maxPowerAtom.reportWrite(value, super.maxPower, () {
+      super.maxPower = value;
+    });
+  }
+
   final _$_ReaderConnectionStoreActionController =
       ActionController(name: '_ReaderConnectionStore');
 
@@ -138,6 +186,50 @@ mixin _$ReaderConnectionStore on _ReaderConnectionStore, Store {
   }
 
   @override
+  void connectAIReader() {
+    final _$actionInfo = _$_ReaderConnectionStoreActionController.startAction(
+        name: '_ReaderConnectionStore.connectAIReader');
+    try {
+      return super.connectAIReader();
+    } finally {
+      _$_ReaderConnectionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void startAIInventory() {
+    final _$actionInfo = _$_ReaderConnectionStoreActionController.startAction(
+        name: '_ReaderConnectionStore.startAIInventory');
+    try {
+      return super.startAIInventory();
+    } finally {
+      _$_ReaderConnectionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void stopAIInventory() {
+    final _$actionInfo = _$_ReaderConnectionStoreActionController.startAction(
+        name: '_ReaderConnectionStore.stopAIInventory');
+    try {
+      return super.stopAIInventory();
+    } finally {
+      _$_ReaderConnectionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void disconnectAIReader() {
+    final _$actionInfo = _$_ReaderConnectionStoreActionController.startAction(
+        name: '_ReaderConnectionStore.disconnectAIReader');
+    try {
+      return super.disconnectAIReader();
+    } finally {
+      _$_ReaderConnectionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isConnecting: ${isConnecting},
@@ -145,6 +237,9 @@ readerList: ${readerList},
 currentReaderData: ${currentReaderData},
 currentReader: ${currentReader},
 antennaPower: ${antennaPower},
+currentConnectedReader: ${currentConnectedReader},
+isAIReaderConnected: ${isAIReaderConnected},
+maxPower: ${maxPower},
 isConnectedToScanner: ${isConnectedToScanner},
 currentScanner: ${currentScanner}
     ''';

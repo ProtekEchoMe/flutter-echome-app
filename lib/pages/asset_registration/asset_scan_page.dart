@@ -8,17 +8,22 @@ import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
+import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'asset_scan_page_arguments.dart';
+
+import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
+import 'dart:io';
 
 class AssetScanPage extends StatefulWidget {
   const AssetScanPage({Key? key}) : super(key: key);
@@ -34,9 +39,14 @@ class _AssetScanPageState extends State<AssetScanPage> {
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   final Repository repository = getIt<Repository>();
 
+  final SoundPoolUtil soundPoolUtil = SoundPoolUtil();
+
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
+  final ReaderConnectionStore readerConnectionStore = getIt<ReaderConnectionStore>();
+
+
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -131,33 +141,32 @@ class _AssetScanPageState extends State<AssetScanPage> {
     try {
       _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
       return true;
-    }catch(e){
+    } catch (e) {
       return false;
     }
   }
 
   Future<String> fetchData(AssetScanPageArguments? args) async {
-
     var result = await repository.fetchArLineData(args);
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
     (result as List).forEach((e) {
-      try{
-        newTotalQuantity += e["quantity"] as int ;
+      try {
+        newTotalQuantity += e["quantity"] as int;
         totalRegQuantity += e["checkinQty"] as int;
-      }catch(e){
+      } catch (e) {
         print(e);
-      };
+      }
+      ;
     });
 
     return "Total: $totalRegQuantity / $newTotalQuantity";
-
   }
 
   Future<void> _onBottomBarItemTapped(
       AssetScanPageArguments? args, int index) async {
-    try{
+    try {
       if (index == 0) {
         if (!accessControlStore.hasARChangeRight) throw "No Change Right";
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
@@ -165,7 +174,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
             trueOptionText: "Change",
             falseOptionText: "Cancel");
         if (flag == true) {
-          await _changeEquipment(args) ?_showSnackBar("Change Successfully") : "";
+          await _changeEquipment(args)
+              ? _showSnackBar("Change Successfully")
+              : "";
 
           // _assetRegistrationScanStore.reset();
         }
@@ -195,30 +206,46 @@ class _AssetScanPageState extends State<AssetScanPage> {
           Text("More than one container code detected, please rescan")
         ], actionList: [
           TextButton(
-            child: const Text('DContainesrs'),
+            child: const Text('aiReaderConnect'),
             onPressed: () {
-              _addMockEquipmentIdCaseOne();
+              // _addMockEquipmentIdCaseOne();
+              readerConnectionStore.connectAIReader();
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('SContainer'),
+            child: const Text('start'),
             onPressed: () {
-              _addMockEquipmentIdCaseTwo();
+              startInventory();
+              readerConnectionStore.startAIInventory();
               Navigator.of(context).pop();
             },
-          )
+          ),
+          TextButton(
+            child: const Text('stop'),
+            onPressed: () {
+              readerConnectionStore.stopAIInventory();
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('disconnect'),
+            onPressed: () {
+              readerConnectionStore..disconnectAIReader();
+              Navigator.of(context).pop();
+            },
+          ),
         ]);
       }
-    }catch (e){
+    } catch (e) {
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
-
   }
 
   @override
   void initState() {
     super.initState();
+    soundPoolUtil.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
       print(event.type);
@@ -233,53 +260,55 @@ class _AssetScanPageState extends State<AssetScanPage> {
               element.substring(0, 2) == "73") {
             item.add(element);
           }
+          soundPoolUtil.playCheering();
         }
         _assetRegistrationScanStore.updateDataSet(equList: equ, itemList: item);
+
         print("");
       }
     });
     var disposerReaction = reaction(
         (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
       if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
-        DialogHelper.showErrorDialogBox(context, errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
+        DialogHelper.showErrorDialogBox(context,
+            errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
         _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
     var scanDisposeReaction =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-          try{
-            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
-            Set<String?> containerAssetCodeSet = Set<String?>();
-            // print("disposer1 called");
-            _assetRegistrationScanStore.chosenEquipmentData.forEach(
-                    (element) => containerAssetCodeSet.add(element.containerAssetCode));
-            if (containerAssetCodeSet.length > 1 && !isDialogShown) {
-              isDialogShown = true;
-              DialogHelper.showCustomDialog(context, widgetList: [
-                Text("More than one container code detected, please rescan")
-              ], actionList: [
-                TextButton(
-                  child: const Text('Rescan Container'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _rescanContainer();
-                    isDialogShown = false;
-                  },
-                ),
-                TextButton(
-                  child: const Text('Rescan'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _rescan();
-                    isDialogShown = false;
-                  },
-                )
-              ]);
-            }
-          }catch (e){
-            _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
-          }
-
+      try {
+        if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+        Set<String?> containerAssetCodeSet = Set<String?>();
+        // print("disposer1 called");
+        _assetRegistrationScanStore.chosenEquipmentData.forEach(
+            (element) => containerAssetCodeSet.add(element.containerAssetCode));
+        if (containerAssetCodeSet.length > 1 && !isDialogShown) {
+          isDialogShown = true;
+          DialogHelper.showCustomDialog(context, widgetList: [
+            Text("More than one container code detected, please rescan")
+          ], actionList: [
+            TextButton(
+              child: const Text('Rescan Container'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _rescanContainer();
+                isDialogShown = false;
+              },
+            ),
+            TextButton(
+              child: const Text('Rescan'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _rescan();
+                isDialogShown = false;
+              },
+            )
+          ]);
+        }
+      } catch (e) {
+        _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+      }
     });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
@@ -298,28 +327,9 @@ class _AssetScanPageState extends State<AssetScanPage> {
   Widget build(BuildContext context) {
     final AssetScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
-    return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: const Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+
+
+    Widget scaffold = Scaffold(
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.regNum : "EchoMe")],
@@ -360,10 +370,10 @@ class _AssetScanPageState extends State<AssetScanPage> {
             icon: Icon(Icons.book),
             label: 'Complete',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.eleven_mp),
-          //   label: 'Debug',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eleven_mp),
+            label: 'Debug',
+          ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -373,6 +383,31 @@ class _AssetScanPageState extends State<AssetScanPage> {
         ),
       ),
     );
+
+    Widget keyboardListenerScaffoldWidget = RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (key) {
+        // print(key);
+        // // print(key.toString());
+        // print(key.repeat);
+        // // print(key.data);
+        // print(key is RawKeyUpEvent);
+
+        if (key is RawKeyUpEvent && !key.repeat) {
+          print("keyup");
+          ZebraRfd8500.stopInventory();
+        }
+
+        if (key is RawKeyDownEvent && !key.repeat) {
+          print("keydown");
+          ZebraRfd8500.startInventory();
+        }
+      },
+      child: scaffold,
+    );
+
+    return keyboardListenerScaffoldWidget;
   }
 
   Widget _getEquipmentDisplay() {
@@ -616,7 +651,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.regNum ?? "No RegNum") + " [Reg]" ,
+      title: (args?.regNum ?? "No RegNum") + " [Reg]",
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -656,6 +691,33 @@ class _AssetScanPageState extends State<AssetScanPage> {
     list.add(AscToText.getAscIIString("CATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  Future<void> _debug() async {
+    List<String> list = [];
+    List<String> resultList = await ZebraRfd8500.debug();
+    resultList.forEach((element) {
+      list.add(element);
+    });
+    // list.add(AscToText.getAscIIString("CATL010000000808"));
+    // list.add(AscToText.getAscIIString("CATL010000000819"));
+    _assetRegistrationScanStore.updateDataSet(equList: list);
+  }
+
+  Future<void> connectAIReader() async {
+    List<String> resultList = await ZebraRfd8500.connectAIReader();
+  }
+
+  Future<void> startInventory() async {
+    List<String> resultList = await ZebraRfd8500.startInventory();
+  }
+
+  Future<void> stopInventory() async {
+    List<String> resultList = await ZebraRfd8500.stopInventory();
+  }
+
+  Future<void> disconnectAIReader() async {
+    List<String> resultList = await ZebraRfd8500.disconnectAIReader();
   }
 
   void _mockscan1() {

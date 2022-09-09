@@ -25,31 +25,20 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+
+
 /** ZebraRfd8500Plugin */
 public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodCallHandler {
 
   /**
    * Plugin registration.
    */
-  private static final String READER_LIST_CHANNEL_NAME = "com.protek/zebrarfd8500plugin/READER_LIST_CHANNEL_NAME"; // send available read list -> flutter
-  private static final String READER_CONNECTION_STATUS_CHANNEL = "com.protek/zebrarfd8500plugin/READER_CONNECTION_STATUS_CHANNEL"; // send read connection activity -> flutter
-  private static final String READER_RFID_DATA_CHANNEL = "com.protek/zebrarfd8500plugin/READER_RFID_DATA_CHANNEL"; // send rfid data -> flutter
+  private ChannelFlutter channelFlutter;
 
-  private static final String READER_RFID_LOCATING_DATA_CHANNEL = "com.protek/zebrarfd8500plugin/READER_RFID_LOCATING_DATA_CHANNEL"; // send rfid locating data -> flutter
+  private void init(@NonNull FlutterPluginBinding flutterPluginBinding){
+    channelFlutter = new ChannelFlutter(flutterPluginBinding);
+  }
 
-
-
-  private EventChannel readerListChannel;
-  private EventChannel readerConnectionStatusChannel;
-  private EventChannel readerRfidDataChannel;
-
-  private EventChannel readerRfidLocatingDataChannel;
-
-  private StreamHandlerImpl readerListChannelHandler = null;
-  private StreamHandlerImpl readerConnectionStatusHandler = null;
-  private StreamHandlerImpl readerRfidDataChannelHandler = null;
-
-  private StreamHandlerImpl readerRfidLocatingDataChannelHandler = null;
 
   private MethodChannel channel;
   private EventChannel eventChannel;
@@ -58,66 +47,57 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
   private Lifecycle lifecycle;
   private RFIDHandler rfidHandler;
   private RFIDHandlerHelper rfidHandlerHelper;
+  private RFIDReaderController rfidReaderController;
+
+  private RFIDControllerInterface controllerInterface;
   private PluginLifecycleObserver pluginLifecycleObserver;
   private EventChannel.EventSink sink = null;
 
   private String TAG = "ZebraRfd8500Plugin";
 
+
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     Log.d(TAG, "onAttachedToEngine");
+    init(flutterPluginBinding);
+    Log.d(TAG, "init end");
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "zebra_rfd8500/plugin");
     channel.setMethodCallHandler(this);
     context = flutterPluginBinding.getApplicationContext();
-
-    // set the sink of Channel + set up channel to set from native -> flutter
-    readerListChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_LIST_CHANNEL_NAME);
-    readerConnectionStatusChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_CONNECTION_STATUS_CHANNEL);
-    readerRfidDataChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_RFID_DATA_CHANNEL);
-    readerRfidLocatingDataChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), READER_RFID_LOCATING_DATA_CHANNEL);
-
-
-    readerListChannelHandler = new StreamHandlerImpl(READER_LIST_CHANNEL_NAME);
-    readerConnectionStatusHandler = new StreamHandlerImpl(READER_CONNECTION_STATUS_CHANNEL);
-    readerRfidDataChannelHandler = new StreamHandlerImpl(READER_RFID_DATA_CHANNEL);
-    readerRfidLocatingDataChannelHandler = new StreamHandlerImpl(READER_RFID_LOCATING_DATA_CHANNEL);
-
-    readerListChannel.setStreamHandler(readerListChannelHandler);
-    readerConnectionStatusChannel.setStreamHandler(readerConnectionStatusHandler);
-    readerRfidDataChannel.setStreamHandler(readerRfidDataChannelHandler);
-    readerRfidLocatingDataChannel.setStreamHandler(readerRfidLocatingDataChannelHandler);
-    // old one
+    rfidReaderController = new RFIDReaderController(context, this);
     rfidHandlerHelper = new RFIDHandlerHelper(context, this);
+    controllerInterface = rfidReaderController;
+    Log.d(TAG, "onAttachedToEngine end");
   }
 
+
   public void notifyReaderConnectionStatus(boolean isConnect, String readerName){
-    if(readerConnectionStatusHandler.sink != null){
       ArrayList<String> list = new ArrayList<>();
       list.add(isConnect?"1":"0");
       list.add(readerName);
-      readerConnectionStatusHandler.sink.success(list);
-    }
+//      readerConnectionStatusHandler.sink.success(list);
+      channelFlutter.sendMsg(list, "ConnectionStatusChannel");
+
   }
 
   public void notifyReaderListChange(boolean isAppear, String readerName){
-    if(readerListChannelHandler.sink != null){
       ArrayList<String> list = new ArrayList<>();
       list.add(isAppear?"1":"0");
       list.add(readerName);
-      readerListChannelHandler.sink.success(list);
-    }
+      channelFlutter.sendMsg(list, "ReaderListChannel");
+//      readerListChannelHandler.sink.success(list);
+
   }
 
   public void notifyRfidData(ArrayList<String> arrayList){
-    if(readerRfidDataChannelHandler.sink != null){
-      readerRfidDataChannelHandler.sink.success(arrayList);
+      channelFlutter.sendMsg(arrayList, "RfidDataChannel");
     }
-  }
+
 
   public void notifyRfidLocatingData(ArrayList<String> arrayList){
-    if(readerRfidLocatingDataChannelHandler.sink != null){
-      readerRfidLocatingDataChannelHandler.sink.success(arrayList);
-    }
+      channelFlutter.sendMsg(arrayList, "RfidLocatingDataChannel");
+//      readerRfidLocatingDataChannelHandler.sink.success(arrayList);
   }
 
   @Override
@@ -132,15 +112,44 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
       case "getPlatformVersion":
         result.success("Android " + android.os.Build.VERSION.RELEASE);
         break;
+      case "debug":
+        Log.d(TAG, "debug method Call");
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList.add("5341544c303130303030303439363938");
+        notifyRfidData(arrayList);
+//        sendMsg(arrayList, "RfidDataChannel");
+        break;
+      case "aiReaderConnect":
+        boolean connectResult = rfidReaderController.connectToScanner();
+        if (connectResult){
+          controllerInterface = rfidReaderController;
+        }
+        Log.d(TAG, "aiReaderConnect method Call");
+        break;
+      case "startInventory":
+        Log.d(TAG, "startInventory method Call");
+        controllerInterface.startInventory();
+        break;
+      case "stopInventory":
+        Log.d(TAG, "stopInventory method Call");
+        controllerInterface.stopInventory();
+        break;
+      case "aiReaderDisconnect":
+        Log.d(TAG, "aiReaderDisconnect method Call");
+        controllerInterface.disconnectToScanner();
+        break;
+
+
+
       case "performTagLocating":
 
         String rfid = call.argument("rfid");
         Log.d(TAG, "performTagLocating rfid Param: " + rfid);
-        String world = rfidHandlerHelper.performTagLocating(rfid);
+        String world = controllerInterface.performTagLocating(rfid);
         result.success("Hello " + world);
         break;
       case "stopTagLocating":
-        String stopworld = rfidHandlerHelper.stopTagLocating();
+        String stopworld = controllerInterface.stopTagLocating();
         result.success("stop Hello " + stopworld);
         break;
       case "getAvailableRFIDReaderList":
@@ -158,7 +167,10 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
         }
       case "connectRFIDReader":
         String hostName = call.arguments.toString();
-        rfidHandlerHelper.connectToScanner(hostName);
+        boolean zebraConnectResult = rfidHandlerHelper.connectToScanner(hostName);
+        if (zebraConnectResult){
+          controllerInterface = rfidHandlerHelper;
+        }
         result.success("Successful called connectToScanner,listene to get the readerConnectionStatusHandler sink for result");
         break;
       case "setAntennaPower":
@@ -166,25 +178,24 @@ public class ZebraRfd8500Plugin implements FlutterPlugin, ActivityAware, MethodC
         Log.d(TAG, "setAntennaPower is called and its params");
         Log.d(TAG, power.toString());
         try {
-          rfidHandlerHelper.setAntennaPower(power);
+          controllerInterface.setAntennaPower(power);
           result.success("");
-        } catch (InvalidUsageException e) {
-          e.printStackTrace();
-          result.error("","","");
-        } catch (OperationFailureException e) {
+        } catch (Exception e) {
           e.printStackTrace();
           result.error("","","");
         }
         break;
       case "getAntennaPower":
         Log.d(TAG, "getAntennaPower Java Plugin is called");
-        ArrayList<String> antennaPowerList = rfidHandlerHelper.getAntennaPower();
+        int antennaPowerList = controllerInterface.getAntennaPower();
         Log.d(TAG, "getAntennaPowerListSuccess");
         result.success(antennaPowerList);
         break;
       case "getConnectedScannerInfo":
         Log.d(TAG, "getConnectedScannerInfoMixson");
-        rfidHandlerHelper.getConnectedScannerInfo(result);
+        HashMap<String, String> resultHashMap = controllerInterface.getConnectedScannerInfo();
+        result.success(resultHashMap);
+
 //        try {
 ////          rfidHandler.getConnectedScannerInfo(result);
 //        } catch (InvalidUsageException e) {

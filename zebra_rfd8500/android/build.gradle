@@ -40,9 +40,18 @@ android {
     }
 }
 
+//repositories {
+//
+//    flatDir {
+//        dirs 'libs'
+//    }
+//}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+//    implementation(name: 'DeviceAPI-debug', ext: 'aar')
+//    implementation(name: 'com.protek.api3-lib-release-2.0.2.86', ext: 'aar')
     // Some other dependencies should be here as well.
 }
 

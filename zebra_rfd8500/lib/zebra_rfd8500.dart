@@ -110,6 +110,7 @@ class ZebraRfd8500 {
       print("Connected! $hostName");
       _connectController.sink
           .add(ConnectionStatus(hostName, ReaderStatus.connected));
+
     } catch (e) {}
   }
 
@@ -140,12 +141,62 @@ class ZebraRfd8500 {
     }
   }
 
+  static Future<int> getAntennaPower2() async {
+    try {
+      int power = await _channel.invokeMethod('getAntennaPower');
+      return power;
+
+    } on PlatformException catch (_, e) {
+      print("Error!!");
+      print(e);
+      rethrow;
+    }
+  }
+
   static Future<ModelInfo> getConnectedScannerInfo() async {
     var map = await _channel.invokeMethod('getConnectedScannerInfo');
     print(map.runtimeType);
     ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
     return modelInfo;
   }
+
+  static Future<List<String>> debug() async {
+    var result = await _channel.invokeMethod('debug');
+    // print(map.runtimeType);
+    // ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return result;
+  }
+
+  static Future<List<String>> connectAIReader() async {
+    var result = await _channel.invokeMethod('aiReaderConnect');
+    // print(map.runtimeType);
+    // ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return result;
+  }
+
+  static Future<List<String>> startInventory() async {
+    var result = await _channel.invokeMethod('startInventory');
+    // print(map.runtimeType);
+    // ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return result;
+  }
+
+  static Future<List<String>> stopInventory() async {
+    var result = await _channel.invokeMethod('stopInventory');
+    // print(map.runtimeType);
+    // ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return result;
+  }
+
+  static Future<List<String>> disconnectAIReader() async {
+    var result = await _channel.invokeMethod('aiReaderDisconnect');
+    // print(map.runtimeType);
+    // ModelInfo modelInfo = ModelInfo.fromJson(Map<String, dynamic>.from(map));
+    return result;
+  }
+
+
+
 
   static Future<List<String>> getAvailableRFIDReaderList() async {
     try {

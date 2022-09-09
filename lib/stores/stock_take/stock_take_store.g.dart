@@ -118,6 +118,21 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
     });
   }
 
+  final _$locHeaderListAtom = Atom(name: '_StockTakeStore.locHeaderList');
+
+  @override
+  ObservableList<StockTakeLocHeaderHolder> get locHeaderList {
+    _$locHeaderListAtom.reportRead();
+    return super.locHeaderList;
+  }
+
+  @override
+  set locHeaderList(ObservableList<StockTakeLocHeaderHolder> value) {
+    _$locHeaderListAtom.reportWrite(value, super.locHeaderList, () {
+      super.locHeaderList = value;
+    });
+  }
+
   final _$itemLineHolderListAtom =
       Atom(name: '_StockTakeStore.itemLineHolderList');
 
@@ -275,6 +290,17 @@ mixin _$StockTakeStore on _StockTakeStore, Store {
   }
 
   @override
+  void addAllLocHeader(List<StockTakeLocHeaderHolder> list) {
+    final _$actionInfo = _$_StockTakeStoreActionController.startAction(
+        name: '_StockTakeStore.addAllLocHeader');
+    try {
+      return super.addAllLocHeader(list);
+    } finally {
+      _$_StockTakeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void removeItem(String orderId) {
     final _$actionInfo = _$_StockTakeStoreActionController.startAction(
         name: '_StockTakeStore.removeItem');
@@ -326,6 +352,7 @@ limit: ${limit},
 totalCount: ${totalCount},
 itemList: ${itemList},
 locList: ${locList},
+locHeaderList: ${locHeaderList},
 itemLineHolderList: ${itemLineHolderList},
 itemLineList: ${itemLineList},
 filtereditemLineList: ${filtereditemLineList},

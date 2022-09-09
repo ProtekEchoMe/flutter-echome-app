@@ -14,6 +14,7 @@ import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,6 +22,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'stock_take_scan_page_arguments.dart';
+import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
 
 
 class StockTakeScanPage extends StatefulWidget {
@@ -40,6 +42,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
+  final SoundPoolUtil soundPoolUtil = SoundPoolUtil();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -256,6 +259,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   @override
   void initState() {
     super.initState();
+    soundPoolUtil.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
       print(event.type);
@@ -271,6 +275,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           //   item.add(element);
           // }
           item.add(element);
+          soundPoolUtil.playCheering();
         }
         _stockTakeScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
@@ -334,42 +339,15 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   @override
   Widget build(BuildContext context) {
     final StockTakeScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as StockTakeScanPageArguments?;
-    return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: const Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+    ModalRoute.of(context)!.settings.arguments as StockTakeScanPageArguments?;
+
+
+    Widget scaffold = Scaffold(
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.stNum : "EchoMe")],
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                if (args != null) {
-                  print("startStockTake");
-                  _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("Stock take start"));
-                }
-              },
-              icon: const Icon(MdiIcons.clockStart)),
           IconButton(
               onPressed: () {
                 if (args != null) {
@@ -381,7 +359,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                           )));
                 }
               },
-              icon: const Icon(MdiIcons.clipboardList))
+              icon: const Icon(MdiIcons.clipboardList)),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -389,17 +367,17 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Check-In RFIDs',
+            label: 'Change Equipment',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Count',
+            label: 'Re-Scan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
@@ -418,7 +396,121 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         ),
       ),
     );
+
+    Widget keyboardListenerScaffoldWidget = RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (key) {
+        // print(key);
+        // // print(key.toString());
+        // print(key.repeat);
+        // // print(key.data);
+        // print(key is RawKeyUpEvent);
+
+        if (key is RawKeyUpEvent && !key.repeat) {
+          print("keyup");
+          ZebraRfd8500.stopInventory();
+        }
+
+        if (key is RawKeyDownEvent && !key.repeat) {
+          print("keydown");
+          ZebraRfd8500.startInventory();
+        }
+      },
+      child: scaffold,
+    );
+
+    return keyboardListenerScaffoldWidget;
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   final StockTakeScanPageArguments? args =
+  //       ModalRoute.of(context)!.settings.arguments as StockTakeScanPageArguments?;
+  //   return Scaffold(
+  //     // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  //     // floatingActionButton: Padding(
+  //     //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+  //     //   child: Row(
+  //     //     mainAxisAlignment: MainAxisAlignment.end,
+  //     //     children: <Widget>[
+  //     //       FloatingActionButton(
+  //     //           heroTag: null,
+  //     //           child: const Icon(Icons.add_box),
+  //     //           onPressed: _addMockEquipmentId),
+  //     //       const SizedBox(
+  //     //         width: 20,
+  //     //       ),
+  //     //       FloatingActionButton(
+  //     //         heroTag: null,
+  //     //         onPressed: _addMockAssetId,
+  //     //         child: const Icon(MdiIcons.cart),
+  //     //       )
+  //     //     ],
+  //     //   ),
+  //     // ),
+  //     appBar: AppBar(
+  //       title: Row(
+  //         children: [Text(args != null ? args.stNum : "EchoMe")],
+  //       ),
+  //       actions: [
+  //         IconButton(
+  //             onPressed: () {
+  //               if (args != null) {
+  //                 print("startStockTake");
+  //                 _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("Stock take start"));
+  //               }
+  //             },
+  //             icon: const Icon(MdiIcons.clockStart)),
+  //         IconButton(
+  //             onPressed: () {
+  //               if (args != null) {
+  //                 Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                         builder: (_) => StockTakeScanDetailPage(
+  //                           arg: args,
+  //                         )));
+  //               }
+  //             },
+  //             icon: const Icon(MdiIcons.clipboardList))
+  //       ],
+  //     ),
+  //     bottomNavigationBar: BottomNavigationBar(
+  //       selectedFontSize: 12,
+  //       selectedItemColor: Colors.black54,
+  //       unselectedItemColor: Colors.black54,
+  //       selectedIconTheme:
+  //           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+  //       unselectedIconTheme:
+  //           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+  //       items: const <BottomNavigationBarItem>[
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.change_circle),
+  //           label: 'Check-In RFIDs',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.signal_cellular_alt),
+  //           label: 'Re-Count',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.book),
+  //           label: 'Complete',
+  //         ),
+  //         // BottomNavigationBarItem(
+  //         //   icon: Icon(Icons.eleven_mp),
+  //         //   label: 'Debug',
+  //         // ),
+  //       ],
+  //       onTap: (int index) => _onBottomBarItemTapped(args, index),
+  //     ),
+  //     body: SizedBox.expand(
+  //       child: Column(
+  //         children: [_getTitle(context, args), _getBody(context, args)],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _getEquipmentDisplay() {
     return ConstrainedBox(

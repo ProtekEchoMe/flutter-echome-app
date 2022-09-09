@@ -57,6 +57,8 @@ public class ScannerData {
         }
     }
 
+    public ScannerData(){}
+
     public String getReaderId() {
         return readerId;
     }

@@ -14,6 +14,7 @@ import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/body_title.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,6 +24,7 @@ import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
+import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
 
 class TransferInScanPage extends StatefulWidget {
   const TransferInScanPage({Key? key}) : super(key: key);
@@ -41,6 +43,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   bool isDialogShown = false;
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
+  final SoundPoolUtil soundPoolUtil = SoundPoolUtil();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -221,6 +224,7 @@ class _AssetScanPageState extends State<TransferInScanPage> {
   @override
   void initState() {
     super.initState();
+    soundPoolUtil.initState();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
       print(event.type);
@@ -235,7 +239,9 @@ class _AssetScanPageState extends State<TransferInScanPage> {
               element.substring(0, 2) == "73") {
             item.add(element);
           }
+          soundPoolUtil.playCheering();
         }
+
         _transferInScanStore.updateDataSet(equList: equ, itemList: item);
       }
     });
@@ -282,31 +288,11 @@ class _AssetScanPageState extends State<TransferInScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TransferInScanPageArguments? args = ModalRoute.of(context)!
-        .settings
-        .arguments as TransferInScanPageArguments?;
-    return Scaffold(
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: <Widget>[
-      //       FloatingActionButton(
-      //           heroTag: null,
-      //           child: const Icon(Icons.add_box),
-      //           onPressed: _addMockEquipmentId),
-      //       const SizedBox(
-      //         width: 20,
-      //       ),
-      //       FloatingActionButton(
-      //         heroTag: null,
-      //         onPressed: _addMockAssetId,
-      //         child: const Icon(MdiIcons.cart),
-      //       )
-      //     ],
-      //   ),
-      // ),
+    final TransferInScanPageArguments? args =
+    ModalRoute.of(context)!.settings.arguments as TransferInScanPageArguments?;
+
+
+    Widget scaffold = Scaffold(
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.tiNum : "EchoMe")],
@@ -319,8 +305,8 @@ class _AssetScanPageState extends State<TransferInScanPage> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => TransferInDetailPage(
-                                arg: args.item!,
-                              )));
+                            arg: args.item!,
+                          )));
                 }
               },
               icon: const Icon(MdiIcons.clipboardList)),
@@ -331,9 +317,9 @@ class _AssetScanPageState extends State<TransferInScanPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
@@ -360,7 +346,114 @@ class _AssetScanPageState extends State<TransferInScanPage> {
         ),
       ),
     );
+
+    Widget keyboardListenerScaffoldWidget = RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (key) {
+        // print(key);
+        // // print(key.toString());
+        // print(key.repeat);
+        // // print(key.data);
+        // print(key is RawKeyUpEvent);
+
+        if (key is RawKeyUpEvent && !key.repeat) {
+          print("keyup");
+          ZebraRfd8500.stopInventory();
+        }
+
+        if (key is RawKeyDownEvent && !key.repeat) {
+          print("keydown");
+          ZebraRfd8500.startInventory();
+        }
+      },
+      child: scaffold,
+    );
+
+    return keyboardListenerScaffoldWidget;
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   final TransferInScanPageArguments? args = ModalRoute.of(context)!
+  //       .settings
+  //       .arguments as TransferInScanPageArguments?;
+  //   return Scaffold(
+  //     // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  //     // floatingActionButton: Padding(
+  //     //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+  //     //   child: Row(
+  //     //     mainAxisAlignment: MainAxisAlignment.end,
+  //     //     children: <Widget>[
+  //     //       FloatingActionButton(
+  //     //           heroTag: null,
+  //     //           child: const Icon(Icons.add_box),
+  //     //           onPressed: _addMockEquipmentId),
+  //     //       const SizedBox(
+  //     //         width: 20,
+  //     //       ),
+  //     //       FloatingActionButton(
+  //     //         heroTag: null,
+  //     //         onPressed: _addMockAssetId,
+  //     //         child: const Icon(MdiIcons.cart),
+  //     //       )
+  //     //     ],
+  //     //   ),
+  //     // ),
+  //     appBar: AppBar(
+  //       title: Row(
+  //         children: [Text(args != null ? args.tiNum : "EchoMe")],
+  //       ),
+  //       actions: [
+  //         IconButton(
+  //             onPressed: () {
+  //               if (args != null) {
+  //                 Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                         builder: (_) => TransferInDetailPage(
+  //                               arg: args.item!,
+  //                             )));
+  //               }
+  //             },
+  //             icon: const Icon(MdiIcons.clipboardList)),
+  //       ],
+  //     ),
+  //     bottomNavigationBar: BottomNavigationBar(
+  //       selectedFontSize: 12,
+  //       selectedItemColor: Colors.black54,
+  //       unselectedItemColor: Colors.black54,
+  //       selectedIconTheme:
+  //           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+  //       unselectedIconTheme:
+  //           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+  //       items: const <BottomNavigationBarItem>[
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.change_circle),
+  //           label: 'Change Equipment',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.signal_cellular_alt),
+  //           label: 'Re-Scan',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Icon(Icons.book),
+  //           label: 'Complete',
+  //         ),
+  //         // BottomNavigationBarItem(
+  //         //   icon: Icon(Icons.eleven_mp),
+  //         //   label: 'Debug',
+  //         // ),
+  //       ],
+  //       onTap: (int index) => _onBottomBarItemTapped(args, index),
+  //     ),
+  //     body: SizedBox.expand(
+  //       child: Column(
+  //         children: [_getTitle(context, args), _getBody(context, args)],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _getEquipmentDisplay() {
     return ConstrainedBox(
