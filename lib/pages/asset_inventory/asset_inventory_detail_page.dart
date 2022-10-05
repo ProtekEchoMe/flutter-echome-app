@@ -88,7 +88,7 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
         //   });
         String rfid = widget.item?.rfid ?? "";
         String rfidHexCode = AscToText.getAscIIString(rfid);
-        rfidHexCode = "5341544C303130303030303031363431";
+        rfidHexCode = "3341544C303130303030303432373831";
         var test = await ZebraRfd8500.performTagLocating(rfidHexCode);
         print(test.toString());
       } else if (index == 1) {

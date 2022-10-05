@@ -195,7 +195,7 @@ abstract class _ReaderConnectionStore with Store {
     Future.delayed(Duration(milliseconds: 0), ()=>ZebraRfd8500.connectAIReader());
     currentConnectedReader = name;
     isAIReaderConnected = true;
-    maxPower = 35;
+    maxPower = 30;
   }
 
   @action

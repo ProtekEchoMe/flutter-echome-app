@@ -22,12 +22,15 @@ class SoundPoolUtil {
   Soundpool get _soundpool => pool;
 
   void initState() {
+    // this.updateVolume(_volume);
     if (isInitized){
+      this.updateVolume(_volume);
       return;
     }
     pool = Soundpool.fromOptions(options: SoundpoolOptions());
 
     _loadSounds();
+
     isInitized = true;
   }
 
