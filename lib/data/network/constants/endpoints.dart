@@ -4,16 +4,19 @@ class Endpoints {
   // server domain map
   static Map domainMap = {"DFS": "http://echome.dfs.com",
     "AWS": "http://qa-echome.ddns.net",
+    "AWS_IP": "http://16.162.105.236"
                           };
 
   static List domainList = domainMap.keys.toList();
   static String activeServerStr = domainList[0];
 
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
-                                  "DFS": "https://atlrfid.dfs.com"};
+                                  "DFS": "https://atlrfid.dfs.com",
+                                  "AWS_IP": "http://16.162.105.236"};
 
   static Map versionControlDomainMap = {"DFS": "http://echome.dfs.com",
-                                        "AWS": "http://qa-echome.ddns.net",};
+                                        "AWS": "http://qa-echome.ddns.net",
+                                        "AWS_IP": "http://16.162.105.236"};
 
   // static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
   //   "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",

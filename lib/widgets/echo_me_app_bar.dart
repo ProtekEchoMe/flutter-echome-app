@@ -3,6 +3,10 @@ import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
+import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
+import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
+
 class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
   String? titleText;
   List<Widget>? actionList;
@@ -10,6 +14,8 @@ class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
   EchoMeAppBar({Key? key, this.titleText, this.actionList}) : super(key: key);
 
   ReaderConnectionStore _readerConnectionStore = getIt<ReaderConnectionStore>();
+
+  final SharedPreferenceHelper sharePreferenceHelper = getIt<SharedPreferenceHelper>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,18 @@ class EchoMeAppBar extends StatelessWidget with PreferredSizeWidget {
             return Text(str, style: TextStyle(fontSize: 14));
           },) ),
         ),
-        ...actionList?? [IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))]
+        ...actionList?? [IconButton(onPressed: () {
+          void onClickFunction(String selectedDomainKey){
+            sharePreferenceHelper.changeDefaulServicetDomainName(selectedDomainKey);
+            Endpoints.updateFunctionEndPoint(
+                Endpoints.domainMap[selectedDomainKey]);
+            Endpoints.updateKeyCloakEndPoint(
+                Endpoints.keyClockDomainMap[selectedDomainKey]);
+          }
+          DialogHelper.listSelectionDialogWithAutoCompleteBar(
+              context, List<String?>.from(Endpoints.domainMap.keys.toList()), onClickFunction,
+              willPop: true);
+        }, icon: Icon(Icons.more_vert))]
       ],
     );
   }
