@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_store.dart';
@@ -51,7 +52,7 @@ class _StockTakePageState extends State<StockTakePage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Stock Take",
+      title: "stockTake".tr(gender: "stock_take"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -65,7 +66,7 @@ class _StockTakePageState extends State<StockTakePage> {
             child: isFetching
                 ? const AppLoader()
                 : _store.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("stockTake".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
@@ -98,9 +99,9 @@ class _StockTakePageState extends State<StockTakePage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("stockTake".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "stockTake".tr(gender: "bottom_bar_page") + ": ${_store.currentPage}/${_store.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -222,7 +223,7 @@ class _StockTakePageState extends State<StockTakePage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Reg Number = " + widget.searchRegNum!,
+                    "stockTake".tr(gender: "search_result_text") + "= " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -240,7 +241,7 @@ class _StockTakePageState extends State<StockTakePage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Document Number",
+        hintText: "stockTake".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

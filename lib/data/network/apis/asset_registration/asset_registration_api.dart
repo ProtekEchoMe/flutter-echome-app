@@ -177,9 +177,9 @@ class AssetRegistrationApi {
           .get(Endpoints.registerComplete, queryParameters: {"regNum": regNum});
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           if ((e.response!.data is String).toString().isEmpty) {
             throw Exception("Bad Request");
@@ -197,9 +197,9 @@ class AssetRegistrationApi {
           .get(Endpoints.registerToComplete, queryParameters: {"toNum": toNum});
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           if ((e.response!.data is String).toString().isEmpty) {
             throw Exception("Bad Request");
@@ -232,9 +232,9 @@ class AssetRegistrationApi {
           queryParameters: query);
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           if ((e.response!.data is String).toString().isEmpty) {
             throw Exception("Bad Request");
@@ -270,9 +270,9 @@ class AssetRegistrationApi {
           queryParameters: query);
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           if ((e.response!.data is String).toString().isEmpty) {
             throw Exception("Bad Request");
@@ -300,9 +300,9 @@ class AssetRegistrationApi {
       return {"itemList": res["itemRow"]};
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           throw Exception(e.response!.data);
         }
@@ -328,9 +328,9 @@ class AssetRegistrationApi {
       return {"itemList": res["itemRow"]};
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           throw Exception(e.response!.data);
         }

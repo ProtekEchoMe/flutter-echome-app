@@ -42,6 +42,9 @@ abstract class _StockTakeScanStore with Store {
   @observable
   bool isFetching = false;
 
+  @observable
+  ObservableMap<int, ObservableList> memoryMap = ObservableMap<int, ObservableList>();
+
   @action
   void reset() {
     itemRfidDataSet.clear();
@@ -186,7 +189,11 @@ abstract class _StockTakeScanStore with Store {
         bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerStockTakeItem(
+      // await repository.registerStockTakeItem(
+      //     stNum: stNum,
+      //     locCode: locCode,
+      //     itemRfid: itemRfid);
+      repository.registerStockTakeItem(
           stNum: stNum,
           locCode: locCode,
           itemRfid: itemRfid);

@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -248,7 +249,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
   Widget build(BuildContext context) {
     // print(widget.arg.item!.createdDate);
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "Document Details"),
+      appBar: EchoMeAppBar(titleText: "stockTake".tr(gender: "detail_page_title")),
       body: SizedBox.expand(
         child: Column(children: [
           _getDocumentInfo(context),
@@ -257,6 +258,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
           _getListBox(context)
         ]),
       ),
+
       // bottomNavigationBar: BottomNavigationBar(
       //   selectedFontSize: 12,
       //   selectedItemColor: Colors.black54,
@@ -379,14 +381,14 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Reg number : " + widget.arg.stNum),
+            Text("stockTake".tr(gender: "detail_page_reg_num") +": " + widget.arg.stNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
-                "Document Date : ${(dataString as String).isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "stockTake".tr(gender: "detail_page_document_date") + " : ${(dataString as String).isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
             Text(
-                "Location : ${(locCode as String).isNotEmpty ? locCode : ""}"),
+                "stockTake".tr(gender: "detail_page_location") + ": ${(locCode as String).isNotEmpty ? locCode : ""}"),
             const SizedBox(height: 5),
             // Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
             // const SizedBox(height: 5),

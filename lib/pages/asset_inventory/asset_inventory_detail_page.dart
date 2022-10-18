@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/models/asset_inventory/asset_inventory_item.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_scan_store.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
@@ -121,7 +122,7 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
         child: Column(
           children: [
             BodyTitle(
-              title: "Inventory Details",
+              title: "assetInventory".tr(gender: "detail_page_title"),
               clipTitle: "Hong Kong-DC",
             ),
             Expanded(
@@ -155,14 +156,14 @@ class _AssetInventoryDetailPageState extends State<AssetInventoryDetailPage> {
           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
           unselectedIconTheme:
           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-          items: const <BottomNavigationBarItem>[
+          items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.change_circle),
-              label: 'Start',
+              label: "assetInventory".tr(gender: "detail_page_start_scan"),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.signal_cellular_alt),
-              label: 'Stop',
+              label: "assetInventory".tr(gender: "detail_page_stop_scan"),
             ),
             // BottomNavigationBarItem(
             //   icon: Icon(Icons.eleven_mp),

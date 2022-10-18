@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_inventory/asset_inventory_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
@@ -120,7 +121,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Asset Inventory",
+      title: "assetInventory".tr(gender: "asset_inverntory"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -134,7 +135,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
             child: isFetching
                 ? const AppLoader()
                 : _assetInventoryStore.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("assetInventory".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
@@ -168,9 +169,10 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("assetInventory".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "Page: ${_assetInventoryStore.currentPage}/${_assetInventoryStore.totalPage} ")
+                                                "assetInventory".tr(gender: "bottom_bar_page") +
+                                            ": ${_assetInventoryStore.currentPage}/${_assetInventoryStore.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -210,11 +212,16 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                                       var rfid = listItem.rfid;
 
                                       var subtitle = "";
-                                      (productCode != null) ? subtitle += "productCode: $productCode" : "";
-                                      (tiNum != null) ? subtitle += "\nTi: $tiNum" : "";
-                                      (toNum != null) ? subtitle += "\nTo :$toNum" : "";
-                                      (regNum != null) ? subtitle += "\nReg: $regNum" : "";
-                                      (rfid != null) ? subtitle += "\nRfid: $rfid" : "";
+                                      (productCode != null) ? subtitle += "assetInventory".tr(gender: "detail_item_info_productCode") +
+                                          ": $productCode" : "";
+                                      (tiNum != null) ? subtitle += "\n" + "assetInventory".tr(gender: "detail_item_info_Ti")
+                                          + ": $tiNum" : "";
+                                      (toNum != null) ? subtitle +=  "\n" + "assetInventory".tr(gender: "detail_item_info_To")
+                                          + ":$toNum" : "";
+                                      (regNum != null) ? subtitle += "\n" +  "assetInventory".tr(gender: "detail_item_info_Reg")
+                                          + ": $regNum" : "";
+                                      (rfid != null) ? subtitle += "\n" +  "assetInventory".tr(gender: "detail_item_info_RFID")  +
+                                          ": $rfid" : "";
                                       // subtitle += tiNum ?? "";
                                       // subtitle += toNum ?? "";
 
@@ -274,7 +281,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Asset Code = " + widget.assetCode!,
+                    "assetInventory".tr(gender: "search_result_text")
+                     + " = " + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -360,7 +368,8 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for SKU/RFID  = " + widget.productCode! + widget.assetCode!,
+                    "assetInventory".tr(gender: "search_result_text")
+                        + " = " + widget.productCode! + widget.assetCode!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -379,7 +388,7 @@ class _AssetInventoryPageState extends State<AssetInventoryPage> {
         // initText: "INIT TEXT",
         textEditingController: skuSearchBarTextController,
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by productCode/Rfid",
+        hintText: "assetInventory".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             String skuCode = "";

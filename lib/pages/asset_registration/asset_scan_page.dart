@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -141,7 +142,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
     try {
       _assetRegistrationScanStore.complete(regNum: args?.regNum ?? "");
       return true;
-    } catch (e) {
+    }catch(e){
       return false;
     }
   }
@@ -152,52 +153,50 @@ class _AssetScanPageState extends State<AssetScanPage> {
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
     (result as List).forEach((e) {
-      try {
-        newTotalQuantity += e["quantity"] as int;
+      try{
+        newTotalQuantity += e["quantity"] as int ;
         totalRegQuantity += e["checkinQty"] as int;
-      } catch (e) {
+      }catch(e){
         print(e);
-      }
-      ;
+      };
     });
 
-    return "Total: $totalRegQuantity / $newTotalQuantity";
+    return "assetRegistration".tr(gender: "bottom_bar_total") + ": $totalRegQuantity / $newTotalQuantity";
+
   }
 
   Future<void> _onBottomBarItemTapped(
       AssetScanPageArguments? args, int index) async {
-    try {
+    try{
       if (index == 0) {
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "assetRegistration".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
-          await _changeEquipment(args)
-              ? _showSnackBar("Change Successfully")
-              : "";
+          await _changeEquipment(args) ?_showSnackBar("assetRegistration".tr(gender: "scan_page_change_success") ): "";
 
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw  "assetRegistration".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "assetRegistration".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
+            trueOptionText: "assetRegistration".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "assetRegistration".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          await _complete(args) ? _showSnackBar("assetRegistration".tr(gender: "scan_page_complete_success")) : "";
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 3) {
@@ -229,17 +228,19 @@ class _AssetScanPageState extends State<AssetScanPage> {
             },
           ),
           TextButton(
-            child: const Text('disconnect'),
+            child: const Text('SContainer'),
             onPressed: () {
               readerConnectionStore..disconnectAIReader();
+              _addMockEquipmentIdCaseTwo();
               Navigator.of(context).pop();
             },
-          ),
+          )
         ]);
       }
-    } catch (e) {
+    }catch (e){
       _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
     }
+
   }
 
   @override
@@ -270,45 +271,45 @@ class _AssetScanPageState extends State<AssetScanPage> {
     var disposerReaction = reaction(
         (_) => _assetRegistrationScanStore.errorStore.errorMessage, (_) {
       if (_assetRegistrationScanStore.errorStore.errorMessage.isNotEmpty) {
-        DialogHelper.showErrorDialogBox(context,
-            errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
+        DialogHelper.showErrorDialogBox(context, errorMsg: _assetRegistrationScanStore.errorStore.errorMessage);
         _showSnackBar(_assetRegistrationScanStore.errorStore.errorMessage);
       }
     });
     var scanDisposeReaction =
         reaction((_) => _assetRegistrationScanStore.equipmentData, (_) {
-      try {
-        if (!accessControlStore.hasARScanRight) throw "No Scan Right";
-        Set<String?> containerAssetCodeSet = Set<String?>();
-        // print("disposer1 called");
-        _assetRegistrationScanStore.chosenEquipmentData.forEach(
-            (element) => containerAssetCodeSet.add(element.containerAssetCode));
-        if (containerAssetCodeSet.length > 1 && !isDialogShown) {
-          isDialogShown = true;
-          DialogHelper.showCustomDialog(context, widgetList: [
-            Text("More than one container code detected, please rescan")
-          ], actionList: [
-            TextButton(
-              child: const Text('Rescan Container'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _rescanContainer();
-                isDialogShown = false;
-              },
-            ),
-            TextButton(
-              child: const Text('Rescan'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _rescan();
-                isDialogShown = false;
-              },
-            )
-          ]);
-        }
-      } catch (e) {
-        _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
-      }
+          try{
+            if (!accessControlStore.hasARScanRight) throw "assetRegistration".tr(gender: "scan_page_no_right_scan");
+            Set<String?> containerAssetCodeSet = Set<String?>();
+            // print("disposer1 called");
+            _assetRegistrationScanStore.chosenEquipmentData.forEach(
+                    (element) => containerAssetCodeSet.add(element.containerAssetCode));
+            if (containerAssetCodeSet.length > 1 && !isDialogShown) {
+              isDialogShown = true;
+              DialogHelper.showCustomDialog(context, widgetList: [
+                Text("assetRegistration".tr(gender: "scan_page_more_than_one_container"))
+              ], actionList: [
+                TextButton(
+                  child: Text("assetRegistration".tr(gender: "scan_page_rescan_container_option")),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescanContainer();
+                    isDialogShown = false;
+                  },
+                ),
+                TextButton(
+                  child: Text("assetRegistration".tr(gender: "scan_page_rescan_confirm_option")),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _rescan();
+                    isDialogShown = false;
+                  },
+                )
+              ]);
+            }
+          }catch (e){
+            _assetRegistrationScanStore.errorStore.setErrorMessage(e.toString());
+          }
+
     });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
@@ -327,9 +328,28 @@ class _AssetScanPageState extends State<AssetScanPage> {
   Widget build(BuildContext context) {
     final AssetScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
-
-
-    Widget scaffold = Scaffold(
+    return Scaffold(
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: <Widget>[
+      //       FloatingActionButton(
+      //           heroTag: null,
+      //           child: const Icon(Icons.add_box),
+      //           onPressed: _addMockEquipmentId),
+      //       const SizedBox(
+      //         width: 20,
+      //       ),
+      //       FloatingActionButton(
+      //         heroTag: null,
+      //         onPressed: _addMockAssetId,
+      //         child: const Icon(MdiIcons.cart),
+      //       )
+      //     ],
+      //   ),
+      // ),
       appBar: AppBar(
         title: Row(
           children: [Text(args != null ? args.regNum : "EchoMe")],
@@ -357,23 +377,25 @@ class _AssetScanPageState extends State<AssetScanPage> {
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
             const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+        items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "assetRegistration".tr(gender: "scan_page_checkIn"),
+            // label: "Change Equipement",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "assetRegistration.scan_page_rescan".tr(),
+            // label: "assetRegistration".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "assetRegistration".tr(gender: "scan_page_complete"),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.eleven_mp),
-            label: 'Debug',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.eleven_mp),
+          //   label: 'Debug',
+          // ),
         ],
         onTap: (int index) => _onBottomBarItemTapped(args, index),
       ),
@@ -427,7 +449,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                              "assetRegistration".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -469,7 +491,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "assetRegistration".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -532,7 +554,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "assetRegistration".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -574,7 +596,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("assetRegistration".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
@@ -651,7 +673,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.regNum ?? "No RegNum") + " [Reg]",
+      title: (args?.regNum ?? "No RegNum") + " [Reg]" ,
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -688,7 +710,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   void _addMockEquipmentIdCaseTwo() {
     List<String> list = [];
-    list.add(AscToText.getAscIIString("CATL010000000808"));
+    list.add(AscToText.getAscIIString("SATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
     _assetRegistrationScanStore.updateDataSet(equList: list);
   }
@@ -722,11 +744,13 @@ class _AssetScanPageState extends State<AssetScanPage> {
 
   void _mockscan1() {
     List<String> list1 = [];
-    list1.add(AscToText.getAscIIString("CATL010000000808"));
-    list1.add(AscToText.getAscIIString("CATL010000000819"));
+    list1.add(AscToText.getAscIIString("CATL010000071468"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
-    list2.add(AscToText.getAscIIString("CATL010000000808"));
-    list2.add(AscToText.getAscIIString("CATL010000000819"));
+    list2.add(AscToText.getAscIIString("SATL010000049373"));
+    list2.add(AscToText.getAscIIString("SATL010000049362"));
+    list2.add(AscToText.getAscIIString("SATL010000049384"));
+    list2.add(AscToText.getAscIIString("SATL010000049395"));
     _assetRegistrationScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

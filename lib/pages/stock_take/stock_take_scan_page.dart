@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/stock_take/stock_take_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -118,11 +119,49 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       //     containerAssetCode: targetcontainerAssetCode,
       //     throwError: true);
 
-      await _stockTakeScanStore.registerStockTakeItem(
-          stNum: args?.stNum ?? "",
-          itemRfid: itemRfid,
-          locCode: args?.stockTakeLocHeader?.locCode ?? "",
-          throwError: true);
+
+
+      List chunkList(List sourceList){
+        var chunks = [];
+        int chunkSize = 100;
+        for (var i = 0; i < sourceList.length; i += chunkSize) {
+          chunks.add(sourceList.sublist(i, i+chunkSize > sourceList.length ? sourceList.length : i + chunkSize));
+        }
+        return chunks;
+      }
+
+      List chunkedList = chunkList(itemRfid);
+
+      // num completedNum = 0;
+      // for(var chunk in chunkedList){
+      //   // print(chunk);
+      //   await _stockTakeScanStore.registerStockTakeItem(
+      //       stNum: args?.stNum ?? "",
+      //       itemRfid: chunk,
+      //       locCode: args?.stockTakeLocHeader?.locCode ?? "",
+      //       throwError: false);
+      //   completedNum += chunk.length;
+      //   _showSnackBar("$completedNum/${itemRfid.length} is submitted");
+      // }
+      num completedNum = 0;
+      for(var chunk in chunkedList){
+        // print(chunk);
+        _stockTakeScanStore.registerStockTakeItem(
+            stNum: args?.stNum ?? "",
+            itemRfid: chunk,
+            locCode: args?.stockTakeLocHeader?.locCode ?? "",
+            throwError: false).then((value){
+            completedNum += chunk.length;
+            _showSnackBar("$completedNum/${itemRfid.length} is submitted");
+        });
+
+      }
+
+      // await _stockTakeScanStore.registerStockTakeItem(
+      //     stNum: args?.stNum ?? "",
+      //     itemRfid: itemRfid,
+      //     locCode: args?.stockTakeLocHeader?.locCode ?? "",
+      //     throwError: true);
 
 
       _stockTakeScanStore.reset();
@@ -199,32 +238,32 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       StockTakeScanPageArguments? args, int index) async {
     try{
       if (index == 0) {
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "stockTake".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "stockTake".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
-          await _changeEquipment(args) ?_showSnackBar("Change Successfully") : "";
+          await _changeEquipment(args) ?_showSnackBar("stockTake".tr(gender: "scan_page_change_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to ReCount?",
-            trueOptionText: "ReCounrt",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "stockTake".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           await _reCount(args) ? _showSnackBar("Complete Successfully") : "";
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("stockTake".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw "stockTake".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
+            trueOptionText: "stockTake".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
           await _completeStockTakeLine(args) ? _showSnackBar("Complete Successfully") : "";
           // _assetRegistrationScanStore.reset();
@@ -276,6 +315,12 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           // }
           item.add(element);
           soundPoolUtil.playCheering();
+
+          if (element.substring(0, 2) == "53" ||
+              element.substring(0, 2) == "73") {
+            item.add(element);
+          }
+          // item.add(element);
         }
         _stockTakeScanStore.updateDataSet(equList: equ, itemList: item);
         print("");
@@ -284,13 +329,14 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
     var disposerReaction = reaction(
         (_) => _stockTakeScanStore.errorStore.errorMessage, (_) {
       if (_stockTakeScanStore.errorStore.errorMessage.isNotEmpty) {
+        DialogHelper.showErrorDialogBox(context, errorMsg: _stockTakeScanStore.errorStore.errorMessage);
         _showSnackBar(_stockTakeScanStore.errorStore.errorMessage);
       }
     });
     var scanDisposeReaction =
         reaction((_) => _stockTakeScanStore.equipmentData, (_) {
           try{
-            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            if (!accessControlStore.hasARScanRight) throw "stockTake".tr(gender: "scan_page_no_right_scan");
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
             _stockTakeScanStore.chosenEquipmentData.forEach(
@@ -298,10 +344,10 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
             if (containerAssetCodeSet.length > 1 && !isDialogShown) {
               isDialogShown = true;
               DialogHelper.showCustomDialog(context, widgetList: [
-                Text("More than one container code detected, please rescan")
+                Text("stockTake".tr(gender: "scan_page_more_than_one_container"))
               ], actionList: [
                 TextButton(
-                  child: const Text('Rescan Container'),
+                  child: Text("stockTake".tr(gender: "scan_page_rescan_container_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescanContainer();
@@ -309,7 +355,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                   },
                 ),
                 TextButton(
-                  child: const Text('Rescan'),
+                  child: Text("stockTake".tr(gender: "scan_page_rescan_confirm_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescan();
@@ -351,6 +397,14 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           IconButton(
               onPressed: () {
                 if (args != null) {
+                  print("startStockTake");
+                  _stockTakeScanStore.startStockTake(stNum: args.stNum).then((value) => _showSnackBar("Stock take start"));
+                }
+              },
+              icon: const Icon(MdiIcons.clockStart)),
+          IconButton(
+              onPressed: () {
+                if (args != null) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -369,19 +423,19 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
         selectedIconTheme:
         const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "stockTake".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "stockTake".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "stockTake".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -529,7 +583,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                        "stockTake".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -571,7 +625,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "stockTake".tr(gender: "scan_page_equipment_container_code_text"),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -634,7 +688,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "stockTake".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -676,7 +730,7 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("stockTake".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
@@ -798,12 +852,17 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   void _mockscan1() {
     List<String> list1 = [];
     // list1.add(AscToText.getAscIIString("CATL010000000808"));
-    // list1.add(AscToText.getAscIIString("CATL010000000819"));
+    list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
     list2.add(AscToText.getAscIIString("SATL010000032555"));
+
+    for(int i =0; i < 1000; i++){
+      String output = "SATL0" + (10000000000 + i).toString();
+      list2.add(AscToText.getAscIIString(output));
+    }
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/models/stock_take/stock_take_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_detail_page.dart';
@@ -106,14 +107,14 @@ class _StockTakeLocNewPageState extends State<StockTakeLocNewPage> {
           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
           unselectedIconTheme:
           const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.signal_cellular_alt),
-              label: 'Refresh',
+              label: "stockTake".tr(gender: "loc_page_refresh"),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.book),
-              label: 'Complete ',
+              label: "stockTake".tr(gender: "loc_page_complete"),
             ),
             // BottomNavigationBarItem(
             //   icon: Icon(Icons.eleven_mp),
@@ -132,14 +133,14 @@ class _StockTakeLocNewPageState extends State<StockTakeLocNewPage> {
         print("refresh");
       } else if (index == 1) {
         print("Complete");
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "stockTake".tr(gender: "loc_page_no_right_rescan");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete Order?",
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "stockTake".tr(gender: "loc_page_confirm_to_complete"),
+            trueOptionText: "stockTake".tr(gender: "loc_page_complete_confirm_option"),
+            falseOptionText: "stockTake".tr(gender: "loc_page_complete_cancel_option"));
         if (flag == true) {
           await _completeStockTakeHeader(stNum: stNum) ? _showSnackBar(
-              "Complete Successfully") : "";
+              "stockTake".tr(gender: "loc_page_complete_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
@@ -168,7 +169,7 @@ class _StockTakeLocNewPageState extends State<StockTakeLocNewPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Stock Take",
+      title: "stockTake".tr(gender: "loc_page_title"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -182,7 +183,7 @@ class _StockTakeLocNewPageState extends State<StockTakeLocNewPage> {
             child: isFetching
                 ? const AppLoader()
                 : _stockTakeStore.locHeaderList.isEmpty
-                ? const Center(child: Text("No Data"))
+                ? Center(child: Text("stockTake".tr(gender: "loc_page_no_data")))
                 : Stack(
               children: [
                 Positioned(
@@ -217,11 +218,9 @@ class _StockTakeLocNewPageState extends State<StockTakeLocNewPage> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text("Total: ${total}"),
-                                  Text(
-                                      "Page: ${_stockTakeStore
-                                          .currentPage}/${_stockTakeStore
-                                          .totalPage} ")
+                                Text("stockTake".tr(gender: "bottom_bar_total") + ": ${total}"),
+                                Text(
+                                    "stockTake".tr(gender: "bottom_bar_page") + ": ${_stockTakeStore.currentPage}/${_stockTakeStore.totalPage} ")
                                 ],
                               );
                             }),

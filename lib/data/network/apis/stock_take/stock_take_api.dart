@@ -287,13 +287,15 @@ class StockTakeApi {
         "locCode": locCode,
         "rfids": str
       };
-      final res1 = await _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
+      // final res1 = await _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
+      //     queryParameters: query);
+      final res1 = _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
           queryParameters: query);
     } catch (e) {
       if (e is DioError) {
-        if (e.response?.statusCode == 500) {
-          throw Exception("Internal Server Error");
-        }
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
         if (e.response?.data is String) {
           if ((e.response!.data is String).toString().isEmpty) {
             throw Exception("Bad Request");

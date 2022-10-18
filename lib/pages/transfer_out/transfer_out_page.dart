@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
@@ -117,7 +118,9 @@ class _TransferOutPageState extends State<TransferOutPage> {
               }
               DialogHelper.listSelectionDialogWithAutoCompleteBar(
                   context, List<String?>.from([..._accessControlStore.getAccessControlledTOSiteNameList, "0"]), onClickFunction,
-                  willPop: false);
+                  willPop: true,
+                  text: "transferOut".tr(gender: "direct_choose_site_text"),
+                  totalText: "utilDialog".tr(gender: "total"));
 
               // showCupertinoModalPopup<void>(
               //     context: context, builder: (BuildContext context){
@@ -223,7 +226,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
 
   Widget _getTitle(BuildContext ctx) {
     return BodyTitle(
-      title: "Transfer Out",
+      title: "transferOut".tr(gender: "transfer_out"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -237,7 +240,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
             child: isFetching
                 ? const AppLoader()
                 : _transferOutStore.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("transferOut".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
@@ -269,9 +272,10 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("transferOut".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "          Page: ${_transferOutStore.currentPage}/${_transferOutStore.totalPage} ")
+                                                "          " + "transferOut".tr(gender: "bottom_bar_page") +
+                                                ": ${_transferOutStore.currentPage}/${_transferOutStore.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -370,7 +374,8 @@ class _TransferOutPageState extends State<TransferOutPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Transfer Out Number = " + widget.toNum!,
+                    "transferOut".tr(gender: "search_bar_hint") +
+                        "= " + widget.toNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -388,7 +393,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Transfer Out Number",
+        hintText: "transferOut".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(

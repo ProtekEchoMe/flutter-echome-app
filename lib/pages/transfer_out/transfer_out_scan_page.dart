@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
@@ -161,7 +162,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       };
     });
 
-    return "Total: $totalRegQuantity / $newTotalQuantity";
+    return "transferOut".tr(gender: "bottom_bar_total") + ": $totalRegQuantity / $newTotalQuantity";
 
   }
 
@@ -169,34 +170,34 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
       TransferOutScanPageArguments? args, int index) async {
     try{
       if (index == 0) {
-        if (!accessControlStore.hasARChangeRight) throw "No Change Right";
+        if (!accessControlStore.hasARChangeRight) throw "transferOut".tr(gender: "scan_page_no_right_change");
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Change Equipment(s)?",
-            trueOptionText: "Change",
-            falseOptionText: "Cancel");
+            title: "transferOut".tr(gender: "scan_page_confirm_to_change"),
+            trueOptionText: "transferOut".tr(gender: "scan_page_change_confirm_option"),
+            falseOptionText: "transferOut".tr(gender: "scan_page_change_cancel_option"));
         if (flag == true) {
-          await _changeEquipment(args)? _showSnackBar("Change Successfully") : "";
+          await _changeEquipment(args)? _showSnackBar("transferOut".tr(gender: "scan_page_change_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Rescan?",
-            trueOptionText: "Rescan",
-            falseOptionText: "Cancel");
+            title: "transferOut".tr(gender: "scan_page_confirm_to_rescan"),
+            trueOptionText: "transferOut".tr(gender: "scan_page_rescan_confirm_option"),
+            falseOptionText: "transferOut".tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
-          _showSnackBar("Data Cleaned");
+          _showSnackBar("transferOut".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARCompleteRight) throw "No Complete Right";
+        if (!accessControlStore.hasARCompleteRight) throw "transferOut".tr(gender: "scan_page_no_right_complete");
         String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "Confirm to Complete?\n\nChecked-In Items:\n" + regLineStr,
-            trueOptionText: "Complete",
-            falseOptionText: "Cancel");
+            title: "transferOut".tr(gender: "scan_page_confirm_to_complete") + "\n\n" + regLineStr,
+            trueOptionText: "transferOut".tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "transferOut".tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
-          await _complete(args) ? _showSnackBar("Complete Successfully") : "";
+          await _complete(args) ? _showSnackBar("transferOut".tr(gender: "scan_page_complete_success")) : "";
 
           // _assetRegistrationScanStore.reset();
         }
@@ -261,7 +262,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     var disposerReaction1 =
         reaction((_) => _transferOutScanStore.equipmentData, (_) {
           try{
-            if (!accessControlStore.hasARScanRight) throw "No Scan Right";
+            if (!accessControlStore.hasARScanRight) throw "transferOut".tr(gender: "scan_page_no_right_scan");
             Set<String?> containerAssetCodeSet = Set<String?>();
             // print("disposer1 called");
             _transferOutScanStore.chosenEquipmentData.forEach(
@@ -269,10 +270,9 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
             if (containerAssetCodeSet.length > 1 && !isDialogShown) {
               isDialogShown = true;
               DialogHelper.showCustomDialog(context, widgetList: [
-                Text("More than one container code detected, please rescan")
-              ], actionList: [
+                Text("transferOut".tr(gender: "scan_page_more_than_one_container"))], actionList: [
                 TextButton(
-                  child: const Text('Rescan Container'),
+                  child:  Text("transferOut".tr(gender: "scan_page_rescan_container_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescanContainer();
@@ -280,7 +280,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                   },
                 ),
                 TextButton(
-                  child: const Text('Rescan'),
+                  child:  Text("transferOut".tr(gender: "scan_page_rescan_confirm_option")),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _rescan();
@@ -339,21 +339,21 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
-        items: const <BottomNavigationBarItem>[
+            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
-            label: 'Change Equipment',
+            label: "transferOut".tr(gender: "scan_page_checkIn"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.signal_cellular_alt),
-            label: 'Re-Scan',
+            label: "transferOut".tr(gender: "scan_page_rescan"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Complete',
+            label: "transferOut".tr(gender: "scan_page_complete"),
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.eleven_mp),
@@ -493,7 +493,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                         return Row(
                           children: [
                             Text(
-                              "Equipment",
+                              "transferOut".tr(gender: "scan_page_equipmnet_title"),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(
@@ -535,7 +535,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Container Code :",
+                      "transferOut".tr(gender: "scan_page_equipment_container_code_text") + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -598,7 +598,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Asset List",
+                                "transferOut".tr(gender: "scan_page_asset_title"),
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               Container(
@@ -640,7 +640,7 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
                           padding:
                               const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
-                              child: Text("No Data",
+                              child: Text("transferOut".tr(gender: "scan_page_no_data"),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge!
@@ -767,4 +767,17 @@ class _TransferOutPageState extends State<TransferOutScanPage> {
     itemList.add(AscToText.getAscIIString("SATL010000348195"));
     _transferOutScanStore.updateDataSet(equList: list, itemList: itemList);
   }
+
+  void _mockscan1() {
+    List<String> list1 = [];
+    list1.add(AscToText.getAscIIString("CATL010000071468"));
+    // list1.add(AscToText.getAscIIString("CATL010000000819"));
+    List<String> list2 = [];
+    list2.add(AscToText.getAscIIString("SATL010000049373"));
+    list2.add(AscToText.getAscIIString("SATL010000049362"));
+    list2.add(AscToText.getAscIIString("SATL010000049384"));
+    list2.add(AscToText.getAscIIString("SATL010000049395"));
+    _transferOutScanStore.updateDataSet(equList: list1, itemList: list2);
+  }
+
 }

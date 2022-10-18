@@ -1,24 +1,24 @@
+import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/constants/dimens.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
-import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
 import 'package:echo_me_mobile/widgets/app_content_box.dart';
 import 'package:echo_me_mobile/widgets/echo_me_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
-class AssetReturnScanDetailPage extends StatefulWidget {
-  AssetReturnScanPageArguments arg;
-  AssetReturnScanDetailPage({Key? key, required this.arg}) : super(key: key);
+class AssetScanDetailPage extends StatefulWidget {
+  AssetScanPageArguments arg;
+  AssetScanDetailPage({Key? key, required this.arg}) : super(key: key);
 
   @override
-  State<AssetReturnScanDetailPage> createState() => _AssetReturnScanDetailPageState();
+  State<AssetScanDetailPage> createState() => _AssetScanDetailPageState();
 }
 
-class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
+class _AssetScanDetailPageState extends State<AssetScanDetailPage> {
   final inputFormat = DateFormat('dd/MM/yyyy');
   String totalProduct = "";
   String totalQuantity = "";
@@ -28,9 +28,11 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
   DioClient repository = getIt<DioClient>();
   List<ListDocumentLineItem> dataList = [];
 
-  Future<void> fetchData() async { // TODO: [need transfer it back to not hard-coded]
+  Future<void> fetchData() async {
+    // var result = await repository.get(
+    //     'http://qa-echome.ddns.net/echoMe/reg/listRegisterLine?regNum=${widget.arg.regNum}');
     var result = await repository.get(
-        'http://qa-echome.ddns.net/echoMe/assetReturn/listAssetReturnLine?rtn=${widget.arg.rtnNum}');
+        ('${Endpoints.assetRegistrationLine}?regNum=${widget.arg.regNum}'));
     var newTotalProduct = (result as List).length.toString();
     int newTotalQuantity = 0;
     int totalRegQuantity = 0;
@@ -60,11 +62,9 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    //Debug Msg
-    print(this.runtimeType);
     print(widget.arg.item!.createdDate);
     return Scaffold(
-      appBar: EchoMeAppBar(titleText: "assetReturn.detail_page_title".tr()),
+      appBar: EchoMeAppBar(titleText: "Document Details"),
       body: SizedBox.expand(
         child:
             Column(children: [_getDocumentInfo(context), _getListBox(context)]),
@@ -157,21 +157,19 @@ class _AssetReturnScanDetailPageState extends State<AssetReturnScanDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("assetReturn.detail_page_title".tr() + ": " + widget.arg.rtnNum),
+            Text("Reg number : " + widget.arg.regNum),
             SizedBox(height: 5),
             // ignore: unnecessary_String_comparison
             Text(
-                "assetReturn.detail_page_reg_num".tr() + " : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
+                "Document Date : ${dataString.isNotEmpty ? inputFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(dataString))) : ""}"),
             const SizedBox(height: 5),
-            Text("assetReturn.detail_page_document_date".tr() + ": ${widget.arg.item?.shipperCode.toString()}"),
+            Text("ShipperCode: ${widget.arg.item?.shipperCode.toString()}"),
             const SizedBox(height: 5),
-            Text("assetReturn.detail_page_total_product".tr() + " : $totalProduct"),
+            Text("Total Product : $totalProduct"),
             const SizedBox(height: 5),
-            Text("assetReturn.detail_page_total_quantity".tr() + " : $totalQuantity"),
+            Text("Total Quantity : $totalQuantity"),
             const SizedBox(height: 5),
-            Text("assetReturn.detail_page_tracker".tr() +" : $totalTracker")
-
-
+            Text("Total Tracker : $totalTracker")
           ],
         ),
       ),
@@ -199,28 +197,31 @@ class ListDocumentLineItem {
   String? maker;
   int? createdDate;
   int? modifiedDate;
+  String? expiryDate;
 
   ListDocumentLineItem(
-      {this.id,
-      this.site,
-      this.regNum,
-      this.regDate,
+      {this.id,//
+      this.site,//
+      this.regNum,//
+      this.regDate,//
       this.vendorCode,
-      this.productCode,
-      this.skuCode,
-      this.description,
-      this.style,
-      this.color,
-      this.size,
-      this.serial,
-      this.eanupc,
-      this.quantity,
-      this.checkinQty,
-      this.containerQty,
-      this.status,
-      this.maker,
-      this.createdDate,
-      this.modifiedDate});
+      this.productCode,//
+      this.skuCode,//
+      this.description,//
+      this.style,//
+      this.color,//
+      this.size,//
+      this.serial,//
+      this.eanupc,//
+      this.quantity,//
+      this.checkinQty,//
+      this.containerQty,//
+      this.status,//
+      this.maker,//
+      this.createdDate,//
+      this.modifiedDate,
+      this.expiryDate});//
+  //expiryDate
 
   ListDocumentLineItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -243,6 +244,7 @@ class ListDocumentLineItem {
     maker = json['maker'];
     createdDate = json['createdDate'];
     modifiedDate = json['modifiedDate'];
+    expiryDate = json['expiryDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -267,6 +269,7 @@ class ListDocumentLineItem {
     data['maker'] = this.maker;
     data['createdDate'] = this.createdDate;
     data['modifiedDate'] = this.modifiedDate;
+    data['expiryDate'] = this.expiryDate;
     return data;
   }
 }

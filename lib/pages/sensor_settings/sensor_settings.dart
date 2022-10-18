@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 
@@ -51,7 +52,7 @@ class _SensorSettingsState extends State<SensorSettings> {
   List<Widget> _getAvailableReaderList() {
     if (readerList.length == 0) {
       return [
-        Text("Current Empty, please press the button to get the reader list")
+        Text("setting".tr(gender: "setting_current_empty_text"))
       ];
     }
     return readerList

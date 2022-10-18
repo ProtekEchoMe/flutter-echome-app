@@ -1,4 +1,5 @@
 import 'package:echo_me_mobile/constants/dimens.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/pages/asset_registration/backup/asset_registration_search_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_item.dart';
@@ -28,12 +29,16 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
 
   @override
   void initState() {
+
     super.initState();
     _store.fetchData(regNum: widget.searchRegNum ?? "");
   }
 
   @override
   Widget build(BuildContext context) {
+    // context.setLocale(Locale('zh', 'TW'));
+    // context.setLocale(Locale('en'));
+
     return Scaffold(
         appBar: EchoMeAppBar(),
         body: SizedBox.expand(
@@ -46,8 +51,12 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
   }
 
   Widget _getTitle(BuildContext ctx) {
+    // return BodyTitle(
+    //   title: "Asset Register",
+    //   clipTitle: "Hong Kong-DC",
+    // );
     return BodyTitle(
-      title: "Asset Register",
+      title: "assetRegistration".tr(gender: "asset_register"),
       clipTitle: "Hong Kong-DC",
     );
   }
@@ -61,7 +70,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
             child: isFetching
                 ? const AppLoader()
                 : _store.itemList.isEmpty
-                    ? const Center(child: Text("No Data"))
+                    ? Center(child: Text("assetRegistration".tr(gender: "page_no_data")))
                     : Stack(
                         children: [
                           Positioned(
@@ -93,9 +102,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Text("Total: ${total}"),
+                                            Text("assetRegistration".tr(gender: "bottom_bar_total") + ": ${total}"),
                                             Text(
-                                                "Page: ${_store.currentPage}/${_store.totalPage} ")
+                                                "assetRegistration".tr(gender: "bottom_bar_page") + ": ${_store.currentPage}/${_store.totalPage} ")
                                           ],
                                         );
                                       }),
@@ -182,7 +191,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                 alignment: Alignment.centerLeft,
                 child: FittedBox(
                   child: Text(
-                    "Searching for Reg Number = " + widget.searchRegNum!,
+                    "assetRegistration".tr(gender: "search_result_text") + "= " + widget.searchRegNum!,
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge!
@@ -200,7 +209,7 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
       child: OutlineSearchBar(
         // initText: "INIT TEXT",
         backgroundColor: Theme.of(context).cardColor,
-        hintText: "Search by Document Number",
+        hintText: "assetRegistration".tr(gender: "search_bar_hint"),
         onSearchButtonPressed: (str) {
           if (str != null && str.isNotEmpty) {
             Navigator.push(
