@@ -322,8 +322,10 @@ class Repository {
       {String stNum = "",
         String locCode = "",
         List<String> itemRfid = const []}) async {
-    return await _stockTakeApi.registerStockTakeItem(
-         stNum: stNum, locCode: locCode, itemRfid: itemRfid);
+    return _stockTakeApi.registerStockTakeItem(
+        stNum: stNum, locCode: locCode, itemRfid: itemRfid);
+    // return await _stockTakeApi.registerStockTakeItem(
+    //      stNum: stNum, locCode: locCode, itemRfid: itemRfid);
   }
 
   Future<void> stocktakeRecountByLoc(

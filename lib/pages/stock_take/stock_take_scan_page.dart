@@ -116,11 +116,49 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
       //     containerAssetCode: targetcontainerAssetCode,
       //     throwError: true);
 
-      await _stockTakeScanStore.registerStockTakeItem(
-          stNum: args?.stNum ?? "",
-          itemRfid: itemRfid,
-          locCode: args?.stockTakeLocHeader?.locCode ?? "",
-          throwError: true);
+
+
+      List chunkList(List sourceList){
+        var chunks = [];
+        int chunkSize = 100;
+        for (var i = 0; i < sourceList.length; i += chunkSize) {
+          chunks.add(sourceList.sublist(i, i+chunkSize > sourceList.length ? sourceList.length : i + chunkSize));
+        }
+        return chunks;
+      }
+
+      List chunkedList = chunkList(itemRfid);
+
+      // num completedNum = 0;
+      // for(var chunk in chunkedList){
+      //   // print(chunk);
+      //   await _stockTakeScanStore.registerStockTakeItem(
+      //       stNum: args?.stNum ?? "",
+      //       itemRfid: chunk,
+      //       locCode: args?.stockTakeLocHeader?.locCode ?? "",
+      //       throwError: false);
+      //   completedNum += chunk.length;
+      //   _showSnackBar("$completedNum/${itemRfid.length} is submitted");
+      // }
+      num completedNum = 0;
+      for(var chunk in chunkedList){
+        // print(chunk);
+        _stockTakeScanStore.registerStockTakeItem(
+            stNum: args?.stNum ?? "",
+            itemRfid: chunk,
+            locCode: args?.stockTakeLocHeader?.locCode ?? "",
+            throwError: false).then((value){
+            completedNum += chunk.length;
+            _showSnackBar("$completedNum/${itemRfid.length} is submitted");
+        });
+
+      }
+
+      // await _stockTakeScanStore.registerStockTakeItem(
+      //     stNum: args?.stNum ?? "",
+      //     itemRfid: itemRfid,
+      //     locCode: args?.stockTakeLocHeader?.locCode ?? "",
+      //     throwError: true);
 
 
       _stockTakeScanStore.reset();
@@ -713,12 +751,17 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
   void _mockscan1() {
     List<String> list1 = [];
     // list1.add(AscToText.getAscIIString("CATL010000000808"));
-    // list1.add(AscToText.getAscIIString("CATL010000000819"));
+    list1.add(AscToText.getAscIIString("CATL010000000819"));
     List<String> list2 = [];
     // list2.add(AscToText.getAscIIString("SATL010000000808"));
     // list2.add(AscToText.getAscIIString("SATL010000000819"));
     // list2.add(AscToText.getAscIIString("CATL010000000808"));
     list2.add(AscToText.getAscIIString("SATL010000032555"));
+
+    for(int i =0; i < 1000; i++){
+      String output = "SATL0" + (10000000000 + i).toString();
+      list2.add(AscToText.getAscIIString(output));
+    }
     _stockTakeScanStore.updateDataSet(equList: list1, itemList: list2);
   }
 }

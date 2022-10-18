@@ -287,7 +287,9 @@ class StockTakeApi {
         "locCode": locCode,
         "rfids": str
       };
-      final res1 = await _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
+      // final res1 = await _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
+      //     queryParameters: query);
+      final res1 = _dioClient.getRegistration(Endpoints.stockTakeCheckInItems,
           queryParameters: query);
     } catch (e) {
       if (e is DioError) {

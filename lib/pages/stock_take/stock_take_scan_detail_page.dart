@@ -258,6 +258,7 @@ class _StockTakeScanDetailPageState extends State<StockTakeScanDetailPage> {
           _getListBox(context)
         ]),
       ),
+
       // bottomNavigationBar: BottomNavigationBar(
       //   selectedFontSize: 12,
       //   selectedItemColor: Colors.black54,

@@ -46,6 +46,17 @@ class DioClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
+
+      //  Response response =  _dio.get(
+      //   uri,
+      //   queryParameters: queryParameters,
+      //   options: options,
+      //   cancelToken: cancelToken,
+      //   onReceiveProgress: onReceiveProgress,
+      // ) as Response;
+
+       print(response);
+
       var countHeader = response.headers.map["X-Total-Count"];
       var totalRow = countHeader != null? int.parse(countHeader[0]) : null;
       var data = [];
