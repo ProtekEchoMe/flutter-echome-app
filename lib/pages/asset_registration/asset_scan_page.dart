@@ -328,7 +328,7 @@ class _AssetScanPageState extends State<AssetScanPage> {
   Widget build(BuildContext context) {
     final AssetScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
-    return Scaffold(
+    var scaffold = Scaffold(
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
       //   padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 10),

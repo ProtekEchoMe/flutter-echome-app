@@ -313,12 +313,13 @@ class _StockTakeScanPageState extends State<StockTakeScanPage> {
           //     element.substring(0, 2) == "73") {
           //   item.add(element);
           // }
-          item.add(element);
-          soundPoolUtil.playCheering();
+          // item.add(element);
+
 
           if (element.substring(0, 2) == "53" ||
               element.substring(0, 2) == "73") {
             item.add(element);
+            soundPoolUtil.playCheering();
           }
           // item.add(element);
         }
