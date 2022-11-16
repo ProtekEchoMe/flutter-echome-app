@@ -14,6 +14,9 @@ import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
+import '../../models/asset_registration/registration_item.dart';
+import '../asset_registration/asset_scan_page_arguments.dart';
+
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
 
@@ -81,6 +84,20 @@ class _SplashPageState extends State<SplashPage> {
                   .changeDefaultVersionControlDomainName(key);
               await _appVersionControlStore.updateIfNeed();
             }),
+            child: const Text(''),
+          ),
+          TextButton(
+            onPressed: () {
+              print("1");
+                    var fx = () => Navigator.pushNamed(
+                        context, "/asset_scan",
+                        arguments: AssetScanPageArguments(
+                            "100001",
+                            item: RegistrationItem()));
+                    fx();
+
+              }
+                ,
             child: const Text(''),
           ),
         ],

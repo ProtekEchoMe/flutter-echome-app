@@ -29,6 +29,7 @@ class AppRoutes {
       "/sensor_settings":(_) => SensorSettings(),
       "/asset_registration":(_) => AssetRegistrationPage(),
       "/asset_scan":(_) => AssetScanPage(),
+      "/asset_scan_extend":(_) => AssetScanPage(),
       "/asset_inventory_detail":(_) => AssetInventoryPage(),
       "/asset_return": (_) => AssetReturnPage(),
       "/asset_return_scan": (_) => AssetReturnScanPage(),
