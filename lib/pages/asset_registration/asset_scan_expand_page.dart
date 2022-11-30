@@ -487,7 +487,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Observer(
-              builder: ((context) => Container(
+                builder: ((context) => Container(
                     height: 30,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -495,31 +495,28 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                         border: Border.all(color: Colors.blueAccent)),
                     child: Center(
                         child: RichText(
-                          text: TextSpan(
-                            // Note: Styles for TextSpans must be explicitly defined.
-                            // Child text spans will inherit styles from parent
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.black,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:  "assetRegistration.detail_page_reg_num".tr() +
+                      text: TextSpan(
+                        // Note: Styles for TextSpans must be explicitly defined.
+                        // Child text spans will inherit styles from parent
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.black,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text:
+                                  "assetRegistration.detail_page_reg_num".tr() +
                                       " : "),
-                              TextSpan(
-                                  text: "${(args?.regNum!) ?? ""}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold, color: Colors.purple[700])),
-
-                            ],
-                          ),
-                        )
-
-                  ))
-            )),
+                          TextSpan(
+                              text: "${(args?.regNum!) ?? ""}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple[700])),
+                        ],
+                      ),
+                    ))))),
             const SizedBox(height: 5),
             Observer(builder: ((context) {
-
               var text = RichText(
                 text: TextSpan(
                   // Note: Styles for TextSpans must be explicitly defined.
@@ -538,7 +535,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             fontWeight: FontWeight.bold, color: Colors.red)),
                     TextSpan(
                         text: (_arScanExpandStore.itemRfidDataSet.length != 0)
-                            ? "(+${_arScanExpandStore.totalCheckedQty})"
+                            ? "(+${_arScanExpandStore.addedQty})"
                             : "",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
@@ -549,10 +546,11 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                     TextSpan(text: "  |  " + "SKU Tracker: "),
                     TextSpan(
                         text:
-                            "${_arScanExpandStore.itemCodeRfidMapper.length }/${_arScanExpandStore.itemCodeRfidMapper.length}",
+                            "${_arScanExpandStore.itemCodeRfidMapper.length}/${_arScanExpandStore.itemCodeRfidMapper.length}",
                         //_arScanExpandStore.orderLineDTOMap["Not Yet Scan"].orderLineItemsMap.length
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent)),
                     TextSpan(
                         text: "", style: TextStyle(fontWeight: FontWeight.bold))
                   ],
@@ -562,18 +560,67 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
               return text;
             })),
             const SizedBox(height: 5),
-            Observer(
-                builder: ((context) => Text("Container Qty".tr() +
-                    " : " +
-                    "${_arScanExpandStore.totalContainer}"))),
-            Text( "  |  " + "Out of List Item(s): "),
-            Observer(
-                builder: ((context) => Text(
-                    "${_arScanExpandStore.outOfListQty}"))),
+            Observer(builder: ((context) {
+              var text = RichText(
+                text: TextSpan(
+                  // Note: Styles for TextSpans must be explicitly defined.
+                  // Child text spans will inherit styles from parent
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(text: "Container Qty".tr() + " : "),
+                    TextSpan(
+                        text: "${_arScanExpandStore.totalContainer}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.green)),
+                    TextSpan(text: "  |  " + "Out of List Item(s): "),
+                    TextSpan(
+                        text: "${_arScanExpandStore.outOfListQty}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.red)),
+                  ],
+                ),
+              );
+
+              return text;
+            })),
+            // Observer(
+            //     builder: ((context) => Text("Container Qty".tr() +
+            //         " : " +
+            //         "${_arScanExpandStore.totalContainer}" + "  |  " + "Out of List Item(s): " + "${_arScanExpandStore.outOfListQty}"))),
+            // Text( "  |  " + "Out of List Item(s): "),
+            // Observer(
+            //     builder: ((context) => Text(
+            //         ))),
             const SizedBox(height: 5),
-            Observer(
-                builder: ((context) => Text(
-                    "Order Status".tr() + " : " + (args?.item?.status ?? "")))),
+            Observer(builder: ((context) {
+              var text = RichText(
+                text: TextSpan(
+                  // Note: Styles for TextSpans must be explicitly defined.
+                  // Child text spans will inherit styles from parent
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(text: "Order Status".tr() + " : "),
+                    TextSpan(
+                        text: "${_arScanExpandStore.totalContainer}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.green)),
+                    TextSpan(text: "  |  " + "Order Date: "),
+                    TextSpan(
+                        text: "${_arScanExpandStore.outOfListQty}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.red)),
+                  ],
+                ),
+              );
+
+              return text;
+            })),
           ],
         ),
       ),
@@ -1064,8 +1111,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             // orderLineWidget = await turnOrderLineIntoWidget();
             print("add Item into Container");
             // List<String> equList = ["CATL010000069779"];
-            List<String> equList = ["CATL010000075091", "CATL010000075080"];
-            List<String> itemList = [ "SATL010000068554", "SATL010100068552"];
+            List<String> equList = [ "CATL010000075080", "CATL010000075091"];
+            List<String> itemList = ["SATL010000068475", "SATL010000068509"];
             // itemList = ["SATL010000068363","SATL010000068374","SATL010000068408","SATL010000068419","SATL010000068442",
             //   "SATL010000068453","SATL010000068486","SATL010000068497","SATL010000068521","SATL010000068532",
             //   ];
@@ -1148,19 +1195,22 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           list[parentIndex].selected = true;
           list[parentIndex].children[childIndex].selected = true;
           String containerCode = list[parentIndex].id;
-          List<String> containerRFIDList = _arScanExpandStore.containerCodeRfidMapper[containerCode];
+          List<String> containerRFIDList =
+              _arScanExpandStore.containerCodeRfidMapper[containerCode];
           String itemCode = list[parentIndex].children[childIndex].id;
           String itemTitle = list[parentIndex].children[childIndex].title;
           String itemSubTitle = list[parentIndex].children[childIndex].subTitle;
           String containerCodeStr = list[parentIndex].id;
           // List<String>? rfidList = (_arScanExpandStore.itemCodeRfidMapper[itemCode] as List).map((item) => item as String).toList();
-          List<String> rfidList = <String> [];
+          List<String> rfidList = <String>[];
 
-          containerRFIDList.forEach((containerRFID) =>
-              rfidList.addAll(_arScanExpandStore.orderLineDTOMap[containerRFID].orderLineItemsMap[itemCode].rfid));
+          containerRFIDList.forEach((containerRFID) => rfidList.addAll(
+              _arScanExpandStore.orderLineDTOMap[containerRFID]
+                  .orderLineItemsMap[itemCode].rfid));
           ;
 
-          List<String>? rfidListInput = (rfidList as List).map((item) => item as String).toList();
+          List<String>? rfidListInput =
+              (rfidList as List).map((item) => item as String).toList();
 
           showStackDialog(
               containerCodeStr: containerCodeStr,
@@ -1226,25 +1276,29 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Expanded(
-                                  child: Text(
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: Text(
                                     rfid,
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   )),
-                              // Material(
-                              //   borderRadius: BorderRadius.circular(50),
-                              //   clipBehavior: Clip.antiAlias,
-                              //   child: IconButton(
-                              //       onPressed: () {
-                              //         setState(() {
-                              //           // _arScanExpandStore.itemRfidDataSet.remove(rfid);
-                              //           print("icon clicked");
-                              //         });
-                              //       },
-                              //       icon: const Icon(Icons.close)),
-                              // )
-                            ])
+                                  // Material(
+                                  //   borderRadius: BorderRadius.circular(50),
+                                  //   clipBehavior: Clip.antiAlias,
+                                  //   child: IconButton(
+                                  //       onPressed: () {
+                                  //         setState(() {
+                                  //           // _arScanExpandStore.itemRfidDataSet.remove(rfid);
+                                  //           print("icon clicked");
+                                  //         });
+                                  //       },
+                                  //       icon: const Icon(Icons.close)),
+                                  // )
+                                ])
                           ],
                         ),
                       )),
@@ -1255,15 +1309,14 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     );
   }
 
-  void showStackDialog({
-    required AlignmentGeometry alignment,
-    required String containerCodeStr,
-    required List<String> rfidList,
-    double width = double.infinity,
-    double height = double.infinity,
-    String title = "",
-    String subtitle = ""
-  }) async {
+  void showStackDialog(
+      {required AlignmentGeometry alignment,
+      required String containerCodeStr,
+      required List<String> rfidList,
+      double width = double.infinity,
+      double height = double.infinity,
+      String title = "",
+      String subtitle = ""}) async {
     rfidList.sort();
     SmartDialog.show(
         tag: "",
@@ -1277,18 +1330,21 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             child: _getRFIDBoxList(rfidList),
           );
 
-
-          var row = Column(children: [
-            Text(""),
-            _getBaseRFIDInfo(containerCodeStr, title, subtitle, rfidList.length),
-            container
-          ],);
+          var row = Column(
+            children: [
+              Text(""),
+              _getBaseRFIDInfo(
+                  containerCodeStr, title, subtitle, rfidList.length),
+              container
+            ],
+          );
           return row;
           // return _getRFIDBoxList(rfidList);
         });
   }
 
-  Widget _getBaseRFIDInfo(String containerCodeStr, String title, String subtitle, int rfidListLength) {
+  Widget _getBaseRFIDInfo(String containerCodeStr, String title,
+      String subtitle, int rfidListLength) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 0, maxHeight: 350),
       child: AppContentBox(
@@ -1313,10 +1369,10 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             ),
                             _arScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
-                              color: Colors.blue,
-                              size: 15,
-                              lineWidth: 2,
-                            )
+                                    color: Colors.blue,
+                                    size: 15,
+                                    lineWidth: 2,
+                                  )
                                 : const SizedBox()
                           ],
                         );
@@ -1330,9 +1386,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             color: Colors.grey,
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
-                          child: Text(
-                              rfidListLength.toString()
-                          ),
+                          child: Text(rfidListLength.toString()),
                         ),
                       ),
                     )
@@ -1346,8 +1400,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                   children: [
                     Text(
                       "assetRegistration".tr(
-                          gender:
-                          "scan_page_equipment_container_code_text") +
+                              gender:
+                                  "scan_page_equipment_container_code_text") +
                           ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -1358,15 +1412,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.blueAccent)),
-                          child: Center(
-                            child: Text(containerCodeStr),
-                          ),
-                        )),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Center(
+                                child: Text(containerCodeStr),
+                              ),
+                            )),
                       ),
                     )
                   ]),
@@ -1378,8 +1432,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Name" +
-                          ":",
+                      "Name" + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -1389,15 +1442,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.blueAccent)),
-                          child: Center(
-                            child: Text(title),
-                          ),
-                        )),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Center(
+                                child: Text(title),
+                              ),
+                            )),
                       ),
                     )
                   ]),
@@ -1409,8 +1462,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Code" +
-                          ":",
+                      "Code" + ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(
@@ -1420,15 +1472,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.blueAccent)),
-                          child: Center(
-                            child: Text(subtitle),
-                          ),
-                        )),
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Center(
+                                child: Text(subtitle),
+                              ),
+                            )),
                       ),
                     )
                   ]),
@@ -1440,16 +1492,16 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
   }
 
   Future<void> updateWidget() async {
-    orderLineWidget = await
-        _arScanExpandStore.turnOrderLineDtoMapIntoWidget();
+    orderLineWidget = await _arScanExpandStore.turnOrderLineDtoMapIntoWidget();
 
     setState(() {
       list = orderLineWidget;
     });
   }
 
-  void fetchOrderDetailData(){
-    _arScanExpandStore.fetchOrderDetail("Mixson_AR3").then((value) => updateWidget());
-
+  void fetchOrderDetailData() {
+    _arScanExpandStore
+        .fetchOrderDetail("Mixson_AR3")
+        .then((value) => updateWidget());
   }
 }

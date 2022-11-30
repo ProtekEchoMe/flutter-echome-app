@@ -13,22 +13,27 @@ extension SortBy on List {
     });
   }
 
-  sortOrderLineBy(List<String> keys) {
+  sortOrderLineBy(List<String> keys, List<int> orderList) {
     sort((( b,  a) {
 
-      keys.forEach((key) {
-
-      });
+      // keys.forEach((key) {
+      //
+      // });
 
       for(int k=0; k<keys.length; k++) {
         String key = keys[k];
+        var c = a;
+
         int comparison = Comparable.compare(
             a.getVariablebyName(key), b.getVariablebyName(key));
         if(comparison != 0){
-          return comparison;
+          return (orderList[k] > 0) ? comparison: -comparison;
         }
+        // return 0;
       }
       return 0;
     }));
   }
+
+
 }

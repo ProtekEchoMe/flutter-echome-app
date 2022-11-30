@@ -42,6 +42,8 @@ abstract class _ARScanExpandStore with Store{
   Map itemCodeRfidMapper = {};
   Map containerCodeRfidMapper = {};
 
+  Map itemCodeCheckedRfidMapper = {};
+
   Map itemRfidStatus = {}; // checked, scanned, out-of-bound
   Map containerRfidStatus = {};
 
@@ -61,6 +63,9 @@ abstract class _ARScanExpandStore with Store{
 
   @observable
   int totalCheckedQty = 0;
+
+  @observable
+  int addedQty = 0;
 
   @observable
   int outOfListQty = 0;
@@ -177,12 +182,25 @@ abstract class _ARScanExpandStore with Store{
 
       String itemCode = rfidCodeMapper[rfid];
       OrderLineItems orderLineItems = orderLineDTOMap[unScannedStrMapper].orderLineItemsMap[itemCode];
+
+      if (!itemCodeCheckedRfidMapper.containsKey(itemCode)){
+        itemCodeCheckedRfidMapper[itemCode] = [];
+      }
+      itemCodeCheckedRfidMapper[itemCode].add(rfid);
+
       orderLineItems.checkedinQty = orderLineItems.checkedinQty! + 1;
       this.totalCheckedQty += 1;
+      this.addedQty += 1;
       // TODO -- revise the object movement
       if (!orderLineDTOMap[containerRfid].orderLineItemsMap.containsKey(itemCode)){
         orderLineDTOMap[containerRfid].orderLineItems.add(orderLineItems);
         orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode] = orderLineItems;
+      }else{
+        orderLineDTOMap[containerRfid].orderLineItems.add(orderLineItems);
+
+        OrderLineItems targetContainerOrderLineItems = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode].checkedinQty;
+        targetContainerOrderLineItems.checkedinQty = orderLineItems.checkedinQty! + 1;
+
       }
 
       itemRfidStatus[rfid] = "Scanned";
@@ -204,9 +222,17 @@ abstract class _ARScanExpandStore with Store{
       this.outOfListQty += 1;
     }
 
+    int now = DateTime.now().millisecondsSinceEpoch;
 
-
-    print("");
+    for(final orderLine in orderLineDTOList!){
+      if (orderLine.rfid == containerRfid){
+        orderLine.modifiedDate = now;
+        orderLine.status = "checking";
+        break;
+      }
+    }
+    orderLineDTOMap[containerRfid].modifiedDate = now;
+    orderLineDTOMap[containerRfid].status = "checking";
   }
 
 
@@ -239,13 +265,19 @@ abstract class _ARScanExpandStore with Store{
       List<OrderLineItems>? orderLineItems = boxOrderLine.orderLineItems?.cast<OrderLineItems>();
       String? containerRFID = boxOrderLine.rfid;
       String? containerCode = boxOrderLine.containerCode;
-      rfidCodeMapper[containerRFID] = containerCode;
-      containerCodeRfidMapper[containerCode] = [containerRFID];
+      if (!rfidCodeMapper.containsKey(containerRFID)){
+        rfidCodeMapper[containerRFID] = containerCode;
+      }
+      if(!containerCodeRfidMapper.containsKey(containerCode)){
+        containerCodeRfidMapper[containerCode] = [containerRFID];
+      }
       orderLineItems?.forEach((orderLineMap) {
         List<String>? rfidList = orderLineMap.rfid;
         String? productCode = orderLineMap.productCode;
         String? itemCode = orderLineMap.itemCode;
-        itemCodeRfidMapper[itemCode] = [];
+        if (!itemCodeRfidMapper.containsKey(itemCode)) {
+          itemCodeRfidMapper[itemCode] = [];
+        }
         rfidList?.forEach((rfid) {
           rfidCodeMapper[rfid] = itemCode;
           itemCodeRfidMapper[itemCode].add(rfid);
@@ -267,7 +299,7 @@ abstract class _ARScanExpandStore with Store{
     // });
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
-    orderLineDTOList?.sortOrderLineBy(["status", "modifiedDate"]);
+    orderLineDTOList?.sortOrderLineBy(["modifiedDate", "status"], [1, 1]);
     orderLineDTOList?.forEach((orderLineContainerMap) {
       String? containerRFID = orderLineContainerMap.rfid;
       String? containerCode = orderLineContainerMap.containerCode;
@@ -295,16 +327,28 @@ abstract class _ARScanExpandStore with Store{
         int? totalQty = orderLineMap.totalQty;
         String? itemStatus = orderLineMap.status;
         List rfidList = orderLineMap.rfid;
+        String badgeText = "$checkedinQty" ;
+            if (itemCodeCheckedRfidMapper.containsKey(itemCode)){
+              badgeText += "(" + "${itemCodeCheckedRfidMapper[itemCode].length}" + ")";
+            }
+
+            if (containerCode != "Not Yet Scan"){
+              badgeText +=  "/${itemCodeRfidMapper[itemCode].length}";
+            }else{
+              badgeText +=  "/${totalQty}";
+            }
+
+
         ExpandableListItem orderLineExpandableListItem = ExpandableListItem(
             id: itemCode,
             title: productName,
             subTitle: "PCode: $productCode, ICode: $itemCode",
             selected: false,
-            badgeText: "$checkedinQty/$totalQty",
-            badgeColor: (checkedinQty! >= totalQty!)
+            badgeText: badgeText,
+            badgeColor: (checkedinQty! >= itemCodeRfidMapper[itemCode].length!)
                 ? Color(0xFF44b468)
                 : Color(0xFFFFE082),
-            badgeTextColor: (checkedinQty! >= totalQty)
+            badgeTextColor: (checkedinQty! >= itemCodeRfidMapper[itemCode].length)
                 ? Color(0xFFFFFFFF)
                 : Color(0xFF000000),
             children: <ExpandableListItem>[]);
@@ -325,6 +369,7 @@ abstract class _ARScanExpandStore with Store{
     totalQty = 0;
     totalCheckedQty = 0;
     totalCheckedSKU = 0;
+    addedQty = 0;
     totalContainer = orderLineDTOList?.length ?? 0;
     if (totalContainer != 0) {
       totalContainer -= 1; // # cancel Not Yet Scan Container
@@ -503,7 +548,23 @@ abstract class _ARScanExpandStore with Store{
           print("More than one container code found");
         }
 
+        List<String> outOfListItemList = [];
+        List<String> onTheListItemList = [];
+
+
         itemRfidDataSet.forEach((rfid) {
+          if(itemRfidStatus.containsKey(rfid)) {
+            onTheListItemList.add(rfid); // containerRfid, rfid
+          }else{
+            outOfListItemList.add(rfid);
+          }
+        });
+
+        outOfListItemList.forEach((rfid) {
+          addItemIntoContainer("Out of List", rfid); // containerRfid, rfid
+        });
+
+        onTheListItemList.forEach((rfid) {
           addItemIntoContainer(chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
         });
 
