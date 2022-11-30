@@ -4,19 +4,23 @@ class Endpoints {
   // server domain map
   static Map domainMap = {"DFS": "http://echome.dfs.com",
     "AWS": "http://qa-echome.ddns.net",
-    "AWS_IP": "http://16.162.105.236"
+    "AWS_IP": "http://16.162.105.236",
+    "new_AWS_IP": "http://18.162.168.95"
                           };
 
   static List domainList = domainMap.keys.toList();
-  static String activeServerStr = domainList[0];
+  static String activeServerStr = domainList[1];
+  // static String activeServerStr = domainList[3];
 
   static Map keyClockDomainMap = {"AWS": "https://qa-proteksso.ddns.net",
                                   "DFS": "https://atlrfid.dfs.com",
-                                  "AWS_IP": "http://16.162.105.236"};
+                                  "AWS_IP": "http://16.162.105.236",
+    "new_AWS_IP": "http://18.162.168.95"};
 
   static Map versionControlDomainMap = {"DFS": "http://echome.dfs.com",
                                         "AWS": "http://qa-echome.ddns.net",
-                                        "AWS_IP": "http://16.162.105.236"};
+                                        "AWS_IP": "http://16.162.105.236",
+    "new_AWS_IP": "http://18.162.168.95"};
 
   // static Map versionControlDomainMap = {"DFS": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
   //   "vercal": "https://express-apk-update-server-d4tab1aw1-protekechome.vercel.app",
@@ -111,6 +115,9 @@ class Endpoints {
   static const String stocktakeRecountByLocMethod = "/stocktake/stocktakeRecountByLoc";
   static const String listStocktakeLocHeaderMethod = "/stocktake/listStocktakeLocHeader";
 
+  //expandList Page APi
+  static const String getORderDetailARMethod = "/reg/getOrderDetail";
+
   //Stock Take
   static String listStockTakeHeader = "$activeUrl$listStockTakeHeaderMethod";
   static String listStockTakeLine = "$activeUrl$listStockTakeLineMethod";
@@ -166,6 +173,10 @@ class Endpoints {
 
   // Direct Transfer In
   static String createDirectTi = "$activeUrl$createDirectTiMethod";
+
+  //expandList Page APi
+  static String getORderDetailAR = "$activeUrl$getORderDetailARMethod";
+
 
 
   static String activeVersionControlDomain = versionControlDomainMap["AWS"];

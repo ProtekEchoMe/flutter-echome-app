@@ -106,6 +106,22 @@ mixin _$AssetRegistrationScanStore on _AssetRegistrationScanStore, Store {
     });
   }
 
+  final _$activeContainerRFIDAtom =
+      Atom(name: '_AssetRegistrationScanStore.activeContainerRFID');
+
+  @override
+  String get activeContainerRFID {
+    _$activeContainerRFIDAtom.reportRead();
+    return super.activeContainerRFID;
+  }
+
+  @override
+  set activeContainerRFID(String value) {
+    _$activeContainerRFIDAtom.reportWrite(value, super.activeContainerRFID, () {
+      super.activeContainerRFID = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_AssetRegistrationScanStore.isFetching');
 
   @override
@@ -212,6 +228,7 @@ equipmentData: ${equipmentData},
 isFetchingEquData: ${isFetchingEquData},
 checkedItem: ${checkedItem},
 chosenEquipmentData: ${chosenEquipmentData},
+activeContainerRFID: ${activeContainerRFID},
 isFetching: ${isFetching}
     ''';
   }

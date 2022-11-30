@@ -40,6 +40,9 @@ abstract class _AssetRegistrationScanStore with Store {
   ObservableList<EquipmentData> chosenEquipmentData = ObservableList();
 
   @observable
+  String activeContainerRFID = "";
+
+  @observable
   bool isFetching = false;
 
   @action
@@ -117,10 +120,11 @@ abstract class _AssetRegistrationScanStore with Store {
     var finalIndex = equipmentRfidDataSet.length;
     if (initIndex != finalIndex) {
       isFetchingEquData = true;
-      EasyDebounce.debounce(
-          'validateContainerRfid', const Duration(milliseconds: 500), () {
-        validateEquipmentRfid();
-      });
+      validateEquipmentRfid();
+      // EasyDebounce.debounce(
+      //     'validateContainerRfid', const Duration(milliseconds: 500), () {
+      //   validateEquipmentRfid();
+      // });
     }
   }
 

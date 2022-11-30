@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/auto_complete_searchbar.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:echo_me_mobile/widgets/app_content_box.dart';
 
 
 class DialogHelper {
@@ -253,7 +255,105 @@ class DialogHelper {
       },
     );
   }
+
+  static void stackDialog({
+    required AlignmentGeometry alignment,
+    required String tag,
+    required List<String> rfidList,
+    double width = double.infinity,
+    double height = double.infinity,
+  }) async {
+    SmartDialog.show(
+        tag: tag,
+        alignment: alignment,
+        builder: (_) {
+
+          return Container(
+              width: width,
+              height: height,
+              color: Colors.orange,
+              alignment: Alignment.center,
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ...rfidList.map((rfid) => Container(
+                      width: width,
+                      height: 50,
+                      // height: height/rfidList.length,
+                      color: Colors.white,
+                      // alignment: Alignment.centerRight,
+                      child: Row(
+                        // mainAxisSize: MainAxisSize.min,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          TextButton(onPressed: () => print(rfid.toString()), child: Text(rfid.toString())),
+                        ],
+                      ),
+                    )).toList(),
+                  ]));
+        }
+    );
+    await Future.delayed(Duration(milliseconds: 500));
+  }
+
+  static void showStackDialog({
+    required AlignmentGeometry alignment,
+    required String tag,
+    required List<String> rfidList,
+    double width = double.infinity,
+    double height = double.infinity,
+  }) async {
+    SmartDialog.show(
+        tag: tag,
+        alignment: alignment,
+        builder: (_) {
+
+          return ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 0, maxHeight: 350),
+            child: AppContentBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("a")
+                        ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("b")
+                        ]),
+                  ),
+                ],
+              ),
+            ),
+          );
+
+    }
+    );
+  }
 }
+
+
+
+  // await stackDialog2(
+  //     tag: "",
+  //     rfidList: ["SATL1000032","SATL1000032","SATL1000032","SATL1000032","SATL1000032"],
+  //     height: 400,
+  //     alignment: Alignment.topCenter);
+  //
+  // await stackDialog2(
+  //     tag: "",
+  //     rfidList: ["SATL1000032","SATL1000032","SATL1000032","SATL1000032","SATL1000032"],
+  //     height: 400,
+  //     alignment: Alignment.bottomCenter);
 
 
 // Widget _buildCupertinoPicker(List<String?> items){

@@ -17,6 +17,7 @@ import 'package:echo_me_mobile/data/sharedpref/shared_preference_helper.dart';
 import 'package:echo_me_mobile/di/local_module.dart';
 import 'package:echo_me_mobile/pages/login/forget_password_page.dart';
 import 'package:echo_me_mobile/stores/app_version_control/app_version_control_store.dart';
+import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_expand_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
 import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_store.dart';
@@ -113,6 +114,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<AssetRegistrationScanStore>(
       () => AssetRegistrationScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<ARScanExpandStore>(
+          () => ARScanExpandStore(getIt<Repository>()));
 
   getIt.registerFactory<AssetReturnScanStore>(
           () => AssetReturnScanStore(getIt<Repository>()));

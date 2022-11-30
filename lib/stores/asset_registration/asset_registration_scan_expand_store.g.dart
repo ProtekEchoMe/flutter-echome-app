@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stock_take_scan_store.dart';
+part of 'asset_registration_scan_expand_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,102 @@ part of 'stock_take_scan_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
+mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
+  final _$totalCheckedSKUAtom =
+      Atom(name: '_ARScanExpandStore.totalCheckedSKU');
+
+  @override
+  int get totalCheckedSKU {
+    _$totalCheckedSKUAtom.reportRead();
+    return super.totalCheckedSKU;
+  }
+
+  @override
+  set totalCheckedSKU(int value) {
+    _$totalCheckedSKUAtom.reportWrite(value, super.totalCheckedSKU, () {
+      super.totalCheckedSKU = value;
+    });
+  }
+
+  final _$totalSKUAtom = Atom(name: '_ARScanExpandStore.totalSKU');
+
+  @override
+  int get totalSKU {
+    _$totalSKUAtom.reportRead();
+    return super.totalSKU;
+  }
+
+  @override
+  set totalSKU(int value) {
+    _$totalSKUAtom.reportWrite(value, super.totalSKU, () {
+      super.totalSKU = value;
+    });
+  }
+
+  final _$totalCheckedQtyAtom =
+      Atom(name: '_ARScanExpandStore.totalCheckedQty');
+
+  @override
+  int get totalCheckedQty {
+    _$totalCheckedQtyAtom.reportRead();
+    return super.totalCheckedQty;
+  }
+
+  @override
+  set totalCheckedQty(int value) {
+    _$totalCheckedQtyAtom.reportWrite(value, super.totalCheckedQty, () {
+      super.totalCheckedQty = value;
+    });
+  }
+
+  final _$totalQtyAtom = Atom(name: '_ARScanExpandStore.totalQty');
+
+  @override
+  int get totalQty {
+    _$totalQtyAtom.reportRead();
+    return super.totalQty;
+  }
+
+  @override
+  set totalQty(int value) {
+    _$totalQtyAtom.reportWrite(value, super.totalQty, () {
+      super.totalQty = value;
+    });
+  }
+
+  final _$totalContainerAtom = Atom(name: '_ARScanExpandStore.totalContainer');
+
+  @override
+  int get totalContainer {
+    _$totalContainerAtom.reportRead();
+    return super.totalContainer;
+  }
+
+  @override
+  set totalContainer(int value) {
+    _$totalContainerAtom.reportWrite(value, super.totalContainer, () {
+      super.totalContainer = value;
+    });
+  }
+
+  final _$activeContainerAtom =
+      Atom(name: '_ARScanExpandStore.activeContainer');
+
+  @override
+  String get activeContainer {
+    _$activeContainerAtom.reportRead();
+    return super.activeContainer;
+  }
+
+  @override
+  set activeContainer(String value) {
+    _$activeContainerAtom.reportWrite(value, super.activeContainer, () {
+      super.activeContainer = value;
+    });
+  }
+
   final _$itemRfidDataSetAtom =
-      Atom(name: '_StockTakeScanStore.itemRfidDataSet');
+      Atom(name: '_ARScanExpandStore.itemRfidDataSet');
 
   @override
   ObservableSet<String> get itemRfidDataSet {
@@ -26,7 +119,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
   }
 
   final _$equipmentRfidDataSetAtom =
-      Atom(name: '_StockTakeScanStore.equipmentRfidDataSet');
+      Atom(name: '_ARScanExpandStore.equipmentRfidDataSet');
 
   @override
   ObservableSet<String> get equipmentRfidDataSet {
@@ -42,7 +135,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
     });
   }
 
-  final _$equipmentDataAtom = Atom(name: '_StockTakeScanStore.equipmentData');
+  final _$equipmentDataAtom = Atom(name: '_ARScanExpandStore.equipmentData');
 
   @override
   ObservableList<EquipmentData> get equipmentData {
@@ -58,7 +151,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
   }
 
   final _$isFetchingEquDataAtom =
-      Atom(name: '_StockTakeScanStore.isFetchingEquData');
+      Atom(name: '_ARScanExpandStore.isFetchingEquData');
 
   @override
   bool get isFetchingEquData {
@@ -73,7 +166,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
     });
   }
 
-  final _$checkedItemAtom = Atom(name: '_StockTakeScanStore.checkedItem');
+  final _$checkedItemAtom = Atom(name: '_ARScanExpandStore.checkedItem');
 
   @override
   ObservableSet<String> get checkedItem {
@@ -89,7 +182,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
   }
 
   final _$chosenEquipmentDataAtom =
-      Atom(name: '_StockTakeScanStore.chosenEquipmentData');
+      Atom(name: '_ARScanExpandStore.chosenEquipmentData');
 
   @override
   ObservableList<EquipmentData> get chosenEquipmentData {
@@ -104,7 +197,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
     });
   }
 
-  final _$isFetchingAtom = Atom(name: '_StockTakeScanStore.isFetching');
+  final _$isFetchingAtom = Atom(name: '_ARScanExpandStore.isFetching');
 
   @override
   bool get isFetching {
@@ -119,23 +212,8 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
     });
   }
 
-  final _$memoryMapAtom = Atom(name: '_StockTakeScanStore.memoryMap');
-
-  @override
-  ObservableMap<int, ObservableList<dynamic>> get memoryMap {
-    _$memoryMapAtom.reportRead();
-    return super.memoryMap;
-  }
-
-  @override
-  set memoryMap(ObservableMap<int, ObservableList<dynamic>> value) {
-    _$memoryMapAtom.reportWrite(value, super.memoryMap, () {
-      super.memoryMap = value;
-    });
-  }
-
   final _$validateEquipmentRfidAsyncAction =
-      AsyncAction('_StockTakeScanStore.validateEquipmentRfid');
+      AsyncAction('_ARScanExpandStore.validateEquipmentRfid');
 
   @override
   Future<void> validateEquipmentRfid() {
@@ -143,17 +221,15 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeStockTakeLineAsyncAction =
-      AsyncAction('_StockTakeScanStore.completeStockTakeLine');
+  final _$completeAsyncAction = AsyncAction('_ARScanExpandStore.complete');
 
   @override
-  Future<void> completeStockTakeLine({String stNum = "", String locCode = ""}) {
-    return _$completeStockTakeLineAsyncAction
-        .run(() => super.completeStockTakeLine(stNum: stNum, locCode: locCode));
+  Future<void> complete({String regNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(regNum: regNum));
   }
 
   final _$registerContainerAsyncAction =
-      AsyncAction('_StockTakeScanStore.registerContainer');
+      AsyncAction('_ARScanExpandStore.registerContainer');
 
   @override
   Future<void> registerContainer(
@@ -165,7 +241,7 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
   }
 
   final _$registerItemAsyncAction =
-      AsyncAction('_StockTakeScanStore.registerItem');
+      AsyncAction('_ARScanExpandStore.registerItem');
 
   @override
   Future<void> registerItem(
@@ -180,91 +256,59 @@ mixin _$StockTakeScanStore on _StockTakeScanStore, Store {
         throwError: throwError));
   }
 
-  final _$registerStockTakeItemAsyncAction =
-      AsyncAction('_StockTakeScanStore.registerStockTakeItem');
-
-  @override
-  Future<void> registerStockTakeItem(
-      {String stNum = "",
-      String locCode = "",
-      List<String> itemRfid = const [],
-      bool throwError = false}) {
-    return _$registerStockTakeItemAsyncAction.run(() => super
-        .registerStockTakeItem(
-            stNum: stNum,
-            locCode: locCode,
-            itemRfid: itemRfid,
-            throwError: throwError));
-  }
-
-  final _$startStockTakeAsyncAction =
-      AsyncAction('_StockTakeScanStore.startStockTake');
-
-  @override
-  Future<void> startStockTake({String stNum = "", bool throwError = false}) {
-    return _$startStockTakeAsyncAction
-        .run(() => super.startStockTake(stNum: stNum, throwError: throwError));
-  }
-
-  final _$stocktakeRecountByLocAsyncAction =
-      AsyncAction('_StockTakeScanStore.stocktakeRecountByLoc');
-
-  @override
-  Future<void> stocktakeRecountByLoc(
-      {String stNum = "", String locCode = "", bool throwError = false}) {
-    return _$stocktakeRecountByLocAsyncAction.run(() => super
-        .stocktakeRecountByLoc(
-            stNum: stNum, locCode: locCode, throwError: throwError));
-  }
-
-  final _$_StockTakeScanStoreActionController =
-      ActionController(name: '_StockTakeScanStore');
+  final _$_ARScanExpandStoreActionController =
+      ActionController(name: '_ARScanExpandStore');
 
   @override
   void reset() {
-    final _$actionInfo = _$_StockTakeScanStoreActionController.startAction(
-        name: '_StockTakeScanStore.reset');
+    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
+        name: '_ARScanExpandStore.reset');
     try {
       return super.reset();
     } finally {
-      _$_StockTakeScanStoreActionController.endAction(_$actionInfo);
+      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void resetContainer() {
-    final _$actionInfo = _$_StockTakeScanStoreActionController.startAction(
-        name: '_StockTakeScanStore.resetContainer');
+    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
+        name: '_ARScanExpandStore.resetContainer');
     try {
       return super.resetContainer();
     } finally {
-      _$_StockTakeScanStoreActionController.endAction(_$actionInfo);
+      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    final _$actionInfo = _$_StockTakeScanStoreActionController.startAction(
-        name: '_StockTakeScanStore.updateDataSet');
+    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
+        name: '_ARScanExpandStore.updateDataSet');
     try {
       return super.updateDataSet(itemList: itemList, equList: equList);
     } finally {
-      _$_StockTakeScanStoreActionController.endAction(_$actionInfo);
+      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   String toString() {
     return '''
+totalCheckedSKU: ${totalCheckedSKU},
+totalSKU: ${totalSKU},
+totalCheckedQty: ${totalCheckedQty},
+totalQty: ${totalQty},
+totalContainer: ${totalContainer},
+activeContainer: ${activeContainer},
 itemRfidDataSet: ${itemRfidDataSet},
 equipmentRfidDataSet: ${equipmentRfidDataSet},
 equipmentData: ${equipmentData},
 isFetchingEquData: ${isFetchingEquData},
 checkedItem: ${checkedItem},
 chosenEquipmentData: ${chosenEquipmentData},
-isFetching: ${isFetching},
-memoryMap: ${memoryMap}
+isFetching: ${isFetching}
     ''';
   }
 }

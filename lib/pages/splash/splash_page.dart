@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/sharedpref/constants/preferences.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
+import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_page_arguments.dart';
 import 'package:echo_me_mobile/stores/app_version_control/app_version_control_store.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/utils/permission_helper/permission_helper.dart';
@@ -90,15 +91,29 @@ class _SplashPageState extends State<SplashPage> {
             onPressed: () {
               print("1");
                     var fx = () => Navigator.pushNamed(
-                        context, "/asset_scan",
+                        context, "/asset_scan_extend",
                         arguments: AssetScanPageArguments(
-                            "100001",
+                            "Mixson_AR3",
                             item: RegistrationItem()));
                     fx();
 
               }
                 ,
             child: const Text(''),
+          ),
+          TextButton(
+            onPressed: () {
+              print("1");
+              var fx = () => Navigator.pushNamed(
+                  context, "/stock_take_scan",
+                  arguments: StockTakeScanPageArguments(
+                      "Mixson_AR3",
+                      ));
+              fx();
+
+            }
+            ,
+            child: const Text('stockTake'),
           ),
         ],
       )),

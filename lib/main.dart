@@ -16,6 +16,8 @@ import 'package:mobx/mobx.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:echo_me_mobile/constants/supported_locale.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,6 +81,8 @@ class MyApp extends HookWidget {
             locale: context.locale,
             routes: AppRoutes.getMap(),
             initialRoute: "/splash",
+            navigatorObservers: [FlutterSmartDialog.observer],
+            builder: FlutterSmartDialog.init(),
             // initialRoute: "/login",
             ),
         builder: (_) {

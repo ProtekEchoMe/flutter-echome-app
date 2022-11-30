@@ -115,6 +115,12 @@ class Repository {
         page: page, limit: limit, regNum: regNum);
   }
 
+  Future<AssetRegistrationOrderDetailResponse> getAssetRegistrationOrderDetail(
+      {String regNum = "", site = 2}) async {
+    return await _assetRegistrationApi.getOrderDetail(
+        regNum: regNum, site: site);
+  }
+
   Future<dynamic> fetchArLineData(AssetScanPageArguments? args) async {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
