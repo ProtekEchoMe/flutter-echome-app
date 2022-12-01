@@ -116,7 +116,14 @@ class Endpoints {
   static const String listStocktakeLocHeaderMethod = "/stocktake/listStocktakeLocHeader";
 
   //expandList Page APi
-  static const String getORderDetailARMethod = "/reg/getOrderDetail";
+  static const String getOrderDetailARMethod = "/reg/getOrderDetail";
+  static const String getOrderDetailTIMethod = "/ti/getOrderDetail";
+  static const String getOrderDetailTOMethod = "/to/getOrderDetail";
+
+  // translate rfid to skuCode
+  static const String getRfidTagItemMethod = "/rfid/getRfidTagItem";
+
+
 
   //Stock Take
   static String listStockTakeHeader = "$activeUrl$listStockTakeHeaderMethod";
@@ -175,7 +182,13 @@ class Endpoints {
   static String createDirectTi = "$activeUrl$createDirectTiMethod";
 
   //expandList Page APi
-  static String getORderDetailAR = "$activeUrl$getORderDetailARMethod";
+  static String getORderDetailAR = "$activeUrl$getOrderDetailARMethod";
+  static String getORderDetailTI = "$activeUrl$getOrderDetailTIMethod";
+  static String getORderDetailTO = "$activeUrl$getOrderDetailTOMethod";
+
+  //translate rfid to skuCode
+  static String getRfidTagItem = "$activeUrl$getRfidTagItemMethod";
+
 
 
 

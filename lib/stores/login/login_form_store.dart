@@ -34,6 +34,9 @@ abstract class _LoginFormStore with Store {
   String? siteCode;
 
   @observable
+  int? siteId;
+
+  @observable
   String? accessToken;
 
   @observable
@@ -170,6 +173,16 @@ abstract class _LoginFormStore with Store {
       }
     } finally {
         isChangingSite = false;
+    }
+  }
+
+  @action
+  Future<void> changeSiteId({int? siteId=0})async{
+    try {
+      print("change site id success");
+      this.siteId = siteId;
+    } catch (e) {
+      print(e);
     }
   }
 

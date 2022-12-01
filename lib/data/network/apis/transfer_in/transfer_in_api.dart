@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_order_detail.dart';
 
 class TransferInApi {
   final DioClient _dioClient;
@@ -246,6 +247,28 @@ class TransferInApi {
       rethrow;
     }
   }
+
+  Future<dynamic> getOrderDetail({String tiNum = "", site = 2}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.getORderDetailTI, queryParameters: {"tiNum": tiNum, "site": site});
+      var result = TransferInOrderDetailResponse(res, res.length);
+      return result;
+    } catch (e) {
+      if (e is DioError) {
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
 }
 
 class TransferInHeaderResponse {
@@ -256,6 +279,23 @@ class TransferInHeaderResponse {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => TransferInHeaderItem.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class TransferInOrderDetailResponse {
+  List<TransferInOrderDetail> itemList = [];
+  int rowNumber = 0;
+
+  TransferInOrderDetailResponse(dynamic data, int? rowNum) {
+    try {
+      itemList = (data as List<dynamic>)
+          .map((e) => TransferInOrderDetail.fromJson(e))
           .toList();
     } catch (e) {
       print(e);

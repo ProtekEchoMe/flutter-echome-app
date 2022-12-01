@@ -11,8 +11,10 @@ import 'package:echo_me_mobile/pages/sensor_settings/sensor_settings.dart';
 import 'package:echo_me_mobile/pages/splash/splash_page.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_page.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page.dart';
+import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_expand_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_page.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_expand_page.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_page.dart';
 // import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNew.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_page_locNewFetch.dart';
@@ -37,8 +39,10 @@ class AppRoutes {
       "/asset_return_scan": (_) => AssetReturnScanPage(),
       "/transfer_out":(_) => TransferOutPage(),
       "/transfer_out_scan": (_) => TransferOutScanPage(),
+      "/transfer_out_scan_extend": (_) => TOScanExpandPage(),
       "/transfer_in":(_)=> TransferInPage(),
       "/transfer_in_scan":(_)=> TransferInScanPage(),
+      "/transfer_in_scan_extend":(_)=> TIScanExpandPage(),
       "/stock_take": (_) =>StockTakePage(),
       "/stock_take_loc": (_) =>StockTakeLocNewPage(),
       // "/stock_take_loc_fetch": (_) =>StockTakeLocNew(),

@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
   final SiteCodeItemStore siteCodeStore = getIt<SiteCodeItemStore>();
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
+  final SiteCodeItemStore siteCodeItemStore = getIt<SiteCodeItemStore>();
 
   @override
   void initState() {
@@ -46,6 +47,13 @@ class _HomePageState extends State<HomePage> {
     void onClickFunction(e) async {
         if (e != loginFormStore.siteCode) {
           await loginFormStore.changeSite(siteCode: e!);
+          int? siteId = 0;
+          siteCodeItemStore.siteCodeDataList.forEach((locSiteItem) {
+            if(locSiteItem.siteCode == e!){
+              siteId = locSiteItem.id;
+            }
+          });
+          loginFormStore.changeSiteId(siteId: siteId);
         }
   }
     siteCodeStore.fetchData(limit: 0).then(

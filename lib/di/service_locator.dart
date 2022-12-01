@@ -28,8 +28,10 @@ import 'package:echo_me_mobile/stores/login/forget_password_store.dart';
 import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/stores/site_code/site_code_item_store.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
+import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_expand_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_scan_store.dart';
 import 'package:echo_me_mobile/stores/transfer_in/transfer_in_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_expand_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_store.dart';
 import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_store.dart';
 import 'package:echo_me_mobile/stores/stock_take/stock_take_scan_store.dart';
@@ -106,6 +108,9 @@ Future<void> setupLocator() async {
   getIt.registerFactory<TransferOutScanStore>(
           () => TransferOutScanStore(getIt<Repository>()));
 
+  getIt.registerFactory<TOScanExpandStore>(
+          () => TOScanExpandStore(getIt<Repository>()));
+
   getIt.registerFactory<ForgetPasswordStore>(
       () => ForgetPasswordStore(getIt<Repository>()));
 
@@ -123,6 +128,9 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<TIScanExpandStore>(
+          () => TIScanExpandStore(getIt<Repository>()));
 
   getIt.registerFactory<StockTakeScanStore>(
           () => StockTakeScanStore(getIt<Repository>()));

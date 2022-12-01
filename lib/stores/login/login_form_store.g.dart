@@ -61,6 +61,21 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     });
   }
 
+  final _$siteIdAtom = Atom(name: '_LoginFormStore.siteId');
+
+  @override
+  int? get siteId {
+    _$siteIdAtom.reportRead();
+    return super.siteId;
+  }
+
+  @override
+  set siteId(int? value) {
+    _$siteIdAtom.reportWrite(value, super.siteId, () {
+      super.siteId = value;
+    });
+  }
+
   final _$accessTokenAtom = Atom(name: '_LoginFormStore.accessToken');
 
   @override
@@ -240,6 +255,7 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     return '''
 isChangingSite: ${isChangingSite},
 siteCode: ${siteCode},
+siteId: ${siteId},
 accessToken: ${accessToken},
 refreshToken: ${refreshToken},
 idToken: ${idToken},

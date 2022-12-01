@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'asset_registration_scan_expand_store.dart';
+part of 'transfer_in_scan_expand_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,9 @@ part of 'asset_registration_scan_expand_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
+mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   final _$totalCheckedSKUAtom =
-      Atom(name: '_ARScanExpandStore.totalCheckedSKU');
+      Atom(name: '_TIScanExpandStore.totalCheckedSKU');
 
   @override
   int get totalCheckedSKU {
@@ -25,7 +25,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$totalSKUAtom = Atom(name: '_ARScanExpandStore.totalSKU');
+  final _$totalSKUAtom = Atom(name: '_TIScanExpandStore.totalSKU');
 
   @override
   int get totalSKU {
@@ -41,7 +41,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$totalCheckedQtyAtom =
-      Atom(name: '_ARScanExpandStore.totalCheckedQty');
+      Atom(name: '_TIScanExpandStore.totalCheckedQty');
 
   @override
   int get totalCheckedQty {
@@ -56,7 +56,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$addedQtyAtom = Atom(name: '_ARScanExpandStore.addedQty');
+  final _$addedQtyAtom = Atom(name: '_TIScanExpandStore.addedQty');
 
   @override
   int get addedQty {
@@ -71,7 +71,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$outOfListQtyAtom = Atom(name: '_ARScanExpandStore.outOfListQty');
+  final _$outOfListQtyAtom = Atom(name: '_TIScanExpandStore.outOfListQty');
 
   @override
   int get outOfListQty {
@@ -86,7 +86,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$totalQtyAtom = Atom(name: '_ARScanExpandStore.totalQty');
+  final _$totalQtyAtom = Atom(name: '_TIScanExpandStore.totalQty');
 
   @override
   int get totalQty {
@@ -101,7 +101,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$totalContainerAtom = Atom(name: '_ARScanExpandStore.totalContainer');
+  final _$totalContainerAtom = Atom(name: '_TIScanExpandStore.totalContainer');
 
   @override
   int get totalContainer {
@@ -117,7 +117,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$activeContainerAtom =
-      Atom(name: '_ARScanExpandStore.activeContainer');
+      Atom(name: '_TIScanExpandStore.activeContainer');
 
   @override
   String get activeContainer {
@@ -133,7 +133,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$itemRfidDataSetAtom =
-      Atom(name: '_ARScanExpandStore.itemRfidDataSet');
+      Atom(name: '_TIScanExpandStore.itemRfidDataSet');
 
   @override
   ObservableSet<String> get itemRfidDataSet {
@@ -149,7 +149,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$equipmentRfidDataSetAtom =
-      Atom(name: '_ARScanExpandStore.equipmentRfidDataSet');
+      Atom(name: '_TIScanExpandStore.equipmentRfidDataSet');
 
   @override
   ObservableSet<String> get equipmentRfidDataSet {
@@ -165,7 +165,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$equipmentDataAtom = Atom(name: '_ARScanExpandStore.equipmentData');
+  final _$equipmentDataAtom = Atom(name: '_TIScanExpandStore.equipmentData');
 
   @override
   ObservableList<EquipmentData> get equipmentData {
@@ -181,7 +181,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$isFetchingEquDataAtom =
-      Atom(name: '_ARScanExpandStore.isFetchingEquData');
+      Atom(name: '_TIScanExpandStore.isFetchingEquData');
 
   @override
   bool get isFetchingEquData {
@@ -196,7 +196,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$checkedItemAtom = Atom(name: '_ARScanExpandStore.checkedItem');
+  final _$checkedItemAtom = Atom(name: '_TIScanExpandStore.checkedItem');
 
   @override
   ObservableSet<String> get checkedItem {
@@ -212,7 +212,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$chosenEquipmentDataAtom =
-      Atom(name: '_ARScanExpandStore.chosenEquipmentData');
+      Atom(name: '_TIScanExpandStore.chosenEquipmentData');
 
   @override
   ObservableList<EquipmentData> get chosenEquipmentData {
@@ -227,7 +227,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$isFetchingAtom = Atom(name: '_ARScanExpandStore.isFetching');
+  final _$isFetchingAtom = Atom(name: '_TIScanExpandStore.isFetching');
 
   @override
   bool get isFetching {
@@ -243,7 +243,7 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   }
 
   final _$validateEquipmentRfidAsyncAction =
-      AsyncAction('_ARScanExpandStore.validateEquipmentRfid');
+      AsyncAction('_TIScanExpandStore.validateEquipmentRfid');
 
   @override
   Future<void> validateEquipmentRfid() {
@@ -251,75 +251,75 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeAsyncAction = AsyncAction('_ARScanExpandStore.complete');
+  final _$completeAsyncAction = AsyncAction('_TIScanExpandStore.complete');
 
   @override
-  Future<void> complete({String regNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(regNum: regNum));
+  Future<void> complete({String tiNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(tiNum: tiNum));
   }
 
   final _$registerContainerAsyncAction =
-      AsyncAction('_ARScanExpandStore.registerContainer');
+      AsyncAction('_TIScanExpandStore.registerContainer');
 
   @override
   Future<void> registerContainer(
       {List<String> rfid = const [],
-      String regNum = "",
+      String tiNum = "",
       bool throwError = false}) {
     return _$registerContainerAsyncAction.run(() => super
-        .registerContainer(rfid: rfid, regNum: regNum, throwError: throwError));
+        .registerContainer(rfid: rfid, tiNum: tiNum, throwError: throwError));
   }
 
   final _$registerItemAsyncAction =
-      AsyncAction('_ARScanExpandStore.registerItem');
+      AsyncAction('_TIScanExpandStore.registerItem');
 
   @override
   Future<void> registerItem(
-      {String regNum = "",
+      {String tiNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) {
     return _$registerItemAsyncAction.run(() => super.registerItem(
-        regNum: regNum,
+        tiNum: tiNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
         throwError: throwError));
   }
 
-  final _$_ARScanExpandStoreActionController =
-      ActionController(name: '_ARScanExpandStore');
+  final _$_TIScanExpandStoreActionController =
+      ActionController(name: '_TIScanExpandStore');
 
   @override
   void reset() {
-    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
-        name: '_ARScanExpandStore.reset');
+    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
+        name: '_TIScanExpandStore.reset');
     try {
       return super.reset();
     } finally {
-      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void resetContainer() {
-    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
-        name: '_ARScanExpandStore.resetContainer');
+    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
+        name: '_TIScanExpandStore.resetContainer');
     try {
       return super.resetContainer();
     } finally {
-      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
-        name: '_ARScanExpandStore.updateDataSet');
+    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
+        name: '_TIScanExpandStore.updateDataSet');
     try {
       return super.updateDataSet(itemList: itemList, equList: equList);
     } finally {
-      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 

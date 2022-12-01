@@ -198,7 +198,7 @@ class ListDocumentLineItem {
   String? maker;
   int? createdDate;
   int? modifiedDate;
-  String? expiryDate;
+  int? expiryDate;
 
   ListDocumentLineItem(
       {this.id,//

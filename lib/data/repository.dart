@@ -121,6 +121,24 @@ class Repository {
         regNum: regNum, site: site);
   }
 
+  Future<TransferInOrderDetailResponse> getTransferInOrderDetail(
+      {String tiNum = "", site = 2}) async {
+    return await _transferInApi.getOrderDetail(
+        tiNum: tiNum, site: site);
+  }
+
+  Future<TransferOutOrderDetailResponse> getTransferOutOrderDetail(
+      {String toNum = "", site = 2}) async {
+    return await _transferOutApi.getOrderDetail(
+        toNum: toNum, site: site);
+  }
+
+  Future<RfidTagItemResponse> getRfidTagItem(
+      {List<String> itemRfid = const [],}) async {
+    return await _transferOutApi.getRfidTagItem(
+        itemRfid: itemRfid);
+  }
+
   Future<dynamic> fetchArLineData(AssetScanPageArguments? args) async {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(

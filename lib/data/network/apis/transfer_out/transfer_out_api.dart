@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
+import 'package:echo_me_mobile/models/transfer_out/rfid_tag_item.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
+import 'package:echo_me_mobile/models/transfer_out/transfer_out_order_detail.dart';
 
 class TransferOutApi {
   final DioClient _dioClient;
@@ -242,7 +244,73 @@ class TransferOutApi {
       rethrow;
     }
   }
+
+  Future<dynamic> getOrderDetail({String toNum = "", site = 2}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.getORderDetailTO, queryParameters: {"toNum": toNum, "site": site});
+      var result = TransferOutOrderDetailResponse(res, res.length);
+      return result;
+    } catch (e) {
+      if (e is DioError) {
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getRfidTagItem(
+      {
+        List<String> itemRfid = const [],
+        }) async {
+    try {
+      var str = "";
+      for (var element in itemRfid) {
+        str = str + element + ",";
+      }
+
+      str = str.substring(0, str.length - 1);
+      Map<String, dynamic> query = {
+        "rfids": str
+      };
+
+      final res = await _dioClient.get(Endpoints.getRfidTagItem,
+          queryParameters: query);
+
+      var result = RfidTagItemResponse(res, res.length);
+      return result;
+
+    }
+    // final res1 = await _dioClient.getRegistration(Endpoints.registerToItems,
+    //     queryParameters: query);
+    // print(res1); // debug
+    catch (e) {
+      if (e is DioError) {
+        if (e.response?.statusCode == 500) {
+          throw Exception("Internal Server Error");
+        }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
 }
+
+
 
 class TransferOutHeaderResponse {
   List<TransferOutHeaderItem> itemList = [];
@@ -252,6 +320,40 @@ class TransferOutHeaderResponse {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => TransferOutHeaderItem.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class TransferOutOrderDetailResponse {
+  List<TransferOutOrderDetail> itemList = [];
+  int rowNumber = 0;
+
+  TransferOutOrderDetailResponse(dynamic data, int? rowNum) {
+    try {
+      itemList = (data as List<dynamic>)
+          .map((e) => TransferOutOrderDetail.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class RfidTagItemResponse {
+  List<RfidTagItem> itemList = [];
+  int rowNumber = 0;
+
+  RfidTagItemResponse(dynamic data, int? rowNum) {
+    try {
+      itemList = (data as List<dynamic>)
+          .map((e) => RfidTagItem.fromJson(e))
           .toList();
     } catch (e) {
       print(e);

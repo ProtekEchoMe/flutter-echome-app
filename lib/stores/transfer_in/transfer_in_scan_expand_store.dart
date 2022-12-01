@@ -4,14 +4,16 @@ import 'dart:ffi';
 import 'package:dismissible_expanded_list/model/entry.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/network/apis/transfer_in/transfer_in_api.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
+import 'package:echo_me_mobile/models/transfer_in/transfer_in_order_detail.dart';
+import 'package:echo_me_mobile/models/transfer_out/rfid_tag_item.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 
 // import 'package:expandablelist_test/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:echo_me_mobile/models/asset_registration/registration_order_detail.dart';
 import 'package:echo_me_mobile/utils/extension/sortExtension.dart';
 
 import 'package:echo_me_mobile/data/repository.dart';
@@ -19,20 +21,20 @@ import 'package:echo_me_mobile/data/repository.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
-part 'asset_registration_scan_expand_store.g.dart';
+part 'transfer_in_scan_expand_store.g.dart';
 
-class ARScanExpandStore = _ARScanExpandStore with _$ARScanExpandStore;
+class TIScanExpandStore = _TIScanExpandStore with _$TIScanExpandStore;
 
-abstract class _ARScanExpandStore with Store {
+abstract class _TIScanExpandStore with Store {
   final String TAG = "_ARScanExpandStore";
 
   final ErrorStore errorStore = ErrorStore();
 
-  _ARScanExpandStore(this.repository);
+  _TIScanExpandStore(this.repository);
 
   final Repository repository;
 
-  String? regNum;
+  String? tiNum;
 
   List? orderLineMapList;
 
@@ -48,7 +50,7 @@ abstract class _ARScanExpandStore with Store {
   Map containerRfidStatus = {};
 
   // Main Data Source
-  List<RegistrationOrderDetail>? orderLineDTOList = [];
+  List<TransferInOrderDetail>? orderLineDTOList = [];
   Map orderLineDTOMap = {};
 
   List<String> scannedRFIDList = [];
@@ -99,7 +101,7 @@ abstract class _ARScanExpandStore with Store {
   bool isFetching = false;
 
   // void reset(){
-  //   regNum = "";
+  //   tiNum = "";
   //   rfidCodeMapper = {};
   //   codeRfidMapper = {};
   //   itemRfidStatus = {};
@@ -143,7 +145,7 @@ abstract class _ARScanExpandStore with Store {
     //   "orderLineItems": []
     // };
 
-    RegistrationOrderDetail orderLineDTO = RegistrationOrderDetail(
+    TransferInOrderDetail orderLineDTO = TransferInOrderDetail(
       orderNum: orderNum,
       containerCode: containerCode,
       rfid: containerRfid,
@@ -165,7 +167,7 @@ abstract class _ARScanExpandStore with Store {
       containerItemCodeCheckedRfidMapper[containerRfid] = {};
     }
     Map itemCodeCheckedRfidMapper =
-        containerItemCodeCheckedRfidMapper[containerRfid];
+    containerItemCodeCheckedRfidMapper[containerRfid];
     if (!itemCodeCheckedRfidMapper.containsKey(itemCode)) {
       itemCodeCheckedRfidMapper[itemCode] = [];
       this.itemCodeCheckedRfidMapper[itemCode] = [];
@@ -190,7 +192,7 @@ abstract class _ARScanExpandStore with Store {
 
       String itemCode = rfidCodeMapper[rfid];
       OrderLineItems orderLineItems =
-          orderLineDTOMap[unScannedStrMapper].orderLineItemsMap[itemCode];
+      orderLineDTOMap[unScannedStrMapper].orderLineItemsMap[itemCode];
 
       addRfidIntocontainerItemCodeCheckedRfidMapper(
           containerRfid, itemCode, rfid);
@@ -214,9 +216,9 @@ abstract class _ARScanExpandStore with Store {
         // orderLineDTOMap[containerRfid].orderLineItems.add(orderLineItems);
 
         OrderLineItems targetContainerOrderLineItems =
-            orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
+        orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
         targetContainerOrderLineItems.checkedinQty =
-            (targetContainerOrderLineItems.checkedinQty! + 1);
+        (targetContainerOrderLineItems.checkedinQty! + 1);
         targetContainerOrderLineItems.rfid?.add(rfid);
       }
 
@@ -269,7 +271,7 @@ abstract class _ARScanExpandStore with Store {
         targetProductMap.checkedinQty = targetProductMap.checkedinQty! + 1;
       } else {
         if (!orderLineDTOMap.containsKey("Out of List")) {
-          createContainer(regNum!, "Out of List", "Out of List");
+          createContainer(tiNum!, "Out of List", "Out of List");
         }
         addItemIntoContainer("Out of List", rfid);
       }
@@ -283,7 +285,7 @@ abstract class _ARScanExpandStore with Store {
 
     orderLineDTOList?.forEach((boxOrderLine) {
       List<OrderLineItems>? orderLineItems =
-          boxOrderLine.orderLineItems?.cast<OrderLineItems>();
+      boxOrderLine.orderLineItems?.cast<OrderLineItems>();
       String? containerRFID = boxOrderLine.rfid;
       String? containerCode = boxOrderLine.containerCode;
       if (!rfidCodeMapper.containsKey(containerRFID)) {
@@ -310,7 +312,7 @@ abstract class _ARScanExpandStore with Store {
 
   dynamic turnOrderLineDtoMapIntoWidget() async {
     List<ExpandableListItem> outputExpandableListWidget =
-        <ExpandableListItem>[];
+    <ExpandableListItem>[];
     // List orderLineMapList = await getOrderLineMap();
     // orderLineMapList.sort((m2, m1) {
     //   var r = m1["modifiedDate"].compareTo(m2["modifiedDate"]);
@@ -323,10 +325,10 @@ abstract class _ARScanExpandStore with Store {
     orderLineDTOList?.forEach((orderLineContainerMap) {
       String? containerRFID = orderLineContainerMap.rfid;
       String? containerCode = orderLineContainerMap.containerCode;
-      RegistrationOrderDetail orderLineDTO = orderLineDTOMap[containerRFID];
+      TransferInOrderDetail orderLineDTO = orderLineDTOMap[containerRFID];
       int? modifiedDateTimeStamp = orderLineDTO.modifiedDate;
       String datetimeStr =
-          DateTime.fromMillisecondsSinceEpoch(modifiedDateTimeStamp!).toString();
+      DateTime.fromMillisecondsSinceEpoch(modifiedDateTimeStamp!).toString();
       // String datetimeStr = DateTime.fromMillisecondsSinceEpoch(createdTimeStamp).toString();
       datetimeStr = datetimeStr.substring(0, datetimeStr.length -4);
       String? containerStatus = orderLineDTO.status;
@@ -353,7 +355,7 @@ abstract class _ARScanExpandStore with Store {
         String badgeText = "$checkedinQty";
         if (containerRFID != "Out of List") {
           Map itemCodeCheckedRfidMapper =
-              containerItemCodeCheckedRfidMapper[containerRFID];
+          containerItemCodeCheckedRfidMapper[containerRFID];
           if (itemCodeCheckedRfidMapper[itemCode].length > 0) {
             badgeText += "(+" +
                 "${containerItemCodeCheckedRfidMapper[containerRFID][itemCode].length}" +
@@ -380,7 +382,7 @@ abstract class _ARScanExpandStore with Store {
             badgeTextColor:
             itemCodeRfidMapper.containsKey(itemCode) ?
             ((checkedinQty! >= itemCodeRfidMapper[itemCode].length)
-                    ? Color(0xFFFFFFFF) : Color(0xFF000000)) :
+                ? Color(0xFFFFFFFF) : Color(0xFF000000)) :
             Color(0xFFFFFFFF),
             children: <ExpandableListItem>[]);
         containerExpandableList.addChild(orderLineExpandableListItem);
@@ -484,7 +486,7 @@ abstract class _ARScanExpandStore with Store {
     turnOrderLineIntoMapper();
     updateRFIDStatusMap();
     orderLineDTOList = orderLineMapList
-        ?.map((e) => RegistrationOrderDetail.fromJson(e))
+        ?.map((e) => TransferInOrderDetail.fromJson(e))
         .toList();
     // orderLineDTOMap = {};
     orderLineDTOList?.forEach((orderLineInfo) {
@@ -500,14 +502,14 @@ abstract class _ARScanExpandStore with Store {
     // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
   }
 
-  Future<void> fetchOrderDetail(String regNum) async {
+  Future<void> fetchOrderDetail(String tiNum, int site) async {
     // String jsonStr = await __readFile('assets/orderLine.json');
-    // regNum = "GDC0980203";
+    // tiNum = "GDC0980203";
     reset();
-    this.regNum = regNum;
-    // AssetRegistrationOrderDetailResponse result = await repository.getAssetRegistrationOrderDetail(regNum: "GDC0980203", site: 2);
-    AssetRegistrationOrderDetailResponse result = await repository
-        .getAssetRegistrationOrderDetail(regNum: regNum, site: 2);
+    this.tiNum = tiNum;
+    // AssetTransferInOrderDetailResponse result = await repository.getAssetTransferInOrderDetail(tiNum: "GDC0980203", site: 2);
+    TransferInOrderDetailResponse result = await repository
+        .getTransferInOrderDetail(tiNum: tiNum, site: site);
     // String jsonStr = await __readFile('assets/mockorderLine2.json');
     orderLineDTOList = result.itemList;
     int containerNum = result.rowNumber;
@@ -524,7 +526,7 @@ abstract class _ARScanExpandStore with Store {
 
     // orderLineMapList = json.decode(jsonStr);
     // orderLineDTOList =
-    // orderLineMapList?.map((e) => RegistrationOrderDetail.fromJson(e)).toList();
+    // orderLineMapList?.map((e) => TransferInOrderDetail.fromJson(e)).toList();
 
     print("");
     // turnOrderLineIntoMapper();
@@ -547,7 +549,7 @@ abstract class _ARScanExpandStore with Store {
     checkedItem.clear();
     chosenEquipmentData.clear();
     EasyDebounce.cancel('validateContainerRfid');
-    regNum = "";
+    tiNum = "";
     rfidCodeMapper = {};
     itemRfidStatus = {};
     itemCodeRfidMapper = {};
@@ -587,7 +589,7 @@ abstract class _ARScanExpandStore with Store {
         });
 
         var result =
-            await repository.getEquipmentDetail(rfid: fetchContainerRfidList);
+        await repository.getEquipmentDetail(rfid: fetchContainerRfidList);
         var resList = result["itemList"] as List;
         List<EquipmentData> equList = [];
         Set<String> addedContainerAssetCodeSet = Set();
@@ -710,10 +712,10 @@ abstract class _ARScanExpandStore with Store {
   }
 
   @action
-  Future<void> complete({String regNum = ""}) async {
+  Future<void> complete({String tiNum = ""}) async {
     try {
       isFetching = true;
-      await repository.completeAssetRegistration(regNum: regNum);
+      await repository.completeTiRegistration(tiNum: tiNum);
     } catch (e) {
       errorStore.setErrorMessage(e.toString());
     } finally {
@@ -724,11 +726,11 @@ abstract class _ARScanExpandStore with Store {
   @action
   Future<void> registerContainer(
       {List<String> rfid = const [],
-      String regNum = "",
-      bool throwError = false}) async {
+        String tiNum = "",
+        bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerContainer(rfid: rfid, regNum: regNum);
+      await repository.registerTiContainer(rfid: rfid, tiNum: tiNum);
     } catch (e) {
       if (throwError == true) {
         rethrow;
@@ -743,14 +745,14 @@ abstract class _ARScanExpandStore with Store {
   //TODO:: [bugs]just using containerAssetCode got problem to verify --> multi containers
   @action
   Future<void> registerItem(
-      {String regNum = "",
-      String containerAssetCode = "",
-      List<String> itemRfid = const [],
-      bool throwError = false}) async {
+      {String tiNum = "",
+        String containerAssetCode = "",
+        List<String> itemRfid = const [],
+        bool throwError = false}) async {
     try {
       isFetching = true;
-      await repository.registerItem(
-          regNum: regNum,
+      await repository.registerTiItem(
+          tiNum: tiNum,
           containerAssetCode: containerAssetCode,
           itemRfid: itemRfid);
     } catch (e) {

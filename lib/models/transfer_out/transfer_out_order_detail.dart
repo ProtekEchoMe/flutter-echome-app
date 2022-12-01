@@ -1,4 +1,4 @@
-class RegistrationOrderDetail {
+class TransferOutOrderDetail {
   String? orderNum;
   String? containerCode;
   int? modifiedDate;
@@ -7,7 +7,7 @@ class RegistrationOrderDetail {
   List<OrderLineItems>? orderLineItems;
   Map orderLineItemsMap = {};
 
-  RegistrationOrderDetail(
+  TransferOutOrderDetail(
       {this.orderNum,
         this.containerCode,
         this.modifiedDate,
@@ -15,7 +15,7 @@ class RegistrationOrderDetail {
         this.rfid,
         this.orderLineItems});
 
-  RegistrationOrderDetail.fromJson(Map<String, dynamic> json) {
+  TransferOutOrderDetail.fromJson(Map<String, dynamic> json) {
     orderNum = json['orderNum'];
     containerCode = json['containerCode'];
     modifiedDate = json['modifiedDate'];

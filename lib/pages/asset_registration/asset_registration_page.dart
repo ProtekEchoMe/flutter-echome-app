@@ -141,7 +141,9 @@ class _AssetRegistrationPageState extends State<AssetRegistrationPage> {
                                       var status = listItem.status;
                                       // ignore: prefer_function_declarations_over_variables
                                       var fx = () => Navigator.pushNamed(
-                                          context, "/asset_scan",
+                                          // context, "/asset_scan",
+                                          context, "/asset_scan_extend",
+
                                           arguments: AssetScanPageArguments(
                                               listItem.orderId,
                                               item: listItem.item)).then((value) => {

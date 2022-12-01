@@ -66,7 +66,7 @@ class _TransferInPageState extends State<TransferInPage> {
                           tiSite: _siteCodeItemStore.siteCodeMap.containsKey(selectedDomainKey)?
                           _siteCodeItemStore.siteCodeMap[selectedDomainKey]!.id: 0).then((_) {
                         Navigator.pushNamed(
-                            context, "/transfer_in_scan",
+                            context, "/transfer_in_scan_extend",
                             arguments:
                             TransferInScanPageArguments(
                                 tiNum:
@@ -185,7 +185,7 @@ class _TransferInPageState extends State<TransferInPage> {
                                           "${listItem.shipType} : ${listItem.shipToLocation}";
                                       var status = listItem.status;
                                       var fx = () => Navigator.pushNamed(
-                                              context, "/transfer_in_scan",
+                                              context, "/transfer_in_scan_extend",
                                               arguments:
                                                   TransferInScanPageArguments(
                                                       tiNum:

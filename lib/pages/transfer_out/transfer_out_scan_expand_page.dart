@@ -6,7 +6,7 @@ import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_regist
 import 'package:echo_me_mobile/data/repository.dart';
 import 'package:echo_me_mobile/di/service_locator.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
-import 'package:echo_me_mobile/pages/asset_registration/assset_scan_detail_page.dart';
+import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
@@ -22,24 +22,24 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:zebra_rfd8500/zebra_rfd8500.dart';
-import 'asset_scan_page_arguments.dart';
+import 'transfer_out_scan_page_arguments.dart';
 
 import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
 
 import 'package:dismissible_expanded_list/dismissible_expanded_list.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_order_detail.dart';
-import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_expand_store.dart';
+import 'package:echo_me_mobile/stores/transfer_out/transfer_out_scan_expand_store.dart';
 import 'dart:io';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
-class AssetScanExpandPage extends StatefulWidget {
-  const AssetScanExpandPage({Key? key}) : super(key: key);
+class TOScanExpandPage extends StatefulWidget {
+  const TOScanExpandPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanExpandPage> createState() => _AssetScanExpandPageState();
+  State<TOScanExpandPage> createState() => _TOScanExpandPageState();
 }
 
-class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
+class _TOScanExpandPageState extends State<TOScanExpandPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
       getIt<AssetRegistrationScanStore>();
   List<dynamic> disposer = [];
@@ -50,13 +50,13 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
 
   bool isDialogShown = false;
 
-  String regNum = "";
+  String toNum = "";
   bool isFetchedData = false;
   String title = 'Not Yet Selected';
   String selectedId = '1';
   bool removeTileOnDismiss = true;
   bool dataControl = false;
-  final ARScanExpandStore _arScanExpandStore = getIt<ARScanExpandStore>();
+  final TOScanExpandStore _toScanExpandStore = getIt<TOScanExpandStore>();
 
   List<ExpandableListItem> list = [];
 
@@ -75,21 +75,21 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
   }
 
   String _getContainerCode() {
-    return _arScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_arScanExpandStore.chosenEquipmentData[0].containerCode ?? "")
+    return _toScanExpandStore.chosenEquipmentData.isNotEmpty
+        ? (_toScanExpandStore.chosenEquipmentData[0].containerCode ?? "")
         : "";
   }
 
   String _getcontainerAssetCode() {
-    return _arScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_arScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    return _toScanExpandStore.chosenEquipmentData.isNotEmpty
+        ? (_toScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
         : "";
   }
 
-  Future<bool> _changeEquipment(AssetScanPageArguments? args) async {
+  Future<bool> _changeEquipment(TransferOutScanPageArguments? args) async {
     print("change equ_expand");
     try {
-      if (args?.regNum == null) {
+      if (args?.toNum == null) {
         throw "Reg Number Not Found";
       }
 
@@ -97,18 +97,18 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         throw "Container Code not found";
       }
 
-      if (_arScanExpandStore.itemRfidDataSet.isEmpty) {
+      if (_toScanExpandStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_arScanExpandStore.chosenEquipmentData.isEmpty) {
+      if (_toScanExpandStore.chosenEquipmentData.isEmpty) {
         throw "No equipment detected";
       }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _arScanExpandStore.equipmentData) {
+      for (var element in _toScanExpandStore.equipmentData) {
         if (element.containerAssetCode == targetcontainerAssetCode) {
           if (element.rfid != null) {
             rfidList.add(element.rfid!);
@@ -117,8 +117,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       }
 
       try {
-        await _arScanExpandStore.registerContainer(
-            rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
+        await _toScanExpandStore.checkInTOContainer(
+            rfid: rfidList, toNum: args?.toNum ?? "", throwError: true);
       } catch (e) {
         if (!e.toString().contains("Error 2109")) {
           // _arScanExpandStore.errorStore.setErrorMessage(e.toString());
@@ -131,59 +131,60 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       // List<String> itemRfid = _arScanExpandStore.itemRfidDataSet
       //     .map((e) => AscToText.getString(e))
       //     .toList();
-      List<String> itemRfid = _arScanExpandStore.itemRfidDataSet.toList();
-      await _arScanExpandStore.registerItem(
-          regNum: args?.regNum ?? "",
+      List<String> itemRfid = _toScanExpandStore.itemRfidDataSet.toList();
+      await _toScanExpandStore.checkInTOItem(
+          toNum: args?.toNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
-      _arScanExpandStore.reset();
-      fetchOrderDetailData(args!.regNum); // refresh page
+      _toScanExpandStore.reset();
+      fetchOrderDetailData(args!.toNum); // refresh page
       return true;
     } catch (e) {
-      _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+      _toScanExpandStore.errorStore.setErrorMessage(e.toString());
       return false;
     }
   }
 
   void _rescan() {
-    _arScanExpandStore.reset();
+    _toScanExpandStore.reset();
   }
 
   void _rescanContainer() {
-    _arScanExpandStore.resetContainer();
+    _toScanExpandStore.resetContainer();
   }
 
-  Future<bool> _complete(AssetScanPageArguments? args) async {
+  Future<bool> _complete(TransferOutScanPageArguments? args) async {
     try {
-      _arScanExpandStore.complete(regNum: args?.regNum ?? "");
+      _toScanExpandStore.complete(toNum: args?.toNum ?? "");
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  Future<String> fetchData(AssetScanPageArguments? args) async {
-    var result = await repository.fetchArLineData(args);
-    var newTotalProduct = (result as List).length.toString();
-    int newTotalQuantity = 0;
-    int totalRegQuantity = 0;
-    (result as List).forEach((e) {
-      try {
-        newTotalQuantity += e["quantity"] as int;
-        totalRegQuantity += e["checkinQty"] as int;
-      } catch (e) {
-        print(e);
-      }
-      ;
-    });
-
-    return "assetRegistration".tr(gender: "bottom_bar_total") +
-        ": $totalRegQuantity / $newTotalQuantity";
+  Future<String> fetchData(TransferOutScanPageArguments? args) async {
+    // var result = await repository.fetchArLineData(args);
+    // var newTotalProduct = (result as List).length.toString();
+    // int newTotalQuantity = 0;
+    // int totalRegQuantity = 0;
+    // (result as List).forEach((e) {
+    //   try {
+    //     newTotalQuantity += e["quantity"] as int;
+    //     totalRegQuantity += e["checkinQty"] as int;
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    //   ;
+    // });
+    //
+    // return "assetRegistration".tr(gender: "bottom_bar_total") +
+    //     ": $totalRegQuantity / $newTotalQuantity";
+    return "";
   }
 
   Future<void> _onBottomBarItemTapped(
-      AssetScanPageArguments? args, int index) async {
+      TransferOutScanPageArguments? args, int index) async {
     try {
       if (index == 0) {
         // if (!accessControlStore.hasARChangeRight)
@@ -275,7 +276,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         ]);
       }
     } catch (e) {
-      _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+      _toScanExpandStore.errorStore.setErrorMessage(e.toString());
     }
   }
 
@@ -283,7 +284,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
   void initState() {
     super.initState();
     soundPoolUtil.initState();
-    // fetchOrderDetailData(regNum);
+    // fetchOrderDetailData(toNum);
     // FlutterSmartDialog.init();
     var eventSubscription = ZebraRfd8500.eventStream.listen((event) {
       print(event);
@@ -304,7 +305,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           }
           soundPoolUtil.playCheering();
         }
-        _arScanExpandStore.updateDataSet(equList: equ, itemList: item);
+        _toScanExpandStore.updateDataSet(equList: equ, itemList: item);
         print(equ.toString());
         print(item.toString());
         updateWidget();
@@ -314,21 +315,21 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       }
     });
     var disposerReaction =
-        reaction((_) => _arScanExpandStore.errorStore.errorMessage, (_) {
-      if (_arScanExpandStore.errorStore.errorMessage.isNotEmpty) {
+        reaction((_) => _toScanExpandStore.errorStore.errorMessage, (_) {
+      if (_toScanExpandStore.errorStore.errorMessage.isNotEmpty) {
         DialogHelper.showErrorDialogBox(context,
-            errorMsg: _arScanExpandStore.errorStore.errorMessage);
-        _showSnackBar(_arScanExpandStore.errorStore.errorMessage);
+            errorMsg: _toScanExpandStore.errorStore.errorMessage);
+        _showSnackBar(_toScanExpandStore.errorStore.errorMessage);
       }
     });
     var scanDisposeReaction =
-        reaction((_) => _arScanExpandStore.equipmentData, (_) {
+        reaction((_) => _toScanExpandStore.equipmentData, (_) {
       try {
         if (!accessControlStore.hasARScanRight)
           throw "assetRegistration".tr(gender: "scan_page_no_right_scan");
         Set<String?> containerAssetCodeSet = Set<String?>();
         // print("disposer1 called");
-        _arScanExpandStore.chosenEquipmentData.forEach(
+        _toScanExpandStore.chosenEquipmentData.forEach(
             (element) => containerAssetCodeSet.add(element.containerAssetCode));
         // if (containerAssetCodeSet.length > 1 && !isDialogShown) {
         //   isDialogShown = true;
@@ -357,7 +358,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         //   ]);
         // }
       } catch (e) {
-        _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+        _toScanExpandStore.errorStore.setErrorMessage(e.toString());
       }
     });
     disposer.add(() => eventSubscription.cancel());
@@ -375,11 +376,11 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AssetScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as AssetScanPageArguments?;
-    regNum = args!.regNum;
+    final TransferOutScanPageArguments? args =
+        ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
+    toNum = args!.toNum;
     if (!isFetchedData){
-      fetchOrderDetailData(regNum);
+      fetchOrderDetailData(toNum);
       isFetchedData = true;
     }
     var scaffold = Scaffold(
@@ -406,7 +407,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       // ),
       appBar: AppBar(
         title: Row(
-          children: [Text(args != null ? args.regNum : "EchoMe")],
+          children: [Text(args != null ? args.toNum : "EchoMe")],
         ),
         actions: [
           IconButton(
@@ -415,7 +416,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AssetScanDetailPage(
+                          builder: (_) => TransferOutDetailPage(
                                 arg: args,
                               )));
                 }
@@ -489,7 +490,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     return keyboardListenerScaffoldWidget;
   }
 
-  Widget _getDocumentInfo(AssetScanPageArguments? args) {
+  Widget _getDocumentInfo(TransferOutScanPageArguments? args) {
     // String dataString = widget.arg.item?.createdDate != String
     //     ? widget.arg.item!.createdDate!.toString()
     //     : "";
@@ -522,7 +523,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                                   "Active Container" +
                                       " : "),
                           TextSpan(
-                              text: "${(_arScanExpandStore.rfidCodeMapper[_arScanExpandStore.activeContainer!]) ?? _arScanExpandStore.activeContainer! ?? ""}",
+                              text: "${(_toScanExpandStore.rfidCodeMapper[_toScanExpandStore.activeContainer!]) ?? _toScanExpandStore.activeContainer! ?? ""}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.purple[700])),
@@ -544,23 +545,23 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                         text: "assetRegistration.detail_page_tracker".tr() +
                             " : "),
                     TextSpan(
-                        text: "${_arScanExpandStore.totalCheckedQty}",
+                        text: "${_toScanExpandStore.totalCheckedQty}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                     TextSpan(
-                        text: (_arScanExpandStore.itemRfidDataSet.length != 0)
-                            ? "(+${_arScanExpandStore.addedQty})"
+                        text: (_toScanExpandStore.itemRfidDataSet.length != 0)
+                            ? "(+${_toScanExpandStore.addedQty})"
                             : "",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                     TextSpan(
-                        text: "/${_arScanExpandStore.totalQty}",
+                        text: "/${_toScanExpandStore.totalQty}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                     TextSpan(text: "  |  " + "SKU Tracker: "),
                     TextSpan(
                         text:
-                            "${_arScanExpandStore.totalCheckedSKU}/${_arScanExpandStore.itemCodeRfidMapper.length}",
+                            "${_toScanExpandStore.totalCheckedSKU}/${_toScanExpandStore.itemCodeRfidMapper.length}",
                         //_arScanExpandStore.orderLineDTOMap["Not Yet Scan"].orderLineItemsMap.length
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -586,12 +587,12 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                   children: <TextSpan>[
                     TextSpan(text: "Container Qty".tr() + " : "),
                     TextSpan(
-                        text: "${_arScanExpandStore.totalContainer}",
+                        text: "${_toScanExpandStore.totalContainer}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.green)),
                     TextSpan(text: "  |  " + "Out of List Item(s): "),
                     TextSpan(
-                        text: "${_arScanExpandStore.outOfListQty}",
+                        text: "${_toScanExpandStore.outOfListQty}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.red)),
                   ],
@@ -668,7 +669,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _arScanExpandStore.isFetchingEquData
+                            _toScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
                                     color: Colors.blue,
                                     size: 15,
@@ -688,7 +689,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _arScanExpandStore.equipmentRfidDataSet.length
+                            _toScanExpandStore.equipmentRfidDataSet.length
                                 .toString(),
                           ),
                         ),
@@ -759,7 +760,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _arScanExpandStore.isFetchingEquData
+                            _toScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
                                     color: Colors.blue,
                                     size: 15,
@@ -779,7 +780,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             borderRadius: BorderRadius.circular(15)),
                         child: Center(
                           child: Text(
-                            _arScanExpandStore.equipmentRfidDataSet.length
+                            _toScanExpandStore.equipmentRfidDataSet.length
                                 .toString(),
                           ),
                         ),
@@ -826,11 +827,11 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     );
   }
 
-  Widget _getBody(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getBody(BuildContext ctx, TransferOutScanPageArguments? args) {
     return Expanded(
       child: Observer(builder: (context) {
         return ListView.builder(
-            itemCount: 3 + _arScanExpandStore.itemRfidDataSet.length,
+            itemCount: 3 + _toScanExpandStore.itemRfidDataSet.length,
             itemBuilder: (ctx, index) {
               if (index == 0) {
                 return _getEquipmentDisplay();
@@ -871,7 +872,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Center(
-                                    child: Text(_arScanExpandStore
+                                    child: Text(_toScanExpandStore
                                         .itemRfidDataSet.length
                                         .toString())),
                               )
@@ -882,7 +883,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                 );
               }
               if (index == 2) {
-                if (_arScanExpandStore.itemRfidDataSet.isEmpty) {
+                if (_toScanExpandStore.itemRfidDataSet.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimens.horizontal_padding),
@@ -919,9 +920,9 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                 }
               }
               var rfid =
-                  _arScanExpandStore.itemRfidDataSet.elementAt(index - 3);
+                  _toScanExpandStore.itemRfidDataSet.elementAt(index - 3);
               var isLast =
-                  index - 3 == _arScanExpandStore.itemRfidDataSet.length - 1
+                  index - 3 == _toScanExpandStore.itemRfidDataSet.length - 1
                       ? true
                       : false;
               return _getAssetListItem(rfid, isLast);
@@ -965,7 +966,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             child: IconButton(
                 onPressed: () {
                   setState(() {
-                    _arScanExpandStore.itemRfidDataSet.remove(rfid);
+                    _toScanExpandStore.itemRfidDataSet.remove(rfid);
                   });
                 },
                 icon: const Icon(Icons.close)),
@@ -980,15 +981,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         child: _assetListContainer(isLast, child));
   }
 
-  Widget _getTitle(BuildContext ctx, AssetScanPageArguments? args) {
+  Widget _getTitle(BuildContext ctx, TransferOutScanPageArguments? args) {
     return BodyTitle(
-      title: (args?.regNum ?? "No RegNum") + " [Reg]",
+      title: (args?.toNum ?? "No toNum") + " [Reg]",
       clipTitle: "Hong Kong-DC",
     );
   }
 
   void _addMockAssetId() {
-    _arScanExpandStore.updateDataSet(
+    _toScanExpandStore.updateDataSet(
         itemList: [AscToText.getAscIIString(Random().nextInt(50).toString())]);
   }
 
@@ -1007,21 +1008,21 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     } else {
       list.add(AscToText.getAscIIString(new Random().nextInt(50).toString()));
     }
-    _arScanExpandStore.updateDataSet(equList: list);
+    _toScanExpandStore.updateDataSet(equList: list);
   }
 
   void _addMockEquipmentIdCaseOne() {
     List<String> list = [];
     list.add(AscToText.getAscIIString("CATL010000001382"));
     list.add(AscToText.getAscIIString("CATL010000000842"));
-    _arScanExpandStore.updateDataSet(equList: list);
+    _toScanExpandStore.updateDataSet(equList: list);
   }
 
   void _addMockEquipmentIdCaseTwo() {
     List<String> list = [];
     list.add(AscToText.getAscIIString("SATL010000000808"));
     list.add(AscToText.getAscIIString("CATL010000000819"));
-    _arScanExpandStore.updateDataSet(equList: list);
+    _toScanExpandStore.updateDataSet(equList: list);
   }
 
   Future<void> _debug() async {
@@ -1032,7 +1033,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     });
     // list.add(AscToText.getAscIIString("CATL010000000808"));
     // list.add(AscToText.getAscIIString("CATL010000000819"));
-    _arScanExpandStore.updateDataSet(equList: list);
+    _toScanExpandStore.updateDataSet(equList: list);
   }
 
   Future<void> connectAIReader() async {
@@ -1060,16 +1061,16 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     list2.add(AscToText.getAscIIString("SATL010000049362"));
     list2.add(AscToText.getAscIIString("SATL010000049384"));
     list2.add(AscToText.getAscIIString("SATL010000049395"));
-    _arScanExpandStore.updateDataSet(equList: list1, itemList: list2);
+    _toScanExpandStore.updateDataSet(equList: list1, itemList: list2);
   }
 
   List<Widget> _getButtonTestList() {
     List<Widget> output = [
       TextButton(
           onPressed: () async {
-            // var result = await repository.getAssetRegistrationOrderDetail(regNum: "GDC0980203", site: 2);
+            // var result = await repository.getAssetRegistrationOrderDetail(toNum: "GDC0980203", site: 2);
             var result2 =
-                await _arScanExpandStore.fetchOrderDetail("Mixson_AR3");
+                await _toScanExpandStore.fetchOrderDetail("Mixson_AR3");
           },
           child: Text("Fetch Data")),
       // TextButton(
@@ -1087,7 +1088,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             // orderLineWidget = await orderLine.turnOrderLineIntoWidget();
             // orderLineWidget = await orderLine.turnOrderLineMapIntoWidget();
             orderLineWidget =
-                await _arScanExpandStore.turnOrderLineDtoMapIntoWidget();
+                await _toScanExpandStore.turnOrderLineDtoMapIntoWidget();
 
             setState(() {
               list = orderLineWidget;
@@ -1134,7 +1135,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             // itemList = ["SATL010000068363","SATL010000068374","SATL010000068408","SATL010000068419","SATL010000068442",
             //   "SATL010000068453","SATL010000068486","SATL010000068497","SATL010000068521","SATL010000068532",
             //   ];
-            _arScanExpandStore.updateDataSet(
+            _toScanExpandStore.updateDataSet(
                 equList: equList, itemList: itemList);
           },
           child: Text("updateDataSet"))
@@ -1216,7 +1217,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           list[parentIndex].children[childIndex].selected = true;
           String containerCode = list[parentIndex].id;
           List<String> containerRFIDList =
-              _arScanExpandStore.containerCodeRfidMapper[containerCode];
+              _toScanExpandStore.containerCodeRfidMapper[containerCode];
           String itemCode = list[parentIndex].children[childIndex].id;
           String itemTitle = list[parentIndex].children[childIndex].title;
           String itemSubTitle = list[parentIndex].children[childIndex].subTitle;
@@ -1225,7 +1226,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           List<String> rfidList = <String>[];
 
           containerRFIDList.forEach((containerRFID) => rfidList.addAll(
-              _arScanExpandStore.orderLineDTOMap[containerRFID]
+              _toScanExpandStore.orderLineDTOMap[containerRFID]
                   .orderLineItemsMap[itemCode].rfid));
           ;
 
@@ -1235,7 +1236,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           showStackDialog(
               containerCodeStr: containerCodeStr,
               rfidList: rfidListInput,
-              justScannedRfidList: _arScanExpandStore.itemRfidDataSet.toList(),
+              justScannedRfidList: _toScanExpandStore.itemRfidDataSet.toList(),
               title: itemTitle,
               subtitle: itemSubTitle,
               height: 350,
@@ -1393,7 +1394,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _arScanExpandStore.isFetchingEquData
+                            _toScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
                                     color: Colors.blue,
                                     size: 15,
@@ -1518,16 +1519,16 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
   }
 
   Future<void> updateWidget() async {
-    orderLineWidget = await _arScanExpandStore.turnOrderLineDtoMapIntoWidget();
+    orderLineWidget = await _toScanExpandStore.turnOrderLineDtoMapIntoWidget();
 
     setState(() {
       list = orderLineWidget;
     });
   }
 
-  void fetchOrderDetailData(String regNum) {
-    _arScanExpandStore
-        .fetchOrderDetail(regNum)
+  void fetchOrderDetailData(String toNum) {
+    _toScanExpandStore
+        .fetchOrderDetail(toNum)
         .then((value) => updateWidget());
   }
 

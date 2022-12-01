@@ -168,7 +168,8 @@ class _TransferOutPageState extends State<TransferOutPage> {
                     _transferOutStore.createTransferOutHeaderItem(
                         toSite: _siteCodeItemStore.siteCodeMap[selectItem]!.id).then((_) {
                         Navigator.pushNamed(
-                            context, "/transfer_out_scan",
+                            // context, "/transfer_out_scan",
+                            context, "/transfer_out_scan_extend",
                             arguments:
                             TransferOutScanPageArguments(
                                 toNum:
@@ -320,7 +321,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                                       //         });
                                       // ignore: prefer_function_declarations_over_variables
                                       var fx = () => Navigator.pushNamed(
-                                              context, "/transfer_out_scan",
+                                              context, "/transfer_out_scan_extend",
                                               arguments:
                                                   TransferOutScanPageArguments(
                                                       toNum:
