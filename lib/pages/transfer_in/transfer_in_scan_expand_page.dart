@@ -1226,7 +1226,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           String itemCode = list[parentIndex].children[childIndex].id;
           String itemTitle = list[parentIndex].children[childIndex].title;
           String itemSubTitle = list[parentIndex].children[childIndex].subTitle;
-          String containerCodeStr = list[parentIndex].id;
+          String containerCodeStr = list[parentIndex].title;
           // List<String>? rfidList = (_TIScanExpandStore.itemCodeRfidMapper[itemCode] as List).map((item) => item as String).toList();
           List<String> rfidList = <String>[];
 
@@ -1260,13 +1260,17 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
   void onItemDismissed(
       int parentIndex, int childIndex, bool removeTileOnDismiss) {
     setState(
-      () {
+          () {
         // check to see if user wants to remove swiped items from list
         // if yes then remove item from list
         // else show user a message about swiped item
         if (removeTileOnDismiss) {
           if (childIndex == -1) {
             // remove Container
+            ExpandableListItem orderLineContainerMap = list[parentIndex];
+            String? containerRfid = orderLineContainerMap.id;
+            removeContainer(containerRfid);
+            // list[parentIndex]
             list.removeAt(parentIndex);
           } else {
             // check to see if its the last child
@@ -1276,8 +1280,20 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
             // remove item
             if (list[parentIndex].children != null &&
                 list[parentIndex].children.length > 1) {
+
+              ExpandableListItem orderLineContainerMap = list[parentIndex];
+              String? containerRfid = orderLineContainerMap.id;
+              ExpandableListItem itemInfo = list[parentIndex].children[childIndex];
+              String itemCode = itemInfo.id;
+              removeContainerItem(containerRfid, itemCode);
+
               list[parentIndex].children.removeAt(childIndex);
             } else {
+              ExpandableListItem orderLineContainerMap = list[parentIndex];
+              String? containerRfid = orderLineContainerMap.id;
+              ExpandableListItem itemInfo = list[parentIndex].children[childIndex];
+              String itemCode = itemInfo.id;
+              removeContainerItem(containerRfid, itemCode);
               list.removeAt(parentIndex);
             }
           }
@@ -1537,15 +1553,15 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
         .then((value) => updateWidget());
   }
 
-  void removeContainerItemRfid(){
-
+  void removeContainerItemRfid(String containerRfid, String rfid){
+    _TIScanExpandStore.removeContainerItemRfid(containerRfid, rfid);
   }
 
-  void removeContainerItem(){
-
+  void removeContainerItem(String containerRfid, String itemCode){
+    _TIScanExpandStore.removeContainerItem(containerRfid, itemCode);
   }
 
-  void removeContainer(){
-
+  void removeContainer(String containerRfid){
+    _TIScanExpandStore.removeContainer(containerRfid);
   }
 }

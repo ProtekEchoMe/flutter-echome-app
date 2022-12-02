@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_detail_page.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/access_control/access_control_store.dart';
+import 'package:echo_me_mobile/stores/login/login_form_store.dart';
 import 'package:echo_me_mobile/stores/reader_connection/reader_connection_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
@@ -42,6 +43,8 @@ class TOScanExpandPage extends StatefulWidget {
 class _TOScanExpandPageState extends State<TOScanExpandPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
       getIt<AssetRegistrationScanStore>();
+  final LoginFormStore loginFormStore = getIt<LoginFormStore>();
+
   List<dynamic> disposer = [];
   final AssetRegistrationApi api = getIt<AssetRegistrationApi>();
   final Repository repository = getIt<Repository>();
@@ -138,7 +141,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
           containerAssetCode: targetcontainerAssetCode,
           throwError: true);
       _toScanExpandStore.reset();
-      fetchOrderDetailData(args!.toNum); // refresh page
+      fetchOrderDetailData(args!.toNum, loginFormStore.siteId!); // refresh page
       return true;
     } catch (e) {
       _toScanExpandStore.errorStore.setErrorMessage(e.toString());
@@ -380,7 +383,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
         ModalRoute.of(context)!.settings.arguments as TransferOutScanPageArguments?;
     toNum = args!.toNum;
     if (!isFetchedData){
-      fetchOrderDetailData(toNum);
+      fetchOrderDetailData(toNum, loginFormStore.siteId!);
       isFetchedData = true;
     }
     var scaffold = Scaffold(
@@ -1070,7 +1073,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
           onPressed: () async {
             // var result = await repository.getAssetRegistrationOrderDetail(toNum: "GDC0980203", site: 2);
             var result2 =
-                await _toScanExpandStore.fetchOrderDetail("Mixson_AR3");
+                await _toScanExpandStore.fetchOrderDetail("Mixson_AR3", loginFormStore.siteId!);
           },
           child: Text("Fetch Data")),
       // TextButton(
@@ -1255,13 +1258,17 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
   void onItemDismissed(
       int parentIndex, int childIndex, bool removeTileOnDismiss) {
     setState(
-      () {
+          () {
         // check to see if user wants to remove swiped items from list
         // if yes then remove item from list
         // else show user a message about swiped item
         if (removeTileOnDismiss) {
           if (childIndex == -1) {
             // remove Container
+            ExpandableListItem orderLineContainerMap = list[parentIndex];
+            String? containerRfid = orderLineContainerMap.id;
+            removeContainer(containerRfid);
+            // list[parentIndex]
             list.removeAt(parentIndex);
           } else {
             // check to see if its the last child
@@ -1271,8 +1278,20 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
             // remove item
             if (list[parentIndex].children != null &&
                 list[parentIndex].children.length > 1) {
+
+              ExpandableListItem orderLineContainerMap = list[parentIndex];
+              String? containerRfid = orderLineContainerMap.id;
+              ExpandableListItem itemInfo = list[parentIndex].children[childIndex];
+              String itemCode = itemInfo.id;
+              removeContainerItem(containerRfid, itemCode);
+
               list[parentIndex].children.removeAt(childIndex);
             } else {
+              ExpandableListItem orderLineContainerMap = list[parentIndex];
+              String? containerRfid = orderLineContainerMap.id;
+              ExpandableListItem itemInfo = list[parentIndex].children[childIndex];
+              String itemCode = itemInfo.id;
+              removeContainerItem(containerRfid, itemCode);
               list.removeAt(parentIndex);
             }
           }
@@ -1526,21 +1545,21 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
     });
   }
 
-  void fetchOrderDetailData(String toNum) {
+  void fetchOrderDetailData(String toNum, int site) {
     _toScanExpandStore
-        .fetchOrderDetail(toNum)
+        .fetchOrderDetail(toNum, site)
         .then((value) => updateWidget());
   }
 
-  void removeContainerItemRfid(){
-
+  void removeContainerItemRfid(String containerRfid, String rfid){
+    _toScanExpandStore.removeContainerItemRfid(containerRfid, rfid);
   }
 
-  void removeContainerItem(){
-
+  void removeContainerItem(String containerRfid, String itemCode){
+    _toScanExpandStore.removeContainerItem(containerRfid, itemCode);
   }
 
-  void removeContainer(){
-
+  void removeContainer(String containerRfid){
+    _toScanExpandStore.removeContainer(containerRfid);
   }
 }

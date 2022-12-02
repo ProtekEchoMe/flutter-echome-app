@@ -336,7 +336,7 @@ abstract class _TIScanExpandStore with Store {
       // String? containerRFID = orderLineDTO.rfid;
 
       ExpandableListItem containerExpandableList = ExpandableListItem(
-          id: containerCode ?? containerRFID,
+          id: containerRFID ?? containerCode,
           title: containerCode ?? containerRFID,
           subTitle: "Last update: ${datetimeStr}",
           selected: false,
@@ -764,5 +764,87 @@ abstract class _TIScanExpandStore with Store {
     } finally {
       isFetching = false;
     }
+  }
+
+  @action
+  Future<void> removeContainerItemRfid(String containerRfid, String rfid)async {
+    String notYetScanContainerStr = "Not Yet Scan";
+
+    if (!rfidCodeMapper.containsKey(rfid)){
+      return;
+    }
+    String itemCode = rfidCodeMapper[rfid];
+    if(itemRfidStatus.containsKey(rfid)){
+      itemRfidStatus[rfid] = "un-committed"; // 1
+
+      //2
+      if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){
+        List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+        targetContainerRfidList.removeWhere((element) => element == rfid);
+      }
+      if(containerItemCodeCheckedRfidMapper.containsKey(notYetScanContainerStr) && containerItemCodeCheckedRfidMapper[notYetScanContainerStr].containsKey(itemCode)) {
+        List notYetScanContainerRfidList = containerItemCodeCheckedRfidMapper[notYetScanContainerStr][itemCode];
+        notYetScanContainerRfidList.removeWhere((element) => element == rfid);
+      }
+
+      //3
+      if(orderLineDTOMap.containsKey(containerRfid) && orderLineDTOMap[containerRfid].orderLineItemsMap.containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+        targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
+      }
+
+      if(orderLineDTOMap.containsKey(notYetScanContainerStr) && orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap.containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem = orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+        targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
+      }
+
+      // orderLineDTOMap
+
+    }else{
+      // out of list
+      //2
+      String outOfListStr = "Out of List";
+      if(containerItemCodeCheckedRfidMapper.containsKey(outOfListStr) && containerItemCodeCheckedRfidMapper[outOfListStr].containsKey(itemCode)){
+        List<String> targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+        targetContainerRfidList.removeWhere((element) => element == rfid);
+      }
+
+      if(orderLineDTOMap.containsKey(outOfListStr) && orderLineDTOMap[outOfListStr].orderLineItemsMap.containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+        targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
+      }
+
+      this.outOfListQty -= 1;
+    }
+
+    this.itemRfidDataSet.removeWhere((element) => element == rfid);
+    this.totalCheckedQty -= 1;
+    this.addedQty -= 1;
+
+
+  }
+
+  @action
+  Future<void> removeContainerItem(String containerRfid, String itemCode)async {
+    if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){
+      List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+      List copyList = List.from(targetContainerRfidList);
+      copyList.forEach((rfid) {removeContainerItemRfid(containerRfid, rfid);});
+    }
+  }
+
+  @action
+  Future<void>  removeContainer(String containerRfid)async{
+    if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid)){
+      List itemCodeList = containerItemCodeCheckedRfidMapper[containerRfid].keys.toList();
+      List copyList = List.from(itemCodeList);
+      copyList.forEach((itemCode) {
+        removeContainerItem(containerRfid, itemCode);
+      });
+    }
+    this.equipmentRfidDataSet.removeWhere((element) => element == containerRfid);
   }
 }
