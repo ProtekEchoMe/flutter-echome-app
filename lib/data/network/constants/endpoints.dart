@@ -119,6 +119,7 @@ class Endpoints {
   static const String getOrderDetailARMethod = "/reg/getOrderDetail";
   static const String getOrderDetailTIMethod = "/ti/getOrderDetail";
   static const String getOrderDetailTOMethod = "/to/getOrderDetail";
+  static const String getOrderDetailAssetReturnMethod = "/assetReturn/getOrderDetail";
 
   // translate rfid to skuCode
   static const String getRfidTagItemMethod = "/rfid/getRfidTagItem";
@@ -185,6 +186,8 @@ class Endpoints {
   static String getORderDetailAR = "$activeUrl$getOrderDetailARMethod";
   static String getORderDetailTI = "$activeUrl$getOrderDetailTIMethod";
   static String getORderDetailTO = "$activeUrl$getOrderDetailTOMethod";
+  static String getORderDetailAssetReturn = "$activeUrl$getOrderDetailAssetReturnMethod";
+
 
   //translate rfid to skuCode
   static String getRfidTagItem = "$activeUrl$getRfidTagItemMethod";

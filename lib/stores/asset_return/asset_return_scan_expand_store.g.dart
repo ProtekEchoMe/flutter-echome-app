@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transfer_in_scan_expand_store.dart';
+part of 'asset_return_scan_expand_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,25 @@ part of 'transfer_in_scan_expand_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
+mixin _$AssetReturnScanExpandStore on _AssetReturnScanExpandStore, Store {
+  final _$orderLineDTOMapAtom =
+      Atom(name: '_AssetReturnScanExpandStore.orderLineDTOMap');
+
+  @override
+  Map<dynamic, dynamic> get orderLineDTOMap {
+    _$orderLineDTOMapAtom.reportRead();
+    return super.orderLineDTOMap;
+  }
+
+  @override
+  set orderLineDTOMap(Map<dynamic, dynamic> value) {
+    _$orderLineDTOMapAtom.reportWrite(value, super.orderLineDTOMap, () {
+      super.orderLineDTOMap = value;
+    });
+  }
+
   final _$totalCheckedSKUAtom =
-      Atom(name: '_TIScanExpandStore.totalCheckedSKU');
+      Atom(name: '_AssetReturnScanExpandStore.totalCheckedSKU');
 
   @override
   int get totalCheckedSKU {
@@ -25,7 +41,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$totalSKUAtom = Atom(name: '_TIScanExpandStore.totalSKU');
+  final _$totalSKUAtom = Atom(name: '_AssetReturnScanExpandStore.totalSKU');
 
   @override
   int get totalSKU {
@@ -41,7 +57,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$totalCheckedQtyAtom =
-      Atom(name: '_TIScanExpandStore.totalCheckedQty');
+      Atom(name: '_AssetReturnScanExpandStore.totalCheckedQty');
 
   @override
   int get totalCheckedQty {
@@ -56,7 +72,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$addedQtyAtom = Atom(name: '_TIScanExpandStore.addedQty');
+  final _$addedQtyAtom = Atom(name: '_AssetReturnScanExpandStore.addedQty');
 
   @override
   int get addedQty {
@@ -71,7 +87,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$outOfListQtyAtom = Atom(name: '_TIScanExpandStore.outOfListQty');
+  final _$outOfListQtyAtom =
+      Atom(name: '_AssetReturnScanExpandStore.outOfListQty');
 
   @override
   int get outOfListQty {
@@ -86,7 +103,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$totalQtyAtom = Atom(name: '_TIScanExpandStore.totalQty');
+  final _$totalQtyAtom = Atom(name: '_AssetReturnScanExpandStore.totalQty');
 
   @override
   int get totalQty {
@@ -101,7 +118,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$addedContainerAtom = Atom(name: '_TIScanExpandStore.addedContainer');
+  final _$addedContainerAtom =
+      Atom(name: '_AssetReturnScanExpandStore.addedContainer');
 
   @override
   int get addedContainer {
@@ -116,7 +134,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$totalContainerAtom = Atom(name: '_TIScanExpandStore.totalContainer');
+  final _$totalContainerAtom =
+      Atom(name: '_AssetReturnScanExpandStore.totalContainer');
 
   @override
   int get totalContainer {
@@ -132,7 +151,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$activeContainerAtom =
-      Atom(name: '_TIScanExpandStore.activeContainer');
+      Atom(name: '_AssetReturnScanExpandStore.activeContainer');
 
   @override
   String get activeContainer {
@@ -147,7 +166,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$needUpdateUIAtom = Atom(name: '_TIScanExpandStore.needUpdateUI');
+  final _$needUpdateUIAtom =
+      Atom(name: '_AssetReturnScanExpandStore.needUpdateUI');
 
   @override
   bool get needUpdateUI {
@@ -163,7 +183,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$itemRfidDataSetAtom =
-      Atom(name: '_TIScanExpandStore.itemRfidDataSet');
+      Atom(name: '_AssetReturnScanExpandStore.itemRfidDataSet');
 
   @override
   ObservableSet<String> get itemRfidDataSet {
@@ -179,7 +199,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$equipmentRfidDataSetAtom =
-      Atom(name: '_TIScanExpandStore.equipmentRfidDataSet');
+      Atom(name: '_AssetReturnScanExpandStore.equipmentRfidDataSet');
 
   @override
   ObservableSet<String> get equipmentRfidDataSet {
@@ -195,7 +215,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$equipmentDataAtom = Atom(name: '_TIScanExpandStore.equipmentData');
+  final _$equipmentDataAtom =
+      Atom(name: '_AssetReturnScanExpandStore.equipmentData');
 
   @override
   ObservableList<EquipmentData> get equipmentData {
@@ -211,7 +232,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$isFetchingEquDataAtom =
-      Atom(name: '_TIScanExpandStore.isFetchingEquData');
+      Atom(name: '_AssetReturnScanExpandStore.isFetchingEquData');
 
   @override
   bool get isFetchingEquData {
@@ -226,7 +247,8 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$checkedItemAtom = Atom(name: '_TIScanExpandStore.checkedItem');
+  final _$checkedItemAtom =
+      Atom(name: '_AssetReturnScanExpandStore.checkedItem');
 
   @override
   ObservableSet<String> get checkedItem {
@@ -242,7 +264,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$chosenEquipmentDataAtom =
-      Atom(name: '_TIScanExpandStore.chosenEquipmentData');
+      Atom(name: '_AssetReturnScanExpandStore.chosenEquipmentData');
 
   @override
   ObservableList<EquipmentData> get chosenEquipmentData {
@@ -258,7 +280,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$dialogDisplayRFIDListAtom =
-      Atom(name: '_TIScanExpandStore.dialogDisplayRFIDList');
+      Atom(name: '_AssetReturnScanExpandStore.dialogDisplayRFIDList');
 
   @override
   ObservableList<String> get dialogDisplayRFIDList {
@@ -274,7 +296,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
-  final _$isFetchingAtom = Atom(name: '_TIScanExpandStore.isFetching');
+  final _$isFetchingAtom = Atom(name: '_AssetReturnScanExpandStore.isFetching');
 
   @override
   bool get isFetching {
@@ -290,7 +312,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$validateEquipmentRfidAsyncAction =
-      AsyncAction('_TIScanExpandStore.validateEquipmentRfid');
+      AsyncAction('_AssetReturnScanExpandStore.validateEquipmentRfid');
 
   @override
   Future<void> validateEquipmentRfid() {
@@ -298,43 +320,44 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
         .run(() => super.validateEquipmentRfid());
   }
 
-  final _$completeAsyncAction = AsyncAction('_TIScanExpandStore.complete');
+  final _$completeAsyncAction =
+      AsyncAction('_AssetReturnScanExpandStore.complete');
 
   @override
-  Future<void> complete({String tiNum = ""}) {
-    return _$completeAsyncAction.run(() => super.complete(tiNum: tiNum));
+  Future<void> complete({String rtnNum = ""}) {
+    return _$completeAsyncAction.run(() => super.complete(rtnNum: rtnNum));
   }
 
   final _$registerContainerAsyncAction =
-      AsyncAction('_TIScanExpandStore.registerContainer');
+      AsyncAction('_AssetReturnScanExpandStore.registerContainer');
 
   @override
   Future<void> registerContainer(
       {List<String> rfid = const [],
-      String tiNum = "",
+      String rtnNum = "",
       bool throwError = false}) {
     return _$registerContainerAsyncAction.run(() => super
-        .registerContainer(rfid: rfid, tiNum: tiNum, throwError: throwError));
+        .registerContainer(rfid: rfid, rtnNum: rtnNum, throwError: throwError));
   }
 
   final _$registerItemAsyncAction =
-      AsyncAction('_TIScanExpandStore.registerItem');
+      AsyncAction('_AssetReturnScanExpandStore.registerItem');
 
   @override
   Future<void> registerItem(
-      {String tiNum = "",
+      {String rtnNum = "",
       String containerAssetCode = "",
       List<String> itemRfid = const [],
       bool throwError = false}) {
     return _$registerItemAsyncAction.run(() => super.registerItem(
-        tiNum: tiNum,
+        rtnNum: rtnNum,
         containerAssetCode: containerAssetCode,
         itemRfid: itemRfid,
         throwError: throwError));
   }
 
   final _$removeContainerItemRfidAsyncAction =
-      AsyncAction('_TIScanExpandStore.removeContainerItemRfid');
+      AsyncAction('_AssetReturnScanExpandStore.removeContainerItemRfid');
 
   @override
   Future<void> removeContainerItemRfid(String containerRfid, String rfid) {
@@ -343,7 +366,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$removeContainerItemAsyncAction =
-      AsyncAction('_TIScanExpandStore.removeContainerItem');
+      AsyncAction('_AssetReturnScanExpandStore.removeContainerItem');
 
   @override
   Future<void> removeContainerItem(String containerRfid, String itemCode) {
@@ -352,7 +375,7 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
   }
 
   final _$removeContainerAsyncAction =
-      AsyncAction('_TIScanExpandStore.removeContainer');
+      AsyncAction('_AssetReturnScanExpandStore.removeContainer');
 
   @override
   Future<void> removeContainer(String containerRfid) {
@@ -360,46 +383,59 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
         .run(() => super.removeContainer(containerRfid));
   }
 
-  final _$_TIScanExpandStoreActionController =
-      ActionController(name: '_TIScanExpandStore');
+  final _$_AssetReturnScanExpandStoreActionController =
+      ActionController(name: '_AssetReturnScanExpandStore');
+
+  @override
+  void removeRFID(String containerRFID, String itemCode,
+      {String rfid = "", int i = 0}) {
+    final _$actionInfo = _$_AssetReturnScanExpandStoreActionController
+        .startAction(name: '_AssetReturnScanExpandStore.removeRFID');
+    try {
+      return super.removeRFID(containerRFID, itemCode, rfid: rfid, i: i);
+    } finally {
+      _$_AssetReturnScanExpandStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void reset() {
-    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
-        name: '_TIScanExpandStore.reset');
+    final _$actionInfo = _$_AssetReturnScanExpandStoreActionController
+        .startAction(name: '_AssetReturnScanExpandStore.reset');
     try {
       return super.reset();
     } finally {
-      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_AssetReturnScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void resetContainer() {
-    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
-        name: '_TIScanExpandStore.resetContainer');
+    final _$actionInfo = _$_AssetReturnScanExpandStoreActionController
+        .startAction(name: '_AssetReturnScanExpandStore.resetContainer');
     try {
       return super.resetContainer();
     } finally {
-      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_AssetReturnScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    final _$actionInfo = _$_TIScanExpandStoreActionController.startAction(
-        name: '_TIScanExpandStore.updateDataSet');
+    final _$actionInfo = _$_AssetReturnScanExpandStoreActionController
+        .startAction(name: '_AssetReturnScanExpandStore.updateDataSet');
     try {
       return super.updateDataSet(itemList: itemList, equList: equList);
     } finally {
-      _$_TIScanExpandStoreActionController.endAction(_$actionInfo);
+      _$_AssetReturnScanExpandStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   String toString() {
     return '''
+orderLineDTOMap: ${orderLineDTOMap},
 totalCheckedSKU: ${totalCheckedSKU},
 totalSKU: ${totalSKU},
 totalCheckedQty: ${totalCheckedQty},

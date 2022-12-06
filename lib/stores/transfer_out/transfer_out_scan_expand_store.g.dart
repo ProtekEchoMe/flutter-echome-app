@@ -71,6 +71,21 @@ mixin _$TOScanExpandStore on _TOScanExpandStore, Store {
     });
   }
 
+  final _$addedContainerAtom = Atom(name: '_TOScanExpandStore.addedContainer');
+
+  @override
+  int get addedContainer {
+    _$addedContainerAtom.reportRead();
+    return super.addedContainer;
+  }
+
+  @override
+  set addedContainer(int value) {
+    _$addedContainerAtom.reportWrite(value, super.addedContainer, () {
+      super.addedContainer = value;
+    });
+  }
+
   final _$outOfListQtyAtom = Atom(name: '_TOScanExpandStore.outOfListQty');
 
   @override
@@ -257,6 +272,23 @@ mixin _$TOScanExpandStore on _TOScanExpandStore, Store {
     });
   }
 
+  final _$dialogDisplayRFIDListAtom =
+      Atom(name: '_TOScanExpandStore.dialogDisplayRFIDList');
+
+  @override
+  ObservableList<String> get dialogDisplayRFIDList {
+    _$dialogDisplayRFIDListAtom.reportRead();
+    return super.dialogDisplayRFIDList;
+  }
+
+  @override
+  set dialogDisplayRFIDList(ObservableList<String> value) {
+    _$dialogDisplayRFIDListAtom.reportWrite(value, super.dialogDisplayRFIDList,
+        () {
+      super.dialogDisplayRFIDList = value;
+    });
+  }
+
   final _$validateEquipmentRfidAsyncAction =
       AsyncAction('_TOScanExpandStore.validateEquipmentRfid');
 
@@ -374,6 +406,7 @@ totalCheckedSKU: ${totalCheckedSKU},
 totalSKU: ${totalSKU},
 totalCheckedQty: ${totalCheckedQty},
 addedQty: ${addedQty},
+addedContainer: ${addedContainer},
 outOfListQty: ${outOfListQty},
 totalQty: ${totalQty},
 totalContainer: ${totalContainer},
@@ -385,7 +418,8 @@ equipmentData: ${equipmentData},
 isFetchingEquData: ${isFetchingEquData},
 checkedItem: ${checkedItem},
 chosenEquipmentData: ${chosenEquipmentData},
-isFetching: ${isFetching}
+isFetching: ${isFetching},
+dialogDisplayRFIDList: ${dialogDisplayRFIDList}
     ''';
   }
 }

@@ -164,7 +164,7 @@ class _AssetReturnScanPageState extends State<AssetReturnScanPage> {
         if (flag == true) {
           _complete(args);
           _showSnackBar("assetReturn".tr(gender: "scan_page_complete_success"));
-          // _assetReturnScanStore.reset();
+          // _assetReturnScanStore.reset();d
         }
       } else if (index == 3) { // debug version
         DialogHelper.showCustomDialog(context, widgetList: [

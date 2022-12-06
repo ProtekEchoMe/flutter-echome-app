@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:echo_me_mobile/data/network/constants/endpoints.dart';
 import 'package:echo_me_mobile/data/network/dio_client.dart';
 import 'package:echo_me_mobile/models/asset_return/return_item.dart';
+import 'package:echo_me_mobile/models/asset_return/return_order_detail.dart';
 
 class AssetReturnApi {
   // dio instance
@@ -259,6 +260,28 @@ class AssetReturnApi {
     }
   }
 
+  Future<dynamic> getOrderDetail({String rtnNum = "", site = 2}) async {
+    try {
+      final res = await _dioClient
+          .get(Endpoints.getORderDetailAssetReturn, queryParameters: {"rtnNum": rtnNum, "site": site});
+      var result = AssetReturnOrderDetailResponse(res, res.length);
+      return result;
+    } catch (e) {
+      if (e is DioError) {
+        // if (e.response?.statusCode == 500) {
+        //   throw Exception("Internal Server Error");
+        // }
+        if (e.response?.data is String) {
+          if ((e.response!.data is String).toString().isEmpty) {
+            throw Exception("Bad Request");
+          }
+          throw Exception(e.response?.data);
+        }
+      }
+      rethrow;
+    }
+  }
+
   // Future<dynamic> getContainerRfidDetails(
   //     {String rfid = "", String containerAssetCode = ""}) async {
   //   try {
@@ -297,6 +320,23 @@ class AssetReturnResponse {
     try {
       itemList = (data as List<dynamic>)
           .map((e) => ReturnItem.fromJson(e))
+          .toList();
+    } catch (e) {
+      print(e);
+    } finally {
+      rowNumber = rowNum ?? 0;
+    }
+  }
+}
+
+class AssetReturnOrderDetailResponse {
+  List<ReturnOrderDetail> itemList = [];
+  int rowNumber = 0;
+
+  AssetReturnOrderDetailResponse(dynamic data, int? rowNum) {
+    try {
+      itemList = (data as List<dynamic>)
+          .map((e) => ReturnOrderDetail.fromJson(e))
           .toList();
     } catch (e) {
       print(e);

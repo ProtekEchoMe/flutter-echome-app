@@ -133,6 +133,12 @@ class Repository {
         toNum: toNum, site: site);
   }
 
+  Future<AssetRegistrationOrderDetailResponse> getAssetReturnOrderDetail(
+      {String rtnNum = "", site = 2}) async {
+    return await _assetReturnApi.getOrderDetail(
+        rtnNum: rtnNum, site: site);
+  }
+
   Future<RfidTagItemResponse> getRfidTagItem(
       {List<String> itemRfid = const [],}) async {
     return await _transferOutApi.getRfidTagItem(
