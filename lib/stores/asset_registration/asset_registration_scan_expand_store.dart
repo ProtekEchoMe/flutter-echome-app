@@ -282,21 +282,21 @@ abstract class _ARScanExpandStore with Store {
     orderLineDTOMap[containerRfid].status = "checking";
   }
 
-  void addScannedRFID(String containerRfid, List rfidList) {
-    rfidList.forEach((rfid) {
-      if (rfidCodeMapper.containsKey(rfid)) {
-        String itemCode = rfidCodeMapper[rfid];
-        Map targetMap = orderLineDTOMap[containerRfid].orderLineItemsMap;
-        OrderLineItems targetProductMap = targetMap[itemCode];
-        targetProductMap.checkedinQty = targetProductMap.checkedinQty! + 1;
-      } else {
-        if (!orderLineDTOMap.containsKey("Out of List")) {
-          createContainer(regNum!, "Out of List", "Out of List");
-        }
-        addItemIntoContainer("Out of List", rfid);
-      }
-    });
-  }
+  // void addScannedRFID(String containerRfid, List rfidList) {
+  //   rfidList.forEach((rfid) {
+  //     if (rfidCodeMapper.containsKey(rfid)) {
+  //       String itemCode = rfidCodeMapper[rfid];
+  //       Map targetMap = orderLineDTOMap[containerRfid].orderLineItemsMap;
+  //       OrderLineItems targetProductMap = targetMap[itemCode];
+  //       targetProductMap.checkedinQty = targetProductMap.checkedinQty! + 1;
+  //     } else {
+  //       if (!orderLineDTOMap.containsKey("Out of List")) {
+  //         createContainer(regNum!, "Out of List", "Out of List");
+  //       }
+  //       addItemIntoContainer("Out of List", rfid);
+  //     }
+  //   });
+  // }
 
   void turnOrderLineIntoMapper() {
     if (orderLineDTOList == null || orderLineDTOList!.isEmpty) {
@@ -376,7 +376,14 @@ abstract class _ARScanExpandStore with Store {
       datetimeStr = datetimeStr.substring(0, datetimeStr.length - 4);
       // String? containerStatus = orderLineDTO.status;
       Map orderLineItemsMap = orderLineDTO.orderLineItemsMap as Map;
-      String? containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalCheckedItem"]} item(s)";
+
+      String? containerBadgetText = "";
+      if(containerRFID != "Not Yet Scan"){
+        containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalCheckedItem"]} item(s)";
+      }else{
+        containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalItem"]} item(s)";
+      }
+
       // String? containerRFID = orderLineDTO.rfid;
 
       ExpandableListItem containerExpandableList = ExpandableListItem(
@@ -897,8 +904,15 @@ abstract class _ARScanExpandStore with Store {
         targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
       }
 
-      this.totalCheckedQty -= 1;
-      this.addedQty -= 1;
+      if (!rfidCodeMapper.containsKey(rfid)){
+        this.totalCheckedQty -= 1;
+        this.addedQty -= 1;
+      }
+
+      // if (orderLineDTOMap[containerRfid].orderLineItemsMap.isEmpty){
+      //   orderLineDTOMap.removeWhere((containerRfid, _) => containerRfid == containerRfid);
+      // }
+
 
       // orderLineDTOMap
 
@@ -930,11 +944,14 @@ abstract class _ARScanExpandStore with Store {
         if (targetOrderIineItem.rfid!.isEmpty){
           orderLineDTOMap[outOfListStr].orderLineItemsMap.remove(itemCode);
         }
+
       }
 
       this.outOfListQty -= 1;
     }
+
   }
+
 
   @action
   Future<void> removeContainerItem(
@@ -965,6 +982,13 @@ abstract class _ARScanExpandStore with Store {
         removeContainerItem(containerRfid, itemCode);
       });
     }
+
+    if(containerRfid != "Out of List"){
+      containerItemCodeCheckedRfidMapper.removeWhere((containerIter, _) => containerIter == containerRfid);
+      orderLineDTOMap.removeWhere((containerIter, _) => containerIter == containerRfid);
+    }
+
+
     this.equipmentRfidDataSet.removeWhere((element) {
       if (element == containerRfid) {
         totalContainer -= 1;

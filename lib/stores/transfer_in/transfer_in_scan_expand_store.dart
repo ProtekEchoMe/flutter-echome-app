@@ -75,6 +75,9 @@ abstract class _TIScanExpandStore with Store {
   int totalQty = 0;
 
   @observable
+  int addedContainer = 0;
+
+  @observable
   int totalContainer = 0;
 
   @observable
@@ -100,6 +103,9 @@ abstract class _TIScanExpandStore with Store {
 
   @observable
   ObservableList<EquipmentData> chosenEquipmentData = ObservableList();
+
+  @observable
+  ObservableList<String> dialogDisplayRFIDList = ObservableList();
 
   @observable
   bool isFetching = false;
@@ -562,6 +568,31 @@ abstract class _TIScanExpandStore with Store {
     orderLineDTOMap = {};
     scannedRFIDList = [];
     activeContainer = "";
+    outOfListQty = 0;
+
+    orderLineMapList;
+    rfidCodeMapper = {};
+    fetchedContainerRfidList = [];
+    itemCodeRfidMapper = {};
+    containerCodeRfidMapper = {};
+    itemCodeCheckedRfidMapper = {};
+    containerItemCodeCheckedRfidMapper = {};
+    itemRfidStatus = {}; // checked, scanned, out-of-bound
+    containerRfidStatus = {};
+    // Main Data Source
+    orderLineDTOList = [];
+    orderLineDTOMap = {};
+    scannedRFIDList = [];
+    totalCheckedSKU = 0;
+    totalSKU = 0;
+    totalCheckedQty = 0;
+    addedQty = 0;
+    outOfListQty = 0;
+    totalQty = 0;
+    addedContainer = 0;
+    totalContainer = 0;
+    activeContainer = "";
+    needUpdateUI = false;
   }
 
   @action
@@ -805,6 +836,22 @@ abstract class _TIScanExpandStore with Store {
         targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
       }
 
+      if (orderLineDTOMap.containsKey(notYetScanContainerStr) &&
+          orderLineDTOMap[notYetScanContainerStr]
+              .orderLineItemsMap
+              .containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem =
+        orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty =
+            targetOrderIineItem.checkedinQty! - 1;
+        targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
+      }
+
+      if (!rfidCodeMapper.containsKey(rfid)){
+        this.totalCheckedQty -= 1;
+        this.addedQty -= 1;
+      }
+
       // orderLineDTOMap
 
     }else{
@@ -825,8 +872,8 @@ abstract class _TIScanExpandStore with Store {
       this.outOfListQty -= 1;
     }
 
-    this.itemRfidDataSet.removeWhere((element) => element == rfid);
-    this.totalCheckedQty -= 1;
+    // this.itemRfidDataSet.removeWhere((element) => element == rfid);
+    // this.totalCheckedQty -= 1;
     this.addedQty -= 1;
 
 
@@ -850,6 +897,32 @@ abstract class _TIScanExpandStore with Store {
         removeContainerItem(containerRfid, itemCode);
       });
     }
-    this.equipmentRfidDataSet.removeWhere((element) => element == containerRfid);
+
+    if(containerRfid != "Out of List"){
+      containerItemCodeCheckedRfidMapper.removeWhere((containerIter, _) => containerIter == containerRfid);
+      orderLineDTOMap.removeWhere((containerIter, _) => containerIter == containerRfid);
+    }
+
+    this.equipmentRfidDataSet.removeWhere((element) {
+      if (element == containerRfid) {
+        totalContainer -= 1;
+        addedContainer -= 1;
+        return true;
+      }
+      return false;
+    });
+
+    String containerCode = rfidCodeMapper[containerRfid];
+    if (containerCode != null && containerCode == activeContainer) {
+      if (equipmentRfidDataSet.isNotEmpty) {
+        activeContainer = equipmentRfidDataSet.elementAt(0).toString();
+      } else {
+        activeContainer = "";
+      }
+    }
+
+    // this.equipmentRfidDataSet.removeWhere((element) => element == containerRfid);
   }
+
+
 }

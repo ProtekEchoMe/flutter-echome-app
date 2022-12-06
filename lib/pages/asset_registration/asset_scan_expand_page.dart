@@ -137,7 +137,25 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       // List<String> itemRfid = _arScanExpandStore.itemRfidDataSet
       //     .map((e) => AscToText.getString(e))
       //     .toList();
-      List<String> itemRfid = _arScanExpandStore.itemRfidDataSet.toList();
+      // List<String> itemRfid = _arScanExpandStore.itemRfidDataSet.toList();
+
+      // if already checkedin item, it will not submit to backend
+      List<String> itemRfid = <String>[];
+      _arScanExpandStore.itemRfidDataSet.forEach((rfid) {
+        if(_arScanExpandStore.itemRfidStatus.containsKey(rfid)){
+          String rfidStatus = _arScanExpandStore.itemRfidStatus[rfid];
+          if(rfidStatus == "Scanned"){
+            itemRfid.add(rfid);
+          }
+        }else{
+          itemRfid.add(rfid);
+        }
+        // if (_arScanExpandStore.rfidCodeMapper.containsKey(rfid)){
+        //   itemRfid.add(rfid);
+        // }
+
+      });
+
       await _arScanExpandStore.registerItem(
           regNum: args?.regNum ?? "",
           itemRfid: itemRfid,
@@ -1492,14 +1510,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                                             icon: new Icon(Icons.clear, size: 18.0),
                                             onPressed: () {
                                               setState(() {
-                                                _arScanExpandStore.removeRFID(containerRfid, itemCode, i:0);
                                                 _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
-                                                  // _arScanExpandStore.orderLineDTOMap[containerRFID]
-                                                  //     .orderLineItemsMap[itemCode].rfid.removeAt(0);
-
-
                                                   _arScanExpandStore.needUpdateUI = true;
-                                                  // _arScanExpandStore.orderLineDTOMap =_arScanExpandStore.orderLineDTOMap;
                                                   print("remove rfid is clicked");
                                                 } );
                                                 // _arScanExpandStore.orderLineDTOMap =_arScanExpandStore.orderLineDTOMap;
