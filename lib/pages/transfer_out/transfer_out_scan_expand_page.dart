@@ -217,6 +217,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
                 .tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
+          fetchOrderDetailData(toNum, loginFormStore.siteId!);
           _showSnackBar(
               "assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
@@ -325,6 +326,17 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
         _showSnackBar(_toScanExpandStore.errorStore.errorMessage);
       }
     });
+
+    var disposerUpdateUIReaction =
+    reaction((_) => _toScanExpandStore.needUpdateUI, (_) {
+      if (_toScanExpandStore.needUpdateUI) {
+        setState(() {
+          list = list;
+        });
+        _toScanExpandStore.needUpdateUI = false;
+      }
+    });
+
     var scanDisposeReaction =
         reaction((_) => _toScanExpandStore.equipmentData, (_) {
       try {
@@ -367,6 +379,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
+    disposer.add(disposerUpdateUIReaction);
   }
 
   @override
@@ -1218,13 +1231,13 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
           list.forEach((item) => item.reset());
           list[parentIndex].selected = true;
           list[parentIndex].children[childIndex].selected = true;
-          String containerCode = list[parentIndex].id;
+          String containerCode = list[parentIndex].title;
           List<String> containerRFIDList =
               _toScanExpandStore.containerCodeRfidMapper[containerCode];
           String itemCode = list[parentIndex].children[childIndex].id;
           String itemTitle = list[parentIndex].children[childIndex].title;
           String itemSubTitle = list[parentIndex].children[childIndex].subTitle;
-          String containerCodeStr = list[parentIndex].id;
+          String containerCodeStr = list[parentIndex].title;
           // List<String>? rfidList = (_arScanExpandStore.itemCodeRfidMapper[itemCode] as List).map((item) => item as String).toList();
           List<String> rfidList = <String>[];
 
@@ -1303,7 +1316,13 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
     );
   }
 
-  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList) {
+  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, String containerCodeStr) {
+    String containerRfid = "";
+    if (_toScanExpandStore.containerCodeRfidMapper.containsKey(containerCodeStr)){
+      if (_toScanExpandStore.containerCodeRfidMapper[containerCodeStr].isNotEmpty){
+        containerRfid = _toScanExpandStore.containerCodeRfidMapper[containerCodeStr][0];
+      }
+    }
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -1331,18 +1350,25 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
                                     style: (justScannedRfidList.contains(rfid)) ?
                                     TextStyle(color: Colors.red) : Theme.of(context).textTheme.bodyMedium ,
                                   )),
-                                  // Material(
-                                  //   borderRadius: BorderRadius.circular(50),
-                                  //   clipBehavior: Clip.antiAlias,
-                                  //   child: IconButton(
-                                  //       onPressed: () {
-                                  //         setState(() {
-                                  //           // _arScanExpandStore.itemRfidDataSet.remove(rfid);
-                                  //           print("icon clicked");
-                                  //         });
-                                  //       },
-                                  //       icon: const Icon(Icons.close)),
-                                  // )
+                                  Material(
+                                    borderRadius: BorderRadius.circular(50),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _toScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
+                                              setState(() {
+                                                // _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid);
+                                                print("icon clicked");
+                                              });
+                                            }
+                                            );
+                                          });
+
+
+                                        },
+                                        icon: const Icon(Icons.close)),
+                                  )
                                 ])
                           ],
                         ),
@@ -1373,7 +1399,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
             height: height,
             color: Colors.white12,
             alignment: Alignment.center,
-            child: _getRFIDBoxList(rfidList, justScannedRfidList),
+            child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr),
           );
 
           var row = Column(
@@ -1413,13 +1439,14 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            _toScanExpandStore.isFetchingEquData
-                                ? const SpinKitDualRing(
-                                    color: Colors.blue,
-                                    size: 15,
-                                    lineWidth: 2,
-                                  )
-                                : const SizedBox()
+                            // _toScanExpandStore.isFetchingEquData
+                            //     ? const SpinKitDualRing(
+                            //         color: Colors.blue,
+                            //         size: 15,
+                            //         lineWidth: 2,
+                            //       )
+                            //     : const SizedBox(),
+                            const SizedBox()
                           ],
                         );
                       },

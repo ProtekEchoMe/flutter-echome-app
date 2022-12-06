@@ -132,6 +132,21 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
     });
   }
 
+  final _$needUpdateUIAtom = Atom(name: '_TIScanExpandStore.needUpdateUI');
+
+  @override
+  bool get needUpdateUI {
+    _$needUpdateUIAtom.reportRead();
+    return super.needUpdateUI;
+  }
+
+  @override
+  set needUpdateUI(bool value) {
+    _$needUpdateUIAtom.reportWrite(value, super.needUpdateUI, () {
+      super.needUpdateUI = value;
+    });
+  }
+
   final _$itemRfidDataSetAtom =
       Atom(name: '_TIScanExpandStore.itemRfidDataSet');
 
@@ -286,6 +301,33 @@ mixin _$TIScanExpandStore on _TIScanExpandStore, Store {
         throwError: throwError));
   }
 
+  final _$removeContainerItemRfidAsyncAction =
+      AsyncAction('_TIScanExpandStore.removeContainerItemRfid');
+
+  @override
+  Future<void> removeContainerItemRfid(String containerRfid, String rfid) {
+    return _$removeContainerItemRfidAsyncAction
+        .run(() => super.removeContainerItemRfid(containerRfid, rfid));
+  }
+
+  final _$removeContainerItemAsyncAction =
+      AsyncAction('_TIScanExpandStore.removeContainerItem');
+
+  @override
+  Future<void> removeContainerItem(String containerRfid, String itemCode) {
+    return _$removeContainerItemAsyncAction
+        .run(() => super.removeContainerItem(containerRfid, itemCode));
+  }
+
+  final _$removeContainerAsyncAction =
+      AsyncAction('_TIScanExpandStore.removeContainer');
+
+  @override
+  Future<void> removeContainer(String containerRfid) {
+    return _$removeContainerAsyncAction
+        .run(() => super.removeContainer(containerRfid));
+  }
+
   final _$_TIScanExpandStoreActionController =
       ActionController(name: '_TIScanExpandStore');
 
@@ -334,6 +376,7 @@ outOfListQty: ${outOfListQty},
 totalQty: ${totalQty},
 totalContainer: ${totalContainer},
 activeContainer: ${activeContainer},
+needUpdateUI: ${needUpdateUI},
 itemRfidDataSet: ${itemRfidDataSet},
 equipmentRfidDataSet: ${equipmentRfidDataSet},
 equipmentData: ${equipmentData},

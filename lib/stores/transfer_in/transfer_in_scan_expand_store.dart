@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
+
+
 
 import 'package:dismissible_expanded_list/model/entry.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -78,6 +79,9 @@ abstract class _TIScanExpandStore with Store {
 
   @observable
   String activeContainer = "";
+
+  @observable
+  bool needUpdateUI = false;
 
   @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
@@ -663,6 +667,7 @@ abstract class _TIScanExpandStore with Store {
     } finally {
       // isFetchingEquData = false;
       print("f");
+      needUpdateUI = true;
     }
   }
 

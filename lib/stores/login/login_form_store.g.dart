@@ -203,6 +203,14 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
         .run(() => super.changeSite(siteCode: siteCode));
   }
 
+  final _$changeSiteIdAsyncAction = AsyncAction('_LoginFormStore.changeSiteId');
+
+  @override
+  Future<void> changeSiteId({int? siteId = 0}) {
+    return _$changeSiteIdAsyncAction
+        .run(() => super.changeSiteId(siteId: siteId));
+  }
+
   final _$_LoginFormStoreActionController =
       ActionController(name: '_LoginFormStore');
 

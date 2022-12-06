@@ -9,6 +9,22 @@ part of 'asset_registration_scan_expand_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
+  final _$orderLineDTOMapAtom =
+      Atom(name: '_ARScanExpandStore.orderLineDTOMap');
+
+  @override
+  Map<dynamic, dynamic> get orderLineDTOMap {
+    _$orderLineDTOMapAtom.reportRead();
+    return super.orderLineDTOMap;
+  }
+
+  @override
+  set orderLineDTOMap(Map<dynamic, dynamic> value) {
+    _$orderLineDTOMapAtom.reportWrite(value, super.orderLineDTOMap, () {
+      super.orderLineDTOMap = value;
+    });
+  }
+
   final _$totalCheckedSKUAtom =
       Atom(name: '_ARScanExpandStore.totalCheckedSKU');
 
@@ -101,6 +117,21 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
+  final _$addedContainerAtom = Atom(name: '_ARScanExpandStore.addedContainer');
+
+  @override
+  int get addedContainer {
+    _$addedContainerAtom.reportRead();
+    return super.addedContainer;
+  }
+
+  @override
+  set addedContainer(int value) {
+    _$addedContainerAtom.reportWrite(value, super.addedContainer, () {
+      super.addedContainer = value;
+    });
+  }
+
   final _$totalContainerAtom = Atom(name: '_ARScanExpandStore.totalContainer');
 
   @override
@@ -129,6 +160,21 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   set activeContainer(String value) {
     _$activeContainerAtom.reportWrite(value, super.activeContainer, () {
       super.activeContainer = value;
+    });
+  }
+
+  final _$needUpdateUIAtom = Atom(name: '_ARScanExpandStore.needUpdateUI');
+
+  @override
+  bool get needUpdateUI {
+    _$needUpdateUIAtom.reportRead();
+    return super.needUpdateUI;
+  }
+
+  @override
+  set needUpdateUI(bool value) {
+    _$needUpdateUIAtom.reportWrite(value, super.needUpdateUI, () {
+      super.needUpdateUI = value;
     });
   }
 
@@ -227,6 +273,23 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
+  final _$dialogDisplayRFIDListAtom =
+      Atom(name: '_ARScanExpandStore.dialogDisplayRFIDList');
+
+  @override
+  ObservableList<String> get dialogDisplayRFIDList {
+    _$dialogDisplayRFIDListAtom.reportRead();
+    return super.dialogDisplayRFIDList;
+  }
+
+  @override
+  set dialogDisplayRFIDList(ObservableList<String> value) {
+    _$dialogDisplayRFIDListAtom.reportWrite(value, super.dialogDisplayRFIDList,
+        () {
+      super.dialogDisplayRFIDList = value;
+    });
+  }
+
   final _$isFetchingAtom = Atom(name: '_ARScanExpandStore.isFetching');
 
   @override
@@ -286,8 +349,47 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
         throwError: throwError));
   }
 
+  final _$removeContainerItemRfidAsyncAction =
+      AsyncAction('_ARScanExpandStore.removeContainerItemRfid');
+
+  @override
+  Future<void> removeContainerItemRfid(String containerRfid, String rfid) {
+    return _$removeContainerItemRfidAsyncAction
+        .run(() => super.removeContainerItemRfid(containerRfid, rfid));
+  }
+
+  final _$removeContainerItemAsyncAction =
+      AsyncAction('_ARScanExpandStore.removeContainerItem');
+
+  @override
+  Future<void> removeContainerItem(String containerRfid, String itemCode) {
+    return _$removeContainerItemAsyncAction
+        .run(() => super.removeContainerItem(containerRfid, itemCode));
+  }
+
+  final _$removeContainerAsyncAction =
+      AsyncAction('_ARScanExpandStore.removeContainer');
+
+  @override
+  Future<void> removeContainer(String containerRfid) {
+    return _$removeContainerAsyncAction
+        .run(() => super.removeContainer(containerRfid));
+  }
+
   final _$_ARScanExpandStoreActionController =
       ActionController(name: '_ARScanExpandStore');
+
+  @override
+  void removeRFID(String containerRFID, String itemCode,
+      {String rfid = "", int i = 0}) {
+    final _$actionInfo = _$_ARScanExpandStoreActionController.startAction(
+        name: '_ARScanExpandStore.removeRFID');
+    try {
+      return super.removeRFID(containerRFID, itemCode, rfid: rfid, i: i);
+    } finally {
+      _$_ARScanExpandStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void reset() {
@@ -326,20 +428,24 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   @override
   String toString() {
     return '''
+orderLineDTOMap: ${orderLineDTOMap},
 totalCheckedSKU: ${totalCheckedSKU},
 totalSKU: ${totalSKU},
 totalCheckedQty: ${totalCheckedQty},
 addedQty: ${addedQty},
 outOfListQty: ${outOfListQty},
 totalQty: ${totalQty},
+addedContainer: ${addedContainer},
 totalContainer: ${totalContainer},
 activeContainer: ${activeContainer},
+needUpdateUI: ${needUpdateUI},
 itemRfidDataSet: ${itemRfidDataSet},
 equipmentRfidDataSet: ${equipmentRfidDataSet},
 equipmentData: ${equipmentData},
 isFetchingEquData: ${isFetchingEquData},
 checkedItem: ${checkedItem},
 chosenEquipmentData: ${chosenEquipmentData},
+dialogDisplayRFIDList: ${dialogDisplayRFIDList},
 isFetching: ${isFetching}
     ''';
   }

@@ -26,6 +26,7 @@ import 'package:zebra_rfd8500/zebra_rfd8500.dart';
 import 'asset_scan_page_arguments.dart';
 
 import 'package:echo_me_mobile/utils/soundPoolUtil.dart';
+// import 'package:echo_me_mobile/utils/observer_util.dart';
 
 import 'package:dismissible_expanded_list/dismissible_expanded_list.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_order_detail.dart';
@@ -123,12 +124,13 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       try {
         await _arScanExpandStore.registerContainer(
             rfid: rfidList, regNum: args?.regNum ?? "", throwError: true);
-      } catch (e) {
+      } catch (e, s) {
         if (!e.toString().contains("Error 2109")) {
           // _arScanExpandStore.errorStore.setErrorMessage(e.toString());
           // rethrow;
           print(e.toString());
         }
+        print(s);
         // rethrow;
       }
 
@@ -144,8 +146,9 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       _arScanExpandStore.reset();
       fetchOrderDetailData(args!.regNum, loginFormStore.siteId!); // refresh page
       return true;
-    } catch (e) {
+    } catch (e, s) {
       _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+      print(s);
       return false;
     }
   }
@@ -162,7 +165,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     try {
       _arScanExpandStore.complete(regNum: args?.regNum ?? "");
       return true;
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
       return false;
     }
   }
@@ -176,7 +180,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       try {
         newTotalQuantity += e["quantity"] as int;
         totalRegQuantity += e["checkinQty"] as int;
-      } catch (e) {
+      } catch (e, s) {
+        print(s);
         print(e);
       }
       ;
@@ -217,6 +222,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                 .tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
+          fetchOrderDetailData(regNum, loginFormStore.siteId!);
           _showSnackBar(
               "assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
@@ -278,8 +284,9 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           )
         ]);
       }
-    } catch (e) {
+    } catch (e, s) {
       _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+      print(s);
     }
   }
 
@@ -311,8 +318,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         _arScanExpandStore.updateDataSet(equList: equ, itemList: item);
         print(equ.toString());
         print(item.toString());
-        updateWidget();
-        print("widget updated");
+        // updateWidget();
+        // print("widget updated");
 
         print("");
       }
@@ -323,8 +330,24 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         DialogHelper.showErrorDialogBox(context,
             errorMsg: _arScanExpandStore.errorStore.errorMessage);
         _showSnackBar(_arScanExpandStore.errorStore.errorMessage);
+        print("dispoerReaction");
       }
     });
+
+    var disposerUpdateUIReaction =
+    reaction((_) => _arScanExpandStore.needUpdateUI, (_) {
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_arScanExpandStore.needUpdateUI}");
+      if (_arScanExpandStore.needUpdateUI) {
+        updateWidget();
+        // setState(() {
+        //   list = list;
+        // });
+        _arScanExpandStore.needUpdateUI = false;
+
+      }
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_arScanExpandStore.needUpdateUI}");
+    });
+
     var scanDisposeReaction =
         reaction((_) => _arScanExpandStore.equipmentData, (_) {
       try {
@@ -360,13 +383,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         //     )
         //   ]);
         // }
-      } catch (e) {
+      } catch (e, s) {
         _arScanExpandStore.errorStore.setErrorMessage(e.toString());
+        print(s);
       }
     });
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
+    disposer.add(disposerUpdateUIReaction);
   }
 
   @override
@@ -1141,7 +1166,46 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             _arScanExpandStore.updateDataSet(
                 equList: equList, itemList: itemList);
           },
-          child: Text("updateDataSet"))
+          child: Text("updateDataSet")),
+      TextButton(
+          onPressed: ()  {
+            _arScanExpandStore.errorStore.setErrorMessage("Test");
+
+          },
+          child: Text("set error")),
+      TextButton(
+          onPressed: ()  {
+            showDialog(
+              context: context,
+              builder: (context) {
+                String contentText = "Content of Dialog";
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return AlertDialog(
+                      title: Text("Title of Dialog"),
+                      content: Text(contentText),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              contentText = "Changed Content of Dialog";
+                            });
+                          },
+                          child: Text("Change"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+
+          },
+          child: Text("show dialog"))
     ];
     return output;
   }
@@ -1218,7 +1282,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           list.forEach((item) => item.reset());
           list[parentIndex].selected = true;
           list[parentIndex].children[childIndex].selected = true;
-          String containerCode = list[parentIndex].id;
+          String containerCode = list[parentIndex].title;
 
           String itemCode = list[parentIndex].children[childIndex].id;
           String itemTitle = list[parentIndex].children[childIndex].title;
@@ -1243,15 +1307,18 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           List<String>? rfidListInput =
               (rfidList as List).map((item) => item as String).toList();
 
+          _arScanExpandStore.dialogDisplayRFIDList = ObservableList.of(rfidListInput);
           showStackDialog(
               containerCodeStr: containerCodeStr,
               rfidList: rfidListInput,
               justScannedRfidList: _arScanExpandStore.itemRfidDataSet.toList(),
-              title: itemTitle,
+              // title: itemTitle,
+              title: _arScanExpandStore.regNum!,
               subtitle: itemSubTitle,
               height: 350,
               width: 400,
-              alignment: Alignment.topCenter);
+              alignment: Alignment.topCenter,
+          itemCode: itemCode);
           // DialogHelper.showStackDialog(tag: "abc",
           //         rfidList: ["SATL1000032","SATL1000032","SATL1000032","SATL1000032","SATL1000032"],
           //         height: 400,
@@ -1298,7 +1365,9 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
               String? containerRfid = orderLineContainerMap.id;
               ExpandableListItem itemInfo = list[parentIndex].children[childIndex];
               String itemCode = itemInfo.id;
-              removeContainerItem(containerRfid, itemCode);
+              // removeContainerItem(containerRfid, itemCode);
+
+              removeContainer(containerRfid);
               list.removeAt(parentIndex);
             }
           }
@@ -1308,9 +1377,10 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         }
       },
     );
+
   }
 
-  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, String containerCodeStr) {
+  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, String containerCodeStr, var setState) {
     String containerRfid = "";
     if (_arScanExpandStore.containerCodeRfidMapper.containsKey(containerCodeStr)){
       if (_arScanExpandStore.containerCodeRfidMapper[containerCodeStr].isNotEmpty){
@@ -1319,18 +1389,18 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     }
     return AppContentBox(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(1.0),
         child: Builder(
             builder: (context) => ListView.builder(
-                itemCount: rfidList.length,
+                itemCount: _arScanExpandStore.dialogDisplayRFIDList.length,
                 itemBuilder: ((context, index) {
-                  final rfid = rfidList[index];
+                  final rfid = _arScanExpandStore.dialogDisplayRFIDList[index];
                   return Builder(builder: (context) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(vertical: 1),
                       child: Card(
                           child: Padding(
-                        padding: const EdgeInsets.all(4.0),
+                        padding: const EdgeInsets.all(6.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -1342,31 +1412,107 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                                       child: Text(
                                     rfid,
                                     style: (justScannedRfidList.contains(rfid)) ?
-                                    TextStyle(color: Colors.blue) : Theme.of(context).textTheme.bodyMedium ,
+                                    TextStyle(color: Colors.green[500]) : Theme.of(context).textTheme.bodyMedium ,
                                   )),
-                                  Material(
-                                    borderRadius: BorderRadius.circular(20),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: IconButton(
+                                  SizedBox(
+                                      height: 18.0,
+                                      width: 18.0,
+                                      child: IconButton(
+                                        padding: const EdgeInsets.all(0.0),
+                                        icon: new Icon(Icons.clear, size: 18.0),
                                         onPressed: () {
+                                          _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
                                             setState(() {
-                                              _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
-                                                setState(() {
-                                                  // _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid);
-                                                  print("icon clicked");
-                                                });
-                                              }
-                                              );
+                                              print("remove ${_arScanExpandStore.dialogDisplayRFIDList}");
+                                              _arScanExpandStore.dialogDisplayRFIDList.removeWhere((element) => element == rfid);
+                                              _arScanExpandStore.needUpdateUI = true;
                                             });
 
-
+                                            print("remove rfid is clicked");
+                                          } );
                                         },
-                                        icon: const Icon(Icons.close)),
-                                  )
+                                      )
+                                  ),
+
                                 ])
                           ],
                         ),
                       )),
+                    );
+                  });
+                }))),
+      ),
+    );
+  }
+
+  Widget _getRFIDBoxList2(List<String> justScannedRfidList, String containerCodeStr, String itemCode) {
+    String containerRfid = "";
+    if (_arScanExpandStore.containerCodeRfidMapper.containsKey(containerCodeStr)){
+      if (_arScanExpandStore.containerCodeRfidMapper[containerCodeStr].isNotEmpty){
+        containerRfid = _arScanExpandStore.containerCodeRfidMapper[containerCodeStr][0];
+      }
+    }
+    String containerRFID = _arScanExpandStore.containerCodeRfidMapper[containerCodeStr][0];
+    // String containerRFID = containerCodeStr;
+
+    return AppContentBox(
+      child: Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Builder(
+            builder: (context) => ListView.builder(
+                itemCount:  _arScanExpandStore.orderLineDTOMap[containerRFID]
+                    .orderLineItemsMap[itemCode].rfid.length,
+                itemBuilder: ((context, index) {
+                  final rfid = _arScanExpandStore.orderLineDTOMap[containerRFID]
+                      .orderLineItemsMap[itemCode].rfid[index];
+                  return Builder(builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 1),
+                      child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            rfid,
+                                            style: (justScannedRfidList.contains(rfid)) ?
+                                            TextStyle(color: Colors.green[500]) : Theme.of(context).textTheme.bodyMedium ,
+                                          )),
+                                      SizedBox(
+                                          height: 18.0,
+                                          width: 18.0,
+                                          child: IconButton(
+                                            padding: const EdgeInsets.all(0.0),
+                                            icon: new Icon(Icons.clear, size: 18.0),
+                                            onPressed: () {
+                                              setState(() {
+                                                _arScanExpandStore.removeRFID(containerRfid, itemCode, i:0);
+                                                _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
+                                                  // _arScanExpandStore.orderLineDTOMap[containerRFID]
+                                                  //     .orderLineItemsMap[itemCode].rfid.removeAt(0);
+
+
+                                                  _arScanExpandStore.needUpdateUI = true;
+                                                  // _arScanExpandStore.orderLineDTOMap =_arScanExpandStore.orderLineDTOMap;
+                                                  print("remove rfid is clicked");
+                                                } );
+                                                // _arScanExpandStore.orderLineDTOMap =_arScanExpandStore.orderLineDTOMap;
+                                              });
+
+                                            },
+                                          )
+                                      ),
+
+                                    ])
+                              ],
+                            ),
+                          )),
                     );
                   });
                 }))),
@@ -1382,31 +1528,80 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       double width = double.infinity,
       double height = double.infinity,
       String title = "",
-      String subtitle = ""}) async {
+      String subtitle = "",
+      String itemCode = ""}) async {
     rfidList.sort();
+
+    Widget addSetState(){
+
+      return StatefulBuilder(
+          builder: (context, setState) {
+            var container = Container(
+              width: width,
+              height: height,
+              color: Colors.white12,
+              alignment: Alignment.center,
+              child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr, setState),
+              // child: _getRFIDBoxList2(justScannedRfidList, containerCodeStr, itemCode),
+            );
+
+            var row = Column(
+              children: [
+                Text(""),
+                _getBaseRFIDInfo(
+                    containerCodeStr, title, subtitle, rfidList.length),
+                container
+              ],
+            );
+            return row;
+      });
+    }
+
     SmartDialog.show(
         tag: "",
         alignment: alignment,
         builder: (_) {
-          var container = Container(
-            width: width,
-            height: height,
-            color: Colors.white12,
-            alignment: Alignment.center,
-            child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr),
-          );
-
-          var row = Column(
-            children: [
-              Text(""),
-              _getBaseRFIDInfo(
-                  containerCodeStr, title, subtitle, rfidList.length),
-              container
-            ],
-          );
-          return row;
-          // return _getRFIDBoxList(rfidList);
+          return addSetState();
         });
+
+    // SmartDialog.show(
+    //     tag: "",
+    //     alignment: alignment,
+    //     builder: (_) {
+    //       var container = Container(
+    //         width: width,
+    //         height: height,
+    //         color: Colors.white12,
+    //         alignment: Alignment.center,
+    //         child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr),
+    //       );
+    //
+    //       var row = Column(
+    //         children: [
+    //           Text(""),
+    //           Observer(builder: (context){
+    //             return Text(_arScanExpandStore.regNum!);
+    //           }),
+    //           TextButton(onPressed: (){
+    //             setState(() {
+    //               print(title);
+    //               _arScanExpandStore.regNum = "hiiii";
+    //               print(_arScanExpandStore.regNum);
+    //             });
+    //           }, child: Text(_arScanExpandStore.regNum!)),
+    //           _getBaseRFIDInfo(
+    //               containerCodeStr, title, subtitle, rfidList.length),
+    //           container
+    //         ],
+    //       );
+    //
+    //
+    //       return Observer(
+    //           builder: (context) {
+    //             return row;
+    //           });
+    //       // return _getRFIDBoxList(rfidList);
+    //     });
   }
 
   Widget _getBaseRFIDInfo(String containerCodeStr, String title,
@@ -1515,6 +1710,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.blueAccent)),
                               child: Center(
+                                // child: Text(_arScanExpandStore.regNum!),
                                 child: Text(title),
                               ),
                             )),

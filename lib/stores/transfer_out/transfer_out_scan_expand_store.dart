@@ -85,6 +85,9 @@ abstract class _TOScanExpandStore with Store {
   String activeContainer = "";
 
   @observable
+  bool needUpdateUI = false;
+
+  @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
 
   @observable
@@ -742,6 +745,7 @@ abstract class _TOScanExpandStore with Store {
     } finally {
       // isFetchingEquData = false;
       print("f");
+      needUpdateUI = true;
     }
   }
 

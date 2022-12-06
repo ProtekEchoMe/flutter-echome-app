@@ -55,7 +55,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
 
   bool isDialogShown = false;
 
-  String regNum = "";
+  String tiNum = "";
   bool isFetchedData = false;
   String title = 'Not Yet Selected';
   String selectedId = '1';
@@ -219,6 +219,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
                 .tr(gender: "scan_page_rescan_cancel_option"));
         if (flag == true) {
           _rescan();
+          fetchOrderDetailData(tiNum, loginFormStore.siteId!);
           _showSnackBar(
               "assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
@@ -327,6 +328,16 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
         _showSnackBar(_TIScanExpandStore.errorStore.errorMessage);
       }
     });
+
+    var disposerUpdateUIReaction =
+    reaction((_) => _TIScanExpandStore.needUpdateUI, (_) {
+      if (_TIScanExpandStore.needUpdateUI) {
+        setState(() {
+          list = list;
+        });
+        _TIScanExpandStore.needUpdateUI = false;
+      }
+    });
     var scanDisposeReaction =
         reaction((_) => _TIScanExpandStore.equipmentData, (_) {
       try {
@@ -369,6 +380,8 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
     disposer.add(() => eventSubscription.cancel());
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
+    disposer.add(disposerUpdateUIReaction);
+
   }
 
   @override
@@ -383,9 +396,9 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
   Widget build(BuildContext context) {
     final TransferInScanPageArguments? args =
         ModalRoute.of(context)!.settings.arguments as TransferInScanPageArguments?;
-    regNum = args!.tiNum;
+    tiNum = args!.tiNum;
     if (!isFetchedData){
-      fetchOrderDetailData(regNum, loginFormStore.siteId!);
+      fetchOrderDetailData(tiNum, loginFormStore.siteId!);
       isFetchedData = true;
     }
     var scaffold = Scaffold(
@@ -1305,7 +1318,13 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
     );
   }
 
-  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList) {
+  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, String containerCodeStr) {
+    String containerRfid = "";
+    if (_TIScanExpandStore.containerCodeRfidMapper.containsKey(containerCodeStr)){
+      if (_TIScanExpandStore.containerCodeRfidMapper[containerCodeStr].isNotEmpty){
+        containerRfid = _TIScanExpandStore.containerCodeRfidMapper[containerCodeStr][0];
+      }
+    }
     return AppContentBox(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -1333,18 +1352,25 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
                                     style: (justScannedRfidList.contains(rfid)) ?
                                     TextStyle(color: Colors.red) : Theme.of(context).textTheme.bodyMedium ,
                                   )),
-                                  // Material(
-                                  //   borderRadius: BorderRadius.circular(50),
-                                  //   clipBehavior: Clip.antiAlias,
-                                  //   child: IconButton(
-                                  //       onPressed: () {
-                                  //         setState(() {
-                                  //           // _TIScanExpandStore.itemRfidDataSet.remove(rfid);
-                                  //           print("icon clicked");
-                                  //         });
-                                  //       },
-                                  //       icon: const Icon(Icons.close)),
-                                  // )
+                                  Material(
+                                    borderRadius: BorderRadius.circular(50),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _TIScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
+                                              setState(() {
+                                                // _arScanExpandStore.removeContainerItemRfid(containerRfid, rfid);
+                                                print("icon clicked");
+                                              });
+                                            }
+                                            );
+                                          });
+
+
+                                        },
+                                        icon: const Icon(Icons.close)),
+                                  )
                                 ])
                           ],
                         ),
@@ -1375,7 +1401,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
             height: height,
             color: Colors.white12,
             alignment: Alignment.center,
-            child: _getRFIDBoxList(rfidList, justScannedRfidList),
+            child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr),
           );
 
           var row = Column(
@@ -1393,6 +1419,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
 
   Widget _getBaseRFIDInfo(String containerCodeStr, String title,
       String subtitle, int rfidListLength) {
+
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 0, maxHeight: 350),
       child: AppContentBox(

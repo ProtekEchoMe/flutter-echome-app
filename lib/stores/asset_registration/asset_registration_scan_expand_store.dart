@@ -9,6 +9,7 @@ import 'package:echo_me_mobile/stores/error/error_store.dart';
 import 'package:echo_me_mobile/utils/ascii_to_text.dart';
 
 // import 'package:expandablelist_test/util.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:echo_me_mobile/models/asset_registration/registration_order_detail.dart';
@@ -50,7 +51,11 @@ abstract class _ARScanExpandStore with Store {
 
   // Main Data Source
   List<RegistrationOrderDetail>? orderLineDTOList = [];
-  Map orderLineDTOMap = {};
+
+  @observable
+  Map orderLineDTOMap = ObservableMap();
+
+  // Map orderLineDTOMap = {};
 
   List<String> scannedRFIDList = [];
 
@@ -73,10 +78,16 @@ abstract class _ARScanExpandStore with Store {
   int totalQty = 0;
 
   @observable
+  int addedContainer = 0;
+
+  @observable
   int totalContainer = 0;
 
   @observable
   String activeContainer = "";
+
+  @observable
+  bool needUpdateUI = false;
 
   @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
@@ -97,6 +108,9 @@ abstract class _ARScanExpandStore with Store {
   ObservableList<EquipmentData> chosenEquipmentData = ObservableList();
 
   @observable
+  ObservableList<String> dialogDisplayRFIDList = ObservableList();
+
+  @observable
   bool isFetching = false;
 
   // void reset(){
@@ -109,6 +123,12 @@ abstract class _ARScanExpandStore with Store {
   //   orderLineDTOMap = {};
   //   scannedRFIDList = [];
   // }
+
+  @action
+  void removeRFID(String containerRFID, String itemCode, {String rfid = "", int i = 0}){
+    this.orderLineDTOMap[containerRFID]
+        .orderLineItemsMap[itemCode].rfid.removeAt(i);
+  }
 
   void updateRFIDStatusMap() {
     if (orderLineDTOList == null || orderLineDTOList!.isEmpty) {
@@ -244,7 +264,8 @@ abstract class _ARScanExpandStore with Store {
         orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode] =
             orderLineItems;
       }
-
+      addRfidIntocontainerItemCodeCheckedRfidMapper(
+          containerRfid, itemCode, rfid);
       this.outOfListQty += 1;
     }
 
@@ -309,6 +330,25 @@ abstract class _ARScanExpandStore with Store {
     print("");
   }
 
+  Map getContainerBadget(List orderLineDTOList){
+    Map containerRFIDCountMap = {};
+    orderLineDTOMap.forEach((containerRFID, orderLineDTO) {
+      Map orderLineItemsMap = orderLineDTO.orderLineItemsMap as Map;
+      if (!containerRFIDCountMap.containsKey(containerRFID)){
+        containerRFIDCountMap[containerRFID] = {"totalCheckedItem":0, "totalItem": 0};
+      }
+      orderLineItemsMap.forEach((itemCode, orderLineMap) {
+        int? checkedinQty = orderLineMap.checkedinQty;
+        int? totalQty = orderLineMap.totalQty;
+        containerRFIDCountMap[containerRFID]["totalCheckedItem"] += checkedinQty;
+        containerRFIDCountMap[containerRFID]["totalItem"] += totalQty;
+
+      });
+    });
+
+    return containerRFIDCountMap;
+  }
+
   dynamic turnOrderLineDtoMapIntoWidget() async {
     List<ExpandableListItem> outputExpandableListWidget =
         <ExpandableListItem>[];
@@ -320,6 +360,9 @@ abstract class _ARScanExpandStore with Store {
     // });
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
+
+    Map containerRFIDCountMap = getContainerBadget(orderLineDTOList!);
+
     orderLineDTOList?.sortOrderLineBy(["modifiedDate", "status"], [1, 1]);
     orderLineDTOList?.forEach((orderLineContainerMap) {
       String? containerRFID = orderLineContainerMap.rfid;
@@ -327,11 +370,13 @@ abstract class _ARScanExpandStore with Store {
       RegistrationOrderDetail orderLineDTO = orderLineDTOMap[containerRFID];
       int? modifiedDateTimeStamp = orderLineDTO.modifiedDate;
       String datetimeStr =
-          DateTime.fromMillisecondsSinceEpoch(modifiedDateTimeStamp!).toString();
+          DateTime.fromMillisecondsSinceEpoch(modifiedDateTimeStamp!)
+              .toString();
       // String datetimeStr = DateTime.fromMillisecondsSinceEpoch(createdTimeStamp).toString();
-      datetimeStr = datetimeStr.substring(0, datetimeStr.length -4);
-      String? containerStatus = orderLineDTO.status;
+      datetimeStr = datetimeStr.substring(0, datetimeStr.length - 4);
+      // String? containerStatus = orderLineDTO.status;
       Map orderLineItemsMap = orderLineDTO.orderLineItemsMap as Map;
+      String? containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalCheckedItem"]} item(s)";
       // String? containerRFID = orderLineDTO.rfid;
 
       ExpandableListItem containerExpandableList = ExpandableListItem(
@@ -339,8 +384,9 @@ abstract class _ARScanExpandStore with Store {
           title: containerCode ?? containerRFID,
           subTitle: "Last update: ${datetimeStr}",
           selected: false,
-          badgeText: containerStatus,
-          badgeColor: Color(0xFFFFE082),
+          badgeText: containerBadgetText,
+          // badgeColor: Color(0xFFFFE082),
+          badgeColor: Colors.orange,
           badgeTextColor: Color(0xFF000000),
           children: <ExpandableListItem>[]);
       orderLineItemsMap.forEach((itemCode, orderLineMap) {
@@ -362,7 +408,8 @@ abstract class _ARScanExpandStore with Store {
           }
         }
 
-        if (containerCode != "Not Yet Scan" && itemCodeRfidMapper.containsKey(itemCode)) {
+        if (containerCode != "Not Yet Scan" &&
+            itemCodeRfidMapper.containsKey(itemCode)) {
           badgeText += "/${itemCodeRfidMapper[itemCode].length}";
         } else {
           badgeText += "/${totalQty}";
@@ -374,15 +421,16 @@ abstract class _ARScanExpandStore with Store {
             subTitle: "PCode: $productCode, ICode: $itemCode",
             selected: false,
             badgeText: badgeText,
-            badgeColor: itemCodeRfidMapper.containsKey(itemCode) ?
-            ((checkedinQty! >= itemCodeRfidMapper[itemCode].length!)
-                ? Color(0xFF44b468) : Color(0xFFFFE082)) :
-            Color(0xFF44b468),
-            badgeTextColor:
-            itemCodeRfidMapper.containsKey(itemCode) ?
-            ((checkedinQty! >= itemCodeRfidMapper[itemCode].length)
-                    ? Color(0xFFFFFFFF) : Color(0xFF000000)) :
-            Color(0xFFFFFFFF),
+            badgeColor: itemCodeRfidMapper.containsKey(itemCode)
+                ? ((checkedinQty! >= itemCodeRfidMapper[itemCode].length!)
+                    ? Color(0xFF44b468)
+                    : Color(0xFFFFE082))
+                : Color(0xFF44b468),
+            badgeTextColor: itemCodeRfidMapper.containsKey(itemCode)
+                ? ((checkedinQty! >= itemCodeRfidMapper[itemCode].length)
+                    ? Color(0xFFFFFFFF)
+                    : Color(0xFF000000))
+                : Color(0xFFFFFFFF),
             children: <ExpandableListItem>[]);
         containerExpandableList.addChild(orderLineExpandableListItem);
       });
@@ -557,6 +605,31 @@ abstract class _ARScanExpandStore with Store {
     orderLineDTOMap = {};
     scannedRFIDList = [];
     activeContainer = "";
+    outOfListQty = 0;
+
+    orderLineMapList;
+    rfidCodeMapper = {};
+    fetchedContainerRfidList = [];
+    itemCodeRfidMapper = {};
+    containerCodeRfidMapper = {};
+    itemCodeCheckedRfidMapper = {};
+    containerItemCodeCheckedRfidMapper = {};
+    itemRfidStatus = {}; // checked, scanned, out-of-bound
+    containerRfidStatus = {};
+    // Main Data Source
+    orderLineDTOList = [];
+    orderLineDTOMap = {};
+    scannedRFIDList = [];
+    totalCheckedSKU = 0;
+    totalSKU = 0;
+    totalCheckedQty = 0;
+    addedQty = 0;
+    outOfListQty = 0;
+    totalQty = 0;
+    addedContainer = 0;
+    totalContainer = 0;
+    activeContainer = "";
+    needUpdateUI = false;
   }
 
   @action
@@ -600,13 +673,11 @@ abstract class _ARScanExpandStore with Store {
                 .map((element) => element.containerAssetCode ?? "")
                 .toSet(); // update Set;
 
-
         Map containerRfidFetchResultMap = {};
         resList.forEach((e) {
-
           EquipmentData data = EquipmentData.fromJson(e);
           containerRfidFetchResultMap[data.rfid] = data;
-        }) ;
+        });
 
         for (var e in resList) {
           EquipmentData data = EquipmentData.fromJson(e);
@@ -615,8 +686,7 @@ abstract class _ARScanExpandStore with Store {
 
           if (data.rfid != null &&
               !addedContainerAssetCodeSet.contains(data.rfid!)) {
-
-            if(activeContainer == data.rfid){
+            if (activeContainer == data.rfid) {
               chosenEquipmentData.add(data);
             }
 
@@ -657,11 +727,12 @@ abstract class _ARScanExpandStore with Store {
               chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
         });
       }
-    } catch (e) {
+    } catch (e, s) {
       errorStore.setErrorMessage(e.toString());
     } finally {
       // isFetchingEquData = false;
-      print("f");
+      needUpdateUI = true;
+      print("finish validate equipment --> needUpdateUI: $needUpdateUI");
     }
   }
 
@@ -673,6 +744,13 @@ abstract class _ARScanExpandStore with Store {
     if (activeContainer == "" && equList.isNotEmpty) {
       activeContainer = equList[0];
     }
+    equList.forEach((equ) {
+      if (!equipmentRfidDataSet.contains(equ)) {
+        addedContainer += 1;
+        totalContainer += 1;
+      }
+      equipmentRfidDataSet.add(equ);
+    });
     equipmentRfidDataSet.addAll(equList);
   }
 
@@ -715,7 +793,7 @@ abstract class _ARScanExpandStore with Store {
     try {
       isFetching = true;
       await repository.completeAssetRegistration(regNum: regNum);
-    } catch (e) {
+    } catch (e, s) {
       errorStore.setErrorMessage(e.toString());
     } finally {
       isFetching = false;
@@ -730,7 +808,7 @@ abstract class _ARScanExpandStore with Store {
     try {
       isFetching = true;
       await repository.registerContainer(rfid: rfid, regNum: regNum);
-    } catch (e) {
+    } catch (e, s) {
       if (throwError == true) {
         rethrow;
       } else {
@@ -754,7 +832,8 @@ abstract class _ARScanExpandStore with Store {
           regNum: regNum,
           containerAssetCode: containerAssetCode,
           itemRfid: itemRfid);
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
       if (throwError == true) {
         rethrow;
       } else {
@@ -766,84 +845,142 @@ abstract class _ARScanExpandStore with Store {
   }
 
   @action
-  Future<void> removeContainerItemRfid(String containerRfid, String rfid)async {
+  Future<void> removeContainerItemRfid(
+      String containerRfid, String rfid) async {
     String notYetScanContainerStr = "Not Yet Scan";
-
-    if (!rfidCodeMapper.containsKey(rfid)){
-      return;
-    }
+    this.itemRfidDataSet.removeWhere((element) => element == rfid);
+    // if (!rfidCodeMapper.containsKey(rfid)){
+    //   return;
+    // }
     String itemCode = rfidCodeMapper[rfid];
-    if(itemRfidStatus.containsKey(rfid)){
+    if (itemRfidStatus.containsKey(rfid)) {
       itemRfidStatus[rfid] = "un-committed"; // 1
 
       //2
-      if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){
-        List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+      if (containerItemCodeCheckedRfidMapper.containsKey(containerRfid) &&
+          containerItemCodeCheckedRfidMapper[containerRfid]
+              .containsKey(itemCode)) {
+        List targetContainerRfidList =
+            containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
         targetContainerRfidList.removeWhere((element) => element == rfid);
       }
-      if(containerItemCodeCheckedRfidMapper.containsKey(notYetScanContainerStr) && containerItemCodeCheckedRfidMapper[notYetScanContainerStr].containsKey(itemCode)) {
-        List notYetScanContainerRfidList = containerItemCodeCheckedRfidMapper[notYetScanContainerStr][itemCode];
+      if (containerItemCodeCheckedRfidMapper
+              .containsKey(notYetScanContainerStr) &&
+          containerItemCodeCheckedRfidMapper[notYetScanContainerStr]
+              .containsKey(itemCode)) {
+        List notYetScanContainerRfidList =
+            containerItemCodeCheckedRfidMapper[notYetScanContainerStr]
+                [itemCode];
         notYetScanContainerRfidList.removeWhere((element) => element == rfid);
       }
 
       //3
-      if(orderLineDTOMap.containsKey(containerRfid) && orderLineDTOMap[containerRfid].orderLineItemsMap.containsKey(itemCode)) {
-        OrderLineItems targetOrderIineItem = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
-        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+      if (orderLineDTOMap.containsKey(containerRfid) &&
+          orderLineDTOMap[containerRfid]
+              .orderLineItemsMap
+              .containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem =
+            orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty =
+            targetOrderIineItem.checkedinQty! - 1;
         targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
       }
 
-      if(orderLineDTOMap.containsKey(notYetScanContainerStr) && orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap.containsKey(itemCode)) {
-        OrderLineItems targetOrderIineItem = orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap[itemCode];
-        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+      if (orderLineDTOMap.containsKey(notYetScanContainerStr) &&
+          orderLineDTOMap[notYetScanContainerStr]
+              .orderLineItemsMap
+              .containsKey(itemCode)) {
+        OrderLineItems targetOrderIineItem =
+            orderLineDTOMap[notYetScanContainerStr].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty =
+            targetOrderIineItem.checkedinQty! - 1;
         targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
       }
+
+      this.totalCheckedQty -= 1;
+      this.addedQty -= 1;
 
       // orderLineDTOMap
 
-    }else{
+    } else {
       // out of list
       //2
+      itemCode = rfid;
       String outOfListStr = "Out of List";
-      if(containerItemCodeCheckedRfidMapper.containsKey(outOfListStr) && containerItemCodeCheckedRfidMapper[outOfListStr].containsKey(itemCode)){
-        List<String> targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+      if (containerItemCodeCheckedRfidMapper.containsKey(outOfListStr) &&
+          containerItemCodeCheckedRfidMapper[outOfListStr]
+              .containsKey(itemCode)) {
+        // List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+        List targetContainerRfidList = containerItemCodeCheckedRfidMapper[outOfListStr][itemCode];
         targetContainerRfidList.removeWhere((element) => element == rfid);
+        if(targetContainerRfidList.isEmpty){
+          containerItemCodeCheckedRfidMapper[outOfListStr].remove(itemCode);
+        }
       }
 
-      if(orderLineDTOMap.containsKey(outOfListStr) && orderLineDTOMap[outOfListStr].orderLineItemsMap.containsKey(itemCode)) {
-        OrderLineItems targetOrderIineItem = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
-        targetOrderIineItem.checkedinQty = targetOrderIineItem.checkedinQty! - 1;
+      if (orderLineDTOMap.containsKey(outOfListStr) &&
+          orderLineDTOMap[outOfListStr]
+              .orderLineItemsMap
+              .containsKey(itemCode)) {
+        // OrderLineItems targetOrderIineItem = orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode];
+        OrderLineItems targetOrderIineItem = orderLineDTOMap[outOfListStr].orderLineItemsMap[itemCode];
+        targetOrderIineItem.checkedinQty =
+            targetOrderIineItem.checkedinQty! - 1;
         targetOrderIineItem.rfid!.removeWhere((element) => element == rfid);
+        if (targetOrderIineItem.rfid!.isEmpty){
+          orderLineDTOMap[outOfListStr].orderLineItemsMap.remove(itemCode);
+        }
       }
 
       this.outOfListQty -= 1;
     }
-
-    this.itemRfidDataSet.removeWhere((element) => element == rfid);
-    this.totalCheckedQty -= 1;
-    this.addedQty -= 1;
-
-
   }
 
   @action
-  Future<void> removeContainerItem(String containerRfid, String itemCode)async {
-    if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){
-      List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+  Future<void> removeContainerItem(
+      String containerRfid, String itemCode) async {
+    // List targetContainerRfidList = containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
+    // List copyList = List.from(targetContainerRfidList);
+    // copyList.forEach((rfid) {removeContainerItemRfid(containerRfid, rfid);});
+
+    if (containerItemCodeCheckedRfidMapper.containsKey(containerRfid) &&
+        containerItemCodeCheckedRfidMapper[containerRfid]
+            .containsKey(itemCode)) {
+      List targetContainerRfidList =
+          containerItemCodeCheckedRfidMapper[containerRfid][itemCode];
       List copyList = List.from(targetContainerRfidList);
-      copyList.forEach((rfid) {removeContainerItemRfid(containerRfid, rfid);});
+      copyList.forEach((rfid) {
+        removeContainerItemRfid(containerRfid, rfid);
+      });
     }
   }
 
   @action
-  Future<void>  removeContainer(String containerRfid)async{
-    if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid)){
-      List itemCodeList = containerItemCodeCheckedRfidMapper[containerRfid].keys.toList();
+  Future<void> removeContainer(String containerRfid) async {
+    if (containerItemCodeCheckedRfidMapper.containsKey(containerRfid)) {
+      List itemCodeList =
+          containerItemCodeCheckedRfidMapper[containerRfid].keys.toList();
       List copyList = List.from(itemCodeList);
       copyList.forEach((itemCode) {
         removeContainerItem(containerRfid, itemCode);
       });
     }
-    this.equipmentRfidDataSet.removeWhere((element) => element == containerRfid);
+    this.equipmentRfidDataSet.removeWhere((element) {
+      if (element == containerRfid) {
+        totalContainer -= 1;
+        addedContainer -= 1;
+        return true;
+      }
+      return false;
+    });
+
+    String containerCode = rfidCodeMapper[containerRfid];
+    if (containerCode != null && containerCode == activeContainer) {
+      if (equipmentRfidDataSet.isNotEmpty) {
+        activeContainer = equipmentRfidDataSet.elementAt(0).toString();
+      } else {
+        activeContainer = "";
+      }
+    }
   }
 }
