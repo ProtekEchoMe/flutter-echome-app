@@ -20,6 +20,7 @@ import 'package:echo_me_mobile/stores/app_version_control/app_version_control_st
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_expand_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan_store.dart';
 import 'package:echo_me_mobile/stores/asset_registration/asset_registration_store.dart';
+import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_expand_store.dart';
 import 'package:echo_me_mobile/stores/asset_return/asset_return_scan_store.dart';
 import 'package:echo_me_mobile/stores/asset_return/asset_return_store.dart';
 import 'package:echo_me_mobile/stores/asset_inventory/asset_inventory_store.dart';
@@ -125,6 +126,10 @@ Future<void> setupLocator() async {
 
   getIt.registerFactory<AssetReturnScanStore>(
           () => AssetReturnScanStore(getIt<Repository>()));
+
+  getIt.registerFactory<AssetReturnScanExpandStore>(
+          () => AssetReturnScanExpandStore(getIt<Repository>()));
+
 
   getIt.registerFactory<TransferInScanStore>(
       () => TransferInScanStore(getIt<Repository>()));

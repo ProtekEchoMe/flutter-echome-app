@@ -502,7 +502,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           // _getTitle(context, args),
           _getDocumentInfo(args),
           _buildRightSide(),
-          // ..._getButtonTestList()
+          ..._getButtonTestList()
         ]),
       ),
     );
@@ -1109,13 +1109,13 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
 
   List<Widget> _getButtonTestList() {
     List<Widget> output = [
-      TextButton(
-          onPressed: () async {
-            // var result = await repository.getAssetRegistrationOrderDetail(tiNum: "GDC0980203", site: 2);
-            var result2 =
-            await _TIScanExpandStore.fetchOrderDetail("Mixson_AR3", loginFormStore.siteId!);
-          },
-          child: Text("Fetch Data")),
+      // TextButton(
+      //     onPressed: () async {
+      //       // var result = await repository.getAssetRegistrationOrderDetail(tiNum: "GDC0980203", site: 2);
+      //       var result2 =
+      //       await _TIScanExpandStore.fetchOrderDetail("Mixson_AR3", loginFormStore.siteId!);
+      //     },
+      //     child: Text("Fetch Data")),
       // TextButton(
       //     onPressed: () async {
       //       _TIScanExpandStore.loadOrderLineJson();
@@ -1182,45 +1182,45 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
                 equList: equList, itemList: itemList);
           },
           child: Text("updateDataSet")),
-      TextButton(
-          onPressed: ()  {
-            _TIScanExpandStore.errorStore.setErrorMessage("Test");
-
-          },
-          child: Text("set error")),
-      TextButton(
-          onPressed: ()  {
-            showDialog(
-              context: context,
-              builder: (context) {
-                String contentText = "Content of Dialog";
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    return AlertDialog(
-                      title: Text("Title of Dialog"),
-                      content: Text(contentText),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text("Cancel"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              contentText = "Changed Content of Dialog";
-                            });
-                          },
-                          child: Text("Change"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            );
-
-          },
-          child: Text("show dialog"))
+      // TextButton(
+      //     onPressed: ()  {
+      //       _TIScanExpandStore.errorStore.setErrorMessage("Test");
+      //
+      //     },
+      //     child: Text("set error")),
+      // TextButton(
+      //     onPressed: ()  {
+      //       showDialog(
+      //         context: context,
+      //         builder: (context) {
+      //           String contentText = "Content of Dialog";
+      //           return StatefulBuilder(
+      //             builder: (context, setState) {
+      //               return AlertDialog(
+      //                 title: Text("Title of Dialog"),
+      //                 content: Text(contentText),
+      //                 actions: <Widget>[
+      //                   TextButton(
+      //                     onPressed: () => Navigator.pop(context),
+      //                     child: Text("Cancel"),
+      //                   ),
+      //                   TextButton(
+      //                     onPressed: () {
+      //                       setState(() {
+      //                         contentText = "Changed Content of Dialog";
+      //                       });
+      //                     },
+      //                     child: Text("Change"),
+      //                   ),
+      //                 ],
+      //               );
+      //             },
+      //           );
+      //         },
+      //       );
+      //
+      //     },
+      //     child: Text("show dialog"))
     ];
     return output;
   }

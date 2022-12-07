@@ -1,25 +1,21 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:dismissible_expanded_list/model/entry.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:echo_me_mobile/data/network/apis/asset_registration/asset_registration_api.dart';
+import 'package:echo_me_mobile/data/network/apis/asset_return/asset_return_api.dart';
+import 'package:echo_me_mobile/models/asset_return/return_order_detail.dart';
 import 'package:echo_me_mobile/models/equipment_data/equipment_data.dart';
 import 'package:echo_me_mobile/stores/error/error_store.dart';
-import 'package:echo_me_mobile/utils/ascii_to_text.dart';
-
-// import 'package:expandablelist_test/util.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:echo_me_mobile/models/asset_registration/registration_order_detail.dart';
+
 import 'package:echo_me_mobile/utils/extension/sortExtension.dart';
 
 import 'package:echo_me_mobile/data/repository.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 
 import 'package:mobx/mobx.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
 
 part 'asset_return_scan_expand_store.g.dart';
 
@@ -50,7 +46,7 @@ abstract class _AssetReturnScanExpandStore with Store {
   Map containerRfidStatus = {};
 
   // Main Data Source
-  List<RegistrationOrderDetail>? orderLineDTOList = [];
+  List<ReturnOrderDetail>? orderLineDTOList = [];
 
   @observable
   Map orderLineDTOMap = ObservableMap();
@@ -164,7 +160,7 @@ abstract class _AssetReturnScanExpandStore with Store {
     //   "orderLineItems": []
     // };
 
-    RegistrationOrderDetail orderLineDTO = RegistrationOrderDetail(
+    ReturnOrderDetail orderLineDTO = ReturnOrderDetail(
       orderNum: orderNum,
       containerCode: containerCode,
       rfid: containerRfid,
@@ -367,7 +363,7 @@ abstract class _AssetReturnScanExpandStore with Store {
     orderLineDTOList?.forEach((orderLineContainerMap) {
       String? containerRFID = orderLineContainerMap.rfid;
       String? containerCode = orderLineContainerMap.containerCode;
-      RegistrationOrderDetail orderLineDTO = orderLineDTOMap[containerRFID];
+      ReturnOrderDetail orderLineDTO = orderLineDTOMap[containerRFID];
       int? modifiedDateTimeStamp = orderLineDTO.modifiedDate;
       String datetimeStr =
           DateTime.fromMillisecondsSinceEpoch(modifiedDateTimeStamp!)
@@ -540,7 +536,7 @@ abstract class _AssetReturnScanExpandStore with Store {
     turnOrderLineIntoMapper();
     updateRFIDStatusMap();
     orderLineDTOList = orderLineMapList
-        ?.map((e) => RegistrationOrderDetail.fromJson(e))
+        ?.map((e) => ReturnOrderDetail.fromJson(e))
         .toList();
     // orderLineDTOMap = {};
     orderLineDTOList?.forEach((orderLineInfo) {
@@ -562,8 +558,8 @@ abstract class _AssetReturnScanExpandStore with Store {
     reset();
     this.rtnNum = rtnNum;
     // AssetRegistrationOrderDetailResponse result = await repository.getAssetRegistrationOrderDetail(rtnNum: "GDC0980203", site: 2);
-    AssetRegistrationOrderDetailResponse result = await repository
-        .getAssetRegistrationOrderDetail(rtnNum: rtnNum, site: site);
+    AssetReturnOrderDetailResponse result = await repository
+        .getAssetReturnOrderDetail(rtnNum: rtnNum, site: site);
     // String jsonStr = await __readFile('assets/mockorderLine2.json');
     orderLineDTOList = result.itemList;
     int containerNum = result.rowNumber;
@@ -580,7 +576,7 @@ abstract class _AssetReturnScanExpandStore with Store {
 
     // orderLineMapList = json.decode(jsonStr);
     // orderLineDTOList =
-    // orderLineMapList?.map((e) => RegistrationOrderDetail.fromJson(e)).toList();
+    // orderLineMapList?.map((e) => ReturnOrderDetail.fromJson(e)).toList();
 
     print("");
     // turnOrderLineIntoMapper();

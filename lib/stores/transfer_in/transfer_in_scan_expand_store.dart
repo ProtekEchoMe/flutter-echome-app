@@ -125,23 +125,33 @@ abstract class _TIScanExpandStore with Store {
     if (orderLineDTOList == null || orderLineDTOList!.isEmpty) {
       throw Exception("orderLineMapList shall not be null or empty");
     }
+    // orderLineDTOList!.forEach((orderLineMap) {
+    //   if (orderLineMap.containerCode == "Not Yet Scan") {
+    //     orderLineMap.orderLineItems?.forEach((orderLineItem) {
+    //       List<String>? rfidList = orderLineItem.rfid;
+    //       rfidList?.forEach((rfid) {
+    //         itemRfidStatus[rfid] = "unScanned";
+    //       });
+    //     });
+    //   } else {
+    //     orderLineMap.orderLineItems?.forEach((orderLineItem) {
+    //       List<String>? rfidList = orderLineItem.rfid;
+    //       rfidList?.forEach((rfid) {
+    //         itemRfidStatus[rfid] = "committed";
+    //       });
+    //     });
+    //   }
+    // });
+
     orderLineDTOList!.forEach((orderLineMap) {
-      if (orderLineMap.containerCode == "Not Yet Scan") {
+
         orderLineMap.orderLineItems?.forEach((orderLineItem) {
           List<String>? rfidList = orderLineItem.rfid;
           rfidList?.forEach((rfid) {
             itemRfidStatus[rfid] = "unScanned";
           });
         });
-      } else {
-        orderLineMap.orderLineItems?.forEach((orderLineItem) {
-          List<String>? rfidList = orderLineItem.rfid;
-          rfidList?.forEach((rfid) {
-            itemRfidStatus[rfid] = "committed";
-          });
-        });
-      }
-    });
+      });
   }
 
   void createContainer(
@@ -192,7 +202,8 @@ abstract class _TIScanExpandStore with Store {
     //check the status of rfid
     // if it is unchecked, checkinNum += 1, and add it into containerCode
     String unScannedStr = "unScanned";
-    String unScannedStrMapper = "Not Yet Scan";
+    // String unScannedStrMapper = "Not Yet Scan";
+    String unScannedStrMapper = containerRfid;
     if (itemRfidStatus.containsKey(rfid)) {
       String rfidStatus = itemRfidStatus[rfid];
 
@@ -206,10 +217,10 @@ abstract class _TIScanExpandStore with Store {
 
       addRfidIntocontainerItemCodeCheckedRfidMapper(
           containerRfid, itemCode, rfid);
-      addRfidIntocontainerItemCodeCheckedRfidMapper(
-          unScannedStrMapper, itemCode, rfid);
+      // addRfidIntocontainerItemCodeCheckedRfidMapper(
+      //     unScannedStrMapper, itemCode, rfid);
 
-      orderLineItems.checkedinQty = orderLineItems.checkedinQty! + 1;
+      // orderLineItems.checkedinQty = orderLineItems.checkedinQty! + 1;
       this.totalCheckedQty += 1;
       this.addedQty += 1;
       // TODO -- revise the object movement
@@ -354,6 +365,8 @@ abstract class _TIScanExpandStore with Store {
           badgeColor: Color(0xFFFFE082),
           badgeTextColor: Color(0xFF000000),
           children: <ExpandableListItem>[]);
+
+
       orderLineItemsMap.forEach((itemCode, orderLineMap) {
         String? productName = orderLineMap.productName;
         String? productCode = orderLineMap.productCode;
@@ -693,8 +706,9 @@ abstract class _TIScanExpandStore with Store {
               chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
         });
       }
-    } catch (e) {
+    } catch (e,s) {
       errorStore.setErrorMessage(e.toString());
+      print(s);
     } finally {
       // isFetchingEquData = false;
       print("f");
@@ -752,8 +766,9 @@ abstract class _TIScanExpandStore with Store {
     try {
       isFetching = true;
       await repository.completeTiRegistration(tiNum: tiNum);
-    } catch (e) {
+    } catch (e,s) {
       errorStore.setErrorMessage(e.toString());
+      print(s);
     } finally {
       isFetching = false;
     }
@@ -767,11 +782,12 @@ abstract class _TIScanExpandStore with Store {
     try {
       isFetching = true;
       await repository.registerTiContainer(rfid: rfid, tiNum: tiNum);
-    } catch (e) {
+    } catch (e,s) {
       if (throwError == true) {
         rethrow;
       } else {
         errorStore.setErrorMessage(e.toString());
+        print(s);
       }
     } finally {
       isFetching = false;
@@ -791,11 +807,12 @@ abstract class _TIScanExpandStore with Store {
           tiNum: tiNum,
           containerAssetCode: containerAssetCode,
           itemRfid: itemRfid);
-    } catch (e) {
+    } catch (e,s) {
       if (throwError == true) {
         rethrow;
       } else {
         errorStore.setErrorMessage(e.toString());
+        print(s);
       }
     } finally {
       isFetching = false;

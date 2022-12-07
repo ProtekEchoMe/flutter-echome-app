@@ -36,14 +36,14 @@ import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan
 import 'dart:io';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
-class AssetScanExpandPage extends StatefulWidget {
-  const AssetScanExpandPage({Key? key}) : super(key: key);
+class AssetReturnScanExpandPage extends StatefulWidget {
+  const AssetReturnScanExpandPage({Key? key}) : super(key: key);
 
   @override
-  State<AssetScanExpandPage> createState() => _AssetScanExpandPageState();
+  State<AssetReturnScanExpandPage> createState() => _AssetReturnScanExpandPageState();
 }
 
-class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
+class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
       getIt<AssetRegistrationScanStore>();
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();

@@ -133,7 +133,7 @@ class Repository {
         toNum: toNum, site: site);
   }
 
-  Future<AssetRegistrationOrderDetailResponse> getAssetReturnOrderDetail(
+  Future<AssetReturnOrderDetailResponse> getAssetReturnOrderDetail(
       {String rtnNum = "", site = 2}) async {
     return await _assetReturnApi.getOrderDetail(
         rtnNum: rtnNum, site: site);

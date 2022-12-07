@@ -134,7 +134,7 @@ class _AssetReturnPageState extends State<AssetReturnPage> {
                             var status = listItem.status;
                             // ignore: prefer_function_declarations_over_variables
                             var fx = () => Navigator.pushNamed(
-                                context, "/asset_return_scan",
+                                context, "/asset_return_scan_extend",
                                 arguments: AssetReturnScanPageArguments(
                                     listItem.orderId,  // listItem.orderId
                                     item: listItem.item)
