@@ -375,9 +375,9 @@ abstract class _AssetReturnScanExpandStore with Store {
 
       String? containerBadgetText = "";
       if(containerRFID != "Not Yet Scan"){
-        containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalCheckedItem"]} item(s)";
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  ( ${orderLineItemsMap.keys.length}sku)";
       }else{
-        containerBadgetText = "${containerRFIDCountMap[containerRFID]["totalItem"]} item(s)";
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)" ;
       }
 
       // String? containerRFID = orderLineDTO.rfid;

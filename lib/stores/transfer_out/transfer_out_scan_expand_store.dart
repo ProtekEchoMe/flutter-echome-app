@@ -369,6 +369,9 @@ abstract class _TOScanExpandStore with Store {
     // });
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
     // orderLineMapList.sort((b, a) => (b['modifiedDate']).compareTo(a['modifiedDate']));
+
+    Map containerRFIDCountMap = getContainerBadget(orderLineDTOList!);
+
     orderLineDTOList?.sortOrderLineBy(["modifiedDate", "status"], [1, 1]);
     orderLineDTOList?.forEach((orderLineContainerMap) {
       String? containerRFID = orderLineContainerMap.rfid;
@@ -383,12 +386,19 @@ abstract class _TOScanExpandStore with Store {
       Map orderLineItemsMap = orderLineDTO.orderLineItemsMap as Map;
       // String? containerRFID = orderLineDTO.rfid;
 
+      String? containerBadgetText = "";
+      if(containerRFID != "Not Yet Scan"){
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  ( ${orderLineItemsMap.keys.length}sku)";
+      }else{
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)" ;
+      }
+
       ExpandableListItem containerExpandableList = ExpandableListItem(
           id: containerRFID ?? containerCode,
           title: containerCode ?? containerRFID,
           subTitle: "Last update: ${datetimeStr}",
           selected: false,
-          badgeText: containerStatus,
+          badgeText: containerBadgetText,
           badgeColor: Color(0xFFFFE082),
           badgeTextColor: Color(0xFF000000),
           children: <ExpandableListItem>[]);
@@ -441,6 +451,25 @@ abstract class _TOScanExpandStore with Store {
     });
     print("orderLineMap");
     return outputExpandableListWidget;
+  }
+
+  Map getContainerBadget(List orderLineDTOList){
+    Map containerRFIDCountMap = {};
+    orderLineDTOMap.forEach((containerRFID, orderLineDTO) {
+      Map orderLineItemsMap = orderLineDTO.orderLineItemsMap as Map;
+      if (!containerRFIDCountMap.containsKey(containerRFID)){
+        containerRFIDCountMap[containerRFID] = {"totalCheckedItem":0, "totalItem": 0};
+      }
+      orderLineItemsMap.forEach((itemCode, orderLineMap) {
+        int? checkedinQty = orderLineMap.checkedinQty;
+        int? totalQty = orderLineMap.totalQty;
+        containerRFIDCountMap[containerRFID]["totalCheckedItem"] += checkedinQty;
+        containerRFIDCountMap[containerRFID]["totalItem"] += totalQty;
+
+      });
+    });
+
+    return containerRFIDCountMap;
   }
 
   void updateDashBoard() {
