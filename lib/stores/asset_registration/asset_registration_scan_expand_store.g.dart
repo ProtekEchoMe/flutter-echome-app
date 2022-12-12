@@ -178,6 +178,21 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
+  final _$needUpdateItemAtom = Atom(name: '_ARScanExpandStore.needUpdateItem');
+
+  @override
+  bool get needUpdateItem {
+    _$needUpdateItemAtom.reportRead();
+    return super.needUpdateItem;
+  }
+
+  @override
+  set needUpdateItem(bool value) {
+    _$needUpdateItemAtom.reportWrite(value, super.needUpdateItem, () {
+      super.needUpdateItem = value;
+    });
+  }
+
   final _$itemRfidDataSetAtom =
       Atom(name: '_ARScanExpandStore.itemRfidDataSet');
 
@@ -214,13 +229,13 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
   final _$equipmentDataAtom = Atom(name: '_ARScanExpandStore.equipmentData');
 
   @override
-  ObservableList<EquipmentData> get equipmentData {
+  ObservableMap<String, EquipmentData> get equipmentData {
     _$equipmentDataAtom.reportRead();
     return super.equipmentData;
   }
 
   @override
-  set equipmentData(ObservableList<EquipmentData> value) {
+  set equipmentData(ObservableMap<String, EquipmentData> value) {
     _$equipmentDataAtom.reportWrite(value, super.equipmentData, () {
       super.equipmentData = value;
     });
@@ -305,13 +320,21 @@ mixin _$ARScanExpandStore on _ARScanExpandStore, Store {
     });
   }
 
-  final _$validateEquipmentRfidAsyncAction =
-      AsyncAction('_ARScanExpandStore.validateEquipmentRfid');
+  final _$validateContainerRfidAsyncAction =
+      AsyncAction('_ARScanExpandStore.validateContainerRfid');
 
   @override
-  Future<void> validateEquipmentRfid() {
-    return _$validateEquipmentRfidAsyncAction
-        .run(() => super.validateEquipmentRfid());
+  Future<void> validateContainerRfid() {
+    return _$validateContainerRfidAsyncAction
+        .run(() => super.validateContainerRfid());
+  }
+
+  final _$validateItemRfidAsyncAction =
+      AsyncAction('_ARScanExpandStore.validateItemRfid');
+
+  @override
+  Future<void> validateItemRfid() {
+    return _$validateItemRfidAsyncAction.run(() => super.validateItemRfid());
   }
 
   final _$completeAsyncAction = AsyncAction('_ARScanExpandStore.complete');
@@ -439,6 +462,7 @@ addedContainer: ${addedContainer},
 totalContainer: ${totalContainer},
 activeContainer: ${activeContainer},
 needUpdateUI: ${needUpdateUI},
+needUpdateItem: ${needUpdateItem},
 itemRfidDataSet: ${itemRfidDataSet},
 equipmentRfidDataSet: ${equipmentRfidDataSet},
 equipmentData: ${equipmentData},

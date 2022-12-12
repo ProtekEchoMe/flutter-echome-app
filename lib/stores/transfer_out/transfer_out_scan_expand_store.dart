@@ -388,7 +388,7 @@ abstract class _TOScanExpandStore with Store {
 
       String? containerBadgetText = "";
       if(containerRFID != "Not Yet Scan"){
-        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  ( ${orderLineItemsMap.keys.length}sku)";
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)";
       }else{
         containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)" ;
       }
@@ -584,35 +584,41 @@ abstract class _TOScanExpandStore with Store {
   Future<void> fetchOrderDetail(String toNum, int site) async {
     // String jsonStr = await __readFile('assets/orderLine.json');
     // regNum = "GDC0980203";
-    reset();
-    this.toNum = toNum;
-    // AssetTransferOutOrderDetailResponse result = await repository.getAssetTransferOutOrderDetail(regNum: "GDC0980203", site: 2);
-    TransferOutOrderDetailResponse result = await repository
-        .getTransferOutOrderDetail(toNum: toNum, site: site);
-    // String jsonStr = await __readFile('assets/mockorderLine2.json');
-    orderLineDTOList = result.itemList;
-    int containerNum = result.rowNumber;
+    try{
+      reset();
+      this.toNum = toNum;
+      // AssetTransferOutOrderDetailResponse result = await repository.getAssetTransferOutOrderDetail(regNum: "GDC0980203", site: 2);
+      TransferOutOrderDetailResponse result = await repository
+          .getTransferOutOrderDetail(toNum: toNum, site: site);
+      // String jsonStr = await __readFile('assets/mockorderLine2.json');
+      orderLineDTOList = result.itemList;
+      int containerNum = result.rowNumber;
 
-    // update corrsponding data based on fetched result;
+      // update corrsponding data based on fetched result;
 
-    // updateNotYetScanRFID(); // useless in transfer in module
-    updateOrderLineDTOMap(); // after fetch DTOList --> turn it into DTOMap
-    updateContainerItemCodeCheckedRfidMapper(); // update containerItemCodeCheckedRfidMapper
-    // used as showing ui --> which rfid is checked --> under what container and what item
-    turnOrderLineIntoMapper(); // update Mapper --> as basic info
-    // rfidCodeMapper, containerCodeRfidMapper, itemCodeRfidMapper
-    updateRFIDStatusMap(); // update itemRfidStatus --> all result is scanned //TODO need to update the logic based on its condition
-    // to know which rfid is not yet scan/ already scanned
+      // updateNotYetScanRFID(); // useless in transfer in module
+      updateOrderLineDTOMap(); // after fetch DTOList --> turn it into DTOMap
+      updateContainerItemCodeCheckedRfidMapper(); // update containerItemCodeCheckedRfidMapper
+      // used as showing ui --> which rfid is checked --> under what container and what item
+      turnOrderLineIntoMapper(); // update Mapper --> as basic info
+      // rfidCodeMapper, containerCodeRfidMapper, itemCodeRfidMapper
+      updateRFIDStatusMap(); // update itemRfidStatus --> all result is scanned //TODO need to update the logic based on its condition
+      // to know which rfid is not yet scan/ already scanned
 
-    updateDashBoard(); // to update all info in the dashboard
+      updateDashBoard(); // to update all info in the dashboard
 
-    // orderLineMapList = json.decode(jsonStr);
-    // orderLineDTOList =
-    // orderLineMapList?.map((e) => TransferOutOrderDetail.fromJson(e)).toList();
+      // orderLineMapList = json.decode(jsonStr);
+      // orderLineDTOList =
+      // orderLineMapList?.map((e) => TransferOutOrderDetail.fromJson(e)).toList();
 
-    print("");
-    // turnOrderLineIntoMapper();
-    // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
+      print("");
+      // turnOrderLineIntoMapper();
+      // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
+    }catch(e,s){
+      errorStore.setErrorMessage(e.toString());
+      print(s);
+    }
+
   }
 
   Future<String> __readFile(String fileName) async {

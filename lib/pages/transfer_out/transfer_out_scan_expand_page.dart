@@ -98,17 +98,17 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
         throw "Reg Number Not Found";
       }
 
-      if (_getcontainerAssetCode().isEmpty) {
-        throw "Container Code not found";
-      }
+      // if (_getcontainerAssetCode().isEmpty) {
+      //   throw "Container Code not found";
+      // }
 
       if (_TOScanExpandStore.itemRfidDataSet.isEmpty) {
         throw "Assets List is empty";
       }
 
-      if (_TOScanExpandStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_TOScanExpandStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
@@ -156,11 +156,16 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
 
       });
 
+      bool directTO = false;
+      if (args != null && args.toNum.startsWith('TO'))
+        directTO = true;
+
       await _TOScanExpandStore.checkInTOItem(
           toNum: args?.toNum ?? "",
           itemRfid: itemRfid,
           containerAssetCode: targetcontainerAssetCode,
-          throwError: true);
+          throwError: true,
+          directTO: directTO);
       _TOScanExpandStore.reset();
       fetchOrderDetailData(args!.toNum, loginFormStore.siteId!); // refresh page
       return true;

@@ -375,7 +375,7 @@ abstract class _AssetReturnScanExpandStore with Store {
 
       String? containerBadgetText = "";
       if(containerRFID != "Not Yet Scan"){
-        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  ( ${orderLineItemsMap.keys.length}sku)";
+        containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/ ${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)";
       }else{
         containerBadgetText = "{${containerRFIDCountMap[containerRFID]["totalCheckedItem"]}/${containerRFIDCountMap[containerRFID]["totalItem"]}}  (${orderLineItemsMap.keys.length}sku)" ;
       }
@@ -388,8 +388,8 @@ abstract class _AssetReturnScanExpandStore with Store {
           subTitle: "Last update: ${datetimeStr}",
           selected: false,
           badgeText: containerBadgetText,
-          // badgeColor: Color(0xFFFFE082),
-          badgeColor: Colors.orange,
+          badgeColor: Color(0xFFFFE082),
+          // badgeColor: Colors.orange,
           badgeTextColor: Color(0xFF000000),
           children: <ExpandableListItem>[]);
       orderLineItemsMap.forEach((itemCode, orderLineMap) {
@@ -554,31 +554,36 @@ abstract class _AssetReturnScanExpandStore with Store {
 
   Future<void> fetchOrderDetail(String rtnNum, int site) async {
     // String jsonStr = await __readFile('assets/orderLine.json');
-    // rtnNum = "GDC0980203";
-    reset();
-    this.rtnNum = rtnNum;
-    // AssetRegistrationOrderDetailResponse result = await repository.getAssetRegistrationOrderDetail(rtnNum: "GDC0980203", site: 2);
-    AssetReturnOrderDetailResponse result = await repository
-        .getAssetReturnOrderDetail(rtnNum: rtnNum, site: site);
-    // String jsonStr = await __readFile('assets/mockorderLine2.json');
-    orderLineDTOList = result.itemList;
-    int containerNum = result.rowNumber;
+    try {
+      // rtnNum = "GDC0980203";
+      reset();
+      this.rtnNum = rtnNum;
+      // AssetRegistrationOrderDetailResponse result = await repository.getAssetRegistrationOrderDetail(rtnNum: "GDC0980203", site: 2);
+      AssetReturnOrderDetailResponse result = await repository
+          .getAssetReturnOrderDetail(rtnNum: rtnNum, site: site);
+      // String jsonStr = await __readFile('assets/mockorderLine2.json');
+      orderLineDTOList = result.itemList;
+      int containerNum = result.rowNumber;
 
-    // update corrsponding data based on fetched result;
+      // update corrsponding data based on fetched result;
 
-    updateNotYetScanRFID();
-    updateOrderLineDTOMap();
-    updateContainerItemCodeCheckedRfidMapper();
-    turnOrderLineIntoMapper();
-    updateRFIDStatusMap();
+      updateNotYetScanRFID();
+      updateOrderLineDTOMap();
+      updateContainerItemCodeCheckedRfidMapper();
+      turnOrderLineIntoMapper();
+      updateRFIDStatusMap();
 
-    updateDashBoard();
+      updateDashBoard();
 
-    // orderLineMapList = json.decode(jsonStr);
-    // orderLineDTOList =
-    // orderLineMapList?.map((e) => ReturnOrderDetail.fromJson(e)).toList();
+      // orderLineMapList = json.decode(jsonStr);
+      // orderLineDTOList =
+      // orderLineMapList?.map((e) => ReturnOrderDetail.fromJson(e)).toList();
 
-    print("");
+      print("");
+    }catch(e,s){
+      errorStore.setErrorMessage(e.toString());
+      print(s);
+    }
     // turnOrderLineIntoMapper();
     // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
   }

@@ -557,32 +557,40 @@ abstract class _TIScanExpandStore with Store {
   Future<void> fetchOrderDetail(String tiNum, int site) async {
     // String jsonStr = await __readFile('assets/orderLine.json');
     // tiNum = "GDC0980203";
-    reset();
-    this.tiNum = tiNum;
-    // AssetTransferInOrderDetailResponse result = await repository.getAssetTransferInOrderDetail(tiNum: "GDC0980203", site: 2);
-    TransferInOrderDetailResponse result = await repository
-        .getTransferInOrderDetail(tiNum: tiNum, site: site);
-    // String jsonStr = await __readFile('assets/mockorderLine2.json');
-    orderLineDTOList = result.itemList;
-    int containerNum = result.rowNumber;
 
-    // update corrsponding data based on fetched result;
+    try{
+      reset();
+      this.tiNum = tiNum;
+      // AssetTransferInOrderDetailResponse result = await repository.getAssetTransferInOrderDetail(tiNum: "GDC0980203", site: 2);
 
-    updateNotYetScanRFID();
-    updateOrderLineDTOMap();
-    updateContainerItemCodeCheckedRfidMapper();
-    turnOrderLineIntoMapper();
-    updateRFIDStatusMap();
+      TransferInOrderDetailResponse result = await repository
+          .getTransferInOrderDetail(tiNum: tiNum, site: site);
+      // String jsonStr = await __readFile('assets/mockorderLine2.json');
+      orderLineDTOList = result.itemList;
+      int containerNum = result.rowNumber;
 
-    updateDashBoard();
+      // update corrsponding data based on fetched result;
 
-    // orderLineMapList = json.decode(jsonStr);
-    // orderLineDTOList =
-    // orderLineMapList?.map((e) => TransferInOrderDetail.fromJson(e)).toList();
+      updateNotYetScanRFID();
+      updateOrderLineDTOMap();
+      updateContainerItemCodeCheckedRfidMapper();
+      turnOrderLineIntoMapper();
+      updateRFIDStatusMap();
 
-    print("");
-    // turnOrderLineIntoMapper();
-    // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
+      updateDashBoard();
+
+      // orderLineMapList = json.decode(jsonStr);
+      // orderLineDTOList =
+      // orderLineMapList?.map((e) => TransferInOrderDetail.fromJson(e)).toList();
+
+      print("");
+      // turnOrderLineIntoMapper();
+      // turnOrderLineListIntoOrderLineMap(orderLineMapList!);
+    }catch(e,s){
+      errorStore.setErrorMessage(e.toString());
+      print(s);
+    }
+
   }
 
   Future<String> __readFile(String fileName) async {

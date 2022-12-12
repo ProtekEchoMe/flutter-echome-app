@@ -104,7 +104,7 @@ class _TransferOutPageState extends State<TransferOutPage> {
                     toSite: _siteCodeItemStore.siteCodeMap.containsKey(selectedDomainKey)?
                     _siteCodeItemStore.siteCodeMap[selectedDomainKey]!.id: 0).then((_) {
                   Navigator.pushNamed(
-                      context, "/transfer_out_scan",
+                      context, "/transfer_out_scan_extend",
                       arguments:
                       TransferOutScanPageArguments(
                           toNum:

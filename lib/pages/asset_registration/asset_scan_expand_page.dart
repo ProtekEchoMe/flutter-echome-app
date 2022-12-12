@@ -86,9 +86,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
   }
 
   String _getcontainerAssetCode() {
-    return _arScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_arScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    // return _arScanExpandStore.equipmentData[_arScanExpandStore.activeContainer].containerAssetCode ?? "";
+
+    return _arScanExpandStore.equipmentData[_arScanExpandStore.activeContainer] != null
+        ? (_arScanExpandStore.equipmentData[_arScanExpandStore.activeContainer]?.containerAssetCode ?? "")
         : "";
+
+    // return _arScanExpandStore.chosenEquipmentData.isNotEmpty
+    //     ? (_arScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    //     : "";
   }
 
   Future<bool> _changeEquipment(AssetScanPageArguments? args) async {
@@ -106,20 +112,32 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
         throw "Assets List is empty";
       }
 
-      if (_arScanExpandStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_arScanExpandStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _arScanExpandStore.equipmentData) {
-        if (element.containerAssetCode == targetcontainerAssetCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
+
+      // for (var element in _arScanExpandStore.equipmentData.keys) {
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // }
+
+      // _arScanExpandStore.equipmentData.forEach((containerRFID, containerData) {
+      //   var element = containerData;
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // });
+
+      rfidList.add(_arScanExpandStore.equipmentData[_arScanExpandStore.activeContainer]?.rfid ?? "");
 
       try {
         await _arScanExpandStore.registerContainer(
@@ -366,6 +384,38 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_arScanExpandStore.needUpdateUI}");
     });
 
+    var disposerUpdateItemReaction =
+    reaction((_) => _arScanExpandStore.needUpdateItem, (_) async {
+      print("disposerUpdateItemReaction, udpateItem Successfully, needUpdateItem: ${_arScanExpandStore.needUpdateItem}");
+      if (_arScanExpandStore.needUpdateItem) {
+
+        void onClickFunction(containerCode) async {
+          if (_arScanExpandStore.containerCodeRfidMapper[containerCode].isNotEmpty){
+            _arScanExpandStore.activeContainer = _arScanExpandStore.containerCodeRfidMapper[containerCode][0];
+          }else{
+            print("error");
+          }
+
+        }
+          Map<String,String> containerCodeMap = {};
+        _arScanExpandStore.equipmentData.values.forEach((equipmentData) {
+          containerCodeMap[equipmentData.containerCode!] = equipmentData.rfid!;
+        });
+          if (containerCodeMap.keys.isNotEmpty && _arScanExpandStore.activeContainer == ""){
+            await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+                containerCodeMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
+          }
+
+        _arScanExpandStore.validateItemRfid();
+        // setState(() {
+        //   list = list;
+        // });
+        _arScanExpandStore.needUpdateItem = false;
+
+      }
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_arScanExpandStore.needUpdateUI}");
+    });
+
     var scanDisposeReaction =
         reaction((_) => _arScanExpandStore.equipmentData, (_) {
       try {
@@ -410,6 +460,8 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
     disposer.add(disposerUpdateUIReaction);
+    disposer.add(disposerUpdateItemReaction);
+
   }
 
   @override
@@ -1275,6 +1327,7 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
               print("startToEnd");
               onItemDismissed(parentIndex, childIndex, removeTileOnDismiss);
             }
+            _arScanExpandStore.needUpdateUI = true;
           },
         ),
         itemCount: list.length,
@@ -1359,8 +1412,13 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
             // remove Container
             ExpandableListItem orderLineContainerMap = list[parentIndex];
             String? containerRfid = orderLineContainerMap.id;
+            // if (containerRfid == "Not Yet Scan"){
+            //   print("c8");
+            //   return;
+            // }
             removeContainer(containerRfid);
             // list[parentIndex]
+            print("c9");
             list.removeAt(parentIndex);
           } else {
             // check to see if its the last child

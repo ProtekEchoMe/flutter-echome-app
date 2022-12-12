@@ -63,8 +63,9 @@ class OrderLineItems {
   int? totalQty;
   int? checkedinQty;
   int? modifiedDate;
-  List<String>? rfid;
+  List<String>? checkedRFID;
   String? status;
+  List<String>? rfid;
 
   OrderLineItems(
       {this.productName,
@@ -73,8 +74,9 @@ class OrderLineItems {
         this.totalQty,
         this.checkedinQty,
         this.modifiedDate,
-        this.rfid,
-        this.status});
+        this.checkedRFID,
+        this.status,
+        this.rfid});
 
 
   OrderLineItems.clone(OrderLineItems orderLineItems): this(productName: orderLineItems.productName,
@@ -84,7 +86,8 @@ class OrderLineItems {
       checkedinQty: orderLineItems.checkedinQty,
       modifiedDate: orderLineItems.modifiedDate,
       rfid: orderLineItems.rfid,
-      status: orderLineItems.status);
+      status: orderLineItems.status,
+      checkedRFID: orderLineItems.checkedRFID);
 
   OrderLineItems.fromJson(Map<String, dynamic> json) {
     productName = json['productName'];
@@ -93,8 +96,9 @@ class OrderLineItems {
     totalQty = json['totalQty'];
     checkedinQty = json['checkedinQty'];
     modifiedDate = json['modifiedDate'];
-    rfid = json['rfid'].cast<String>();
+    checkedRFID = json['checkedRFID'].cast<String>();
     status = json['status'];
+    rfid = json['rfid'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -105,8 +109,9 @@ class OrderLineItems {
     data['totalQty'] = this.totalQty;
     data['checkedinQty'] = this.checkedinQty;
     data['modifiedDate'] = this.modifiedDate;
-    data['rfid'] = this.rfid;
+    data['checkedRFID'] = this.checkedRFID;
     data['status'] = this.status;
+    data['rfid'] = this.rfid;
     return data;
   }
 }

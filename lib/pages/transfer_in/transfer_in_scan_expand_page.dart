@@ -1305,6 +1305,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           String containerCodeStr = list[parentIndex].title;
           // List<String>? rfidList = (_TIScanExpandStore.itemCodeRfidMapper[itemCode] as List).map((item) => item as String).toList();
           List<String> rfidList = <String>[];
+          List<String> checkRFIDList = <String>[];
 
           if(_TIScanExpandStore.containerCodeRfidMapper.containsKey(containerCode)){
             List<String> containerRFIDList =
@@ -1312,7 +1313,11 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
             containerRFIDList.forEach((containerRFID) => rfidList.addAll(
                 _TIScanExpandStore.orderLineDTOMap[containerRFID]
                     .orderLineItemsMap[itemCode].rfid));
-            ;
+
+            containerRFIDList.forEach((containerRFID) => checkRFIDList.addAll(
+                _TIScanExpandStore.orderLineDTOMap[containerRFID]
+                    .orderLineItemsMap[itemCode].checkedRFID));
+
 
           }else{
             // Out of List
@@ -1322,11 +1327,13 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           List<String>? rfidListInput =
           (rfidList as List).map((item) => item as String).toList();
 
+
           _TIScanExpandStore.dialogDisplayRFIDList = ObservableList.of(rfidListInput);
           showStackDialog(
               containerCodeStr: containerCodeStr,
               rfidList: rfidListInput,
               justScannedRfidList: _TIScanExpandStore.itemRfidDataSet.toList(),
+              checkedRFIDList: checkRFIDList,
               // title: itemTitle,
               title: _TIScanExpandStore.tiNum!,
               subtitle: itemSubTitle,
@@ -1395,7 +1402,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
 
   }
 
-  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, String containerCodeStr, var setState) {
+  Widget _getRFIDBoxList(List<String> rfidList, List<String> justScannedRfidList, List<String> checkedRFIDList, String containerCodeStr, var setState) {
     String containerRfid = "";
     if (_TIScanExpandStore.containerCodeRfidMapper.containsKey(containerCodeStr)){
       if (_TIScanExpandStore.containerCodeRfidMapper[containerCodeStr].isNotEmpty){
@@ -1427,7 +1434,10 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
                                           child: Text(
                                             rfid,
                                             style: (justScannedRfidList.contains(rfid)) ?
-                                            TextStyle(color: Colors.green[500]) : Theme.of(context).textTheme.bodyMedium ,
+                                            TextStyle(color: Colors.green[500]) :
+                                            (checkedRFIDList.contains(rfid)) ?
+                                            TextStyle(color: Colors.yellow[900]) :
+                                            Theme.of(context).textTheme.bodyMedium,
                                           )),
                                       SizedBox(
                                           height: 18.0,
@@ -1540,6 +1550,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
         required String containerCodeStr,
         required List<String> rfidList,
         List<String> justScannedRfidList = const [],
+        List<String> checkedRFIDList = const [],
         double width = double.infinity,
         double height = double.infinity,
         String title = "",
@@ -1556,7 +1567,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
               height: height,
               color: Colors.white12,
               alignment: Alignment.center,
-              child: _getRFIDBoxList(rfidList, justScannedRfidList, containerCodeStr, setState),
+              child: _getRFIDBoxList(rfidList, justScannedRfidList, checkedRFIDList, containerCodeStr, setState),
               // child: _getRFIDBoxList2(justScannedRfidList, containerCodeStr, itemCode),
             );
 
