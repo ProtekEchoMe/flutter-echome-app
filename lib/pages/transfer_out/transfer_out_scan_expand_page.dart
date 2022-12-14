@@ -86,9 +86,13 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
   }
 
   String _getcontainerAssetCode() {
-    return _TOScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_TOScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+
+    return _TOScanExpandStore.equipmentData[_TOScanExpandStore.activeContainer] != null
+        ? (_TOScanExpandStore.equipmentData[_TOScanExpandStore.activeContainer]?.containerAssetCode ?? "")
         : "";
+    // return _TOScanExpandStore.chosenEquipmentData.isNotEmpty
+    //     ? (_TOScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    //     : "";
   }
 
   Future<bool> _changeEquipment(TransferOutScanPageArguments? args) async {
@@ -113,13 +117,15 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _TOScanExpandStore.equipmentData) {
-        if (element.containerAssetCode == targetcontainerAssetCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
+      // for (var element in _TOScanExpandStore.equipmentData) {
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // }
+
+      rfidList.add(_TOScanExpandStore.equipmentData[_TOScanExpandStore.activeContainer]?.rfid ?? "");
 
       try {
         await _TOScanExpandStore.checkInTOContainer(
@@ -372,6 +378,42 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
       print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_TOScanExpandStore.needUpdateUI}");
     });
 
+    var disposerUpdateItemReaction =
+    reaction((_) => _TOScanExpandStore.needUpdateItem, (_) async {
+      print("disposerUpdateItemReaction, udpateItem Successfully, needUpdateItem: ${_TOScanExpandStore.needUpdateItem}");
+      if (_TOScanExpandStore.needUpdateItem) {
+
+        void onClickFunction(containerCode) async {
+          if (_TOScanExpandStore.containerCodeRfidMapper[containerCode].isNotEmpty){
+            _TOScanExpandStore.activeContainer = _TOScanExpandStore.containerCodeRfidMapper[containerCode][0];
+          }else{
+            print("error");
+          }
+
+        }
+        Map<String,String> containerCodeRfidMap = {};
+        _TOScanExpandStore.equipmentData.values.forEach((equipmentData) {
+          containerCodeRfidMap[equipmentData.containerCode!] = equipmentData.rfid!;
+        });
+
+        if (_TOScanExpandStore.equipmentData.length == 1){
+          String? containerCode = containerCodeRfidMap.keys.toList().first;
+          _TOScanExpandStore.activeContainer = _TOScanExpandStore.containerCodeRfidMapper[containerCode][0];
+        }else if (containerCodeRfidMap.keys.isNotEmpty && _TOScanExpandStore.activeContainer == ""){
+          await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+              containerCodeRfidMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
+        }
+
+        _TOScanExpandStore.validateItemRfid();
+        // setState(() {
+        //   list = list;
+        // });
+        _TOScanExpandStore.needUpdateItem = false;
+
+      }
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_TOScanExpandStore.needUpdateUI}");
+    });
+
     var scanDisposeReaction =
     reaction((_) => _TOScanExpandStore.equipmentData, (_) {
       try {
@@ -416,6 +458,7 @@ class _TOScanExpandPageState extends State<TOScanExpandPage> {
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
     disposer.add(disposerUpdateUIReaction);
+    disposer.add(disposerUpdateItemReaction);
   }
 
   @override

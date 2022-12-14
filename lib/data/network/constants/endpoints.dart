@@ -89,6 +89,7 @@ class Endpoints {
   static const String assetReturnCompleteMethod = "/assetReturn/returnComplete";
   static const String assetReturnItemsValidationMethod = "/reg/registerItemsValidation";
   static const String assetReturnRegisterItemsMethod = "/reg/registerItems";
+  static const String assetReturnLineMethod = "/assetReturn/listAssetReturnLine";
 
   // siteLoc Method
   static const String listLocSiteMethod = "/loc/listLocSite";
@@ -173,6 +174,8 @@ class Endpoints {
   static String assetReturnComplete = "$activeUrl$assetReturnCompleteMethod";
   static String assetReturnItemsValidation = "$activeUrl$assetReturnItemsValidationMethod";
   static String assetReturnRegisterItem = "$activeUrl$assetReturnRegisterItemsMethod";
+  static String listAssetReturnLine = "$activeUrl$assetReturnLineMethod";
+
   // listLocSite URL
   static String listLocSite = "$activeUrl$listLocSiteMethod";
 
@@ -277,6 +280,8 @@ class Endpoints {
     Endpoints.stockTakeLineComplete  = "$activeUrl$stockTakeLineCompleteMethod";
     Endpoints.stocktakeRecountByLoc = "$activeUrl$stocktakeRecountByLocMethod";
     Endpoints.listStocktakeLocHeader = "$activeUrl$listStocktakeLocHeaderMethod";
+
+    Endpoints.listAssetReturnLine = "$activeUrl$assetReturnLineMethod";
 
   }
 

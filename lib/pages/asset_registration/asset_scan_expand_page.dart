@@ -233,9 +233,15 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
       if (index == 0) {
         // if (!accessControlStore.hasARChangeRight)
         //   throw "assetRegistration".tr(gender: "scan_page_no_right_change");
+
+        String boxStr = "";
+        boxStr += "Active Container: ${(_arScanExpandStore.rfidCodeMapper[_arScanExpandStore.activeContainer!]) ?? _arScanExpandStore.activeContainer! ?? ""}";
+        boxStr += "\n";
+        boxStr += "Item(s): ${_arScanExpandStore.itemRfidDataSet.length}";
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title:
-                "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            // title:
+            //     "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            title: boxStr,
             trueOptionText: "assetRegistration"
                 .tr(gender: "scan_page_change_confirm_option"),
             falseOptionText: "assetRegistration"
@@ -397,15 +403,19 @@ class _AssetScanExpandPageState extends State<AssetScanExpandPage> {
           }
 
         }
-          Map<String,String> containerCodeMap = {};
+          Map<String,String> containerCodeRfidMap = {};
         _arScanExpandStore.equipmentData.values.forEach((equipmentData) {
-          containerCodeMap[equipmentData.containerCode!] = equipmentData.rfid!;
+          containerCodeRfidMap[equipmentData.containerCode!] = equipmentData.rfid!;
         });
-          if (containerCodeMap.keys.isNotEmpty && _arScanExpandStore.activeContainer == ""){
-            await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
-                containerCodeMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
-          }
 
+          if (_arScanExpandStore.equipmentData.length == 1){
+            String? containerCode = containerCodeRfidMap.keys.toList().first;
+            _arScanExpandStore.activeContainer = _arScanExpandStore.containerCodeRfidMapper[containerCode][0];
+          }else if (containerCodeRfidMap.keys.isNotEmpty && _arScanExpandStore.activeContainer == ""){
+            await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+                containerCodeRfidMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
+          }
+          //key
         _arScanExpandStore.validateItemRfid();
         // setState(() {
         //   list = list;

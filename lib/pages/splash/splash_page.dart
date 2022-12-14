@@ -87,34 +87,34 @@ class _SplashPageState extends State<SplashPage> {
             }),
             child: const Text(''),
           ),
-          TextButton(
-            onPressed: () {
-              print("1");
-                    var fx = () => Navigator.pushNamed(
-                        context, "/asset_scan_extend",
-                        arguments: AssetScanPageArguments(
-                            "Mixson_AR3",
-                            item: RegistrationItem()));
-                    fx();
-
-              }
-                ,
-            child: const Text(''),
-          ),
-          TextButton(
-            onPressed: () {
-              print("1");
-              var fx = () => Navigator.pushNamed(
-                  context, "/stock_take_scan",
-                  arguments: StockTakeScanPageArguments(
-                      "Mixson_AR3",
-                      ));
-              fx();
-
-            }
-            ,
-            child: const Text('stockTake'),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     print("1");
+          //           var fx = () => Navigator.pushNamed(
+          //               context, "/asset_scan_extend",
+          //               arguments: AssetScanPageArguments(
+          //                   "Mixson_AR3",
+          //                   item: RegistrationItem()));
+          //           fx();
+          //
+          //     }
+          //       ,
+          //   child: const Text(''),
+          // ),
+          // TextButton(
+          //   onPressed: () {
+          //     print("1");
+          //     var fx = () => Navigator.pushNamed(
+          //         context, "/stock_take_scan",
+          //         arguments: StockTakeScanPageArguments(
+          //             "Mixson_AR3",
+          //             ));
+          //     fx();
+          //
+          //   }
+          //   ,
+          //   child: const Text('stockTake'),
+          // ),
         ],
       )),
     );

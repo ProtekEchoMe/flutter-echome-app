@@ -36,6 +36,7 @@ import 'package:echo_me_mobile/stores/asset_registration/asset_registration_scan
 import 'dart:io';
 import 'package:echo_me_mobile/utils/dialog_helper/dialog_helper.dart';
 
+
 class AssetReturnScanExpandPage extends StatefulWidget {
   const AssetReturnScanExpandPage({Key? key}) : super(key: key);
 
@@ -45,7 +46,7 @@ class AssetReturnScanExpandPage extends StatefulWidget {
 
 class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
   final AssetRegistrationScanStore _assetRegistrationScanStore =
-      getIt<AssetRegistrationScanStore>();
+  getIt<AssetRegistrationScanStore>();
   final LoginFormStore loginFormStore = getIt<LoginFormStore>();
 
 
@@ -71,7 +72,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
 
   final AccessControlStore accessControlStore = getIt<AccessControlStore>();
   final ReaderConnectionStore readerConnectionStore =
-      getIt<ReaderConnectionStore>();
+  getIt<ReaderConnectionStore>();
 
   void _showSnackBar(String? str) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -88,9 +89,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
   }
 
   String _getcontainerAssetCode() {
-    return _assetReturnScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_assetReturnScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    // return _assetReturnScanExpandStore.equipmentData[_assetReturnScanExpandStore.activeContainer].containerAssetCode ?? "";
+
+    return _assetReturnScanExpandStore.equipmentData[_assetReturnScanExpandStore.activeContainer] != null
+        ? (_assetReturnScanExpandStore.equipmentData[_assetReturnScanExpandStore.activeContainer]?.containerAssetCode ?? "")
         : "";
+
+    // return _assetReturnScanExpandStore.chosenEquipmentData.isNotEmpty
+    //     ? (_assetReturnScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    //     : "";
   }
 
   Future<bool> _changeEquipment(AssetReturnScanPageArguments? args) async {
@@ -108,20 +115,32 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
         throw "Assets List is empty";
       }
 
-      if (_assetReturnScanExpandStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_assetReturnScanExpandStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _assetReturnScanExpandStore.equipmentData) {
-        if (element.containerAssetCode == targetcontainerAssetCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
+
+      // for (var element in _assetReturnScanExpandStore.equipmentData.keys) {
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // }
+
+      // _assetReturnScanExpandStore.equipmentData.forEach((containerRFID, containerData) {
+      //   var element = containerData;
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // });
+
+      rfidList.add(_assetReturnScanExpandStore.equipmentData[_assetReturnScanExpandStore.activeContainer]?.rfid ?? "");
 
       try {
         await _assetReturnScanExpandStore.registerContainer(
@@ -191,6 +210,25 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
     }
   }
 
+  Future<String> fetchData(AssetReturnScanPageArguments? args) async {
+    var result = await repository.fetchAssetRetrunLineData(args);
+    var newTotalProduct = (result as List).length.toString();
+    int newTotalQuantity = 0;
+    int totalRegQuantity = 0;
+    (result as List).forEach((e) {
+      try {
+        newTotalQuantity += e["quantity"] as int;
+        totalRegQuantity += e["checkinQty"] as int;
+      } catch (e, s) {
+        print(s);
+        print(e);
+      }
+      ;
+    });
+
+    return "assetRegistration".tr(gender: "bottom_bar_total") +
+        ": $totalRegQuantity / $newTotalQuantity";
+  }
 
   Future<void> _onBottomBarItemTapped(
       AssetReturnScanPageArguments? args, int index) async {
@@ -198,9 +236,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
       if (index == 0) {
         // if (!accessControlStore.hasARChangeRight)
         //   throw "assetRegistration".tr(gender: "scan_page_no_right_change");
+
+        String boxStr = "";
+        boxStr += "Active Container: ${(_assetReturnScanExpandStore.rfidCodeMapper[_assetReturnScanExpandStore.activeContainer!]) ?? _assetReturnScanExpandStore.activeContainer! ?? ""}";
+        boxStr += "\n";
+        boxStr += "Item(s): ${_assetReturnScanExpandStore.itemRfidDataSet.length}";
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title:
-                "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            // title:
+            //     "assetRegistration".tr(gender: "scan_page_confirm_to_change"),
+            title: boxStr,
             trueOptionText: "assetRegistration"
                 .tr(gender: "scan_page_change_confirm_option"),
             falseOptionText: "assetRegistration"
@@ -208,7 +252,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
         if (flag == true) {
           await _changeEquipment(args)
               ? _showSnackBar(
-                  "assetRegistration".tr(gender: "scan_page_change_success"))
+              "assetRegistration".tr(gender: "scan_page_change_success"))
               : "";
 
           // _assetReturnScanExpandStore.reset();
@@ -216,7 +260,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
       } else if (index == 1) {
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
             title:
-                "assetRegistration".tr(gender: "scan_page_confirm_to_rescan"),
+            "assetRegistration".tr(gender: "scan_page_confirm_to_rescan"),
             trueOptionText: "assetRegistration"
                 .tr(gender: "scan_page_rescan_confirm_option"),
             falseOptionText: "assetRegistration"
@@ -228,15 +272,24 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
               "assetRegistration".tr(gender: "scan_page_rescan_success"));
         }
       } else if (index == 2) {
-        if (!accessControlStore.hasARtnCompleteRight) throw "assetReturn".tr(gender: "scan_page_no_right_complete");
+        if (!accessControlStore.hasARCompleteRight)
+          throw "assetRegistration".tr(gender: "scan_page_no_right_complete");
+        String regLineStr = await fetchData(args);
         bool? flag = await DialogHelper.showTwoOptionsDialog(context,
-            title: "assetReturn".tr(gender: "scan_page_confirm_to_complete"),
-            trueOptionText: "assetReturn".tr(gender: "scan_page_complete_confirm_option"),
-            falseOptionText: "assetReturn".tr(gender: "scan_page_complete_cancel_option"));
+            title: "assetRegistration"
+                .tr(gender: "scan_page_confirm_to_complete") +
+                "\n\n" +
+                regLineStr,
+            trueOptionText: "assetRegistration"
+                .tr(gender: "scan_page_complete_confirm_option"),
+            falseOptionText: "assetRegistration"
+                .tr(gender: "scan_page_complete_cancel_option"));
         if (flag == true) {
-          _complete(args);
-          _showSnackBar("assetReturn".tr(gender: "scan_page_complete_success"));
-          // _assetReturnScanStore.reset();
+          await _complete(args)
+              ? _showSnackBar(
+              "assetRegistration".tr(gender: "scan_page_complete_success"))
+              : "";
+          // _assetReturnScanExpandStore.reset();
         }
       } else if (index == 3) {
         // debug version
@@ -317,7 +370,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
       }
     });
     var disposerReaction =
-        reaction((_) => _assetReturnScanExpandStore.errorStore.errorMessage, (_) {
+    reaction((_) => _assetReturnScanExpandStore.errorStore.errorMessage, (_) {
       if (_assetReturnScanExpandStore.errorStore.errorMessage.isNotEmpty) {
         DialogHelper.showErrorDialogBox(context,
             errorMsg: _assetReturnScanExpandStore.errorStore.errorMessage);
@@ -340,15 +393,51 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
       print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_assetReturnScanExpandStore.needUpdateUI}");
     });
 
+    var disposerUpdateItemReaction =
+    reaction((_) => _assetReturnScanExpandStore.needUpdateItem, (_) async {
+      print("disposerUpdateItemReaction, udpateItem Successfully, needUpdateItem: ${_assetReturnScanExpandStore.needUpdateItem}");
+      if (_assetReturnScanExpandStore.needUpdateItem) {
+
+        void onClickFunction(containerCode) async {
+          if (_assetReturnScanExpandStore.containerCodeRfidMapper[containerCode].isNotEmpty){
+            _assetReturnScanExpandStore.activeContainer = _assetReturnScanExpandStore.containerCodeRfidMapper[containerCode][0];
+          }else{
+            print("error");
+          }
+
+        }
+        Map<String,String> containerCodeRfidMap = {};
+        _assetReturnScanExpandStore.equipmentData.values.forEach((equipmentData) {
+          containerCodeRfidMap[equipmentData.containerCode!] = equipmentData.rfid!;
+        });
+
+        if (_assetReturnScanExpandStore.equipmentData.length == 1){
+          String? containerCode = containerCodeRfidMap.keys.toList().first;
+          _assetReturnScanExpandStore.activeContainer = _assetReturnScanExpandStore.containerCodeRfidMapper[containerCode][0];
+        }else if (containerCodeRfidMap.keys.isNotEmpty && _assetReturnScanExpandStore.activeContainer == ""){
+          await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+              containerCodeRfidMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
+        }
+        //key
+        _assetReturnScanExpandStore.validateItemRfid();
+        // setState(() {
+        //   list = list;
+        // });
+        _assetReturnScanExpandStore.needUpdateItem = false;
+
+      }
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_assetReturnScanExpandStore.needUpdateUI}");
+    });
+
     var scanDisposeReaction =
-        reaction((_) => _assetReturnScanExpandStore.equipmentData, (_) {
+    reaction((_) => _assetReturnScanExpandStore.equipmentData, (_) {
       try {
         if (!accessControlStore.hasARScanRight)
           throw "assetRegistration".tr(gender: "scan_page_no_right_scan");
         Set<String?> containerAssetCodeSet = Set<String?>();
         // print("disposer1 called");
         _assetReturnScanExpandStore.chosenEquipmentData.forEach(
-            (element) => containerAssetCodeSet.add(element.containerAssetCode));
+                (element) => containerAssetCodeSet.add(element.containerAssetCode));
         // if (containerAssetCodeSet.length > 1 && !isDialogShown) {
         //   isDialogShown = true;
         //   DialogHelper.showCustomDialog(context, widgetList: [
@@ -384,6 +473,8 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
     disposer.add(disposerReaction);
     // disposer.add(scanDisposeReaction);
     disposer.add(disposerUpdateUIReaction);
+    disposer.add(disposerUpdateItemReaction);
+
   }
 
   @override
@@ -397,7 +488,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
   @override
   Widget build(BuildContext context) {
     final AssetReturnScanPageArguments? args =
-        ModalRoute.of(context)!.settings.arguments as AssetReturnScanPageArguments?;
+    ModalRoute.of(context)!.settings.arguments as AssetReturnScanPageArguments?;
     rtnNum = args!.rtnNum;
     if (!isFetchedData){
       fetchOrderDetailData(rtnNum, loginFormStore.siteId!);
@@ -437,8 +528,8 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => AssetReturnScanDetailPage(
-                                arg: args,
-                              )));
+                            arg: args,
+                          )));
                 }
               },
               icon: const Icon(MdiIcons.clipboardList)),
@@ -449,9 +540,9 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
         selectedItemColor: Colors.black54,
         unselectedItemColor: Colors.black54,
         selectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         unselectedIconTheme:
-            const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
+        const IconThemeData(color: Colors.black54, size: 25, opacity: .8),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle),
@@ -530,26 +621,26 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                         border: Border.all(color: Colors.blueAccent)),
                     child: Center(
                         child: RichText(
-                      text: TextSpan(
-                        // Note: Styles for TextSpans must be explicitly defined.
-                        // Child text spans will inherit styles from parent
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.black,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text:
+                          text: TextSpan(
+                            // Note: Styles for TextSpans must be explicitly defined.
+                            // Child text spans will inherit styles from parent
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.black,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
                                   "Active Container" +
                                       " : "),
-                          TextSpan(
-                              text: "${(_assetReturnScanExpandStore.rfidCodeMapper[_assetReturnScanExpandStore.activeContainer!]) ?? _assetReturnScanExpandStore.activeContainer! ?? ""}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.purple[700])),
-                        ],
-                      ),
-                    ))))),
+                              TextSpan(
+                                  text: "${(_assetReturnScanExpandStore.rfidCodeMapper[_assetReturnScanExpandStore.activeContainer!]) ?? _assetReturnScanExpandStore.activeContainer! ?? ""}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple[700])),
+                            ],
+                          ),
+                        ))))),
             const SizedBox(height: 5),
             Observer(builder: ((context) {
               var text = RichText(
@@ -581,7 +672,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     TextSpan(text: "  |  " + "SKU Tracker: "),
                     TextSpan(
                         text:
-                            "${_assetReturnScanExpandStore.totalCheckedSKU}/${_assetReturnScanExpandStore.itemCodeRfidMapper.length}",
+                        "${_assetReturnScanExpandStore.totalCheckedSKU}/${_assetReturnScanExpandStore.itemCodeRfidMapper.length}",
                         //_assetReturnScanExpandStore.orderLineDTOMap["Not Yet Scan"].orderLineItemsMap.length
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -647,12 +738,12 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     TextSpan(
                         text: "${args?.item?.status}",
                         style: TextStyle(
-                             color: Colors.black)),
+                            color: Colors.black)),
                     TextSpan(text: "\n" + "Order Date: "),
                     TextSpan(
                         text: "${datetimeStr}",
                         style: TextStyle(
-                             color: Colors.black)),
+                            color: Colors.black)),
                   ],
                 ),
               );
@@ -691,10 +782,10 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                             ),
                             _assetReturnScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
-                                    color: Colors.blue,
-                                    size: 15,
-                                    lineWidth: 2,
-                                  )
+                              color: Colors.blue,
+                              size: 15,
+                              lineWidth: 2,
+                            )
                                 : const SizedBox()
                           ],
                         );
@@ -725,8 +816,8 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                   children: [
                     Text(
                       "assetRegistration".tr(
-                              gender:
-                                  "scan_page_equipment_container_code_text") +
+                          gender:
+                          "scan_page_equipment_container_code_text") +
                           ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -737,15 +828,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.blueAccent)),
-                              child: Center(
-                                child: Text(_getContainerCode()),
-                              ),
-                            )),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: Center(
+                            child: Text(_getContainerCode()),
+                          ),
+                        )),
                       ),
                     )
                   ]),
@@ -782,10 +873,10 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                             ),
                             _assetReturnScanExpandStore.isFetchingEquData
                                 ? const SpinKitDualRing(
-                                    color: Colors.blue,
-                                    size: 15,
-                                    lineWidth: 2,
-                                  )
+                              color: Colors.blue,
+                              size: 15,
+                              lineWidth: 2,
+                            )
                                 : const SizedBox()
                           ],
                         );
@@ -816,8 +907,8 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                   children: [
                     Text(
                       "assetRegistration".tr(
-                              gender:
-                                  "scan_page_equipment_container_code_text") +
+                          gender:
+                          "scan_page_equipment_container_code_text") +
                           ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -828,15 +919,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.blueAccent)),
-                              child: Center(
-                                child: Text(_getContainerCode()),
-                              ),
-                            )),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: Center(
+                            child: Text(_getContainerCode()),
+                          ),
+                        )),
                       ),
                     )
                   ]),
@@ -922,7 +1013,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                             )),
                         child: Padding(
                           padding:
-                              const EdgeInsets.all(Dimens.horizontal_padding),
+                          const EdgeInsets.all(Dimens.horizontal_padding),
                           child: Center(
                               child: Text(
                                   "assetRegistration"
@@ -940,11 +1031,11 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                 }
               }
               var rfid =
-                  _assetReturnScanExpandStore.itemRfidDataSet.elementAt(index - 3);
+              _assetReturnScanExpandStore.itemRfidDataSet.elementAt(index - 3);
               var isLast =
-                  index - 3 == _assetReturnScanExpandStore.itemRfidDataSet.length - 1
-                      ? true
-                      : false;
+              index - 3 == _assetReturnScanExpandStore.itemRfidDataSet.length - 1
+                  ? true
+                  : false;
               return _getAssetListItem(rfid, isLast);
             });
       }),
@@ -969,17 +1060,17 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
           color: Colors.white,
           border: Border.symmetric(
             vertical:
-                BorderSide(color: Theme.of(context).primaryColor, width: 6),
+            BorderSide(color: Theme.of(context).primaryColor, width: 6),
           )),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Expanded(
               child: Text(
-            AscToText.getString(rfid),
-            style: Theme.of(context).textTheme.bodyMedium,
-          )),
+                AscToText.getString(rfid),
+                style: Theme.of(context).textTheme.bodyMedium,
+              )),
           Material(
             borderRadius: BorderRadius.circular(50),
             clipBehavior: Clip.antiAlias,
@@ -997,7 +1088,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
 
     return Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
+        const EdgeInsets.symmetric(horizontal: Dimens.horizontal_padding),
         child: _assetListContainer(isLast, child));
   }
 
@@ -1090,7 +1181,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
           onPressed: () async {
             // var result = await repository.getAssetRegistrationOrderDetail(rtnNum: "GDC0980203", site: 2);
             var result2 =
-                await _assetReturnScanExpandStore.fetchOrderDetail("Mixson_AR3", loginFormStore.siteId!);
+            await _assetReturnScanExpandStore.fetchOrderDetail("Mixson_AR3", loginFormStore.siteId!);
           },
           child: Text("Fetch Data")),
       // TextButton(
@@ -1108,7 +1199,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
             // orderLineWidget = await orderLine.turnOrderLineIntoWidget();
             // orderLineWidget = await orderLine.turnOrderLineMapIntoWidget();
             orderLineWidget =
-                await _assetReturnScanExpandStore.turnOrderLineDtoMapIntoWidget();
+            await _assetReturnScanExpandStore.turnOrderLineDtoMapIntoWidget();
 
             setState(() {
               list = orderLineWidget;
@@ -1233,24 +1324,25 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) =>
             DismissibleExpandableList(
-          parentIndex: index,
-          entry: list[index],
-          config: config,
-          onItemClick: (parentIndex, childIndex, ExpandableListItem item) {
-            print('onItemClick called');
-            onItemClick(parentIndex, childIndex);
-          },
-          onItemDismissed:
-              (parentIndex, childIndex, direction, removeTileOnDismiss, item) {
-            if (direction == DismissDirection.endToStart) {
-              print("endToStart");
-              onItemDismissed(parentIndex, childIndex, removeTileOnDismiss);
-            } else {
-              print("startToEnd");
-              onItemDismissed(parentIndex, childIndex, removeTileOnDismiss);
-            }
-          },
-        ),
+              parentIndex: index,
+              entry: list[index],
+              config: config,
+              onItemClick: (parentIndex, childIndex, ExpandableListItem item) {
+                print('onItemClick called');
+                onItemClick(parentIndex, childIndex);
+              },
+              onItemDismissed:
+                  (parentIndex, childIndex, direction, removeTileOnDismiss, item) {
+                if (direction == DismissDirection.endToStart) {
+                  print("endToStart");
+                  onItemDismissed(parentIndex, childIndex, removeTileOnDismiss);
+                } else {
+                  print("startToEnd");
+                  onItemDismissed(parentIndex, childIndex, removeTileOnDismiss);
+                }
+                _assetReturnScanExpandStore.needUpdateUI = true;
+              },
+            ),
         itemCount: list.length,
       ),
     );
@@ -1258,7 +1350,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
 
   void onItemClick(int parentIndex, int childIndex) {
     setState(
-      () {
+          () {
         if (childIndex == -1) {
           title = list[parentIndex].title;
           selectedId = list[parentIndex].id;
@@ -1297,7 +1389,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
           }
 
           List<String>? rfidListInput =
-              (rfidList as List).map((item) => item as String).toList();
+          (rfidList as List).map((item) => item as String).toList();
 
           _assetReturnScanExpandStore.dialogDisplayRFIDList = ObservableList.of(rfidListInput);
           showStackDialog(
@@ -1310,7 +1402,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
               height: 350,
               width: 400,
               alignment: Alignment.topCenter,
-          itemCode: itemCode);
+              itemCode: itemCode);
           // DialogHelper.showStackDialog(tag: "abc",
           //         rfidList: ["SATL1000032","SATL1000032","SATL1000032","SATL1000032","SATL1000032"],
           //         height: 400,
@@ -1324,7 +1416,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
   void onItemDismissed(
       int parentIndex, int childIndex, bool removeTileOnDismiss) {
     setState(
-      () {
+          () {
         // check to see if user wants to remove swiped items from list
         // if yes then remove item from list
         // else show user a message about swiped item
@@ -1333,8 +1425,13 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
             // remove Container
             ExpandableListItem orderLineContainerMap = list[parentIndex];
             String? containerRfid = orderLineContainerMap.id;
+            // if (containerRfid == "Not Yet Scan"){
+            //   print("c8");
+            //   return;
+            // }
             removeContainer(containerRfid);
             // list[parentIndex]
+            print("c9");
             list.removeAt(parentIndex);
           } else {
             // check to see if its the last child
@@ -1392,44 +1489,44 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                       padding: const EdgeInsets.symmetric(vertical: 1),
                       child: Card(
                           child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                                mainAxisAlignment:
+                            padding: const EdgeInsets.all(6.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                    mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    rfid,
-                                    style: (justScannedRfidList.contains(rfid)) ?
-                                    TextStyle(color: Colors.green[500]) : Theme.of(context).textTheme.bodyMedium ,
-                                  )),
-                                  SizedBox(
-                                      height: 18.0,
-                                      width: 18.0,
-                                      child: IconButton(
-                                        padding: const EdgeInsets.all(0.0),
-                                        icon: new Icon(Icons.clear, size: 18.0),
-                                        onPressed: () {
-                                          _assetReturnScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
-                                            setState(() {
-                                              print("remove ${_assetReturnScanExpandStore.dialogDisplayRFIDList}");
-                                              _assetReturnScanExpandStore.dialogDisplayRFIDList.removeWhere((element) => element == rfid);
-                                              _assetReturnScanExpandStore.needUpdateUI = true;
-                                            });
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                            rfid,
+                                            style: (justScannedRfidList.contains(rfid)) ?
+                                            TextStyle(color: Colors.green[500]) : Theme.of(context).textTheme.bodyMedium ,
+                                          )),
+                                      SizedBox(
+                                          height: 18.0,
+                                          width: 18.0,
+                                          child: IconButton(
+                                            padding: const EdgeInsets.all(0.0),
+                                            icon: new Icon(Icons.clear, size: 18.0),
+                                            onPressed: () {
+                                              _assetReturnScanExpandStore.removeContainerItemRfid(containerRfid, rfid).then((value) {
+                                                setState(() {
+                                                  print("remove ${_assetReturnScanExpandStore.dialogDisplayRFIDList}");
+                                                  _assetReturnScanExpandStore.dialogDisplayRFIDList.removeWhere((element) => element == rfid);
+                                                  _assetReturnScanExpandStore.needUpdateUI = true;
+                                                });
 
-                                            print("remove rfid is clicked");
-                                          } );
-                                        },
-                                      )
-                                  ),
+                                                print("remove rfid is clicked");
+                                              } );
+                                            },
+                                          )
+                                      ),
 
-                                ])
-                          ],
-                        ),
-                      )),
+                                    ])
+                              ],
+                            ),
+                          )),
                     );
                   });
                 }))),
@@ -1508,14 +1605,14 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
 
   void showStackDialog(
       {required AlignmentGeometry alignment,
-      required String containerCodeStr,
-      required List<String> rfidList,
+        required String containerCodeStr,
+        required List<String> rfidList,
         List<String> justScannedRfidList = const [],
-      double width = double.infinity,
-      double height = double.infinity,
-      String title = "",
-      String subtitle = "",
-      String itemCode = ""}) async {
+        double width = double.infinity,
+        double height = double.infinity,
+        String title = "",
+        String subtitle = "",
+        String itemCode = ""}) async {
     rfidList.sort();
 
     Widget addSetState(){
@@ -1540,7 +1637,7 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
               ],
             );
             return row;
-      });
+          });
     }
 
     SmartDialog.show(
@@ -1648,8 +1745,8 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                   children: [
                     Text(
                       "assetRegistration".tr(
-                              gender:
-                                  "scan_page_equipment_container_code_text") +
+                          gender:
+                          "scan_page_equipment_container_code_text") +
                           ":",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -1660,15 +1757,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.blueAccent)),
-                              child: Center(
-                                child: Text(containerCodeStr),
-                              ),
-                            )),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: Center(
+                            child: Text(containerCodeStr),
+                          ),
+                        )),
                       ),
                     )
                   ]),
@@ -1690,16 +1787,16 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.blueAccent)),
-                              child: Center(
-                                // child: Text(_assetReturnScanExpandStore.rtnNum!),
-                                child: Text(title),
-                              ),
-                            )),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: Center(
+                            // child: Text(_assetReturnScanExpandStore.rtnNum!),
+                            child: Text(title),
+                          ),
+                        )),
                       ),
                     )
                   ]),
@@ -1721,15 +1818,15 @@ class _AssetReturnScanExpandPageState extends State<AssetReturnScanExpandPage> {
                     Expanded(
                       child: Observer(
                         builder: ((context) => Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.blueAccent)),
-                              child: Center(
-                                child: Text(subtitle),
-                              ),
-                            )),
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: Center(
+                            child: Text(subtitle),
+                          ),
+                        )),
                       ),
                     )
                   ]),

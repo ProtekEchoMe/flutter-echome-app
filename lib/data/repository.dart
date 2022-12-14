@@ -16,6 +16,7 @@ import 'package:echo_me_mobile/models/stock_take/stock_take_loc_header.dart';
 import 'package:echo_me_mobile/models/transfer_out/transfer_out_header_item.dart';
 import 'package:echo_me_mobile/models/transfer_in/transfer_in_header_item.dart';
 import 'package:echo_me_mobile/pages/asset_registration/asset_scan_page_arguments.dart';
+import 'package:echo_me_mobile/pages/asset_return/asset_return_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_in/transfer_in_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/transfer_out/transfer_out_scan_page_arguments.dart';
 import 'package:echo_me_mobile/pages/stock_take/stock_take_scan_page_arguments.dart';
@@ -149,6 +150,12 @@ class Repository {
     String regNum = args?.regNum ?? "";
     return await _assetRegistrationApi.getAssetRegistrationLine(
         page: 0, limit: 0, regNum: regNum);
+  }
+
+  Future<dynamic> fetchAssetRetrunLineData(AssetReturnScanPageArguments? args) async {
+    String rtnNum = args?.rtnNum ?? "";
+    return await _assetReturnApi.getAssetReturnLine(
+        page: 0, limit: 0, rtnNum: rtnNum);
   }
 
 

@@ -82,9 +82,13 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
   }
 
   String _getcontainerAssetCode() {
-    return _TIScanExpandStore.chosenEquipmentData.isNotEmpty
-        ? (_TIScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+
+    return _TIScanExpandStore.equipmentData[_TIScanExpandStore.activeContainer] != null
+        ? (_TIScanExpandStore.equipmentData[_TIScanExpandStore.activeContainer]?.containerAssetCode ?? "")
         : "";
+    // return _TIScanExpandStore.chosenEquipmentData.isNotEmpty
+    //     ? (_TIScanExpandStore.chosenEquipmentData[0].containerAssetCode ?? "")
+    //     : "";
   }
 
   Future<bool> _changeEquipment(TransferInScanPageArguments? args) async {
@@ -102,20 +106,22 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
         throw "Assets List is empty";
       }
 
-      if (_TIScanExpandStore.chosenEquipmentData.isEmpty) {
-        throw "No equipment detected";
-      }
+      // if (_TIScanExpandStore.chosenEquipmentData.isEmpty) {
+      //   throw "No equipment detected";
+      // }
 
       var targetcontainerAssetCode = _getcontainerAssetCode();
 
       List<String> rfidList = [];
-      for (var element in _TIScanExpandStore.equipmentData) {
-        if (element.containerAssetCode == targetcontainerAssetCode) {
-          if (element.rfid != null) {
-            rfidList.add(element.rfid!);
-          }
-        }
-      }
+      // for (var element in _TIScanExpandStore.equipmentData) {
+      //   if (element.containerAssetCode == targetcontainerAssetCode) {
+      //     if (element.rfid != null) {
+      //       rfidList.add(element.rfid!);
+      //     }
+      //   }
+      // }
+
+      rfidList.add(_TIScanExpandStore.equipmentData[_TIScanExpandStore.activeContainer]?.rfid ?? "");
 
       try {
         await _TIScanExpandStore.registerContainer(
@@ -145,7 +151,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
         }else{
           itemRfid.add(rfid);
         }
-        // if (_arScanExpandStore.rfidCodeMapper.containsKey(rfid)){
+        // if (_TIScanExpandStore.rfidCodeMapper.containsKey(rfid)){
         //   itemRfid.add(rfid);
         // }
 
@@ -363,6 +369,42 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
       print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_TIScanExpandStore.needUpdateUI}");
     });
 
+    var disposerUpdateItemReaction =
+    reaction((_) => _TIScanExpandStore.needUpdateItem, (_) async {
+      print("disposerUpdateItemReaction, udpateItem Successfully, needUpdateItem: ${_TIScanExpandStore.needUpdateItem}");
+      if (_TIScanExpandStore.needUpdateItem) {
+
+        void onClickFunction(containerCode) async {
+          if (_TIScanExpandStore.containerCodeRfidMapper[containerCode].isNotEmpty){
+            _TIScanExpandStore.activeContainer = _TIScanExpandStore.containerCodeRfidMapper[containerCode][0];
+          }else{
+            print("error");
+          }
+
+        }
+        Map<String,String> containerCodeRfidMap = {};
+        _TIScanExpandStore.equipmentData.values.forEach((equipmentData) {
+          containerCodeRfidMap[equipmentData.containerCode!] = equipmentData.rfid!;
+        });
+
+        if (_TIScanExpandStore.equipmentData.length == 1){
+          String? containerCode = containerCodeRfidMap.keys.toList().first;
+          _TIScanExpandStore.activeContainer = _TIScanExpandStore.containerCodeRfidMapper[containerCode][0];
+        }else if (containerCodeRfidMap.keys.isNotEmpty && _TIScanExpandStore.activeContainer == ""){
+          await DialogHelper.listSelectionDialogWithAutoCompleteBar(context,
+              containerCodeRfidMap.keys.toList(), onClickFunction, willPop: true, text: "Select Container");
+        }
+        //key
+        _TIScanExpandStore.validateItemRfid();
+        // setState(() {
+        //   list = list;
+        // });
+        _TIScanExpandStore.needUpdateItem = false;
+
+      }
+      print("disposerUpdateUIReaction, udpateUI Successfully, needUpdateUI: ${_TIScanExpandStore.needUpdateUI}");
+    });
+
     var scanDisposeReaction =
     reaction((_) => _TIScanExpandStore.equipmentData, (_) {
       try {
@@ -502,7 +544,7 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           // _getTitle(context, args),
           _getDocumentInfo(args),
           _buildRightSide(),
-          ..._getButtonTestList()
+          // ..._getButtonTestList()
         ]),
       ),
     );
@@ -1306,26 +1348,39 @@ class _TIScanExpandPageState extends State<TIScanExpandPage> {
           // List<String>? rfidList = (_TIScanExpandStore.itemCodeRfidMapper[itemCode] as List).map((item) => item as String).toList();
           List<String> rfidList = <String>[];
           List<String> checkRFIDList = <String>[];
+          Set showingRFIDSet = Set();
 
           if(_TIScanExpandStore.containerCodeRfidMapper.containsKey(containerCode)){
             List<String> containerRFIDList =
             _TIScanExpandStore.containerCodeRfidMapper[containerCode];
-            containerRFIDList.forEach((containerRFID) => rfidList.addAll(
-                _TIScanExpandStore.orderLineDTOMap[containerRFID]
-                    .orderLineItemsMap[itemCode].rfid));
+            containerRFIDList.forEach((containerRFID) {
+              List<String> tempRfidList =  _TIScanExpandStore.orderLineDTOMap[containerRFID]
+                  .orderLineItemsMap[itemCode].rfid;
+              rfidList.addAll(tempRfidList);
 
-            containerRFIDList.forEach((containerRFID) => checkRFIDList.addAll(
-                _TIScanExpandStore.orderLineDTOMap[containerRFID]
-                    .orderLineItemsMap[itemCode].checkedRFID));
+              showingRFIDSet.addAll(tempRfidList);
+            });
+
+            containerRFIDList.forEach((containerRFID) {
+              List<String> checkedrfidList = _TIScanExpandStore.orderLineDTOMap[containerRFID]
+                  .orderLineItemsMap[itemCode].checkedRFID;
+              checkRFIDList.addAll(checkedrfidList);
+              showingRFIDSet.addAll(checkedrfidList);
+
+            });
 
 
           }else{
             // Out of List
             rfidList.add(itemCode);
+            showingRFIDSet.add(itemCode);
           }
 
+          // List<String>? rfidListInput =
+          // (rfidList as List).map((item) => item as String).toList();
+
           List<String>? rfidListInput =
-          (rfidList as List).map((item) => item as String).toList();
+          (showingRFIDSet.toList() as List).map((item) => item as String).toList();
 
 
           _TIScanExpandStore.dialogDisplayRFIDList = ObservableList.of(rfidListInput);

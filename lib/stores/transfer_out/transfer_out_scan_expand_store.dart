@@ -91,13 +91,19 @@ abstract class _TOScanExpandStore with Store {
   bool needUpdateUI = false;
 
   @observable
+  bool needUpdateItem = false;
+
+  @observable
   ObservableSet<String> itemRfidDataSet = ObservableSet();
 
   @observable
   ObservableSet<String> equipmentRfidDataSet = ObservableSet();
 
+  // @observable
+  // ObservableList<EquipmentData> equipmentData = ObservableList();
+
   @observable
-  ObservableList<EquipmentData> equipmentData = ObservableList();
+  ObservableMap<String, EquipmentData> equipmentData = ObservableMap();
 
   @observable
   bool isFetchingEquData = false;
@@ -698,16 +704,147 @@ abstract class _TOScanExpandStore with Store {
     EasyDebounce.cancel('validateContainerRfid');
   }
 
+  // @action
+  // Future<void> validateEquipmentRfid() async {
+  //   if (equipmentRfidDataSet.isEmpty) {
+  //     return;
+  //   }
+  //   isFetchingEquData = true;
+  //   try {
+  //     if (equipmentRfidDataSet.isNotEmpty) {
+  //
+  //       //TODO update corresponding container Info
+  //       List<String> list2 = equipmentRfidDataSet.toList();
+  //       // List<String> list2 =
+  //       // equipmentRfidDataSet.map((e) => AscToText.getString(e)).toList();
+  //
+  //       List<String> fetchContainerRfidList = [];
+  //       equipmentRfidDataSet.forEach((containerRfid) {
+  //         if (!fetchedContainerRfidList.contains(containerRfid)) {
+  //           fetchContainerRfidList.add(containerRfid);
+  //         }
+  //       });
+  //
+  //       var result =
+  //       await repository.getEquipmentDetail(rfid: fetchContainerRfidList);
+  //       var resList = result["itemList"] as List;
+  //       List<EquipmentData> equList = [];
+  //       Set<String> addedContainerAssetCodeSet = Set();
+  //
+  //       // Check for different containerAssetCode --> Remark same number of cartoon
+  //       // have same containerAssetCode and containerCode
+  //       Set<String?> containerAssetCodeSet = addedContainerAssetCodeSet =
+  //           chosenEquipmentData
+  //               .map((element) => element.containerAssetCode ?? "")
+  //               .toSet(); // update Set;
+  //
+  //
+  //       Map containerRfidFetchResultMap = {};
+  //       resList.forEach((e) {
+  //
+  //         EquipmentData data = EquipmentData.fromJson(e);
+  //         containerRfidFetchResultMap[data.rfid] = data;
+  //       }) ;
+  //
+  //       for (var e in resList) {
+  //         EquipmentData data = EquipmentData.fromJson(e);
+  //         equList.add(data);
+  //         fetchedContainerRfidList.add(data.rfid!);
+  //
+  //         if (data.rfid != null &&
+  //             !addedContainerAssetCodeSet.contains(data.rfid!)) {
+  //
+  //           if(activeContainer == data.rfid){
+  //             chosenEquipmentData.add(data);
+  //           }
+  //
+  //           addedContainerAssetCodeSet.add(data.rfid!);
+  //           if (!rfidCodeMapper.containsKey(data.rfid)) {
+  //             createContainer("", data.containerCode!, data.rfid!); // create all container needed for the future
+  //             containerCodeRfidMapper[data.containerCode] = [data.rfid];
+  //             rfidCodeMapper[data.rfid] = data.containerCode;
+  //           }
+  //         }
+  //
+  //         containerAssetCodeSet.add(data.containerCode);
+  //       }
+  //       equipmentData = ObservableList.of(equList);
+  //       if (chosenEquipmentData.length > 1 &&
+  //           containerAssetCodeSet.length > 1) {
+  //         // throw Exception("More than one container code found");
+  //         print("More than one container code found");
+  //       }
+  //
+  //       //TODO update corresponding itemSKU Info
+  //
+  //
+  //       List<String> outOfListItemList = [];
+  //       List<String> onTheListItemList = [];
+  //
+  //       // update the itemCodeRfidMapper & rfidItemMapper
+  //       var rfidTagItemResult = await repository.getRfidTagItem(itemRfid: itemRfidDataSet.toList());
+  //       List<RfidTagItem> rfidTagItemResultList = rfidTagItemResult.itemList;
+  //       for(RfidTagItem rfidTagItem in rfidTagItemResultList){
+  //         if(itemCodeRfidMapper.containsKey(rfidTagItem.skuCode)){
+  //           // within list
+  //           onTheListItemList.add(rfidTagItem.rfid!);
+  //           rfidCodeMapper[rfidTagItem.rfid] = rfidTagItem.skuCode; // use skuCode same as itemCode --> need check
+  //         }else{
+  //           outOfListItemList.add(rfidTagItem.rfid!);
+  //         }
+  //
+  //         // fetechItemRfidMapper[rfidTagItem.skuCode] = rfidTagItem.rfid;
+  //       }
+  //
+  //       // onTheListItemList.forEach((rfid) {
+  //       //   if (itemRfidStatus.containsKey(rfid)) { // will be all scanned in TI mode
+  //       //     // mean scanned
+  //       //     print("$rfid is already committedd before");
+  //       //     // onTheListItemList.add(rfid); // containerRfid, rfid
+  //       //   } else {
+  //       //     // mean newly scanned
+  //       //     // first check whether already have skuCode
+  //       //
+  //       //     if(itemCodeRfidMapper.containsKey(rfid)){
+  //       //       //within List
+  //       //       onTheListItemList.add(rfid);
+  //       //     }else{
+  //       //       // out of list
+  //       //       outOfListItemList.add(rfid);
+  //       //     }
+  //       //
+  //       //   }
+  //       // });
+  //
+  //
+  //
+  //       // when you scan sth. not within skuCodeList --> Out of list
+  //       outOfListItemList.forEach((rfid) {
+  //         addItemIntoContainer("Out of List", rfid); // containerRfid, rfid
+  //       });
+  //
+  //       onTheListItemList.forEach((rfid) {
+  //         addItemIntoContainer(
+  //             chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
+  //       });
+  //     }
+  //   } catch (e) {
+  //     errorStore.setErrorMessage(e.toString());
+  //   } finally {
+  //     // isFetchingEquData = false;
+  //     print("f");
+  //     needUpdateUI = true;
+  //   }
+  // }
+
   @action
-  Future<void> validateEquipmentRfid() async {
+  Future<void> validateContainerRfid() async {
     if (equipmentRfidDataSet.isEmpty) {
       return;
     }
     isFetchingEquData = true;
     try {
       if (equipmentRfidDataSet.isNotEmpty) {
-
-        //TODO update corresponding container Info
         List<String> list2 = equipmentRfidDataSet.toList();
         // List<String> list2 =
         // equipmentRfidDataSet.map((e) => AscToText.getString(e)).toList();
@@ -732,13 +869,11 @@ abstract class _TOScanExpandStore with Store {
                 .map((element) => element.containerAssetCode ?? "")
                 .toSet(); // update Set;
 
-
         Map containerRfidFetchResultMap = {};
         resList.forEach((e) {
-
           EquipmentData data = EquipmentData.fromJson(e);
           containerRfidFetchResultMap[data.rfid] = data;
-        }) ;
+        });
 
         for (var e in resList) {
           EquipmentData data = EquipmentData.fromJson(e);
@@ -747,14 +882,13 @@ abstract class _TOScanExpandStore with Store {
 
           if (data.rfid != null &&
               !addedContainerAssetCodeSet.contains(data.rfid!)) {
-
-            if(activeContainer == data.rfid){
+            if (activeContainer == data.rfid) {
               chosenEquipmentData.add(data);
             }
 
             addedContainerAssetCodeSet.add(data.rfid!);
             if (!rfidCodeMapper.containsKey(data.rfid)) {
-              createContainer("", data.containerCode!, data.rfid!); // create all container needed for the future
+              createContainer("", data.containerCode!, data.rfid!);
               containerCodeRfidMapper[data.containerCode] = [data.rfid];
               rfidCodeMapper[data.rfid] = data.containerCode;
             }
@@ -762,15 +896,40 @@ abstract class _TOScanExpandStore with Store {
 
           containerAssetCodeSet.add(data.containerCode);
         }
-        equipmentData = ObservableList.of(equList);
+
+
+        equList.forEach((containerData) {
+          String containerRFID = containerData.rfid!;
+          if (!equipmentData.containsKey(containerRFID)){
+            equipmentData[containerRFID] = containerData;
+          }
+        });
+
         if (chosenEquipmentData.length > 1 &&
             containerAssetCodeSet.length > 1) {
           // throw Exception("More than one container code found");
           print("More than one container code found");
         }
 
-        //TODO update corresponding itemSKU Info
+      }
+    } catch (e, s) {
+      errorStore.setErrorMessage(e.toString());
+    } finally {
+      // isFetchingEquData = false;
+      needUpdateItem = true;
+      needUpdateUI = true;
+      print("finish validate equipment --> needUpdateUI: $needUpdateUI");
+    }
+  }
 
+  @action
+  Future<void> validateItemRfid() async {
+    if (itemRfidDataSet.isEmpty) {
+      return;
+    }
+    isFetchingEquData = true;
+    try {
+      if (itemRfidDataSet.isNotEmpty) {
 
         List<String> outOfListItemList = [];
         List<String> onTheListItemList = [];
@@ -818,16 +977,40 @@ abstract class _TOScanExpandStore with Store {
         });
 
         onTheListItemList.forEach((rfid) {
-          addItemIntoContainer(
-              chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
+          addItemIntoContainer(equipmentData[activeContainer]?.rfid ?? "", rfid); // containe// containerRfid, rfid
         });
+
+
+        // List<String> outOfListItemList = [];
+        // List<String> onTheListItemList = [];
+        //
+        // itemRfidDataSet.forEach((rfid) {
+        //   if (itemRfidStatus.containsKey(rfid)) {
+        //     onTheListItemList.add(rfid); // containerRfid, rfid
+        //   } else {
+        //     outOfListItemList.add(rfid);
+        //   }
+        // });
+        //
+        // outOfListItemList.forEach((rfid) {
+        //   addItemIntoContainer("Out of List", rfid); // containerRfid, rfid
+        // });
+        // //
+        // // onTheListItemList.forEach((rfid) {
+        // //   addItemIntoContainer(
+        // //       chosenEquipmentData[0].rfid!, rfid); // containerRfid, rfid
+        // // });
+        //
+        // onTheListItemList.forEach((rfid) {
+        //   addItemIntoContainer(equipmentData[activeContainer]?.rfid ?? "", rfid); // containerRfid, rfid
+        // });
       }
-    } catch (e) {
+    } catch (e, s) {
       errorStore.setErrorMessage(e.toString());
     } finally {
       // isFetchingEquData = false;
-      print("f");
       needUpdateUI = true;
+      print("finish validate item --> needUpdateUI: $needUpdateUI");
     }
   }
 
@@ -836,9 +1019,18 @@ abstract class _TOScanExpandStore with Store {
   }
 
   void addEquipment(List<String> equList) {
-    if (activeContainer == "" && equList.isNotEmpty) {
-      activeContainer = equList[0];
-    }
+    // if (activeContainer == "" && equList.isNotEmpty) {
+    //   activeContainer = equList[0];
+    // }
+
+    equList.forEach((equ) {
+      if (!equipmentRfidDataSet.contains(equ)) {
+        addedContainer += 1;
+        totalContainer += 1;
+      }
+      equipmentRfidDataSet.add(equ);
+    });
+
     equipmentRfidDataSet.addAll(equList);
   }
 
@@ -860,17 +1052,21 @@ abstract class _TOScanExpandStore with Store {
   @action
   void updateDataSet(
       {List<String> itemList = const [], List<String> equList = const []}) {
-    var initIndex = equipmentRfidDataSet.length;
+    var initIndexEqu = equipmentRfidDataSet.length;
+    var initIndexItem = itemRfidDataSet.length;
+
     addEquipment(equList);
     addItem(itemList);
-    // itemRfidDataSet.addAll(itemList);
-    // equipmentRfidDataSet.addAll(equList);
-    var finalIndex = equipmentRfidDataSet.length;
-    if (initIndex != finalIndex) {
+
+    var finalIndexItem = itemRfidDataSet.length;
+    var finalIndexEqu = equipmentRfidDataSet.length;
+
+    if ((initIndexEqu != finalIndexEqu) || (initIndexItem != finalIndexItem)) {
       isFetchingEquData = true;
       EasyDebounce.debounce(
           'validateContainerRfid', const Duration(milliseconds: 500), () {
-        validateEquipmentRfid();
+        validateContainerRfid();
+        // validateEquipmentRfid();
       });
       // validateEquipmentRfid();
     }

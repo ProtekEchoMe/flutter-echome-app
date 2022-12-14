@@ -75,6 +75,64 @@ class AssetReturnApi {
     }
   }
 
+  Future<dynamic> getAssetReturnLine(
+      {int page = 0, int limit = 0, String rtnNum = ""}) async {
+    try {
+      print(page * limit);
+      print(limit);
+      print(rtnNum);
+      List<dynamic> filter = [];
+      Map sortInfo = {};
+
+      sortInfo = {
+        "id": 1,
+        "name": "checkinQty",
+        "type": "",
+        "dir": -1
+      };
+
+      if (rtnNum.isNotEmpty) {
+        filter = [
+          {
+            "value": rtnNum,
+            "name": "rtnNum",
+            "operator": "eq",
+            "type": "string"
+          },
+          // {
+          //   "value": "COMPLETED",
+          //   "name": "status",
+          //   "operator": "eq",
+          //   "type": "string"
+          // }
+        ];
+      }
+
+      Map<String, dynamic> query = {
+        "skip": page * limit,
+        "limit": limit,
+        "sortInfo": jsonEncode(sortInfo)
+      };
+
+      if (filter.isNotEmpty) {
+        query = {
+          "skip": page * limit,
+          "limit": limit,
+          "filterBy": jsonEncode(filter),
+          "sortInfo": jsonEncode(sortInfo)
+        };
+      }
+      final res = await _dioClient.getRegistration(Endpoints.listAssetReturnLine,
+          queryParameters: query);
+      print("ok");
+      print(res);
+      return res["itemRow"];
+      return AssetReturnResponse(res["itemRow"], res["totalRow"]);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> getContainerDetails({List<String>? rfid}) async {
     try {
       var str = "";
