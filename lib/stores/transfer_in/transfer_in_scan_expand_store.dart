@@ -190,16 +190,21 @@ abstract class _TIScanExpandStore with Store {
   void addRfidIntocontainerItemCodeCheckedRfidMapper(
       String containerRfid, String itemCode, String rfid) {
     if (!containerItemCodeCheckedRfidMapper.containsKey(containerRfid)) {
+      print("aR1");
       containerItemCodeCheckedRfidMapper[containerRfid] = {};
     }
     Map itemCodeCheckedRfidMapper =
     containerItemCodeCheckedRfidMapper[containerRfid];
     if (!itemCodeCheckedRfidMapper.containsKey(itemCode)) {
+      print("aR2");
       itemCodeCheckedRfidMapper[itemCode] = [];
       this.itemCodeCheckedRfidMapper[itemCode] = [];
     }
+    print("aR3");
     itemCodeCheckedRfidMapper[itemCode].add(rfid);
-    this.itemCodeCheckedRfidMapper[itemCode].add(rfid);
+    if(!this.itemCodeCheckedRfidMapper[itemCode].contains(rfid)){
+      this.itemCodeCheckedRfidMapper[itemCode].add(rfid);
+    }
   }
 
   void addItemIntoContainer(String containerRfid, String rfid) {
@@ -276,7 +281,8 @@ abstract class _TIScanExpandStore with Store {
         orderLineDTOMap[containerRfid].orderLineItemsMap[itemCode] =
             orderLineItems;
       }
-
+      addRfidIntocontainerItemCodeCheckedRfidMapper(
+          containerRfid, itemCode, rfid);
       this.outOfListQty += 1;
     }
 
@@ -1012,7 +1018,7 @@ abstract class _TIScanExpandStore with Store {
     }
     String itemCode = rfidCodeMapper[rfid];
     if(itemRfidStatus.containsKey(rfid)){
-      itemRfidStatus[rfid] = "un-committed"; // 1
+      itemRfidStatus[rfid] = "unScanned"; // 1
 
       //2
       if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){

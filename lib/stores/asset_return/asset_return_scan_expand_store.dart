@@ -1027,7 +1027,7 @@ abstract class _AssetReturnScanExpandStore with Store {
     String itemCode = rfidCodeMapper[rfid];
     print("1");
     if (itemRfidStatus.containsKey(rfid)) {
-      itemRfidStatus[rfid] = "un-committed"; // 1
+      itemRfidStatus[rfid] = "unScanned"; // 1
       print("1");
       //2
       if (containerItemCodeCheckedRfidMapper.containsKey(containerRfid) &&
@@ -1181,6 +1181,8 @@ abstract class _AssetReturnScanExpandStore with Store {
       print("c3");
       containerItemCodeCheckedRfidMapper.removeWhere((containerIter, _) => containerIter == containerRfid);
       orderLineDTOMap.removeWhere((containerIter, _) => containerIter == containerRfid);
+      orderLineDTOList!.removeWhere((element) => element.rfid == containerRfid);
+      fetchedContainerRfidList.remove(containerRfid);
     }
 
 
@@ -1197,13 +1199,17 @@ abstract class _AssetReturnScanExpandStore with Store {
     });
 
     String containerCode = rfidCodeMapper[containerRfid];
-    if (containerCode != null && containerCode == activeContainer) {
+    if (containerCode != null && containerRfid == activeContainer) {
       if (equipmentRfidDataSet.isNotEmpty) {
         print("c7");
         activeContainer = equipmentRfidDataSet.elementAt(0).toString();
       } else {
         activeContainer = "";
       }
+    }
+
+    if(containerRfid != "Out of List"){
+      rfidCodeMapper.remove(containerRfid);
     }
   }
 }

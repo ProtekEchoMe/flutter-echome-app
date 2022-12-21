@@ -163,7 +163,10 @@ class AssetRegistrationApi {
           str = str + element + ",";
         }
       }
-      Map<String, dynamic> query = {"rfids": str.substring(0, str.length - 1)};
+      print(rfid);
+      var strInput = rfid!.join(",");
+      // Map<String, dynamic> query = {"rfids": str.substring(0, str.length - 1)};
+      Map<String, dynamic> query = {"rfids": strInput};
       final res = await _dioClient.getRegistration(Endpoints.getRfidTagContainer,
           queryParameters: query);
       return {"itemList": res["itemRow"]};

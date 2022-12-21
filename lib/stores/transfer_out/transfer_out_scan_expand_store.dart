@@ -1134,7 +1134,7 @@ abstract class _TOScanExpandStore with Store {
     }
     String itemCode = rfidCodeMapper[rfid];
     if(itemRfidStatus.containsKey(rfid)){
-      itemRfidStatus[rfid] = "un-committed"; // 1
+      itemRfidStatus[rfid] = "unScanned"; // 1
 
       //2
       if(containerItemCodeCheckedRfidMapper.containsKey(containerRfid) && containerItemCodeCheckedRfidMapper[containerRfid].containsKey(itemCode)){
